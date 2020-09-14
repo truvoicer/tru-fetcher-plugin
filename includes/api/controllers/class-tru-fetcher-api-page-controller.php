@@ -90,12 +90,11 @@ class Tru_Fetcher_Api_Page_Controller {
 	}
 
 	public function getSidebar( $request ) {
-		$sidebarName = (string) $request["sidebar_name"];
-		$getSidebar = $this->sidebarClass->getSidebar($sidebarName);
-		if (!$getSidebar) {
-			return $this->showError("sidebar_error", "Error fetching sidebar");
-		}
-		return rest_ensure_response( $getSidebar );
+		return rest_ensure_response(
+		    $this->sidebarClass->getSidebar(
+		        (string) $request["sidebar_name"]
+            )
+        );
 	}
 
 	public function getMenuByName( $request ) {
