@@ -20,7 +20,7 @@
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Post_Types {
+class Tru_Fetcher_Admin_Menu {
 
 	private $parentMenuTitle = "Tru Fetcher";
 	private $parentMenuPageTitle = "Tru Fetcher";
@@ -38,7 +38,16 @@ class Tru_Fetcher_Post_Types {
 	}
 
 	public function define_post_types() {
-		$this->directoryIncludes( 'includes/post-types', 'register-post-type.php' );
+		$this->directoryIncludes(
+		    'tru-fetcher-admin-menu/post-types',
+            'register-post-type.php',
+            'post_type'
+        );
+		$this->directoryIncludes(
+		    'tru-fetcher-admin-menu/taxonomies',
+            'register-taxonomy.php',
+            'taxonomy'
+        );
 	}
 
 	private function define_admin_menus() {
@@ -56,24 +65,31 @@ class Tru_Fetcher_Post_Types {
 			2
 		);
 		foreach ($this->postTypeSubmenuArray as $submenu) {
+		    $menuSlug = "";
+		    if ($submenu["type"] === "post_type") {
+                $menuSlug = 'edit.php?post_type=' . $submenu["name"];
+            } elseif ($submenu["type"] === "taxonomy") {
+                $menuSlug = 'edit-tags.php?taxonomy=' . $submenu["name"];
+            }
 			add_submenu_page(
 				$this->parentMenuSlug,
 				$submenu["title"],
 				$submenu["title"],
 				'manage_options',
-				'edit.php?post_type=' . $submenu["name"]
+                $menuSlug
 			);
 		}
 	}
 
-	private function directoryIncludes( $pathName, $fileName ) {
+	private function directoryIncludes( $pathName, $fileName, $type ) {
 		$dir = new DirectoryIterator( plugin_dir_path( dirname( __FILE__ ) ) . $pathName );
 		foreach ( $dir as $fileinfo ) {
 			if ( ! $fileinfo->isDot() ) {
 				$submenuArray = [
 					"name" => str_replace( "-", "_", $fileinfo->getFilename() ),
 					"slug" => $fileinfo->getFilename(),
-					"title" => ucwords(str_replace("-", " ", $fileinfo->getFilename()))
+					"title" => ucwords(str_replace("-", " ", $fileinfo->getFilename())),
+                    "type" => $type
 				];
 				array_push($this->postTypeSubmenuArray, $submenuArray );
 				require_once( $fileinfo->getRealPath() . '/' . $fileName );

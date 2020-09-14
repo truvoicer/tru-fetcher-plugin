@@ -80,12 +80,13 @@ class Tru_Fetcher {
 		$this->define_public_hooks();
 		$this->load_graphql();
 		$this->loadApi();
+		$this->loadTruFetcherMenu();
 		$this->define_post_types();
 		$this->define_blocks();
 		$this->define_menus();
 		$this->define_sidebars();
 		$this->define_widgets();
-		$this->define_taxonomies();
+//		$this->define_taxonomies();
 
 	}
 
@@ -128,7 +129,7 @@ class Tru_Fetcher {
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/graphql/class-tru-fetcher-graphql.php';
 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tru-fetcher-post-types.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/tru-fetcher-admin-menu/class-tru-fetcher-admin-menu.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -200,9 +201,13 @@ class Tru_Fetcher {
 		$truFetcherEndpoints->init();
 	}
 
+	private function loadTruFetcherMenu() {
+		$truFetcherAdminMenu = new Tru_Fetcher_Admin_Menu();
+        $truFetcherAdminMenu->post_types_init();
+	}
+
 	private function define_post_types() {
-		$truFetcherPostTypes = new Tru_Fetcher_Post_Types();
-		$truFetcherPostTypes->post_types_init();
+        $this->directoryIncludes( 'includes/post-types', 'register-post-type.php' );
 	}
 
 	private function define_blocks() {
