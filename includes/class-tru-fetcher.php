@@ -233,7 +233,7 @@ class Tru_Fetcher {
 	private function directoryIncludes( $pathName, $fileName ) {
 		$dir = new DirectoryIterator( plugin_dir_path( dirname( __FILE__ ) ) . $pathName );
 		foreach ( $dir as $fileinfo ) {
-			if ( ! $fileinfo->isDot() ) {
+			if ( ! $fileinfo->isDot() && $fileinfo->isDir() ) {
 				require_once( $fileinfo->getRealPath() . '/' . $fileName );
 			}
 		}
