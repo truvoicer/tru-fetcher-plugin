@@ -37,11 +37,14 @@ class Tru_Fetcher_GraphQl {
 	}
 
 	public function init() {
-		add_action( 'graphql_register_types', [$this, "registerTypes"] );
+		add_action( 'graphql_register_types', [$this, "registerSidebarType"] );
 		add_action( 'graphql_register_types', [$this, "registerSidebarField"] );
+        add_action( 'graphql_register_types', [$this, "registerAllSidebarsType"] );
+		add_action( 'graphql_register_types', [$this, "registerAllSidebarsField"] );
 
 		$this->blocksJsonResolver();
 		$this->sidebarResolver();
+		$this->allSidebarsResolver();
 	}
 
 	private function blocksJsonResolver() {
@@ -83,7 +86,43 @@ class Tru_Fetcher_GraphQl {
 		}, 10, 9 );
 	}
 
-	public function registerTypes() {
+	private function allSidebarsResolver() {
+		add_filter( 'graphql_resolve_field', function( $result, $source, $args, WPGraphQL\AppContext $context,
+			GraphQL\Type\Definition\ResolveInfo $info, $type_name, $field_key, GraphQL\Type\Definition\FieldDefinition $field,
+			$field_resolver ) {
+			if ( $field_key === 'sidebars' ) {
+
+				$getSidebar = $this->sidebarClass->getAllSidebars();
+				if (!$getSidebar) {
+					return [
+						"sidebar_error" => "Error fetching sidebar."
+					];
+				}
+				return [
+					"sidebars_json" => json_encode($getSidebar),
+				];
+			}
+			return $result;
+		}, 10, 9 );
+	}
+
+	public function registerAllSidebarsType() {
+		register_graphql_object_type( 'Sidebars', [
+			'description' => __( "All Site sidebars", 'your-textdomain' ),
+			'fields' => [
+				'sidebars_json' => [
+					'type'        => "String",
+					'description' => __( 'Sidebars JSON', 'your-textdomain' ),
+				],
+				'sidebar_error' => [
+					'type' => "String",
+					'description' => __( 'Sidebar error', 'your-textdomain' ),
+				],
+			],
+		] );
+	}
+
+	public function registerSidebarType() {
 		register_graphql_object_type( 'Sidebar', [
 			'description' => __( "Site sidebar", 'your-textdomain' ),
 			'fields' => [
@@ -119,5 +158,15 @@ class Tru_Fetcher_GraphQl {
 				]
 			]
 		);
+	}
+	public function registerAllSidebarsField() {
+        register_graphql_field(
+            'RootQuery',
+            'Sidebars',
+            [
+                'type'        => 'Sidebars',
+                'description' => 'All sidebars',
+            ]
+        );
 	}
 }

@@ -33,6 +33,18 @@ class Tru_Fetcher_Sidebars {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'menus/class-tru-fetcher-menu.php';
 	}
 
+	public function getAllSidebars() {
+        $sidebarArray = array_map(function($sidebar) {
+            return $this->buildSidebarArray($sidebar);
+        }, wp_get_sidebars_widgets());
+
+        if (array_key_exists("wp_inactive_widgets", $sidebarArray)) {
+            unset($sidebarArray["wp_inactive_widgets"]);
+        }
+        return $sidebarArray;
+    }
+
+
 	public function getSidebar( $sidebarName ) {
 		if ( ! isset( $sidebarName ) ) {
 			return false;
@@ -43,30 +55,32 @@ class Tru_Fetcher_Sidebars {
 			return false;
 		}
 
-		$sidebarArray = array_map( function ( $item ) {
-			$array              = [];
-			$instanceNumber     = substr( $item, strpos( $item, "-" ) + 1 );
-			$widgetInstanceName = str_replace( substr( $item, strpos( $item, "-" ) ), "", $item );
-
-			$widget_instances             = get_option( 'widget_' . $widgetInstanceName );
-			$widgetData                   = $widget_instances[ $instanceNumber ];
-			$array[ $widgetInstanceName ] = $widgetData;
-			if ( $widgetInstanceName === "nav_menu" ) {
-				if ( array_key_exists( "nav_menu", $widgetData ) ) {
-					$menuObject = wp_get_nav_menu_object($widgetData['nav_menu']);
-					$array[ $widgetInstanceName ]["menu_slug"] = $menuObject->slug;
-					$array[ $widgetInstanceName ]["menu_items"] = $this->menuClass->getMenu( $menuObject );
-				}
-			}
-			if ( $widgetInstanceName === "social_media_widget" ) {
-				$widgetFields                 = get_fields( 'widget_' . $item );
-				$array[ $widgetInstanceName ] = $widgetFields;
-			}
-
-			return $array;
-
-		}, $sidebarWidgets[ $sidebarName ] );
-
-		return $sidebarArray;
+        return $this->buildSidebarArray($sidebarWidgets[ $sidebarName ]);
 	}
+
+	public function buildSidebarArray($sidebarArray) {
+	    return array_map( function ( $item ) {
+            $array              = [];
+            $instanceNumber     = substr( $item, strpos( $item, "-" ) + 1 );
+            $widgetInstanceName = str_replace( substr( $item, strpos( $item, "-" ) ), "", $item );
+
+            $widget_instances             = get_option( 'widget_' . $widgetInstanceName );
+            $widgetData                   = $widget_instances[ $instanceNumber ];
+            $array[ $widgetInstanceName ] = $widgetData;
+            if ( $widgetInstanceName === "nav_menu" ) {
+                if ( array_key_exists( "nav_menu", $widgetData ) ) {
+                    $menuObject = wp_get_nav_menu_object($widgetData['nav_menu']);
+                    $array[ $widgetInstanceName ]["menu_slug"] = $menuObject->slug;
+                    $array[ $widgetInstanceName ]["menu_items"] = $this->menuClass->getMenu( $menuObject );
+                }
+            }
+            if ( $widgetInstanceName === "social_media_widget" ) {
+                $widgetFields                 = get_fields( 'widget_' . $item );
+                $array[ $widgetInstanceName ] = $widgetFields;
+            }
+
+            return $array;
+
+        }, $sidebarArray );
+    }
 }
