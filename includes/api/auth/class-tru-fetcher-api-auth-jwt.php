@@ -23,7 +23,8 @@
 class Tru_Fetcher_Api_Auth_Jwt {
 
 	const API_WHITELIST = [
-		'/wp-json/wp/v2/public/*'
+		'/wp-json/wp/v2/public/*',
+		'/wp-json/wp-graphql-gutenberg/*'
 	];
 
 	const API_HEADERS = [
