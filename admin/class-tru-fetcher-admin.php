@@ -22,6 +22,16 @@
  */
 class Tru_Fetcher_Admin {
 
+    /**
+     * The loader that's responsible for maintaining and registering all hooks that power
+     * the plugin.
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      Tru_Fetcher_Loader $loader Maintains and registers all hooks for the plugin.
+     */
+    protected $loader;
+
 	/**
 	 * The ID of this plugin.
 	 *
@@ -51,8 +61,22 @@ class Tru_Fetcher_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+        $this->load_dependencies();
 
+        add_action('admin_head', [$this, "gb_gutenberg_admin_styles"]);
 	}
+
+    private function load_dependencies() {
+
+        /**
+         * The class responsible for orchestrating the actions and filters of the
+         * core plugin.
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tru-fetcher-loader.php';
+
+        $this->loader = new Tru_Fetcher_Loader();
+
+    }
 
 	/**
 	 * Register the stylesheets for the admin area.
@@ -99,5 +123,26 @@ class Tru_Fetcher_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tru-fetcher-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
+
+    public function gb_gutenberg_admin_styles() {
+        echo '
+        <style>
+            /* Main column width */
+            .wp-block {
+                max-width: 1080px;
+            }
+ 
+            /* Width of "wide" blocks */
+            .wp-block[data-align="wide"] {
+                max-width: 1080px;
+            }
+ 
+            /* Width of "full-wide" blocks */
+            .wp-block[data-align="full"] {
+                max-width: none;
+            }	
+        </style>
+    ';
+    }
 
 }
