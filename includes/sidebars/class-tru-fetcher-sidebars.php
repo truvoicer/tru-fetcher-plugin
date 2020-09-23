@@ -22,6 +22,10 @@
  */
 class Tru_Fetcher_Sidebars {
 
+    const ACF_WIDGETS = [
+      "social_media_widget", "button_widget"
+    ];
+
 	private $menuClass;
 
 	public function __construct() {
@@ -67,16 +71,16 @@ class Tru_Fetcher_Sidebars {
             $widget_instances             = get_option( 'widget_' . $widgetInstanceName );
             $widgetData                   = $widget_instances[ $instanceNumber ];
             $array[ $widgetInstanceName ] = $widgetData;
-            if ( $widgetInstanceName === "nav_menu" ) {
+
+            if (in_array($widgetInstanceName, self::ACF_WIDGETS)) {
+                $array[ $widgetInstanceName ] = get_fields( 'widget_' . $item );
+            }
+            else if ( $widgetInstanceName === "nav_menu" ) {
                 if ( array_key_exists( "nav_menu", $widgetData ) ) {
                     $menuObject = wp_get_nav_menu_object($widgetData['nav_menu']);
                     $array[ $widgetInstanceName ]["menu_slug"] = $menuObject->slug;
                     $array[ $widgetInstanceName ]["menu_items"] = $this->menuClass->getMenu( $menuObject );
                 }
-            }
-            if ( $widgetInstanceName === "social_media_widget" ) {
-                $widgetFields                 = get_fields( 'widget_' . $item );
-                $array[ $widgetInstanceName ] = $widgetFields;
             }
 
             return $array;
