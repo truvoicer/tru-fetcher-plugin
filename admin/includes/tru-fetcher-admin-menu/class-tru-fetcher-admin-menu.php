@@ -32,9 +32,11 @@ class Tru_Fetcher_Admin_Menu {
 	public function __construct() {
 	}
 
-	public function post_types_init() {
+	public function admin_menu_init() {
 		$this->define_post_types();
+		$this->define_taxonomies();
 		$this->define_admin_menus();
+		$this->add_option_pages();
 	}
 
 	public function define_post_types() {
@@ -43,6 +45,9 @@ class Tru_Fetcher_Admin_Menu {
             'register-post-type.php',
             'post_type'
         );
+	}
+
+	public function define_taxonomies() {
 		$this->directoryIncludes(
 		    'tru-fetcher-admin-menu/taxonomies',
             'register-taxonomy.php',
@@ -80,6 +85,16 @@ class Tru_Fetcher_Admin_Menu {
 			);
 		}
 	}
+
+    public function add_option_pages() {
+        if( function_exists('acf_add_options_page') ) {
+            acf_add_options_sub_page(array(
+                'page_title' 	=> 'General Settings',
+                'menu_title'	=> 'General Settings',
+                'parent_slug'	=> $this->parentMenuSlug,
+            ));
+        }
+    }
 
 	private function directoryIncludes( $pathName, $fileName, $type ) {
 		$dir = new DirectoryIterator( plugin_dir_path( dirname( __FILE__ ) ) . $pathName );
