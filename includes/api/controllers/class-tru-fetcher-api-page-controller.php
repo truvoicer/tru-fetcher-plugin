@@ -1,4 +1,5 @@
 <?php
+require_once plugin_dir_path( dirname( __FILE__ ) ) . 'controllers/class-tru-fetcher-api-controller-base.php';
 
 /**
  * Fired during plugin activation
@@ -20,7 +21,7 @@
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Api_Page_Controller {
+class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 
 	const LISTINGS_FILTERS = [
 		"NAME"           => "tru_fetcher_listings",
@@ -29,17 +30,22 @@ class Tru_Fetcher_Api_Page_Controller {
 		"FILTERS_LIST"   => "listings_filters",
 	];
 
+    private string $namespace = "/pages";
+    private string $publicEndpoint;
+    private string $protectedEndpoint;
+
 	private $listingsClass;
 	private $sidebarClass;
 	private $menuClass;
 
-	private $namespace = "wp/v2/public";
 	private $apiPostResponse;
 	private $templatePostType = "item_view_templates";
 	private $listingsCategoriesTaxonomy = "listings_categories";
 
-	public function __construct() {
-	}
+    public function __construct() {
+        $this->publicEndpoint = $this->publicNamespace . $this->namespace;
+        $this->protectedEndpoint = $this->protectedNamespace . $this->namespace;
+    }
 
 	public function init() {
 		$this->load_dependencies();
@@ -62,27 +68,27 @@ class Tru_Fetcher_Api_Page_Controller {
 	}
 
 	public function register_routes() {
-		register_rest_route( $this->namespace, '/template/item-view/(?<category_name>[\w-]+)', array(
+		register_rest_route( $this->publicEndpoint, '/template/item-view/(?<category_name>[\w-]+)', array(
 			'methods'  => WP_REST_Server::READABLE,
 			'callback' => [ $this, "getTemplate" ],
 			'permission_callback' => '__return_true'
 		) );
-		register_rest_route( $this->namespace, '/page', array(
+		register_rest_route( $this->publicEndpoint, '/page', array(
 			'methods'  => WP_REST_Server::READABLE,
 			'callback' => [ $this, "getPageBySlug" ],
 			'permission_callback' => '__return_true'
 		) );
-		register_rest_route( $this->namespace, '/menu/(?<menu_name>[\w-]+)', array(
+		register_rest_route( $this->publicEndpoint, '/menu/(?<menu_name>[\w-]+)', array(
 			'methods'  => WP_REST_Server::READABLE,
 			'callback' => [ $this, "getMenuByName" ],
 			'permission_callback' => '__return_true'
 		) );
-		register_rest_route( $this->namespace, '/sidebar/(?<sidebar_name>[\w-]+)', array(
+		register_rest_route( $this->publicEndpoint, '/sidebar/(?<sidebar_name>[\w-]+)', array(
 			'methods'  => WP_REST_Server::READABLE,
 			'callback' => [ $this, "getSidebar" ],
 			'permission_callback' => '__return_true'
 		) );
-		register_rest_route( $this->namespace, '/site/config', array(
+		register_rest_route( $this->publicEndpoint, '/site/config', array(
 			'methods'  => WP_REST_Server::READABLE,
 			'callback' => [ $this, "getSiteConfig" ],
 			'permission_callback' => '__return_true'

@@ -1,4 +1,5 @@
 <?php
+require_once plugin_dir_path( dirname( __FILE__ ) ) . 'controllers/class-tru-fetcher-api-controller-base.php';
 
 /**
  * Fired during plugin activation
@@ -20,7 +21,7 @@
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Api_User_Controller {
+class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
 
 	const STATUS_SUCCESS = "success";
 	const MAX_RATING = 5;
@@ -29,11 +30,16 @@ class Tru_Fetcher_Api_User_Controller {
 	const AUTH_TYPE_META_KEY = "auth_type";
 	const AUTH_TYPE_META_VALUE = "wordpress";
 
-	private $namespace = "wp/v2/public/users";
 	private $apiUserResponse;
 
-	public function __construct() {
-	}
+    private string $namespace = "/users";
+    private string $publicEndpoint;
+    private string $protectedEndpoint;
+
+    public function __construct() {
+        $this->publicEndpoint = $this->publicNamespace . $this->namespace;
+        $this->protectedEndpoint = $this->protectedNamespace . $this->namespace;
+    }
 
 	public function init() {
 		$this->load_dependencies();
@@ -51,32 +57,32 @@ class Tru_Fetcher_Api_User_Controller {
 	}
 
 	public function register_routes() {
-		register_rest_route( $this->namespace, '/create', array(
+		register_rest_route( $this->protectedEndpoint, '/create', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "createUser" ],
 			'permission_callback' => '__return_true'
 		) );
-		register_rest_route( $this->namespace, '/update', array(
+		register_rest_route( $this->protectedEndpoint, '/update', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "updateUser" ],
 			'permission_callback' => '__return_true'
 		) );
-		register_rest_route( $this->namespace, '/item/save', array(
+		register_rest_route( $this->protectedEndpoint, '/item/save', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "saveItem" ],
 			'permission_callback' => '__return_true'
 		) );
-		register_rest_route( $this->namespace, '/item/rating/save', array(
+		register_rest_route( $this->protectedEndpoint, '/item/rating/save', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "saveItemRating" ],
 			'permission_callback' => '__return_true'
 		) );
-		register_rest_route( $this->namespace, '/item/list', array(
+		register_rest_route( $this->protectedEndpoint, '/item/list', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "getItemListData" ],
 			'permission_callback' => '__return_true'
 		) );
-		register_rest_route( $this->namespace, '/item/list-by-user', array(
+		register_rest_route( $this->protectedEndpoint, '/item/list-by-user', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "getItemListDataByUser" ],
 			'permission_callback' => '__return_true'
