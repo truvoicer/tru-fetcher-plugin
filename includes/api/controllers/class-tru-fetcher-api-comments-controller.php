@@ -114,6 +114,7 @@ class Tru_Fetcher_Api_Comments_Controller extends Tru_Fetcher_Api_Controller_Bas
         if (is_wp_error($data)) {
             return $data;
         }
+
         $args = [
             "user_id" => $data["user_id"]
         ];
@@ -128,7 +129,6 @@ class Tru_Fetcher_Api_Comments_Controller extends Tru_Fetcher_Api_Controller_Bas
 	    if (is_wp_error($validateRequest)) {
             return $validateRequest;
         }
-
         $data = $this->getCommentRequestData($request, $requiredFields);
         if (is_wp_error($data)) {
             return $data;
@@ -138,11 +138,17 @@ class Tru_Fetcher_Api_Comments_Controller extends Tru_Fetcher_Api_Controller_Bas
         if (!$getUser) {
             return $this->showError("get_user_error", "User is not valid.");
         }
-
-        $newComment = wp_new_comment( [
+        $commentData = [
             "user_id" => $getUser->ID,
             "comment_content" => $data["comment_content"],
-        ], true );
+            "comment_author" => $getUser->display_name,
+        ];
+
+        if ($this->isNotEmpty($request["comment_parent"])) {
+            $commentData["comment_parent"] = $request["comment_parent"];
+        }
+
+        $newComment = wp_new_comment( $commentData, true );
 
         if (is_wp_error($newComment)) {
             return $this->showError($newComment->get_error_code(), $newComment->get_error_message());
@@ -150,7 +156,7 @@ class Tru_Fetcher_Api_Comments_Controller extends Tru_Fetcher_Api_Controller_Bas
 
         $this->addItemDetailsCommentMeta($newComment, $data["provider"], $data["category"], $data["item_id"]);
 
-        return $this->sendResponse("Successfully created comment", []);
+        return $this->sendResponse("Successfully created comment", get_comment($newComment));
 	}
 
 	public function updateComment($request) {
@@ -179,7 +185,7 @@ class Tru_Fetcher_Api_Comments_Controller extends Tru_Fetcher_Api_Controller_Bas
         if (is_wp_error($updateComment)) {
             return $this->showError($updateComment->get_error_code(), $updateComment->get_error_message());
         }
-        return $this->sendResponse("Successfully updated comment", []);
+        return $this->sendResponse("Successfully updated comment", get_comment($newComment));
     }
 
 	private function addItemDetailsCommentMeta($commentId, $provider, $category, $itemId) {
