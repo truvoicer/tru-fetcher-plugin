@@ -126,8 +126,8 @@
         },
         {
             "key": "field_5f7c4d7f43418",
-            "label": "Carousel",
-            "name": "carousel",
+            "label": "Carousel Data",
+            "name": "carousel_data",
             "type": "group",
             "instructions": "",
             "required": 0,
@@ -149,7 +149,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "",
+                        "width": "20",
                         "class": "",
                         "id": ""
                     },
@@ -165,6 +165,46 @@
                     "return_format": "value",
                     "ajax": 0,
                     "placeholder": ""
+                },
+                {
+                    "key": "field_5f7c6a979bf27",
+                    "label": "Carousel Heading",
+                    "name": "carousel_heading",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "30",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": ""
+                },
+                {
+                    "key": "field_5f7c6ac19bf28",
+                    "label": "Carousel Sub Heading",
+                    "name": "carousel_sub_heading",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "30",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": ""
                 },
                 {
                     "key": "field_5f7c4d7f4341a",
@@ -250,13 +290,13 @@
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "50",
+                                "width": "20",
                                 "class": "",
                                 "id": ""
                             },
                             "show_in_graphql": 1,
                             "return_format": "url",
-                            "preview_size": "medium",
+                            "preview_size": "thumbnail",
                             "library": "all",
                             "min_width": "",
                             "min_height": "",
@@ -275,7 +315,7 @@
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "50",
+                                "width": "30",
                                 "class": "",
                                 "id": ""
                             },
@@ -290,26 +330,47 @@
                             "key": "field_5f7c4d7f4341f",
                             "label": "Item Text",
                             "name": "item_text",
-                            "type": "text",
+                            "type": "textarea",
                             "instructions": "",
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "25",
+                                "width": "30",
                                 "class": "",
                                 "id": ""
                             },
                             "show_in_graphql": 1,
                             "default_value": "",
                             "placeholder": "",
+                            "maxlength": "",
+                            "rows": "",
+                            "new_lines": ""
+                        },
+                        {
+                            "key": "field_5f7c8c8c2728b",
+                            "label": "Item Rating",
+                            "name": "item_rating",
+                            "type": "range",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "20",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "default_value": "",
+                            "min": "",
+                            "max": 5,
+                            "step": "",
                             "prepend": "",
-                            "append": "",
-                            "maxlength": ""
+                            "append": ""
                         },
                         {
                             "key": "field_5f7c4d7f43420",
-                            "label": "Item Link Label",
-                            "name": "item_link_label",
+                            "label": "Item Link Text",
+                            "name": "item_link_text",
                             "type": "text",
                             "instructions": "",
                             "required": 0,
@@ -342,6 +403,46 @@
                             "show_in_graphql": 1,
                             "default_value": "",
                             "placeholder": ""
+                        },
+                        {
+                            "key": "field_5f7c8ce62728c",
+                            "label": "Item Badge Text",
+                            "name": "item_badge_text",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "30",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_5f7c8cf12728d",
+                            "label": "Item Badge Link",
+                            "name": "item_badge_link",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "30",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
                         }
                     ]
                 }
@@ -367,5 +468,5 @@
     "description": "",
     "show_in_graphql": 0,
     "graphql_field_name": "global_fields",
-    "modified": 1601986634
+    "modified": 1601998404
 }
