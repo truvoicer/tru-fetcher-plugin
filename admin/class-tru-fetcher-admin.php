@@ -63,6 +63,7 @@ class Tru_Fetcher_Admin {
 		$this->version = $version;
         $this->load_dependencies();
         $this->loadAdminMenu();
+        $this->loadAcf();
 
         add_action('admin_head', [$this, "gb_gutenberg_admin_styles"]);
 	}
@@ -76,6 +77,7 @@ class Tru_Fetcher_Admin {
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tru-fetcher-loader.php';
 
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/includes/tru-fetcher-admin-menu/class-tru-fetcher-admin-menu.php';
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/includes/tru-fetcher-acf/class-tru-fetcher-acf.php';
 
         $this->loader = new Tru_Fetcher_Loader();
 
@@ -130,6 +132,11 @@ class Tru_Fetcher_Admin {
     public function loadAdminMenu() {
         $truFetcherAdminMenu = new Tru_Fetcher_Admin_Menu();
         $truFetcherAdminMenu->admin_menu_init();
+    }
+
+    public function loadAcf() {
+        $truFetcherAcf = new Tru_Fetcher_Acf();
+        $truFetcherAcf->acf_init();
     }
 
     public function gb_gutenberg_admin_styles() {

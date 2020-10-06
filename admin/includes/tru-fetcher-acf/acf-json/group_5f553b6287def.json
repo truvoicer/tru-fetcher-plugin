@@ -1,0 +1,55 @@
+{
+    "key": "group_5f553b6287def",
+    "title": "Page Options",
+    "fields": [
+        {
+            "key": "field_5f553b6a5cae3",
+            "label": "Page type",
+            "name": "page_type",
+            "type": "select",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "choices": {
+                "general": "General Page",
+                "login": "Login Page",
+                "register": "Register Page",
+                "logout": "Logout Page",
+                "user_account": "User Account Page"
+            },
+            "default_value": "general",
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 1,
+            "ajax": 0,
+            "return_format": "value",
+            "placeholder": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "page"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_graphql": 0,
+    "graphql_field_name": "page_options",
+    "modified": 1601986653
+}
