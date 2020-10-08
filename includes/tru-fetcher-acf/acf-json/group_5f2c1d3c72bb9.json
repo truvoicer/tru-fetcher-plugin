@@ -11,10 +11,11 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "50",
+                "width": "20",
                 "class": "",
                 "id": ""
             },
+            "show_in_graphql": 1,
             "return_format": "url",
             "preview_size": "thumbnail",
             "library": "all",
@@ -27,25 +28,6 @@
             "mime_types": ""
         },
         {
-            "key": "field_5f2c1d6c6eb4a",
-            "label": "Hero Search",
-            "name": "hero_search",
-            "type": "true_false",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "50",
-                "class": "",
-                "id": ""
-            },
-            "message": "",
-            "default_value": 0,
-            "ui": 1,
-            "ui_on_text": "",
-            "ui_off_text": ""
-        },
-        {
             "key": "field_5f2c1d8b6eb4b",
             "label": "Hero Title",
             "name": "hero_title",
@@ -54,7 +36,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "50",
+                "width": "40",
                 "class": "",
                 "id": ""
             },
@@ -74,7 +56,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "50",
+                "width": "40",
                 "class": "",
                 "id": ""
             },
@@ -84,6 +66,74 @@
             "prepend": "",
             "append": "",
             "maxlength": ""
+        },
+        {
+            "key": "field_5f2c1d6c6eb4a",
+            "label": "Hero Search",
+            "name": "hero_search",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "15",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "message": "",
+            "default_value": 0,
+            "ui": 1,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        },
+        {
+            "key": "field_5f7f780b08bdb",
+            "label": "Hero Search Options",
+            "name": "hero_search_options",
+            "type": "group",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_5f2c1d6c6eb4a",
+                        "operator": "==",
+                        "value": "1"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "85",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "layout": "block",
+            "sub_fields": [
+                {
+                    "key": "field_5f7f782808bdc",
+                    "label": "Search Options",
+                    "name": "search_options",
+                    "type": "clone",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "clone": [
+                        "field_5f7f76a703304"
+                    ],
+                    "display": "seamless",
+                    "layout": "block",
+                    "prefix_label": 0,
+                    "prefix_name": 0
+                }
+            ]
         }
     ],
     "location": [
@@ -105,5 +155,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "hero_block",
-    "modified": 1601986643
+    "modified": 1602189991
 }
