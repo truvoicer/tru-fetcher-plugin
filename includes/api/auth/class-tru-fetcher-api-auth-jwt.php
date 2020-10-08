@@ -20,7 +20,9 @@
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Api_Auth_Jwt {
+class Tru_Fetcher_Api_Auth_Jwt extends Tru_Fetcher_Base {
+
+    const FACEBOOK_CONFIG = "facebook-config";
 
 	const API_WHITELIST = [
 		'/wp-json/wp/tru-fetcher-api/public/*',
@@ -42,12 +44,6 @@ class Tru_Fetcher_Api_Auth_Jwt {
 		$this->configureWhitelist();
 		$this->configureValidTokenResponse();
 		$this->configureValidCredentialsResponse();
-	}
-
-	private function getConfig() {
-		$config = file_get_contents( plugin_dir_path( dirname( __FILE__ ) ) . '/config/config.json' );
-
-		return json_decode( $config );
 	}
 
 	private function getHeader($key) {
@@ -126,7 +122,7 @@ class Tru_Fetcher_Api_Auth_Jwt {
 
 	private function validateFacebookToken( $username, $password ) {
 		$token = $password;
-		$config = $this->getConfig();
+		$config = parent::getConfig(self::FACEBOOK_CONFIG);
 		try {
 			$fb = new \Facebook\Facebook( [
 				'app_id'                => $config->facebook_sdk->app_id,

@@ -360,6 +360,37 @@
                     "placeholder": ""
                 },
                 {
+                    "key": "field_5f7c980a226c8",
+                    "label": "Item List",
+                    "name": "item_list",
+                    "type": "post_object",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_5f7c4d7f43419",
+                                "operator": "==",
+                                "value": "items"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "80",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "post_type": [
+                        "fetcher_items_lists"
+                    ],
+                    "taxonomy": "",
+                    "allow_null": 0,
+                    "multiple": 0,
+                    "return_format": "object",
+                    "ui": 1
+                },
+                {
                     "key": "field_5f7c6a979bf27",
                     "label": "Carousel Heading",
                     "name": "carousel_heading",
@@ -445,54 +476,6 @@
                             "prefix_name": 0
                         }
                     ]
-                },
-                {
-                    "key": "field_5f7c980a226c8",
-                    "label": "Items",
-                    "name": "items",
-                    "type": "group",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": [
-                        [
-                            {
-                                "field": "field_5f7c4d7f43419",
-                                "operator": "==",
-                                "value": "items"
-                            }
-                        ]
-                    ],
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "show_in_graphql": 1,
-                    "layout": "block",
-                    "sub_fields": [
-                        {
-                            "key": "field_5f7c9823226c9",
-                            "label": "Items Data",
-                            "name": "items_data",
-                            "type": "clone",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "show_in_graphql": 1,
-                            "clone": [
-                                "field_5f7c4d7f4341c"
-                            ],
-                            "display": "seamless",
-                            "layout": "block",
-                            "prefix_label": 0,
-                            "prefix_name": 0
-                        }
-                    ]
                 }
             ]
         }
@@ -516,5 +499,5 @@
     "description": "",
     "show_in_graphql": 0,
     "graphql_field_name": "global_fields",
-    "modified": 1602000956
+    "modified": 1602113023
 }

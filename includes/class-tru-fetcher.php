@@ -107,6 +107,8 @@ class Tru_Fetcher {
 	 */
 	private function load_dependencies() {
 
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tru-fetcher-base.php';
+
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
@@ -127,6 +129,8 @@ class Tru_Fetcher {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/api/class-tru-fetcher-api.php';
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/graphql/class-tru-fetcher-graphql.php';
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/blocks/class-tru-fetcher-blocks.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -203,7 +207,8 @@ class Tru_Fetcher {
 	}
 
 	private function define_blocks() {
-		$this->directoryIncludes( 'includes/blocks', 'acf-register.php' );
+	    $blocksManager = new Tru_Fetcher_Blocks();
+	    $blocksManager->blocks_init();
 	}
 
 	private function define_menus() {

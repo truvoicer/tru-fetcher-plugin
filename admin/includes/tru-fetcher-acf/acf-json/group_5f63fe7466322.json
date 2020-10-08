@@ -90,6 +90,31 @@
             "maxlength": ""
         },
         {
+            "key": "field_5f7e45b7218e1",
+            "label": "Custom Tabs",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_5f640385e1f4d",
+                        "operator": "==",
+                        "value": "custom_tabs"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
             "key": "field_5f63ff5502101",
             "label": "Custom Tabs",
             "name": "custom_tabs",
@@ -262,6 +287,38 @@
             ]
         },
         {
+            "key": "field_5f7e45d8218e2",
+            "label": "Request Tabs",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_5f640385e1f4d",
+                        "operator": "==",
+                        "value": "request_carousel_tabs"
+                    }
+                ],
+                [
+                    {
+                        "field": "field_5f640385e1f4d",
+                        "operator": "==",
+                        "value": "request_video_tabs"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
             "key": "field_5f649ff215c75",
             "label": "Request Tabs",
             "name": "request_tabs",
@@ -336,5 +393,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "tabs_block",
-    "modified": 1601986663
+    "modified": 1602110967
 }
