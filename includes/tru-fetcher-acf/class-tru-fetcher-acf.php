@@ -50,5 +50,4 @@ class Tru_Fetcher_Acf {
         // return
         return $paths;
     }
-
 }

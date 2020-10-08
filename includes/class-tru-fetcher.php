@@ -80,6 +80,7 @@ class Tru_Fetcher {
 		$this->define_public_hooks();
 		$this->load_graphql();
 		$this->loadApi();
+        $this->loadAcf();
 		$this->define_post_types();
 		$this->define_blocks();
 		$this->define_menus();
@@ -126,7 +127,11 @@ class Tru_Fetcher {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-tru-fetcher-admin.php';
 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/listings/class-tru-fetcher-listings.php';
+
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/api/class-tru-fetcher-api.php';
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/tru-fetcher-acf/class-tru-fetcher-acf.php';
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/graphql/class-tru-fetcher-graphql.php';
 
@@ -201,6 +206,11 @@ class Tru_Fetcher {
 		$truFetcherEndpoints = new Tru_Fetcher_Api();
 		$truFetcherEndpoints->init();
 	}
+
+    private function loadAcf() {
+        $truFetcherAcf = new Tru_Fetcher_Acf();
+        $truFetcherAcf->acf_init();
+    }
 
 	private function define_post_types() {
         $this->directoryIncludes( 'includes/post-types', 'register-post-type.php' );
