@@ -81,6 +81,7 @@ class Tru_Fetcher {
 		$this->load_graphql();
 		$this->loadApi();
         $this->loadAcf();
+        $this->loadEmail();
 		$this->define_post_types();
 		$this->define_blocks();
 		$this->define_menus();
@@ -128,6 +129,8 @@ class Tru_Fetcher {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-tru-fetcher-admin.php';
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/listings/class-tru-fetcher-listings.php';
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/email/class-tru-fetcher-email.php';
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/api/class-tru-fetcher-api.php';
 
@@ -210,6 +213,11 @@ class Tru_Fetcher {
     private function loadAcf() {
         $truFetcherAcf = new Tru_Fetcher_Acf();
         $truFetcherAcf->acf_init();
+    }
+
+    private function loadEmail() {
+        $truFetcherEmail = new Tru_Fetcher_Email();
+	    $truFetcherEmail->init();
     }
 
 	private function define_post_types() {
