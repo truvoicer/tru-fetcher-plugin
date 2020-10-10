@@ -57,12 +57,12 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
 	}
 
 	public function register_routes() {
-		register_rest_route( $this->protectedEndpoint, '/create', array(
+		register_rest_route( $this->publicEndpoint, '/create', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "createUser" ],
 			'permission_callback' => '__return_true'
 		) );
-		register_rest_route( $this->protectedEndpoint, '/update', array(
+		register_rest_route( $this->publicEndpoint, '/update', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "updateUser" ],
 			'permission_callback' => '__return_true'
