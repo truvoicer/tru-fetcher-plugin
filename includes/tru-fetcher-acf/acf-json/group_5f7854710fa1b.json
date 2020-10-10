@@ -3,7 +3,7 @@
     "title": "General Settings Options Page",
     "fields": [
         {
-            "key": "field_5f8222acfd261",
+            "key": "field_5f8225b6acc6e",
             "label": "General Settings",
             "name": "",
             "type": "tab",
@@ -20,7 +20,7 @@
             "endpoint": 0
         },
         {
-            "key": "field_5f8222b6fd262",
+            "key": "field_5f8225c2acc6f",
             "label": "General Settings",
             "name": "general_settings",
             "type": "group",
@@ -36,7 +36,7 @@
             "layout": "block",
             "sub_fields": [
                 {
-                    "key": "field_5f8222c4fd263",
+                    "key": "field_5f8225d0acc70",
                     "label": "Frontend Url",
                     "name": "frontend_url",
                     "type": "text",
@@ -44,7 +44,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "",
+                        "width": "30",
                         "class": "",
                         "id": ""
                     },
@@ -125,7 +125,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "20",
+                        "width": "40",
                         "class": "",
                         "id": ""
                     },
@@ -163,5 +163,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "tru_fetcher_general_settings",
-    "modified": 1602364140
+    "modified": 1602365009
 }
