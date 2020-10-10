@@ -3,6 +3,61 @@
     "title": "General Settings Options Page",
     "fields": [
         {
+            "key": "field_5f81f30adc173",
+            "label": "General Settings",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_5f81f31fdc174",
+            "label": "General Settings",
+            "name": "general_settings",
+            "type": "group",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "layout": "block",
+            "sub_fields": [
+                {
+                    "key": "field_5f81f33edc175",
+                    "label": "Frontend Url",
+                    "name": "frontend_url",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": ""
+                }
+            ]
+        },
+        {
             "key": "field_5f7854918a67d",
             "label": "User Account Area",
             "name": "",
@@ -108,5 +163,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "tru_fetcher_general_settings",
-    "modified": 1601986629
+    "modified": 1602351966
 }

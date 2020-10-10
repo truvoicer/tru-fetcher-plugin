@@ -35,10 +35,12 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
     private string $namespace = "/users";
     private string $publicEndpoint;
     private string $protectedEndpoint;
+    private $options;
 
     public function __construct() {
         $this->publicEndpoint = $this->publicNamespace . $this->namespace;
         $this->protectedEndpoint = $this->protectedNamespace . $this->namespace;
+        $this->options = get_fields("option");
     }
 
 	public function init() {
@@ -98,7 +100,7 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
 		if ( is_wp_error( $createUser ) ) {
 			return $this->showError( $createUser->get_error_code(), $createUser->get_error_message() );
 		}
-		wp_new_user_notification( $createUser );
+		wp_new_user_notification( $createUser, null, "user" );
 		update_user_meta($createUser, self::AUTH_TYPE_META_KEY, self::AUTH_TYPE_META_VALUE);
 
 		$getUserData = [
@@ -150,6 +152,7 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
 				$userData )
 		);
 	}
+
 
 	private function getUserItemRequestData( $request) {
 		$date                  = new DateTime();
