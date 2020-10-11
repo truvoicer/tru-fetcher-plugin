@@ -72,8 +72,13 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
 			'permission_callback' => '__return_true'
 		) );
 		register_rest_route( $this->publicEndpoint, '/password-reset', array(
-			'methods'             => WP_REST_Server::CREATABLE,
+			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => [ $this, "passwordReset" ],
+			'permission_callback' => '__return_true'
+		) );
+		register_rest_route( $this->publicEndpoint, '/password-reset/validate', array(
+			'methods'             => WP_REST_Server::READABLE,
+			'callback'            => [ $this, "passwordResetValidate" ],
 			'permission_callback' => '__return_true'
 		) );
 		register_rest_route( $this->protectedEndpoint, '/item/save', array(
@@ -160,7 +165,6 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
 		);
 	}
 
-
 	public function passwordReset( $request ) {
 		if (!isset($request["username"])) {
 			return $this->showError( "request_missing_parameters", "Username or email not in request." );
@@ -187,10 +191,10 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
 			sprintf("Password Reset | %s", get_option("blogname")),
 			"password-reset-key",
 			[
-				Tru_Fetcher_Email::DEFAULT_TEMPLATE_VARS["EMAIL_TITLE"] => sprintf("Password Reset | %s", get_option("blogname")),
-				Tru_Fetcher_Email::DEFAULT_TEMPLATE_VARS["USERNAME"] => $getUser->user_login,
-				Tru_Fetcher_Email::DEFAULT_TEMPLATE_VARS["USER_EMAIL"] => $getUser->user_email,
-				"PASSWORD_RESET_KEY_URL" => $this->getPasswordResetKeyUrl($getPasswordResetKey)
+				"EMAIL_TITLE" => sprintf("Password Reset | %s", get_option("blogname")),
+				"USERNAME" => $getUser->user_login,
+				"USER_EMAIL" => $getUser->user_email,
+				"PASSWORD_RESET_URL" => $this->getPasswordResetKeyUrl($getPasswordResetKey, $getUser->ID)
 			]
 		);
 		if (!$sendPasswordResetKey) {
@@ -206,8 +210,62 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
 		);
 	}
 
-	private function getPasswordResetKeyUrl($passwordResetKey) {
-    	return $passwordResetKey;
+	public function passwordResetValidate( $request ) {
+		if (!isset($request["reset_key"]) || !isset($request["user_id"])) {
+			return $this->showError( "request_missing_parameters", "Password reset key or user_id not in request." );
+		}
+		if ($request["reset_key"] === "" || $request["reset_key"] === null) {
+			return $this->showError( "invalid_request", "Password reset key is invalid." );
+		}
+		if ($request["user_id"] === "" || $request["user_id"] === null) {
+			return $this->showError( "invalid_request", "User Id is invalid." );
+		}
+		$getUser = get_userdata($request["user_id"]);
+		if (!$getUser) {
+			return $this->showError( "user_not_exist", "Sorry, this user does not exist." );
+		}
+
+		$validateResetKey = check_password_reset_key($request["reset_key"], $getUser->user_login);
+		if (is_wp_error($validateResetKey)) {
+			return $this->showError( $validateResetKey->get_error_code(), $validateResetKey->get_error_message() );
+		}
+
+		$generatePassword = wp_generate_password();
+		$userData = [
+			"ID" => $validateResetKey->ID,
+			"user_pass" => $generatePassword,
+		];
+		$updateUser = wp_update_user( $userData );
+
+		if ( is_wp_error( $updateUser ) ) {
+			return $this->showError( $updateUser->get_error_code(), $updateUser->get_error_message() );
+		}
+		$sendPasswordResetKey = $this->emailManager->sendEmail(
+			$validateResetKey->user_email,
+			sprintf("Password Reset | %s", get_option("blogname")),
+			"password-reset-success",
+			[
+				"EMAIL_TITLE" => sprintf("Password Reset | %s", get_option("blogname")),
+				"USERNAME" => $validateResetKey->user_login,
+				"USER_EMAIL" => $validateResetKey->user_email,
+				"NEW_PASSWORD" => $generatePassword
+			]
+		);
+		if (!$sendPasswordResetKey) {
+			return $this->showError(
+				"send_password_reset_key_error",
+				"There was an error sending a new password to your email. Please submit the password request again."
+			);
+		}
+		return $this->sendResponse(
+			$this->buildResponseObject( self::STATUS_SUCCESS,
+				sprintf( "A temporary password has been sent to your inbox (%s). Please follow the instructions.", $validateResetKey->user_email ),
+				[] )
+		);
+	}
+
+	private function getPasswordResetKeyUrl($passwordResetKey, $userId) {
+    	return sprintf("%s/auth/password-reset/%s/%s", Tru_Fetcher::getFrontendUrl(), $userId, $passwordResetKey);
 	}
 
 	private function getUserItemRequestData( $request) {

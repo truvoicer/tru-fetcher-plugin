@@ -89,8 +89,8 @@ class Tru_Fetcher_Admin_Menu {
     public function add_option_pages() {
         if( function_exists('acf_add_options_page') ) {
             acf_add_options_sub_page(array(
-                'page_title' 	=> 'General Settings',
-                'menu_title'	=> 'General Settings',
+                'page_title' 	=> 'TruFetcher Settings',
+                'menu_title'	=> 'TruFetcher Settings',
                 'parent_slug'	=> $this->parentMenuSlug,
             ));
         }

@@ -29,6 +29,7 @@ class Tru_Fetcher_Email {
 		"USER_EMAIL"  => "",
 		"USERNAME"    => "",
 		"SITE_URL"    => "",
+		"FRONTEND_URL"    => "",
 		"DATE_YEAR"   => "",
 	];
 	private array $defaultTemplateVariables;
@@ -64,7 +65,7 @@ class Tru_Fetcher_Email {
 		if ( ! $getTemplate ) {
 			return false;
 		}
-		$emailContent = $this->filterEmailContent( $getTemplate, $templateVars );
+		$emailContent = $this->filterEmailContent( $getTemplate, array_merge($this->defaultTemplateVariables, $templateVars) );
 
 		return wp_mail( $to, $subject, $emailContent );
 	}
@@ -87,7 +88,7 @@ class Tru_Fetcher_Email {
 	}
 
 	private function filterEmailContent( $content, $templateVars ) {
-		foreach ( $this->defaultTemplateVariables as $key => $value ) {
+		foreach ( $templateVars as $key => $value ) {
 			$content = str_replace( "###" . $key . "###", $templateVars["$key"], $content );
 		}
 
@@ -96,15 +97,11 @@ class Tru_Fetcher_Email {
 
 	private function getDefaultTemplateVariables() {
 		$date        = new DateTime();
-		$frontendUrl = get_option( 'siteurl' );
-		if ( isset( $this->options["general_settings"]["frontend_url"] ) ) {
-			$frontendUrl = $this->options["general_settings"]["frontend_url"];
-		}
-
 		return array_merge( self::DEFAULT_TEMPLATE_VARS, [
 			"SITE_NAME"  => get_option( 'blogname' ),
+			"SITE_URL"   => get_option( 'siteurl' ),
 			"SITE_EMAIL" => get_option( 'admin_email' ),
-			"SITE_URL"   => $frontendUrl,
+			"FRONTEND_URL"   => Tru_Fetcher::getFrontendUrl(),
 			"DATE_YEAR"  => $date->format( "Y" ),
 		] );
 	}

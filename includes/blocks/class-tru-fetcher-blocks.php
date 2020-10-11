@@ -40,7 +40,7 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base {
         acf_setup_meta( $block['data'], $block['id'], true );
         $fields = get_fields();
         if (!$fields) {
-            return false;
+            return [];
         }
         return $this->replacePostTypes($fields);
     }

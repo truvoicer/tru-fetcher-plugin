@@ -200,6 +200,19 @@ class Tru_Fetcher {
 
 	}
 
+	public static function getFrontendUrl() {
+		$options = get_fields( "option" );
+		$frontendUrl = get_option( 'siteurl' );
+		if ( isset( $options["frontend_url"] ) ) {
+			$frontendUrl = $options["frontend_url"];
+		}
+		return $frontendUrl;
+	}
+
+	public static function getTruFetcherSettings() {
+		return get_fields( "option" );
+	}
+
 	private function load_graphql() {
 		$truFetcherGraphql = new Tru_Fetcher_GraphQl();
 		$truFetcherGraphql->init();

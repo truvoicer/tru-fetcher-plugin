@@ -1,13 +1,7 @@
 <?php
 $blocksManager = new Tru_Fetcher_Blocks();
 $blockData = $blocksManager->getBlockData($block);
-if (!$blockData) {
-    return;
-}
 $blockJson = $blocksManager->getBlockDataJson($blockData);
-if (!$blockJson) {
-    return;
-}
 if (!array_key_exists("listing_block_category", $blockData) || $blockData['listing_block_category'] === "") {
     echo "Listings block category is invalid.";
     return;

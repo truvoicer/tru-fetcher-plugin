@@ -3,5 +3,5 @@ $blocksManager = new Tru_Fetcher_Blocks();
 $blockData = $blocksManager->getBlockData($block);
 $blockJson = $blocksManager->getBlockDataJson($blockData);
 ?>
-<div id="carousel_block"
+<div id="password_reset_block"
      data='<?php echo $blockJson; ?>'></div>
