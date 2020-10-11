@@ -31,6 +31,7 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
 	const AUTH_TYPE_META_VALUE = "wordpress";
 
 	private Tru_Fetcher_Api_User_Response $apiUserResponse;
+	private Tru_Fetcher_Email $emailManager;
 
     private string $namespace = "/users";
     private string $publicEndpoint;
@@ -41,6 +42,7 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
         $this->publicEndpoint = $this->publicNamespace . $this->namespace;
         $this->protectedEndpoint = $this->protectedNamespace . $this->namespace;
         $this->options = get_fields("option");
+        $this->emailManager = new Tru_Fetcher_Email();
     }
 
 	public function init() {
@@ -67,6 +69,11 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
 		register_rest_route( $this->publicEndpoint, '/update', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "updateUser" ],
+			'permission_callback' => '__return_true'
+		) );
+		register_rest_route( $this->publicEndpoint, '/password-reset', array(
+			'methods'             => WP_REST_Server::CREATABLE,
+			'callback'            => [ $this, "passwordReset" ],
 			'permission_callback' => '__return_true'
 		) );
 		register_rest_route( $this->protectedEndpoint, '/item/save', array(
@@ -153,6 +160,55 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
 		);
 	}
 
+
+	public function passwordReset( $request ) {
+		if (!isset($request["username"])) {
+			return $this->showError( "request_missing_parameters", "Username or email not in request." );
+		}
+		if ($request["username"] === "" || $request["username"] === null) {
+			return $this->showError( "invalid_request", "Username or email is invalid." );
+		}
+
+		$getUser = get_user_by_email($request["username"]);
+		if (!$getUser) {
+			$getUser = get_user_by("username", $request["username"]);
+		}
+		if (!$getUser) {
+			return $this->showError( "user_not_exist", "Sorry, this user does not exist." );
+		}
+
+		$getPasswordResetKey = get_password_reset_key($getUser);
+		if (is_wp_error($getPasswordResetKey)) {
+			return $this->showError( $getPasswordResetKey->get_error_code(), $getPasswordResetKey->get_error_message() );
+		}
+
+		$sendPasswordResetKey = $this->emailManager->sendEmail(
+			$getUser->user_email,
+			sprintf("Password Reset | %s", get_option("blogname")),
+			"password-reset-key",
+			[
+				Tru_Fetcher_Email::DEFAULT_TEMPLATE_VARS["EMAIL_TITLE"] => sprintf("Password Reset | %s", get_option("blogname")),
+				Tru_Fetcher_Email::DEFAULT_TEMPLATE_VARS["USERNAME"] => $getUser->user_login,
+				Tru_Fetcher_Email::DEFAULT_TEMPLATE_VARS["USER_EMAIL"] => $getUser->user_email,
+				"PASSWORD_RESET_KEY_URL" => $this->getPasswordResetKeyUrl($getPasswordResetKey)
+			]
+		);
+		if (!$sendPasswordResetKey) {
+			return $this->showError(
+				"send_password_reset_key_error",
+				"There was an error sending the password reset to your email. Please try again."
+			);
+		}
+		return $this->sendResponse(
+			$this->buildResponseObject( self::STATUS_SUCCESS,
+				sprintf( "An email has been sent to your inbox (%s). Please follow the instructions.", $getUser->user_email ),
+				[] )
+		);
+	}
+
+	private function getPasswordResetKeyUrl($passwordResetKey) {
+    	return $passwordResetKey;
+	}
 
 	private function getUserItemRequestData( $request) {
 		$date                  = new DateTime();
