@@ -139,7 +139,7 @@
         },
         {
             "key": "field_5f8322031af19",
-            "label": "Google Login Settings",
+            "label": "Google Settings",
             "name": "",
             "type": "tab",
             "instructions": "",
@@ -150,14 +150,13 @@
                 "class": "",
                 "id": ""
             },
-            "show_in_graphql": 1,
             "placement": "top",
             "endpoint": 0
         },
         {
             "key": "field_5f8322151af1a",
-            "label": "Google Client Id",
-            "name": "google_client_id",
+            "label": "Google Login Client Id",
+            "name": "google_login_client_id",
             "type": "text",
             "instructions": "",
             "required": 0,
@@ -175,9 +174,9 @@
             "maxlength": ""
         },
         {
-            "key": "field_5f83225f1af1b",
-            "label": "Google Project Id",
-            "name": "google_project_id",
+            "key": "field_5f8c174d71e6d",
+            "label": "Tag Manager Id",
+            "name": "google_tag_manager_id",
             "type": "text",
             "instructions": "",
             "required": 0,
@@ -193,44 +192,10 @@
             "prepend": "",
             "append": "",
             "maxlength": ""
-        },
-        {
-            "key": "field_5f8322801af1c",
-            "label": "Google Token URI",
-            "name": "google_token_uri",
-            "type": "url",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "50",
-                "class": "",
-                "id": ""
-            },
-            "show_in_graphql": 1,
-            "default_value": "",
-            "placeholder": ""
-        },
-        {
-            "key": "field_5f83234845486",
-            "label": "Google Auth URI",
-            "name": "google_auth_uri",
-            "type": "url",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "50",
-                "class": "",
-                "id": ""
-            },
-            "show_in_graphql": 1,
-            "default_value": "",
-            "placeholder": ""
         },
         {
             "key": "field_5f8322b1b837f",
-            "label": "Facebook Login Settings",
+            "label": "Facebook Settings",
             "name": "",
             "type": "tab",
             "instructions": "",
@@ -241,7 +206,6 @@
                 "class": "",
                 "id": ""
             },
-            "show_in_graphql": 1,
             "placement": "top",
             "endpoint": 0
         },
@@ -342,5 +306,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "tru_fetcher_settings_page",
-    "modified": 1602903750
+    "modified": 1603017107
 }
