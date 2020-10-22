@@ -58,6 +58,7 @@ class Tru_Fetcher_Email {
 	public function init() {
 		add_filter( 'wp_mail_content_type', [ $this, 'setHtmlEmailContentType' ] );
 		add_filter( 'wp_new_user_notification_email', [ $this, "userNotificationEmail" ], 10, 3 );
+        add_shortcode( 'tru-fetcher-repeater', [$this, "addRepeaterShortcode"] );
 	}
 
 	public function sendEmail( $to = null, $subject = null, $templateName = null, $templateVars = [] ) {
@@ -65,8 +66,7 @@ class Tru_Fetcher_Email {
 		if ( ! $getTemplate ) {
 			return false;
 		}
-		var_dump($to, $subject);
-		return false;
+
 		$emailContent = $this->filterEmailContent( $getTemplate, array_merge($this->defaultTemplateVariables, $templateVars) );
 
 		return wp_mail( $to, $subject, $emailContent );
@@ -91,11 +91,48 @@ class Tru_Fetcher_Email {
 
 	private function filterEmailContent( $content, $templateVars ) {
 		foreach ( $templateVars as $key => $value ) {
-			$content = str_replace( "###" . $key . "###", $templateVars["$key"], $content );
+		    if (is_array($templateVars["$key"])) {
+                $content = str_replace( "###" . $key . "###", json_encode($templateVars["$key"]), $content );
+            } else {
+                $content = str_replace("###" . $key . "###", $templateVars["$key"], $content);
+            }
 		}
+        $content = do_shortcode($content);
 
 		return $content;
 	}
+
+    public function addRepeaterShortcode( $atts ) {
+        $options = shortcode_atts( array(
+            'type' => '',
+            'data' => '',
+        ), $atts );
+
+        if ($options["type"] === "" || $options["data"] === "") {
+            return "{repeater_error}";
+        }
+
+        $path = plugin_dir_path(dirname( __FILE__ )) . sprintf(
+                'email/templates/form-builder/blocks/repeaters/%s-repeater.html',
+                $options["type"]
+            );
+
+        $repeaterTemplate = file_get_contents($path);
+        if (!$repeaterTemplate || $repeaterTemplate === '') {
+            return "{repeater_template_error}";
+        }
+        $dataArray = json_decode($options["data"], true);
+
+        $repeaterHtml = "";
+        foreach ($dataArray as $label => $value) {
+            $template = $repeaterTemplate;
+            $itemHtml = str_replace("###LABEL###", ucfirst($label), $template);
+            $itemHtml = str_replace("###VALUE###", $value, $itemHtml);
+
+            $repeaterHtml .= $itemHtml;
+        }
+        return $repeaterHtml;
+    }
 
 	private function getDefaultTemplateVariables() {
 		$date        = new DateTime();

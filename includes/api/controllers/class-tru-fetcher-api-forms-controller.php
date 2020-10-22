@@ -95,23 +95,29 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 	    if (is_wp_error($validateRequest)) {
             return $validateRequest;
         }
+	    $dataArray = $request->get_params();
+        foreach ($dataArray as $key => $item) {
+            if (in_array($key, $requiredFields)) {
+                unset($dataArray[$key]);
+            }
+        }
 
         $sendEmail = $this->emailManager->sendEmail(
             $this->replaceDataPlaceholders($request["recipient"], $request->get_params()),
             $this->replaceDataPlaceholders($request["subject"], $request->get_params()),
             "form-builder/email-endpoint-template",
             [
-
+                "DATA_ARRAY" => $dataArray
             ]
         );
         if (!$sendEmail) {
             return $this->showError(
                 "send_email_error",
-                "There was an error sending the password reset to your email. Please try again."
+                "Sorry, There was an error when submitting the form. Please try again."
             );
         }
         return $this->sendResponse(
-            "An email has been sent to your inbox (%s). Please follow the instructions.",
+            "The form has been successfully submitted.",
                 []
         );
 	}
