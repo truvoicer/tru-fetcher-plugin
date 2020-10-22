@@ -73,9 +73,9 @@
                     "maxlength": ""
                 },
                 {
-                    "key": "field_5f8ebbf1903c0",
-                    "label": "Classes",
-                    "name": "classes",
+                    "key": "field_5f90bc9a78d18",
+                    "label": "Label",
+                    "name": "label",
                     "type": "text",
                     "instructions": "",
                     "required": 0,
@@ -96,6 +96,26 @@
                     "key": "field_5f8eb7fc7066e",
                     "label": "Placeholder",
                     "name": "placeholder",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": ""
+                },
+                {
+                    "key": "field_5f8ebbf1903c0",
+                    "label": "Classes",
+                    "name": "classes",
                     "type": "text",
                     "instructions": "",
                     "required": 0,
@@ -402,26 +422,6 @@
                     "endpoint": 0
                 },
                 {
-                    "key": "field_5f8eba7e8f2f9",
-                    "label": "Endpoint",
-                    "name": "endpoint",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "30",
-                        "class": "",
-                        "id": ""
-                    },
-                    "show_in_graphql": 1,
-                    "default_value": "",
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": "",
-                    "maxlength": ""
-                },
-                {
                     "key": "field_5f8ebc91ed860",
                     "label": "Method",
                     "name": "method",
@@ -506,6 +506,162 @@
                     "prepend": "",
                     "append": "",
                     "maxlength": ""
+                },
+                {
+                    "key": "field_5f9072cadf7b6",
+                    "label": "Endpoint Settings",
+                    "name": "",
+                    "type": "tab",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "placement": "top",
+                    "endpoint": 0
+                },
+                {
+                    "key": "field_5f8eba7e8f2f9",
+                    "label": "Endpoint",
+                    "name": "endpoint",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "choices": {
+                        "email": "Email",
+                        "custom": "Custom"
+                    },
+                    "default_value": "email",
+                    "allow_null": 0,
+                    "multiple": 0,
+                    "ui": 0,
+                    "return_format": "value",
+                    "ajax": 0,
+                    "placeholder": ""
+                },
+                {
+                    "key": "field_5f9072f4df7b7",
+                    "label": "Custom Endpoint",
+                    "name": "custom_endpoint",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_5f8eba7e8f2f9",
+                                "operator": "==",
+                                "value": "custom"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "30",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": ""
+                },
+                {
+                    "key": "field_5f90732ddf7b8",
+                    "label": "Email",
+                    "name": "email",
+                    "type": "group",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_5f8eba7e8f2f9",
+                                "operator": "==",
+                                "value": "email"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "80",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "layout": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_5f907352df7b9",
+                            "label": "Recipient",
+                            "name": "recipient",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_5f9073bedf7ba",
+                            "label": "Subject",
+                            "name": "subject",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_5f9073d9df7bb",
+                            "label": "From",
+                            "name": "from",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        }
+                    ]
                 },
                 {
                     "key": "field_5f8f03a3a900e",
@@ -702,5 +858,5 @@
     "description": "",
     "show_in_graphql": 0,
     "graphql_field_name": "form_builder",
-    "modified": 1603210944
+    "modified": 1603321079
 }

@@ -65,6 +65,8 @@ class Tru_Fetcher_Email {
 		if ( ! $getTemplate ) {
 			return false;
 		}
+		var_dump($to, $subject);
+		return false;
 		$emailContent = $this->filterEmailContent( $getTemplate, array_merge($this->defaultTemplateVariables, $templateVars) );
 
 		return wp_mail( $to, $subject, $emailContent );

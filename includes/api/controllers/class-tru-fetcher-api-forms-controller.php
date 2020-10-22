@@ -51,26 +51,69 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 	}
 
 	public function register_routes() {
-		register_rest_route( $this->protectedEndpoint, '/contact-us', array(
+		register_rest_route( $this->publicEndpoint, '/email', array(
 			'methods'             => WP_REST_Server::CREATABLE,
-			'callback'            => [ $this, "contactForm" ],
+			'callback'            => [ $this, "emailFormEndpoint" ],
 			'permission_callback' => '__return_true'
 		) );
 	}
 
+	private function replaceDataPlaceholders($dataValue, $replaceArray = []) {
+        if (preg_match_all('~\{(.*?)\}~', $dataValue, $output)) {
+            foreach ($output[1] as $key => $value) {
+                $filterReservedParam = $this->getPlaceholderValue($output[1][$key]);
+                if ($filterReservedParam) {
+                    $dataValue = str_replace($output[0][$key], $filterReservedParam, $dataValue, $count);
+                }
+                if (isset($replaceArray[$output[1][$key]])) {
+                    $dataValue = str_replace($output[0][$key], $replaceArray[$output[1][$key]], $dataValue);
+                }
+            }
+        }
+	    return $dataValue;
+    }
 
-	public function contactForm( $request ) {
-        $requiredFields = ["name", "email", "message"];
+    private function getPlaceholderValue($value)
+    {
+        switch ($value) {
+            case "blog_email":
+            case "admin_email":
+            case "site_email":
+                return get_option("admin_email");
+            case "blog_name":
+                return get_option("blogname");
+            case "site_url":
+                return get_option("siteurl");
+            default:
+                return false;
+        }
+    }
+
+	public function emailFormEndpoint( WP_REST_Request $request ) {
+        $requiredFields = ["from", "subject", "recipient"];
 	    $validateRequest = $this->validateRequestFields($request, $requiredFields);
 	    if (is_wp_error($validateRequest)) {
             return $validateRequest;
         }
 
-        $this->emailManager->sendEmail(
+        $sendEmail = $this->emailManager->sendEmail(
+            $this->replaceDataPlaceholders($request["recipient"], $request->get_params()),
+            $this->replaceDataPlaceholders($request["subject"], $request->get_params()),
+            "form-builder/email-endpoint-template",
+            [
 
+            ]
         );
-
-        return $this->sendResponse("Successfully created comment", get_comment($newComment));
+        if (!$sendEmail) {
+            return $this->showError(
+                "send_email_error",
+                "There was an error sending the password reset to your email. Please try again."
+            );
+        }
+        return $this->sendResponse(
+            "An email has been sent to your inbox (%s). Please follow the instructions.",
+                []
+        );
 	}
 
 

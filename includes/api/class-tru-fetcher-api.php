@@ -31,6 +31,7 @@ class Tru_Fetcher_Api {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'api/controllers/class-tru-fetcher-api-page-controller.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'api/controllers/class-tru-fetcher-api-user-controller.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'api/controllers/class-tru-fetcher-api-comments-controller.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'api/controllers/class-tru-fetcher-api-forms-controller.php';
 	}
 
 	public function init() {
@@ -50,5 +51,7 @@ class Tru_Fetcher_Api {
 		$userController->init();
 		$commentsController = new Tru_Fetcher_Api_Comments_Controller();
         $commentsController->init();
+		$formsController = new Tru_Fetcher_Api_Forms_Controller();
+        $formsController->init();
 	}
 }
