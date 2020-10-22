@@ -213,6 +213,13 @@ class Tru_Fetcher {
 		return get_fields( "option" );
 	}
 
+    public static function isNotEmpty(string $string = null) {
+        if (isset( $string ) && $string !== "") {
+            return true;
+        }
+        return false;
+    }
+
 	private function load_graphql() {
 		$truFetcherGraphql = new Tru_Fetcher_GraphQl();
 		$truFetcherGraphql->init();

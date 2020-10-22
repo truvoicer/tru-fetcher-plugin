@@ -37,6 +37,22 @@
             "placeholder": ""
         },
         {
+            "key": "field_5f91f704b81dc",
+            "label": "Api Settings",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
             "key": "field_5f82e04d150a9",
             "label": "API Url",
             "name": "api_url",
@@ -52,6 +68,26 @@
             "show_in_graphql": 1,
             "default_value": "",
             "placeholder": ""
+        },
+        {
+            "key": "field_5f91f717b81dd",
+            "label": "Api Key",
+            "name": "api_key",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "30",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
         },
         {
             "key": "field_5f82dfb2479be",
@@ -306,5 +342,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "tru_fetcher_settings_page",
-    "modified": 1603017107
+    "modified": 1603401508
 }

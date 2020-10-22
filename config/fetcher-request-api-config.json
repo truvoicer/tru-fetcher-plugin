@@ -1,0 +1,7 @@
+{
+  "baseUrl": "",
+  "endpoints": {
+    "serviceList": "/services",
+    "serviceResponseKeyList": "/service/response/key/list"
+  }
+}
