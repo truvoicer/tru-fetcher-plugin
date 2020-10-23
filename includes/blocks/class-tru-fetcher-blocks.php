@@ -65,7 +65,9 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base {
             else if (array_key_exists($field->post_type, self::REPLACEABLE_POST_TYPES)) {
                 $getFields = get_fields($field->ID);
                 if ($getFields && isset($getFields[self::REPLACEABLE_POST_TYPES[$field->post_type]])) {
-                    $fields[$key] = $this->replacePostTypes($getFields[self::REPLACEABLE_POST_TYPES[$field->post_type]]);
+                    $fields[$key] = [];
+                    $fields[$key]["data"] = $this->replacePostTypes($getFields[self::REPLACEABLE_POST_TYPES[$field->post_type]]);
+                    $fields[$key]["post_type"] = $field;
                 } else {
                     $fields[$key] = $field;
                 }

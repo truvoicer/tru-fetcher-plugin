@@ -802,7 +802,7 @@
             "collapsed": "",
             "min": 0,
             "max": 0,
-            "layout": "table",
+            "layout": "row",
             "button_label": "",
             "sub_fields": [
                 {
@@ -837,6 +837,10 @@
                     "show_in_graphql": 1,
                     "choices": {
                         "text": "Text",
+                        "html": "HTML",
+                        "number": "Number",
+                        "date": "Date",
+                        "true_false": "True \/ False",
                         "image": "Image",
                         "array": "Array"
                     },
@@ -875,6 +879,118 @@
                     "maxlength": "",
                     "rows": 2,
                     "new_lines": ""
+                },
+                {
+                    "key": "field_5f92c2e36efd3",
+                    "label": "Data Item Date",
+                    "name": "data_item_date",
+                    "type": "date_picker",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_5f921ecc32585",
+                                "operator": "==",
+                                "value": "date"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "60",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "display_format": "j F Y",
+                    "return_format": "j F Y",
+                    "first_day": 1
+                },
+                {
+                    "key": "field_5f92c27a902bb",
+                    "label": "Data Item True \/ False",
+                    "name": "data_item_true_false",
+                    "type": "true_false",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_5f921ecc32585",
+                                "operator": "==",
+                                "value": "true_false"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "60",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "message": "",
+                    "default_value": 0,
+                    "ui": 1,
+                    "ui_on_text": "True",
+                    "ui_off_text": "False"
+                },
+                {
+                    "key": "field_5f92c1c56434c",
+                    "label": "Data Item Number",
+                    "name": "data_item_number",
+                    "type": "number",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_5f921ecc32585",
+                                "operator": "==",
+                                "value": "number"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "60",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "min": "",
+                    "max": "",
+                    "step": ""
+                },
+                {
+                    "key": "field_5f92c1916434b",
+                    "label": "Data Item HTML",
+                    "name": "data_item_html",
+                    "type": "wysiwyg",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_5f921ecc32585",
+                                "operator": "==",
+                                "value": "html"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "60",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "default_value": "",
+                    "tabs": "all",
+                    "toolbar": "full",
+                    "media_upload": 1,
+                    "delay": 1
                 },
                 {
                     "key": "field_5f921f1032586",
@@ -1018,5 +1134,5 @@
     "description": "",
     "show_in_graphql": 0,
     "graphql_field_name": "global_fields",
-    "modified": 1603419071
+    "modified": 1603454284
 }

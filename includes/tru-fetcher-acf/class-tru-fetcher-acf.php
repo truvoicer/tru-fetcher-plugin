@@ -85,6 +85,7 @@ class Tru_Fetcher_Acf {
 
     public static function buildResponseKeysSelectList(array $responseKeysArray = []) {
 	    $selectArray = [];
+	    $selectArray["provider"] = "provider";
 	    foreach ($responseKeysArray as $item) {
 	        $selectArray[$item->key_value] = $item->key_value;
         }
