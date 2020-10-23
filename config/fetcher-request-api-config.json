@@ -1,7 +1,7 @@
 {
   "baseUrl": "",
   "endpoints": {
-    "serviceList": "/services",
-    "serviceResponseKeyList": "/service/response/key/list"
+    "serviceList": "/api/services",
+    "serviceResponseKeyList": "/api/service/response/key/list"
   }
 }
