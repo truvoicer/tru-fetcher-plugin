@@ -24,7 +24,8 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base {
 
     const REPLACEABLE_POST_TYPES = [
         "fetcher_items_lists" => "items_data",
-        "filter_lists" => "list_items"
+        "filter_lists" => "list_items",
+        "fetcher_single_item" => "data_keys"
     ];
 
     public function blocks_init() {
@@ -64,7 +65,7 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base {
             else if (array_key_exists($field->post_type, self::REPLACEABLE_POST_TYPES)) {
                 $getFields = get_fields($field->ID);
                 if ($getFields && isset($getFields[self::REPLACEABLE_POST_TYPES[$field->post_type]])) {
-                    $fields[$key] = $getFields[self::REPLACEABLE_POST_TYPES[$field->post_type]];
+                    $fields[$key] = $this->replacePostTypes($getFields[self::REPLACEABLE_POST_TYPES[$field->post_type]]);
                 } else {
                     $fields[$key] = $field;
                 }

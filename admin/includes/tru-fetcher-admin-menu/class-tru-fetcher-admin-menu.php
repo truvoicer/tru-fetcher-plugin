@@ -59,13 +59,18 @@ class Tru_Fetcher_Admin_Menu {
 		add_action( 'admin_menu', [ $this, 'add_admin_menus' ] );
 	}
 
+	public function adminMenuDashboard() {
+	    echo "<h1>TRU FETCHER API ADMIN</h1>";
+        return "<h1>TRU FETCHER API ADMIN</h1>";
+    }
+
 	public function add_admin_menus() {
 		add_menu_page(
 			$this->parentMenuPageTitle,
 			$this->parentMenuTitle,
 			$this->parentMenuCapability,
 			$this->parentMenuSlug,
-			'my_menu_function',
+			[$this, "adminMenuDashboard"],
 			"",
 			2
 		);
