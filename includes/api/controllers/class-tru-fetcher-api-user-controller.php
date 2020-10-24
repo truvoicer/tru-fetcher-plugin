@@ -350,20 +350,32 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
 
 		$dbClass = new Tru_Fetcher_Database();
 		$where   = "user_id=%s";
-		$getList = $dbClass->getResults(
+        $getResults = $dbClass->getResults(
 			Tru_Fetcher_Database::SAVED_ITEMS_TABLE_NAME,
 			$where,
 			$data["user_id"]
 		);
 
+        if (isset($request["internal_provider_name"])) {
+            $internalProviderName = $request["internal_provider_name"];
+            $getResults = array_map(function ($item) use($internalProviderName) {
+                if ($internalProviderName !== $item->provider_name) {
+                    return $item;
+                }
+                $item->data = get_fields((int)$item->item_id);
+                return $item;
+            }, $getResults);
+        }
+
 		return $this->sendResponse(
 			$this->buildResponseObject( self::STATUS_SUCCESS,
 				"",
-				$getList )
+                $getResults )
 		);
 	}
 
 	public function getItemListData( $request ) {
+
 		$getSavedItems  = $this->getSavedItemsData(
 			$request["provider_name"],
 			$request["category"],
@@ -388,6 +400,9 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
 		);
 	}
 	private function getSavedItemsData($providerName, $category, $idList, $user_id) {
+        if (count($idList) === 0) {
+            return [];
+        }
 		$dbClass      = new Tru_Fetcher_Database();
 		$placeholders = "(" . $this->getStringCount( $idList, "%s" ) . ")";
 		$where        = "provider_name=%s AND category=%s AND user_id=%s AND item_id IN $placeholders";
@@ -399,6 +414,9 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
 		);
 	}
 	private function getRatingsData($providerName, $category, $idList, $user_id) {
+        if (count($idList) === 0) {
+            return [];
+        }
 		$dbClass      = new Tru_Fetcher_Database();
 		$getRatings = [];
 		foreach ($idList as $item) {
