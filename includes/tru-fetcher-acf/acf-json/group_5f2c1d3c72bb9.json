@@ -28,6 +28,56 @@
             "mime_types": ""
         },
         {
+            "key": "field_5f957239a2d1f",
+            "label": "Hero Background Image 2",
+            "name": "hero_background_image_2",
+            "type": "image",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "30",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "return_format": "url",
+            "preview_size": "thumbnail",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": ""
+        },
+        {
+            "key": "field_5f9574c4c8ae0",
+            "label": "Hero Background Image 3",
+            "name": "hero_background_image_3",
+            "type": "image",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "return_format": "url",
+            "preview_size": "thumbnail",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": ""
+        },
+        {
             "key": "field_5f945c7d4b76d",
             "label": "Hero Type",
             "name": "hero_type",
@@ -170,7 +220,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "75",
                 "class": "",
                 "id": ""
             },
@@ -243,5 +293,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "hero_block",
-    "modified": 1603581295
+    "modified": 1603630326
 }
