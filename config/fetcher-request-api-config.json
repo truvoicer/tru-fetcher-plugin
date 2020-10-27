@@ -1,6 +1,9 @@
 {
   "baseUrl": "",
   "endpoints": {
+    "providerList": "/api/providers",
+    "categoryList": "/api/categories",
+    "categoryProvidersList": "/api/category/%s/providers",
     "serviceList": "/api/services",
     "serviceResponseKeyList": "/api/service/response/key/list"
   }

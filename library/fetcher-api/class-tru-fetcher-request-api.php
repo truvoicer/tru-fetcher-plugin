@@ -100,34 +100,21 @@ if (!class_exists('Tru_Fetcher_Request_Api')) :
             }
         }
 
-        public function getServices()
-        {
-            $getServices = $this->sendApiRequest($this->apiConfig->endpoints->serviceList, "GET");
-            if (is_wp_error($getServices)) {
-                return $getServices;
+        public function getApiDataList(string $endpoint = null, array $args = [], array $requestData = []) {
+            if ($endpoint === null) {
+                return false;
             }
-            if ($getServices->status !== "success") {
-                return new WP_Error("api_response_error", "Error from Api", $getServices->data);
+            if (!isset($this->apiConfig->endpoints->$endpoint)) {
+                return false;
             }
-            return $getServices->data;
-        }
-
-        public function getServiceResponseKeys(int $serviceId)
-        {
-            $requestData = [
-                "count" => 1000,
-                "order" => "asc",
-                "sort" => "key_name",
-                "service_id" => $serviceId
-            ];
-            $getResponseKeys = $this->sendApiRequest($this->apiConfig->endpoints->serviceResponseKeyList, "GET", $requestData);
-            if (is_wp_error($getResponseKeys)) {
-                return $getResponseKeys;
+            $getData = $this->sendApiRequest(sprintf($this->apiConfig->endpoints->$endpoint, ...$args), "GET", $requestData);
+            if (is_wp_error($getData)) {
+                return $getData;
             }
-            if ($getResponseKeys->status !== "success") {
-                return new WP_Error("api_response_error", "Error from Api", $getResponseKeys->data);
+            if ($getData->status !== "success") {
+                return new WP_Error("api_response_error", "Error from Api", $getData->data);
             }
-            return $getResponseKeys->data;
+            return $getData->data;
         }
     }
 endif;

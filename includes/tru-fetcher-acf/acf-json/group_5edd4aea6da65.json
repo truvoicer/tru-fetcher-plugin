@@ -6,7 +6,7 @@
             "key": "field_5f0c1c43f892a",
             "label": "Listing Block Category",
             "name": "listing_block_category",
-            "type": "taxonomy",
+            "type": "API_CATEGORY",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -15,14 +15,74 @@
                 "class": "",
                 "id": ""
             },
-            "taxonomy": "listings_categories",
-            "field_type": "radio",
-            "allow_null": 0,
-            "add_term": 1,
-            "save_terms": 0,
-            "load_terms": 0,
-            "return_format": "object",
-            "multiple": 0
+            "show_in_graphql": 1,
+            "fetcher_api_category": ""
+        },
+        {
+            "key": "field_5f9741b4a9d9a",
+            "label": "Select Providers",
+            "name": "select_providers",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "20",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "message": "",
+            "default_value": 1,
+            "ui": 0,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        },
+        {
+            "key": "field_5f97424ba9d9b",
+            "label": "Provider List",
+            "name": "provider_list",
+            "type": "repeater",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_5f9741b4a9d9a",
+                        "operator": "==",
+                        "value": "1"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "80",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "collapsed": "",
+            "min": 0,
+            "max": 0,
+            "layout": "table",
+            "button_label": "Add Provider",
+            "sub_fields": [
+                {
+                    "key": "field_5f97426ea9d9c",
+                    "label": "Provider",
+                    "name": "provider",
+                    "type": "API_PROVIDER",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "fetcher_api_provider": ""
+                }
+            ]
         },
         {
             "key": "field_5ee2549d8ac13",
@@ -873,7 +933,7 @@
         ]
     ],
     "menu_order": 0,
-    "position": "side",
+    "position": "acf_after_title",
     "style": "default",
     "label_placement": "top",
     "instruction_placement": "label",
@@ -882,5 +942,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "listings_block",
-    "modified": 1603581402
+    "modified": 1603831921
 }

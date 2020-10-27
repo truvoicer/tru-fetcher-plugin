@@ -8,11 +8,8 @@ if (!defined('ABSPATH')) exit;
 if (!class_exists('Tru_Fetcher_Acf_Field_Api_Data_Keys')) :
 
 
-    class Tru_Fetcher_Acf_Field_Api_Data_Keys extends acf_field
+    class Tru_Fetcher_Acf_Field_Api_Data_Keys extends Tru_Fetcher_Acf_Field_Base
     {
-
-        private $apiConfig;
-        private Tru_Fetcher_Request_Api $fetcherApi;
 
         /*
         *  __construct
@@ -68,18 +65,8 @@ if (!class_exists('Tru_Fetcher_Acf_Field_Api_Data_Keys')) :
                 'error' => __('Error! Please enter a higher value', 'TEXTDOMAIN'),
             );
 
-
-            /*
-            *  settings (array) Store plugin settings (url, path, version) as a reference for later use with assets
-            */
-
-            $this->settings = $settings;
-
-            $this->apiConfig = Tru_Fetcher_Base::getConfig("fetcher-request-api-config");
-            $this->fetcherApi = new Tru_Fetcher_Request_Api();
-
             // do not delete!
-            parent::__construct();
+            parent::__construct($settings);
 
         }
 
@@ -108,7 +95,7 @@ if (!class_exists('Tru_Fetcher_Acf_Field_Api_Data_Keys')) :
             *  More than one setting can be added by copy/paste the above code.
             *  Please note that you must also have a matching $defaults value for the field name (font_size)
             */
-            $services = $this->fetcherApi->getServices();
+            $services = $this->fetcherApi->getApiDataList("serviceList");
             if (is_wp_error($services)) {
                 return false;
             }
@@ -118,7 +105,7 @@ if (!class_exists('Tru_Fetcher_Acf_Field_Api_Data_Keys')) :
                 'instructions' => __('Select a fetcher api service.', 'TEXTDOMAIN'),
                 'type' => 'select',
                 'name' => 'fetcher_api_service_id',
-                'choices' => Tru_Fetcher_Acf::buildServicesSelectList($services)
+                'choices' => $this->buildSelectList("id", "service_label", $services)
             ));
 
         }
@@ -142,14 +129,26 @@ if (!class_exists('Tru_Fetcher_Acf_Field_Api_Data_Keys')) :
         function render_field($field)
         {
 
-            $responseKeys = $this->fetcherApi->getServiceResponseKeys($field["fetcher_api_service_id"]);
+            $responseKeys = $this->fetcherApi->getApiDataList(
+                "serviceResponseKeyList",
+                [],
+                [
+                    "count" => 1000,
+                    "order" => "asc",
+                    "sort" => "key_name",
+                    "service_id" => $field["fetcher_api_service_id"]
+                ]
+            );
             if (is_wp_error($responseKeys)) {
                 return false;
             }
 
             // convert
             $value = acf_get_array($field['value']);
-            $choices = acf_get_array(Tru_Fetcher_Acf::buildResponseKeysSelectList($responseKeys));
+            $choices = acf_get_array($this->buildSelectList(
+                "key_value",
+                "key_value",
+                $responseKeys));
 
 
             // placeholder

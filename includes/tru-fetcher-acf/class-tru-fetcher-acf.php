@@ -24,6 +24,11 @@ require_once(plugin_dir_path( __FILE__ ) . '../../library/fetcher-api/class-tru-
  */
 class Tru_Fetcher_Acf {
 
+    const ACF_FIELDS = [
+        "api-data-keys",
+        "api-category",
+        "api-provider"
+    ];
     private string $jsonPathDir;
     public array $settings;
 
@@ -71,23 +76,13 @@ class Tru_Fetcher_Acf {
         // load textdomain
 //        load_plugin_textdomain( 'TEXTDOMAIN', false, plugin_basename( dirname( __FILE__ ) ) . '/lang' );
 
+        include_once('fields/class-tru-fetcher-acf-field-base.php');
         // include
-        include_once('fields/class-tru-fetcher-acf-field-api-data-keys-v' . $version . '.php');
+        foreach (self::ACF_FIELDS as $fieldName) {
+            if (isset($fieldName) && $fieldName !== "") {
+                include_once(sprintf('fields/class-tru-fetcher-acf-field-%s-v%d.php', $fieldName, $version));
+            }
+        }
     }
 
-    public static function buildServicesSelectList(array $servicesArray = []) {
-	    $selectArray = [];
-	    foreach ($servicesArray as $item) {
-	        $selectArray[$item->id] = $item->service_label;
-        }
-	    return $selectArray;
-    }
-
-    public static function buildResponseKeysSelectList(array $responseKeysArray = []) {
-	    $selectArray = [];
-	    foreach ($responseKeysArray as $item) {
-	        $selectArray[$item->key_value] = $item->key_value;
-        }
-	    return $selectArray;
-    }
 }
