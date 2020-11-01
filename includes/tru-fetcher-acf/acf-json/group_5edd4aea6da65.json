@@ -3,6 +3,32 @@
     "title": "Listings Block",
     "fields": [
         {
+            "key": "field_5f9e8ad0fcf5f",
+            "label": "Listing Block Type",
+            "name": "listing_block_type",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "20",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "choices": {
+                "search": "Search",
+                "blog": "Blog"
+            },
+            "default_value": "search",
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 1,
+            "ajax": 0,
+            "return_format": "value",
+            "placeholder": ""
+        },
+        {
             "key": "field_5f0c1c43f892a",
             "label": "Listing Block Category",
             "name": "listing_block_category",
@@ -11,11 +37,10 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "30",
                 "class": "",
                 "id": ""
             },
-            "show_in_graphql": 1,
             "fetcher_api_category": ""
         },
         {
@@ -942,5 +967,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "listings_block",
-    "modified": 1603831921
+    "modified": 1604225892
 }
