@@ -37,6 +37,21 @@
             "placeholder": ""
         },
         {
+            "key": "field_5f9f2a6c33a2d",
+            "label": "Default Api Service",
+            "name": "default_api_service",
+            "type": "API_SERVICE",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "30",
+                "class": "",
+                "id": ""
+            },
+            "fetcher_api_service": ""
+        },
+        {
             "key": "field_5f91f704b81dc",
             "label": "Api Settings",
             "name": "",
@@ -342,5 +357,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "tru_fetcher_settings_page",
-    "modified": 1603401508
+    "modified": 1604267118
 }

@@ -5,39 +5,26 @@ if (!defined('ABSPATH')) exit;
 
 
 // check if class already exists
-if (!class_exists('Tru_Fetcher_Acf_Field_Api_Data_Keys')) :
+if (!class_exists('Tru_Fetcher_Acf_Field_Api_Service')) :
 
-
-    class Tru_Fetcher_Acf_Field_Api_Data_Keys extends Tru_Fetcher_Acf_Field_Base
+    class Tru_Fetcher_Acf_Field_Api_Service extends Tru_Fetcher_Acf_Field_Base
     {
-
-        /*
-        *  __construct
-        *
-        *  This function will setup the field type data
-        *
-        *  @type	function
-        *  @date	5/03/2014
-        *  @since	5.0.0
-        *
-        *  @param	n/a
-        *  @return	n/a
-        */
 
         function __construct($settings)
         {
+
             /*
             *  name (string) Single word, no spaces. Underscores allowed
             */
 
-            $this->name = 'API_DATA_KEYS';
+            $this->name = 'API_SERVICE';
 
 
             /*
             *  label (string) Multiple words, can include spaces, visible when selecting a field type
             */
 
-            $this->label = __('Api Data Keys', 'TEXTDOMAIN');
+            $this->label = __('Api Service', 'TEXTDOMAIN');
 
 
             /*
@@ -52,7 +39,7 @@ if (!class_exists('Tru_Fetcher_Acf_Field_Api_Data_Keys')) :
             */
 
             $this->defaults = array(
-                'font_size' => 14,
+                'fetcher_api_service' => "",
             );
 
 
@@ -67,6 +54,34 @@ if (!class_exists('Tru_Fetcher_Acf_Field_Api_Data_Keys')) :
 
             // do not delete!
             parent::__construct($settings);
+
+        }
+
+        /*
+        *  render_field_settings()
+        *
+        *  Create extra settings for your field. These are visible when editing a field
+        *
+        *  @type	action
+        *  @since	3.6
+        *  @date	23/01/13
+        *
+        *  @param	$field (array) the $field being edited
+        *  @return	n/a
+        */
+
+        function render_field_settings($field)
+        {
+
+            /*
+            *  acf_render_field_setting
+            *
+            *  This function will create a setting for your field. Simply pass the $field parameter and an array of field settings.
+            *  The array of settings does not require a `value` or `prefix`; These settings are found from the $field array.
+            *
+            *  More than one setting can be added by copy/paste the above code.
+            *  Please note that you must also have a matching $defaults value for the field name (font_size)
+            */
 
         }
 
@@ -88,30 +103,18 @@ if (!class_exists('Tru_Fetcher_Acf_Field_Api_Data_Keys')) :
 
         function render_field($field)
         {
-            if (!isset(Tru_Fetcher::getTruFetcherSettings()["default_api_service"])) {
-                return false;
-            }
 
-            $responseKeys = $this->fetcherApi->getApiDataList(
-                "serviceResponseKeyList",
-                [],
-                [
-                    "count" => 1000,
-                    "order" => "asc",
-                    "sort" => "key_name",
-                    "service_id" => Tru_Fetcher::getTruFetcherSettings()["default_api_service"]
-                ]
-            );
-            if (is_wp_error($responseKeys)) {
+            $servicesList = $this->fetcherApi->getApiDataList("serviceList");
+            if (is_wp_error($servicesList)) {
                 return false;
             }
 
             // convert
             $value = acf_get_array($field['value']);
             $choices = acf_get_array($this->buildSelectList(
-                "key_value",
-                "key_value",
-                $responseKeys));
+                "id",
+                "service_label",
+                $servicesList));
 
 
             // placeholder
@@ -143,13 +146,10 @@ if (!class_exists('Tru_Fetcher_Acf_Field_Api_Data_Keys')) :
             // render
             acf_select_input( $select );
         }
-
     }
 
-// initialize
-    new Tru_Fetcher_Acf_Field_Api_Data_Keys($this->settings);
+    new Tru_Fetcher_Acf_Field_Api_Service($this->settings);
 
-// class_exists check
 endif;
 
 ?>

@@ -23,6 +23,28 @@
             "layout": "block",
             "prefix_label": 0,
             "prefix_name": 0
+        },
+        {
+            "key": "field_5f9f42db84812",
+            "label": "Custom Item Options",
+            "name": "custom_item_options",
+            "type": "clone",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "clone": [
+                "field_5f923a80655b0"
+            ],
+            "display": "seamless",
+            "layout": "block",
+            "prefix_label": 0,
+            "prefix_name": 0
         }
     ],
     "location": [
@@ -44,5 +66,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "single_item",
-    "modified": 1603476965
+    "modified": 1604272934
 }

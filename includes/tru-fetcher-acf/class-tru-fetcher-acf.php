@@ -27,6 +27,7 @@ class Tru_Fetcher_Acf {
     const ACF_FIELDS = [
         "api-data-keys",
         "api-category",
+        "api-service",
         "api-provider"
     ];
     private string $jsonPathDir;
@@ -45,7 +46,6 @@ class Tru_Fetcher_Acf {
         add_action('acf/include_field_types', [$this, 'includeField']); // v5
         add_filter('acf/settings/save_json', [$this, "saveAcfConfigJson"]);
         add_filter('acf/settings/load_json', [$this, "loadAcfConfigJson"]);
-
     }
 
     public function saveAcfConfigJson($path) {

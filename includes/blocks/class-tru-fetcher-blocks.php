@@ -20,25 +20,28 @@
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Blocks extends Tru_Fetcher_Base {
+class Tru_Fetcher_Blocks extends Tru_Fetcher_Base
+{
 
     const REPLACEABLE_POST_TYPES = [
         "fetcher_items_lists" => "items_data",
         "filter_lists" => "list_items",
-        "fetcher_single_item" => "data_keys"
+        "fetcher_single_item" => ["data_keys", "custom_item_options"]
     ];
 
-    public function blocks_init() {
+    public function blocks_init()
+    {
         $this->registerBlocks();
     }
 
     public function registerBlocks()
     {
-		$this->directoryIncludes( 'blocks/register-blocks', 'acf-register.php' );
+        $this->directoryIncludes('blocks/register-blocks', 'acf-register.php');
     }
 
-    public function getBlockData($block) {
-        acf_setup_meta( $block['data'], $block['id'], true );
+    public function getBlockData($block)
+    {
+        acf_setup_meta($block['data'], $block['id'], true);
         $fields = get_fields();
         if (!$fields) {
             return [];
@@ -46,7 +49,8 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base {
         return $this->replacePostTypes($fields);
     }
 
-    public function getBlockDataJson($data) {
+    public function getBlockDataJson($data)
+    {
         $dataJson = json_encode($data);
         if (!$dataJson) {
             return false;
@@ -54,38 +58,65 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base {
         return htmlentities($dataJson, ENT_QUOTES, 'UTF-8');
     }
 
-    public function replacePostTypes($fields) {
+    public function replacePostTypes($fields)
+    {
         foreach ($fields as $key => $field) {
             if (is_array($field)) {
                 $fields[$key] = $this->replacePostTypes($field);
-            }
-            else if (!$field instanceof WP_Post) {
+            } else if (!$field instanceof WP_Post) {
                 $fields[$key] = $field;
-            }
-            else if (array_key_exists($field->post_type, self::REPLACEABLE_POST_TYPES)) {
+            } else if (array_key_exists($field->post_type, self::REPLACEABLE_POST_TYPES)) {
                 $getFields = get_fields($field->ID);
-                if ($getFields && isset($getFields[self::REPLACEABLE_POST_TYPES[$field->post_type]])) {
+                $fieldNames = self::REPLACEABLE_POST_TYPES[$field->post_type];
+
+                if (is_array($fieldNames)) {
                     $fields[$key] = [];
-                    $fields[$key]["data"] = $this->replacePostTypes($getFields[self::REPLACEABLE_POST_TYPES[$field->post_type]]);
+                    $getSubPostTypeArray = $this->replaceSubPostTypeArray($fieldNames, $getFields);
+                    if (!$getSubPostTypeArray) {
+                        $fields[$key] = [$field];
+                        continue;
+                    }
+                    $fields[$key]["data"] = $getSubPostTypeArray;
                     $fields[$key]["post_type"] = $field;
+
+                } else if ($getFields && isset($getFields[self::REPLACEABLE_POST_TYPES[$field->post_type]])) {
+                        $fields[$key] = [];
+                        $fields[$key]["post_type"] = $field;
+                        $fields[$key]["data"] = $this->replacePostTypes($getFields[$fieldNames]);
                 } else {
                     $fields[$key] = $field;
                 }
+
             }
 
         }
         return $fields;
     }
 
-    private function directoryIncludes( $pathName, $fileName ) {
-        $dir = new DirectoryIterator( plugin_dir_path( dirname( __FILE__ ) ) . $pathName );
-        foreach ( $dir as $fileinfo ) {
-            if ( $fileinfo->isDot() ) {
+    private function replaceSubPostTypeArray($fieldNames, $getFields)
+    {
+        if (!$getFields) {
+            return false;
+        }
+        $array = [];
+        foreach ($fieldNames as $fieldName) {
+            if ($getFields && isset($getFields[$fieldName])) {
+                $array = array_merge($array, $this->replacePostTypes($getFields[$fieldName]));
+            }
+        }
+        return $array;
+    }
+
+    private function directoryIncludes($pathName, $fileName)
+    {
+        $dir = new DirectoryIterator(plugin_dir_path(dirname(__FILE__)) . $pathName);
+        foreach ($dir as $fileinfo) {
+            if ($fileinfo->isDot()) {
                 continue;
             }
             $fileDir = $fileinfo->getRealPath() . '/' . $fileName;
             if (file_exists($fileDir)) {
-                require_once( $fileDir );
+                require_once($fileDir);
             }
         }
     }

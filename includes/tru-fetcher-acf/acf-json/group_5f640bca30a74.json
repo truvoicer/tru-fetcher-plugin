@@ -842,6 +842,7 @@
                         "date": "Date",
                         "true_false": "True \/ False",
                         "image": "Image",
+                        "image_list": "Image List",
                         "array": "Array"
                     },
                     "default_value": "text",
@@ -1063,6 +1064,61 @@
                     ]
                 },
                 {
+                    "key": "field_5f9f364ad5f5f",
+                    "label": "Data Item Image List",
+                    "name": "data_item_image_list",
+                    "type": "repeater",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_5f921ecc32585",
+                                "operator": "==",
+                                "value": "image_list"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "60",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "collapsed": "",
+                    "min": 0,
+                    "max": 0,
+                    "layout": "table",
+                    "button_label": "",
+                    "sub_fields": [
+                        {
+                            "key": "field_5f9f3a81a0421",
+                            "label": "Url",
+                            "name": "url",
+                            "type": "image",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "return_format": "url",
+                            "preview_size": "thumbnail",
+                            "library": "all",
+                            "min_width": "",
+                            "min_height": "",
+                            "min_size": "",
+                            "max_width": "",
+                            "max_height": "",
+                            "max_size": "",
+                            "mime_types": ""
+                        }
+                    ]
+                },
+                {
                     "key": "field_5f922f41ab3c7",
                     "label": "Data Item Image",
                     "name": "data_item_image",
@@ -1196,5 +1252,5 @@
     "description": "",
     "show_in_graphql": 0,
     "graphql_field_name": "global_fields",
-    "modified": 1603630528
+    "modified": 1604270744
 }

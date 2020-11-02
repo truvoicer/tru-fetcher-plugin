@@ -148,13 +148,6 @@ if (!class_exists('Tru_Fetcher_Acf_Field_Api_Category')) :
         }
     }
 
-    function validate_value( $valid, $value, $field, $input ){
-
-
-        // return
-        return $valid = __('The value is too little!','TEXTDOMAIN');
-
-    }
     new Tru_Fetcher_Acf_Field_Api_Category($this->settings);
 
 endif;
