@@ -26,8 +26,8 @@ class Tru_Fetcher_Database {
 	const SAVED_ITEMS_TABLE_NAME = 'tru_fetcher_saved_items';
 	const RATINGS_TABLE_NAME = 'tru_fetcher_ratings';
 
-	private $tablePrefix;
-	private $charsetCollate;
+	protected $tablePrefix;
+    protected $charsetCollate;
 
 	public function __construct() {
 		global $wpdb;
@@ -75,6 +75,12 @@ class Tru_Fetcher_Database {
 		global $wpdb;
 		$query = "SELECT * FROM $this->tablePrefix$tableName WHERE $where";
 		return $wpdb->get_row($wpdb->prepare($query, $parameters));
+	}
+
+	public function getAllResults($tableName) {
+		global $wpdb;
+		$query = "SELECT * FROM $this->tablePrefix$tableName";
+		return $wpdb->get_results($wpdb->prepare($query));
 	}
 
 	public function getResults($tableName, $where, ...$parameters) {

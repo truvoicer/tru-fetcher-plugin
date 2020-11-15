@@ -39,8 +39,11 @@
                         "telephone": "Telephone",
                         "text_area": "Text Area",
                         "select": "Select",
+                        "select_data_source": "Select Data Source",
                         "checkbox": "Checkbox",
                         "radio": "Radio",
+                        "image_upload": "Image Upload",
+                        "file_upload": "File Upload",
                         "date": "Date",
                         "button": "Button"
                     },
@@ -160,6 +163,13 @@
                                 "operator": "==",
                                 "value": "radio"
                             }
+                        ],
+                        [
+                            {
+                                "field": "field_5f8eb4e78a5eb",
+                                "operator": "==",
+                                "value": "select_data_source"
+                            }
                         ]
                     ],
                     "wrapper": {
@@ -177,15 +187,7 @@
                             "type": "true_false",
                             "instructions": "",
                             "required": 0,
-                            "conditional_logic": [
-                                [
-                                    {
-                                        "field": "field_5f8eb4e78a5eb",
-                                        "operator": "==",
-                                        "value": "select"
-                                    }
-                                ]
-                            ],
+                            "conditional_logic": 0,
                             "wrapper": {
                                 "width": "20",
                                 "class": "",
@@ -205,7 +207,29 @@
                             "type": "repeater",
                             "instructions": "",
                             "required": 0,
-                            "conditional_logic": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_5f8eb4e78a5eb",
+                                        "operator": "==",
+                                        "value": "select"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "field": "field_5f8eb4e78a5eb",
+                                        "operator": "==",
+                                        "value": "checkbox"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "field": "field_5f8eb4e78a5eb",
+                                        "operator": "==",
+                                        "value": "radio"
+                                    }
+                                ]
+                            ],
                             "wrapper": {
                                 "width": "60",
                                 "class": "",
@@ -259,6 +283,34 @@
                                     "maxlength": ""
                                 }
                             ]
+                        },
+                        {
+                            "key": "field_5fb07d2535a87",
+                            "label": "Endpoint",
+                            "name": "endpoint",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_5f8eb4e78a5eb",
+                                        "operator": "==",
+                                        "value": "select_data_source"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "60",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
                         }
                     ]
                 },
@@ -422,6 +474,32 @@
                     "endpoint": 0
                 },
                 {
+                    "key": "field_5fb0b20b7bde4",
+                    "label": "Form Type",
+                    "name": "form_type",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "choices": {
+                        "single": "Single",
+                        "list": "List"
+                    },
+                    "default_value": "single",
+                    "allow_null": 0,
+                    "multiple": 0,
+                    "ui": 0,
+                    "return_format": "value",
+                    "ajax": 0,
+                    "placeholder": ""
+                },
+                {
                     "key": "field_5f8ebc91ed860",
                     "label": "Method",
                     "name": "method",
@@ -456,7 +534,27 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "20",
+                        "width": "30",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": ""
+                },
+                {
+                    "key": "field_5fb176e4b3608",
+                    "label": "Add Item Button Label",
+                    "name": "add_item_button_label",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "30",
                         "class": "",
                         "id": ""
                     },
@@ -858,5 +956,5 @@
     "description": "",
     "show_in_graphql": 0,
     "graphql_field_name": "form_builder",
-    "modified": 1603321079
+    "modified": 1605465857
 }
