@@ -658,6 +658,7 @@
                     "choices": {
                         "email": "Email",
                         "user_meta": "User Meta",
+                        "user_profile": "User Profile",
                         "custom": "Custom"
                     },
                     "default_value": "email",
@@ -1003,5 +1004,5 @@
     "description": "",
     "show_in_graphql": 0,
     "graphql_field_name": "form_builder",
-    "modified": 1605824043
+    "modified": 1605908065
 }

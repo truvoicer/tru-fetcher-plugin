@@ -1,7 +1,8 @@
 <?php
 $blocksManager = new Tru_Fetcher_Blocks();
 $blockData = $blocksManager->getBlockData($block);
-$blockJson = $blocksManager->getBlockDataJson($blockData);
+$buildFormData = $blocksManager->buildFormData($blockData);
+$blockJson = $blocksManager->getBlockDataJson($buildFormData);
 ?>
 <div id="form_block"
      data='<?php echo $blockJson; ?>'></div>

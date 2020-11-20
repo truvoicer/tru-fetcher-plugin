@@ -29,6 +29,10 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base
         "fetcher_single_item" => ["data_keys", "custom_item_options"]
     ];
 
+    const USER_DATA_ENDPOINT_KEYS = [
+        "user_meta", "user_profile"
+    ];
+
     public function blocks_init()
     {
         $this->registerBlocks();
@@ -56,6 +60,47 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base
             return false;
         }
         return htmlentities($dataJson, ENT_QUOTES, 'UTF-8');
+    }
+
+    public function buildFormData($fields) {
+        foreach ($fields as $key => $field) {
+            if ($key === "form_data") {
+                $fields[$key] = $this->buildFormRowsData($field["form_rows"]);
+            }
+            elseif (is_array($field)) {
+                $fields[$key] = $this->buildFormData($field);
+            } else {
+                $fields[$key] = $field;
+            }
+        }
+        return $fields;
+    }
+
+    private function buildFormRowsData(array $formRows = []) {
+        foreach ($formRows as $key => $field) {
+            if ($key === "form_item") {
+                $formRows[$key] = $this->insertFormRowUserData($field);
+            }
+            elseif (is_array($field)) {
+                $formRows[$key] = $this->buildFormRowsData($field);
+            } else {
+                $formRows[$key] = $field;
+            }
+        }
+        return $formRows;
+    }
+
+    private function insertFormRowUserData(array $formItem = []) {
+        $userId = null;
+        switch ($formItem["form_control"]) {
+            case "file_upload":
+                $formItem["user_data"] = get_user_meta($userId, "{$formItem["name"]}_attachment_id", true);
+                break;
+            default:
+                $formItem["user_data"] = get_user_meta($userId, $formItem["name"], true);
+                break;
+        }
+        return $formItem;
     }
 
     public function replacePostTypes($fields)
