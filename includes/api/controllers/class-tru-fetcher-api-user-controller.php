@@ -482,10 +482,4 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base {
 	private function sendResponse( Tru_Fetcher_Api_User_Response $api_user_response ) {
 		return rest_ensure_response( $api_user_response );
 	}
-
-	private function showError( $code, $message ) {
-		return new WP_Error( $code,
-			esc_html__( $message, 'my-text-domain' ),
-			array( 'status' => 404 ) );
-	}
 }

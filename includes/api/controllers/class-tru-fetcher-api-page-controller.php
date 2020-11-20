@@ -197,11 +197,4 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 			"posts_per_page"   => get_option( "posts_per_page" ),
 		];
 	}
-
-
-	private function showError( $code, $message ) {
-		return new WP_Error( $code,
-			esc_html__( $message, 'my-text-domain' ),
-			array( 'status' => 404 ) );
-	}
 }

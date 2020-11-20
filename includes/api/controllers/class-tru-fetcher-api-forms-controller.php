@@ -56,7 +56,20 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 			'callback'            => [ $this, "emailFormEndpoint" ],
 			'permission_callback' => '__return_true'
 		) );
+        register_rest_route( $this->protectedEndpoint, '/user-meta', array(
+            'methods'  => WP_REST_Server::CREATABLE,
+            'callback' => [ $this, "userMetaEndpointHandler" ],
+            'permission_callback' => '__return_true'
+        ) );
 	}
+
+    public function userMetaEndpointHandler($request) {
+        if (!class_exists("Tru_Fetcher_Api_Form_Handler")) {
+            require_once plugin_dir_path( dirname( __FILE__ ) ) . 'forms/class-tru-fetcher-api-form-handler.php';
+        }
+        $apiFormHandler = new Tru_Fetcher_Api_Form_Handler();
+        return $apiFormHandler->saveUserMetaData($request);
+    }
 
 	private function replaceDataPlaceholders($dataValue, $replaceArray = []) {
         if (preg_match_all('~\{(.*?)\}~', $dataValue, $output)) {
@@ -137,15 +150,5 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 	    $this->apiFormsResponse->setMessage($message);
 	    $this->apiFormsResponse->setData($data);
         return rest_ensure_response( $this->apiFormsResponse );
-    }
-
-	private function showError( $code, $message ) {
-		return new WP_Error( $code,
-			esc_html__( $message, 'my-text-domain' ),
-			array( 'status' => 404 ) );
-	}
-
-	private function isNotEmpty($item) {
-	    return (isset($item) && $item !== null && $item !== "");
     }
 }

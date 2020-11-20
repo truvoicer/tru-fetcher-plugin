@@ -217,14 +217,4 @@ class Tru_Fetcher_Api_Comments_Controller extends Tru_Fetcher_Api_Controller_Bas
 	    $this->apiCommentsResponse->setData($data);
         return rest_ensure_response( $this->apiCommentsResponse );
     }
-
-	private function showError( $code, $message ) {
-		return new WP_Error( $code,
-			esc_html__( $message, 'my-text-domain' ),
-			array( 'status' => 404 ) );
-	}
-
-	private function isNotEmpty($item) {
-	    return (isset($item) && $item !== null && $item !== "");
-    }
 }

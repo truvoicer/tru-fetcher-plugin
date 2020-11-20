@@ -566,6 +566,26 @@
                     "maxlength": ""
                 },
                 {
+                    "key": "field_5fb567be63821",
+                    "label": "Form ID",
+                    "name": "form_id",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": ""
+                },
+                {
                     "key": "field_5f8f001e2c4b5",
                     "label": "Heading",
                     "name": "heading",
@@ -574,7 +594,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "50",
+                        "width": "40",
                         "class": "",
                         "id": ""
                     },
@@ -594,7 +614,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "50",
+                        "width": "40",
                         "class": "",
                         "id": ""
                     },
@@ -637,9 +657,36 @@
                     "show_in_graphql": 1,
                     "choices": {
                         "email": "Email",
+                        "user_meta": "User Meta",
                         "custom": "Custom"
                     },
                     "default_value": "email",
+                    "allow_null": 0,
+                    "multiple": 0,
+                    "ui": 0,
+                    "return_format": "value",
+                    "ajax": 0,
+                    "placeholder": ""
+                },
+                {
+                    "key": "field_5fb6bf7e448fd",
+                    "label": "Endpoint Type",
+                    "name": "endpoint_type",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "choices": {
+                        "public": "Public",
+                        "protected": "Protected"
+                    },
+                    "default_value": "public",
                     "allow_null": 0,
                     "multiple": 0,
                     "ui": 0,
@@ -956,5 +1003,5 @@
     "description": "",
     "show_in_graphql": 0,
     "graphql_field_name": "form_builder",
-    "modified": 1605465857
+    "modified": 1605824043
 }

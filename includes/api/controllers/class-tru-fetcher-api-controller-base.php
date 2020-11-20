@@ -22,7 +22,19 @@
  */
 class Tru_Fetcher_Api_Controller_Base {
 
+    const STATUS_SUCCESS = "success";
+
 	protected string $publicNamespace = "wp/tru-fetcher-api/public";
 	protected string $protectedNamespace = "wp/tru-fetcher-api/protected";
 
+    protected function showError( $code, $message ) {
+        return new WP_Error( $code,
+            esc_html__( $message, 'my-text-domain' ),
+            array( 'status' => 404 ) );
+    }
+
+
+    protected function isNotEmpty($item) {
+        return (isset($item) && $item !== "");
+    }
 }
