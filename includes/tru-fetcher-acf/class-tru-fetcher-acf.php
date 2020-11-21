@@ -46,6 +46,30 @@ class Tru_Fetcher_Acf {
         add_action('acf/include_field_types', [$this, 'includeField']); // v5
         add_filter('acf/settings/save_json', [$this, "saveAcfConfigJson"]);
         add_filter('acf/settings/load_json', [$this, "loadAcfConfigJson"]);
+        add_filter('acf/format_value/name=form_data', [$this, 'formDataFormat'], 10, 3);
+        add_filter('acf/format_value/name=form_item', [$this, 'formItemFormat'], 10, 3);
+    }
+
+    public function formDataFormat( $value, $post_id, $field ) {
+//        var_dump($value);
+        return $value;
+    }
+
+    public function formItemFormat( $value, $post_id, $field ) {
+        return $value;
+    }
+
+    public  function insertFormItemUserData(array $formItem = []) {
+        $userId = null;
+        switch ($formItem["form_control"]) {
+            case "file_upload":
+                $formItem["user_data"] = get_user_meta($userId, "{$formItem["name"]}_attachment_id", true);
+                break;
+            default:
+                $formItem["user_data"] = get_user_meta($userId, $formItem["name"], true);
+                break;
+        }
+        return $formItem;
     }
 
     public function saveAcfConfigJson($path) {

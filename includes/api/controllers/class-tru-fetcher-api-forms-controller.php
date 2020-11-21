@@ -25,6 +25,7 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 
     private Tru_Fetcher_Api_Forms_Response $apiFormsResponse;
     private Tru_Fetcher_Email $emailManager;
+    private Tru_Fetcher_Api_Form_Handler $apiFormHandler;
 
     private string $namespace = "/forms";
 	private string $publicEndpoint;
@@ -44,10 +45,15 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 
 	private function load_dependencies() {
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'response/ApiFormsResponse.php';
+
+        if (!class_exists("Tru_Fetcher_Api_Form_Handler")) {
+            require_once plugin_dir_path( dirname( __FILE__ ) ) . 'forms/class-tru-fetcher-api-form-handler.php';
+        }
 	}
 
 	private function loadResponseObjects() {
         $this->apiFormsResponse = new Tru_Fetcher_Api_Forms_Response();
+        $this->apiFormHandler = new Tru_Fetcher_Api_Form_Handler();
 	}
 
 	public function register_routes() {
@@ -61,14 +67,19 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
             'callback' => [ $this, "userMetaEndpointHandler" ],
             'permission_callback' => '__return_true'
         ) );
+        register_rest_route( $this->protectedEndpoint, '/user/profile/data', array(
+            'methods'  => WP_REST_Server::CREATABLE,
+            'callback' => [ $this, "userMetaDataRequest" ],
+            'permission_callback' => '__return_true'
+        ) );
 	}
 
+    public function userMetaDataRequest($request) {
+        return $this->apiFormHandler->fetchUserMetaData($request);
+    }
+
     public function userMetaEndpointHandler($request) {
-        if (!class_exists("Tru_Fetcher_Api_Form_Handler")) {
-            require_once plugin_dir_path( dirname( __FILE__ ) ) . 'forms/class-tru-fetcher-api-form-handler.php';
-        }
-        $apiFormHandler = new Tru_Fetcher_Api_Form_Handler();
-        return $apiFormHandler->saveUserMetaData($request);
+        return $this->apiFormHandler->saveUserMetaData($request);
     }
 
 	private function replaceDataPlaceholders($dataValue, $replaceArray = []) {

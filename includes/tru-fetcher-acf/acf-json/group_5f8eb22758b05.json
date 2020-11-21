@@ -35,9 +35,9 @@
                     "choices": {
                         "text": "Text",
                         "email": "Email",
+                        "tel": "Telephone",
                         "password": "Password",
-                        "telephone": "Telephone",
-                        "text_area": "Text Area",
+                        "textarea": "Text Area",
                         "select": "Select",
                         "select_data_source": "Select Data Source",
                         "checkbox": "Checkbox",
@@ -142,36 +142,7 @@
                     "type": "group",
                     "instructions": "",
                     "required": 0,
-                    "conditional_logic": [
-                        [
-                            {
-                                "field": "field_5f8eb4e78a5eb",
-                                "operator": "==",
-                                "value": "select"
-                            }
-                        ],
-                        [
-                            {
-                                "field": "field_5f8eb4e78a5eb",
-                                "operator": "==",
-                                "value": "checkbox"
-                            }
-                        ],
-                        [
-                            {
-                                "field": "field_5f8eb4e78a5eb",
-                                "operator": "==",
-                                "value": "radio"
-                            }
-                        ],
-                        [
-                            {
-                                "field": "field_5f8eb4e78a5eb",
-                                "operator": "==",
-                                "value": "select_data_source"
-                            }
-                        ]
-                    ],
+                    "conditional_logic": 0,
                     "wrapper": {
                         "width": "",
                         "class": "",
@@ -187,7 +158,22 @@
                             "type": "true_false",
                             "instructions": "",
                             "required": 0,
-                            "conditional_logic": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_5f8eb4e78a5eb",
+                                        "operator": "==",
+                                        "value": "select"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "field": "field_5f8eb4e78a5eb",
+                                        "operator": "==",
+                                        "value": "select_data_source"
+                                    }
+                                ]
+                            ],
                             "wrapper": {
                                 "width": "20",
                                 "class": "",
@@ -1004,5 +990,5 @@
     "description": "",
     "show_in_graphql": 0,
     "graphql_field_name": "form_builder",
-    "modified": 1605908065
+    "modified": 1605974336
 }

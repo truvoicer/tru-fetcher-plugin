@@ -56,6 +56,33 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
         $this->apiFormsResponse = new Tru_Fetcher_Api_Forms_Response();
     }
 
+    public function fetchUserMetaData(WP_REST_Request $request)
+    {
+        $data = $request->get_params();
+        $getUser = get_userdata($request["user_id"]);
+        if (!$getUser) {
+            return $this->showError("user_not_exist", "Sorry, this user does not exist.");
+        }
+        $userData = [];
+        foreach ($data as $key => $item) {
+            if (array_key_exists("form_control", $item)) {
+                $metaKey = $item["name"];
+                switch ($item["form_control"]) {
+                    case "file_upload":
+                    case "image_upload":
+                        $metaKey = $item["name"] . "_attachment_id";
+                }
+                $userData[$item["name"]] = get_user_meta($getUser->ID, $metaKey, true);
+            }
+        }
+        return $this->sendResponse(
+            $this->buildResponseObject(
+                self::STATUS_SUCCESS,
+                sprintf("User (%s) data fetched.", $getUser->display_name),
+                $userData)
+        );
+    }
+
     public function saveUserMetaData(WP_REST_Request $request)
     {
         $data = $request->get_params();
@@ -75,6 +102,7 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
                 $data)
         );
     }
+
     public function saveUserProfileFileUploads(WP_User $user, array $filesArray = [])
     {
         if (!function_exists('wp_read_image_metadata')) {
