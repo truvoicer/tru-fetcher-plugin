@@ -63,24 +63,62 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
         if (!$getUser) {
             return $this->showError("user_not_exist", "Sorry, this user does not exist.");
         }
-        $userData = [];
-        foreach ($data as $key => $item) {
-            if (array_key_exists("form_control", $item)) {
-                $metaKey = $item["name"];
-                switch ($item["form_control"]) {
-                    case "file_upload":
-                    case "image_upload":
-                        $metaKey = $item["name"] . "_attachment_id";
-                }
-                $userData[$item["name"]] = get_user_meta($getUser->ID, $metaKey, true);
-            }
-        }
+
+        $userData = $this->getFormBuilderUserMetaData($getUser, $data["form"]);
+
         return $this->sendResponse(
             $this->buildResponseObject(
                 self::STATUS_SUCCESS,
                 sprintf("User (%s) data fetched.", $getUser->display_name),
                 $userData)
         );
+    }
+
+    private function getFormBuilderUserMetaData(WP_User $user, array $form = []) {
+        switch ($form["type"]) {
+            case "single":
+                return $this->getSingleFormTypeUserMetaData($user, $form);
+            case "list":
+                return $this->getListFormTypeUserMetaData($user, $form);
+            default:
+                return false;
+        }
+    }
+
+    private function getListFormTypeUserMetaData(WP_User $user, array $form = []) {
+        $listFormDataArray = [];
+        $listFormMetaData = get_user_meta($user->ID, $form["id"], true);
+        foreach ($listFormMetaData as $formData) {
+            var_dump($formData);
+            array_push($listFormDataArray, $this->buildUserMetaDataArray($user, $formData));
+        }
+        return [
+          $form["id"] => $listFormDataArray
+        ];
+    }
+
+    private function getSingleFormTypeUserMetaData(WP_User $user, array $form = []) {
+        return $this->buildUserMetaDataArray($user, $form["fields"]);
+    }
+
+    private function buildUserMetaDataArray(WP_User $user, array $data = []) {
+        $userData = [];
+        foreach ($data as $key => $field) {
+            if (array_key_exists("form_control", $field)) {
+                $userData[$field["name"]] = $this->getFormFieldUserMetaData($user, $field);
+            }
+        }
+        return $userData;
+    }
+
+    private function getFormFieldUserMetaData(WP_User $user, array $field) {
+        switch ($field["form_control"]) {
+            case "file_upload":
+            case "image_upload":
+                return get_user_meta($user->ID, $field["name"] . "_attachment_id", true);
+            default:
+                return get_user_meta($user->ID, $field["name"], true);
+        }
     }
 
     public function saveUserMetaData(WP_REST_Request $request)
