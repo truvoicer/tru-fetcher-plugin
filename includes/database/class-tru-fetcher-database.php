@@ -89,6 +89,11 @@ class Tru_Fetcher_Database {
 		return $wpdb->get_results($wpdb->prepare($query, $parameters));
 	}
 
+	public function getQuery($query, ...$parameters) {
+		global $wpdb;
+		return $wpdb->get_results($wpdb->prepare($query, $parameters));
+	}
+
 	public function getUserItemRow($tableName, $providerName, $category, $itemId, $userId) {
 		$where = "provider_name=%s AND category=%s AND item_id=%s AND user_id=%s";
 		return $this->getRow(

@@ -29,10 +29,6 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base
         "fetcher_single_item" => ["data_keys", "custom_item_options"]
     ];
 
-    const USER_DATA_ENDPOINT_KEYS = [
-        "user_meta", "user_profile"
-    ];
-
     public function blocks_init()
     {
         $this->registerBlocks();

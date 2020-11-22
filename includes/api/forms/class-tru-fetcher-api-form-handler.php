@@ -24,7 +24,6 @@ require_once plugin_dir_path(dirname(__FILE__)) . 'controllers/class-tru-fetcher
 class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
 {
 
-
     private Tru_Fetcher_Api_Forms_Response $apiFormsResponse;
 
     public function __construct()
@@ -59,67 +58,70 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
     public function fetchUserMetaData(WP_REST_Request $request)
     {
         $data = $request->get_params();
-        $getUser = get_userdata($request["user_id"]);
-        if (!$getUser) {
-            return $this->showError("user_not_exist", "Sorry, this user does not exist.");
-        }
-
-        $userData = $this->getFormBuilderUserMetaData($getUser, $data["form"]);
+        $userData = $this->getFormBuilderUserMetaData($data["form"]);
 
         return $this->sendResponse(
             $this->buildResponseObject(
                 self::STATUS_SUCCESS,
-                sprintf("User (%s) data fetched.", $getUser->display_name),
+                sprintf("User (%s) data fetched.", $this->getUser()->display_name),
                 $userData)
         );
     }
 
-    private function getFormBuilderUserMetaData(WP_User $user, array $form = []) {
+    private function getFormBuilderUserMetaData(array $form = []) {
         switch ($form["type"]) {
             case "single":
-                return $this->getSingleFormTypeUserMetaData($user, $form);
+                return $this->getSingleFormTypeUserMetaData($form);
             case "list":
-                return $this->getListFormTypeUserMetaData($user, $form);
+                return $this->getListFormTypeUserMetaData($form);
             default:
                 return false;
         }
     }
 
-    private function getListFormTypeUserMetaData(WP_User $user, array $form = []) {
-        $listFormDataArray = [];
-        $listFormMetaData = get_user_meta($user->ID, $form["id"], true);
-        foreach ($listFormMetaData as $formData) {
-            var_dump($formData);
-            array_push($listFormDataArray, $this->buildUserMetaDataArray($user, $formData));
-        }
+    private function getListFormTypeUserMetaData(array $form = []) {
+        $listFormMetaData = get_user_meta($this->getUser()->ID, $form["id"], true);
         return [
-          $form["id"] => $listFormDataArray
+          $form["id"] => (!$listFormMetaData || $listFormMetaData === "")? [] : $listFormMetaData
         ];
     }
 
-    private function getSingleFormTypeUserMetaData(WP_User $user, array $form = []) {
-        return $this->buildUserMetaDataArray($user, $form["fields"]);
+    private function getSingleFormTypeUserMetaData(array $form = []) {
+        return $this->buildUserMetaDataArray($form["fields"]);
     }
 
-    private function buildUserMetaDataArray(WP_User $user, array $data = []) {
+    private function buildUserMetaDataArray(array $data = []) {
         $userData = [];
         foreach ($data as $key => $field) {
             if (array_key_exists("form_control", $field)) {
-                $userData[$field["name"]] = $this->getFormFieldUserMetaData($user, $field);
+                $userData[$field["name"]] = $this->getFormFieldUserMetaData($field);
             }
         }
         return $userData;
     }
 
-    private function getFormFieldUserMetaData(WP_User $user, array $field) {
+    private function getFormFieldUserMetaData(array $field) {
         switch ($field["form_control"]) {
             case "file_upload":
             case "image_upload":
-                return get_user_meta($user->ID, $field["name"] . "_attachment_id", true);
+                return get_user_meta($this->getUser()->ID, $field["name"] . "_attachment_id", true);
+            case "select_data_source":
+                return apply_filters( "tfr_user_meta_select_data_source", $field, $this->getUser() );
             default:
-                return get_user_meta($user->ID, $field["name"], true);
+                return get_user_meta($this->getUser()->ID, $field["name"], true);
         }
     }
+
+    public function buildSelectList($valueKey, $labelKey, $data)
+    {
+        return array_map(function ($item) use ($valueKey, $labelKey) {
+            return [
+                "value" => $item->$valueKey,
+                "label" => $item->$labelKey
+            ];
+        }, $data);
+    }
+
 
     public function saveUserMetaData(WP_REST_Request $request)
     {
@@ -208,4 +210,5 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
     {
         return rest_ensure_response($apiFormsResponse);
     }
+
 }
