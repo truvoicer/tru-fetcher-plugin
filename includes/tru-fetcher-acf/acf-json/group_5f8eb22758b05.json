@@ -297,6 +297,76 @@
                             "prepend": "",
                             "append": "",
                             "maxlength": ""
+                        },
+                        {
+                            "key": "field_5fbc28425a71d",
+                            "label": "Allowed File Types",
+                            "name": "allowed_file_types",
+                            "type": "repeater",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_5f8eb4e78a5eb",
+                                        "operator": "==",
+                                        "value": "file_upload"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "100",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "collapsed": "",
+                            "min": 0,
+                            "max": 0,
+                            "layout": "table",
+                            "button_label": "Add File Type",
+                            "sub_fields": [
+                                {
+                                    "key": "field_5fbc28425a71e",
+                                    "label": "Extension",
+                                    "name": "extension",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "50",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "show_in_graphql": 1,
+                                    "default_value": "",
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "maxlength": ""
+                                },
+                                {
+                                    "key": "field_5fbc28425a71f",
+                                    "label": "Mime Type",
+                                    "name": "mime_type",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "50",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "show_in_graphql": 1,
+                                    "default_value": "",
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "maxlength": ""
+                                }
+                            ]
                         }
                     ]
                 },
@@ -645,6 +715,7 @@
                         "email": "Email",
                         "user_meta": "User Meta",
                         "user_profile": "User Profile",
+                        "account_details": "Account Details",
                         "custom": "Custom"
                     },
                     "default_value": "email",
@@ -990,5 +1061,5 @@
     "description": "",
     "show_in_graphql": 0,
     "graphql_field_name": "form_builder",
-    "modified": 1605974336
+    "modified": 1606168983
 }

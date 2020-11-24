@@ -104,11 +104,21 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
         switch ($field["form_control"]) {
             case "file_upload":
             case "image_upload":
-                return get_user_meta($this->getUser()->ID, $field["name"] . "_attachment_id", true);
+                return $this->getUserMetaAttachmentData($field);
             case "select_data_source":
                 return apply_filters( "tfr_user_meta_select_data_source", $field, $this->getUser() );
             default:
                 return get_user_meta($this->getUser()->ID, $field["name"], true);
+        }
+    }
+
+    private function getUserMetaAttachmentData($field) {
+
+        $attachmentId = get_user_meta($this->getUser()->ID, $field["name"] . "_attachment_id", true);
+        if (wp_attachment_is("image", (int)$attachmentId)) {
+            return wp_get_attachment_image_url($attachmentId);
+        } else {
+            return wp_get_attachment_url($attachmentId);
         }
     }
 
@@ -165,7 +175,7 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
             update_user_meta(
                 $user->ID,
                 "{$key}_attachment_id",
-                $mediaUpload
+                $mediaUpload,
             );
             array_push($attachments, [
                 "attachment_id" => $mediaUpload,
