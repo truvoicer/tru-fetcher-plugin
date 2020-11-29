@@ -40,6 +40,7 @@
                         "textarea": "Text Area",
                         "select": "Select",
                         "select_data_source": "Select Data Source",
+                        "select_countries": "Select Countries",
                         "checkbox": "Checkbox",
                         "radio": "Radio",
                         "image_upload": "Image Upload",
@@ -1061,5 +1062,5 @@
     "description": "",
     "show_in_graphql": 0,
     "graphql_field_name": "form_builder",
-    "modified": 1606168983
+    "modified": 1606566387
 }

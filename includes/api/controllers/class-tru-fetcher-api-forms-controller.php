@@ -62,17 +62,32 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 			'callback'            => [ $this, "emailFormEndpoint" ],
 			'permission_callback' => '__return_true'
 		) );
-        register_rest_route( $this->protectedEndpoint, '/user-meta', array(
+        register_rest_route( $this->protectedEndpoint, '/user/metadata/save', array(
             'methods'  => WP_REST_Server::CREATABLE,
             'callback' => [ $this, "userMetaEndpointHandler" ],
             'permission_callback' => '__return_true'
         ) );
-        register_rest_route( $this->protectedEndpoint, '/user/profile/data', array(
+        register_rest_route( $this->protectedEndpoint, '/user/metadata/request', array(
             'methods'  => WP_REST_Server::CREATABLE,
             'callback' => [ $this, "userMetaDataRequest" ],
             'permission_callback' => '__return_true'
         ) );
+        register_rest_route( $this->protectedEndpoint, '/progress/request', array(
+            'methods'  => WP_REST_Server::CREATABLE,
+            'callback' => [ $this, "formsProgressRequest" ],
+            'permission_callback' => '__return_true'
+        ) );
 	}
+
+    public function formsProgressRequest($request)
+    {
+        $getUser = get_userdata($request["user_id"]);
+        if (!$getUser) {
+            return $this->showError("user_not_exist", "Sorry, this user does not exist.");
+        }
+        $this->apiFormHandler->setUser($getUser);
+        return $this->apiFormHandler->getFormsProgressData($request);
+    }
 
     public function userMetaDataRequest($request) {
         $getUser = get_userdata($request["user_id"]);

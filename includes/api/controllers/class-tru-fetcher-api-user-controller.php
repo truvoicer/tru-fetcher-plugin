@@ -74,7 +74,7 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
             'callback' => [$this, "createUser"],
             'permission_callback' => '__return_true'
         ));
-        register_rest_route($this->protectedEndpoint, '/account/data', array(
+        register_rest_route($this->protectedEndpoint, '/account/data/request', array(
             'methods' => WP_REST_Server::CREATABLE,
             'callback' => [$this, "userDataRequest"],
             'permission_callback' => '__return_true'
@@ -509,7 +509,7 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
     {
         $dbClass = new Tru_Fetcher_Database();
         $where = "provider_name=%s AND category=%s AND item_id=%s";
-        $getTotal = $dbClass->getTotal(
+        $getTotal = $dbClass->getTotalUserRating(
             Tru_Fetcher_Database::RATINGS_TABLE_NAME,
             "rating",
             $where,

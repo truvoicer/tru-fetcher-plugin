@@ -103,10 +103,18 @@ class Tru_Fetcher_Database {
 		);
 	}
 
-	public function getTotal($tableName, $field, $where, $parameters) {
+	public function getTotalUserRating($tableName, $field, $where, $parameters) {
 		global $wpdb;
 		$query = "SELECT SUM($field) AS $field,
 				(SELECT count(id) FROM $this->tablePrefix$tableName WHERE item_id=%s) AS total_users_rated
+				FROM $this->tablePrefix$tableName 
+				WHERE $where";
+		return $wpdb->get_row($wpdb->prepare($query, $parameters));
+	}
+
+	public function getCount($tableName, $label, $where, $parameters) {
+		global $wpdb;
+		$query = "SELECT count(id) as $label
 				FROM $this->tablePrefix$tableName 
 				WHERE $where";
 		return $wpdb->get_row($wpdb->prepare($query, $parameters));

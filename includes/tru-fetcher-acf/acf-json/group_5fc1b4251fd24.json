@@ -1,0 +1,174 @@
+{
+    "key": "group_5fc1b4251fd24",
+    "title": "Widgets Flexible Content",
+    "fields": [
+        {
+            "key": "field_5fc1b43ddeda2",
+            "label": "Flexible Widgets",
+            "name": "flexible_widgets",
+            "type": "flexible_content",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "layouts": {
+                "layout_5fc1b46f772d5": {
+                    "key": "layout_5fc1b46f772d5",
+                    "name": "user_social_widget_layout",
+                    "label": "User Social Widget",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_5fc1b4ccdeda3",
+                            "label": "User Social Widget",
+                            "name": "user_social_widget",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "clone": [
+                                "group_5fc145fcbfcb1"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_5fc1b567deda4": {
+                    "key": "layout_5fc1b567deda4",
+                    "name": "user_profile_widget_layout",
+                    "label": "User Profile Widget",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_5fc1b583deda5",
+                            "label": "User Profile Widget",
+                            "name": "user_profile_widget",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "clone": [
+                                "group_5fc146762002a"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_5fc1b5d0deda6": {
+                    "key": "layout_5fc1b5d0deda6",
+                    "name": "user_stats_widget_layout",
+                    "label": "User Stats Widget",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_5fc1b5e7deda7",
+                            "label": "User Stats Widget",
+                            "name": "user_stats_widget",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "clone": [
+                                "group_5fc146a7ee494"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_5fc39b52add3b": {
+                    "key": "layout_5fc39b52add3b",
+                    "name": "form_progress_widget_layout",
+                    "label": "Form Progress Widget",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_5fc39b61add3c",
+                            "label": "Form Progress Widget",
+                            "name": "form_progress_widget",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "clone": [
+                                "group_5fc2b6d49b2f2"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                }
+            },
+            "button_label": "Add Widget",
+            "min": "",
+            "max": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "acf\/tru-fetcher-widget-board"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": false,
+    "description": "",
+    "show_in_graphql": 1,
+    "graphql_field_name": "widgets_flexible_content",
+    "modified": 1606655112
+}

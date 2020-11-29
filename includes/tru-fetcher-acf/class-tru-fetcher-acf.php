@@ -46,6 +46,18 @@ class Tru_Fetcher_Acf {
         add_action('acf/include_field_types', [$this, 'includeField']); // v5
         add_filter('acf/settings/save_json', [$this, "saveAcfConfigJson"]);
         add_filter('acf/settings/load_json', [$this, "loadAcfConfigJson"]);
+        add_filter('acf/format_value/name=form_item', [$this, 'my_acf_load_field'], 10, 3);
+    }
+    public function my_acf_load_field( $value, $post_id, $field  ) {
+        if (!isset($value["form_control"])) {
+            return $value;
+        }
+        switch ($value["form_control"]) {
+            case "select_countries":
+                $value["countries_list"] = Tru_Fetcher::getCountriesSelectArray();
+                break;
+        }
+        return $value;
     }
 
     public function saveAcfConfigJson($path) {

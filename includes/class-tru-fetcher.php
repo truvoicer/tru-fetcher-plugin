@@ -209,6 +209,21 @@ class Tru_Fetcher {
 		return $frontendUrl;
 	}
 
+	public static function getCountriesListArray() {
+        return include plugin_dir_path( dirname( __FILE__ ) ) . 'config/country-list.php';
+    }
+
+	public static function getCountriesSelectArray() {
+	    $selectList = [];
+	    foreach (self::getCountriesListArray() as $code => $country) {
+	        array_push($selectList, [
+	           "value" =>  $code,
+                "label" => $country
+            ]);
+        }
+	    return $selectList;
+	}
+
 	public static function getTruFetcherSettings() {
 		return get_fields( "option" );
 	}
