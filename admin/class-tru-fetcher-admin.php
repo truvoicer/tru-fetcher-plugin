@@ -68,17 +68,7 @@ class Tru_Fetcher_Admin {
 	}
 
     private function load_dependencies() {
-
-        /**
-         * The class responsible for orchestrating the actions and filters of the
-         * core plugin.
-         */
-        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tru-fetcher-loader.php';
-
-        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/includes/tru-fetcher-admin-menu/class-tru-fetcher-admin-menu.php';
-
-        $this->loader = new Tru_Fetcher_Loader();
-
+	    Tru_Fetcher_Class_Loader::loadClass('admin/includes/tru-fetcher-admin-menu/class-tru-fetcher-admin-menu.php');
     }
 
 	/**

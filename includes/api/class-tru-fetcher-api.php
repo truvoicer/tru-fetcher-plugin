@@ -27,11 +27,13 @@ class Tru_Fetcher_Api {
 	}
 
 	public function loadDependencies() {
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'api/auth/class-tru-fetcher-api-auth-jwt.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'api/controllers/class-tru-fetcher-api-page-controller.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'api/controllers/class-tru-fetcher-api-user-controller.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'api/controllers/class-tru-fetcher-api-comments-controller.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'api/controllers/class-tru-fetcher-api-forms-controller.php';
+	    Tru_Fetcher_Class_Loader::loadClassList([
+            'includes/api/auth/class-tru-fetcher-api-auth-jwt.php',
+            'includes/api/controllers/class-tru-fetcher-api-page-controller.php',
+            'includes/api/controllers/class-tru-fetcher-api-user-controller.php',
+            'includes/api/controllers/class-tru-fetcher-api-comments-controller.php',
+            'includes/api/controllers/class-tru-fetcher-api-forms-controller.php'
+        ]);
 	}
 
 	public function init() {

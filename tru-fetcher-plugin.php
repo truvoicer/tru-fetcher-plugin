@@ -36,7 +36,8 @@ require_once __DIR__ . '/vendor/autoload.php';
  * Rename this for your plugin and update it as you release new versions.
  */
 define( 'TRU_FETCHER_VERSION', '1.0.0' );
-
+define( 'TRU_FETCHER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'TRU_FETCHER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-tru-fetcher-activator.php

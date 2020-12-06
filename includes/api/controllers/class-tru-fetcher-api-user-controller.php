@@ -1,5 +1,5 @@
 <?php
-require_once plugin_dir_path(dirname(__FILE__)) . 'controllers/class-tru-fetcher-api-controller-base.php';
+Tru_Fetcher_Class_Loader::loadClass("includes/api/controllers/class-tru-fetcher-api-controller-base.php");
 
 /**
  * Fired during plugin activation
@@ -58,8 +58,10 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
 
     private function load_dependencies()
     {
-        require_once plugin_dir_path(dirname(__FILE__)) . 'response/ApiUserResponse.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . '../database/class-tru-fetcher-database.php';
+        Tru_Fetcher_Class_Loader::loadClassList([
+            'includes/api/response/class-tru-fetcher-api-user-response.php',
+            'includes/database/class-tru-fetcher-database.php'
+        ]);
     }
 
     private function loadResponseObjects()

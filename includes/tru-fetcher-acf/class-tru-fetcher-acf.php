@@ -1,6 +1,5 @@
 <?php
-
-require_once(plugin_dir_path( __FILE__ ) . '../../library/fetcher-api/class-tru-fetcher-request-api.php');
+Tru_Fetcher_Class_Loader::loadClass('library/fetcher-api/class-tru-fetcher-request-api.php');
 
 /**
  * Fired during plugin activation

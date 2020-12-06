@@ -41,14 +41,74 @@
         },
         {
             "key": "field_5fc2b71342921",
-            "label": "Text",
-            "name": "text",
+            "label": "Top Text",
+            "name": "top_text",
             "type": "text",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
                 "width": "30",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_5fc55a44dbd0c",
+            "label": "Bottom Text",
+            "name": "bottom_text",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "30",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_5fc55a53dbd0e",
+            "label": "Complete Text",
+            "name": "complete_text",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_5fc55a6ddbd0f",
+            "label": "Not Complete Text",
+            "name": "not_complete_text",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
                 "class": "",
                 "id": ""
             },
@@ -159,5 +219,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "form_progress_widget",
-    "modified": 1606655307
+    "modified": 1606769295
 }

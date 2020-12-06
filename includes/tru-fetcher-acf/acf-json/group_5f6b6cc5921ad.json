@@ -17,7 +17,8 @@
             },
             "show_in_graphql": 1,
             "choices": {
-                "auth": "Auth"
+                "auth": "Auth",
+                "custom": "Custom"
             },
             "default_value": "auth",
             "allow_null": 0,
@@ -134,30 +135,34 @@
             ]
         },
         {
-            "key": "field_5f94b995eb371",
-            "label": "Extra Data",
-            "name": "extra_data",
-            "type": "repeater",
+            "key": "field_5fcc88626b4c1",
+            "label": "Custom Options",
+            "name": "custom_options",
+            "type": "group",
             "instructions": "",
             "required": 0,
-            "conditional_logic": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_5f6b6d06caf04",
+                        "operator": "==",
+                        "value": "custom"
+                    }
+                ]
+            ],
             "wrapper": {
                 "width": "",
                 "class": "",
                 "id": ""
             },
             "show_in_graphql": 1,
-            "collapsed": "",
-            "min": 0,
-            "max": 0,
-            "layout": "table",
-            "button_label": "",
+            "layout": "block",
             "sub_fields": [
                 {
-                    "key": "field_5f94b9a4eb372",
-                    "label": "Param Name",
-                    "name": "param_name",
-                    "type": "text",
+                    "key": "field_5fcc88a36b4c6",
+                    "label": "Buttons",
+                    "name": "buttons",
+                    "type": "repeater",
                     "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
@@ -167,31 +172,53 @@
                         "id": ""
                     },
                     "show_in_graphql": 1,
-                    "default_value": "",
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": "",
-                    "maxlength": ""
-                },
-                {
-                    "key": "field_5f94b9bbeb373",
-                    "label": "Param Value",
-                    "name": "param_value",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "show_in_graphql": 1,
-                    "default_value": "",
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": "",
-                    "maxlength": ""
+                    "collapsed": "",
+                    "min": 0,
+                    "max": 0,
+                    "layout": "table",
+                    "button_label": "",
+                    "sub_fields": [
+                        {
+                            "key": "field_5fcc88626b4c2",
+                            "label": "Label",
+                            "name": "label",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_5fcc88626b4c3",
+                            "label": "Link",
+                            "name": "link",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        }
+                    ]
                 }
             ]
         }
@@ -215,5 +242,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "button_widget",
-    "modified": 1603582403
+    "modified": 1607239915
 }

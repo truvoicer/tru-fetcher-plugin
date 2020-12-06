@@ -1,5 +1,5 @@
 <?php
-require_once plugin_dir_path( dirname( __FILE__ ) ) . 'controllers/class-tru-fetcher-api-controller-base.php';
+Tru_Fetcher_Class_Loader::loadClass('includes/api/controllers/class-tru-fetcher-api-controller-base.php');
 
 /**
  * Fired during plugin activation
@@ -22,13 +22,6 @@ require_once plugin_dir_path( dirname( __FILE__ ) ) . 'controllers/class-tru-fet
  * @author     Michael <michael@local.com>
  */
 class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
-
-	const LISTINGS_FILTERS = [
-		"NAME"           => "tru_fetcher_listings",
-		"OVERRIDE"       => "show_filters",
-		"OVERRIDE_ARRAY" => "filters",
-		"FILTERS_LIST"   => "listings_filters",
-	];
 
     private string $namespace = "/pages";
     private string $publicEndpoint;
@@ -57,10 +50,12 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 	}
 
 	private function load_dependencies() {
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'response/ApiPostResponse.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . '../listings/class-tru-fetcher-listings.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . '../sidebars/class-tru-fetcher-sidebars.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . '../menus/class-tru-fetcher-menu.php';
+        Tru_Fetcher_Class_Loader::loadClassList([
+            'includes/api/response/class-tru-fetcher-api-post-response.php',
+            'includes/listings/class-tru-fetcher-listings.php',
+            'includes/sidebars/class-tru-fetcher-sidebars.php',
+            'includes/menus/class-tru-fetcher-menu.php'
+        ]);
 	}
 
 	private function loadResponseObjects() {

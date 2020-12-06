@@ -36,7 +36,7 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base
 
     public function registerBlocks()
     {
-        $this->directoryIncludes('blocks/register-blocks', 'acf-register.php');
+        Tru_Fetcher::directoryIncludes('includes/blocks/register-blocks', 'acf-register.php');
     }
 
     public function getBlockData($block)
@@ -105,19 +105,5 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base
             }
         }
         return $array;
-    }
-
-    private function directoryIncludes($pathName, $fileName)
-    {
-        $dir = new DirectoryIterator(plugin_dir_path(dirname(__FILE__)) . $pathName);
-        foreach ($dir as $fileinfo) {
-            if ($fileinfo->isDot()) {
-                continue;
-            }
-            $fileDir = $fileinfo->getRealPath() . '/' . $fileName;
-            if (file_exists($fileDir)) {
-                require_once($fileDir);
-            }
-        }
     }
 }

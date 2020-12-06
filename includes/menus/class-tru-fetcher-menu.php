@@ -30,7 +30,7 @@ class Tru_Fetcher_Menu {
 	}
 
 	private function loadDependencies() {
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'listings/class-tru-fetcher-listings.php';
+	    Tru_Fetcher_Class_Loader::loadClass('includes/listings/class-tru-fetcher-listings.php');
 	}
 
 	public function getMenu( $menu ) {

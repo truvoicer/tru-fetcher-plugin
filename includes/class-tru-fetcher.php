@@ -73,7 +73,6 @@ class Tru_Fetcher {
 			$this->version = '1.0.0';
 		}
 		$this->plugin_name = 'tru-fetcher';
-
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
@@ -87,7 +86,6 @@ class Tru_Fetcher {
 		$this->define_menus();
 		$this->define_sidebars();
 		$this->define_widgets();
-//		$this->define_taxonomies();
 
 	}
 
@@ -109,43 +107,21 @@ class Tru_Fetcher {
 	 */
 	private function load_dependencies() {
 
-        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tru-fetcher-base.php';
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tru-fetcher-class-loader.php';
 
-		/**
-		 * The class responsible for orchestrating the actions and filters of the
-		 * core plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tru-fetcher-loader.php';
-
-		/**
-		 * The class responsible for defining internationalization functionality
-		 * of the plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tru-fetcher-i18n.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the admin area.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-tru-fetcher-admin.php';
-
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/listings/class-tru-fetcher-listings.php';
-
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/email/class-tru-fetcher-email.php';
-
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/api/class-tru-fetcher-api.php';
-
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/tru-fetcher-acf/class-tru-fetcher-acf.php';
-
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/graphql/class-tru-fetcher-graphql.php';
-
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/blocks/class-tru-fetcher-blocks.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-tru-fetcher-public.php';
-
+        Tru_Fetcher_Class_Loader::loadClassList([
+            'includes/class-tru-fetcher-base.php',
+            'includes/class-tru-fetcher-loader.php',
+            'includes/class-tru-fetcher-i18n.php',
+            'admin/class-tru-fetcher-admin.php',
+            'includes/listings/class-tru-fetcher-listings.php',
+            'includes/email/class-tru-fetcher-email.php',
+            'includes/api/class-tru-fetcher-api.php',
+            'includes/tru-fetcher-acf/class-tru-fetcher-acf.php',
+            'includes/graphql/class-tru-fetcher-graphql.php',
+            'includes/blocks/class-tru-fetcher-blocks.php',
+            'public/class-tru-fetcher-public.php'
+        ]);
 
 		$this->loader = new Tru_Fetcher_Loader();
 
@@ -276,18 +252,19 @@ class Tru_Fetcher {
 		$this->directoryIncludes( 'includes/sidebars/register', 'register-sidebar.php' );
 	}
 
-	private function define_taxonomies() {
-		$this->directoryIncludes( 'includes/taxonomies', 'register-taxonomy.php' );
-	}
-
-	private function directoryIncludes( $pathName, $fileName ) {
-		$dir = new DirectoryIterator( plugin_dir_path( dirname( __FILE__ ) ) . $pathName );
-		foreach ( $dir as $fileinfo ) {
-			if ( ! $fileinfo->isDot() && $fileinfo->isDir() ) {
-				require_once( $fileinfo->getRealPath() . '/' . $fileName );
-			}
-		}
-	}
+    public static function directoryIncludes($pathName, $fileName)
+    {
+        $dir = new DirectoryIterator(TRU_FETCHER_PLUGIN_DIR . $pathName);
+        foreach ($dir as $fileinfo) {
+            if ($fileinfo->isDot()) {
+                continue;
+            }
+            $fileDir = $fileinfo->getRealPath() . '/' . $fileName;
+            if (file_exists($fileDir)) {
+                require_once($fileDir);
+            }
+        }
+    }
 
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.

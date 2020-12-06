@@ -34,7 +34,7 @@ class Tru_Fetcher_Sidebars {
 	}
 
 	private function loadDependencies() {
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'menus/class-tru-fetcher-menu.php';
+	    Tru_Fetcher_Class_Loader::loadClass('includes/menus/class-tru-fetcher-menu.php');
 	}
 
 	public function getAllSidebars() {

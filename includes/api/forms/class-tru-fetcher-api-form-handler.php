@@ -1,5 +1,7 @@
 <?php
-require_once plugin_dir_path(dirname(__FILE__)) . 'controllers/class-tru-fetcher-api-controller-base.php';
+Tru_Fetcher_Class_Loader::loadClass(
+    'includes/api/controllers/class-tru-fetcher-api-controller-base.php'
+);
 
 /**
  * Fired during plugin activation
@@ -47,9 +49,9 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
 
     private function load_dependencies()
     {
-        if (!class_exists("Tru_Fetcher_Api_Forms_Response")) {
-            require_once plugin_dir_path(dirname(__FILE__)) . 'response/ApiFormsResponse.php';
-        }
+        Tru_Fetcher_Class_Loader::loadClass(
+            'includes/api/response/class-tru-fetcher-api-forms-response.php'
+        );
     }
 
     private function loadResponseObjects()
@@ -288,9 +290,7 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
 
     public function getUserSavedItemCount($field)
     {
-        if (!class_exists("Tru_Fetcher_Database")) {
-            require_once plugin_dir_path(dirname(__FILE__)) . '../database/class-tru-fetcher-database.php';
-        }
+        Tru_Fetcher_Class_Loader::loadClass("includes/database/class-tru-fetcher-database.php");
         $dbClass = new Tru_Fetcher_Database();
         $where = "user_id=%s";
         $getCount = $dbClass->getCount(

@@ -38,8 +38,10 @@ class Tru_Fetcher_GraphQl
 
     private function loadDependencies()
     {
-        require_once plugin_dir_path(dirname(__FILE__)) . 'listings/class-tru-fetcher-listings.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'sidebars/class-tru-fetcher-sidebars.php';
+        Tru_Fetcher_Class_Loader::loadClassList([
+            'includes/listings/class-tru-fetcher-listings.php',
+            'includes/sidebars/class-tru-fetcher-sidebars.php'
+        ]);
     }
 
     public function init()
