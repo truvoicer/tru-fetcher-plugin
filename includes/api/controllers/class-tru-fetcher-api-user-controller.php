@@ -31,7 +31,7 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
     const AUTH_TYPE_META_KEY = "auth_type";
     const AUTH_TYPE_META_VALUE = "wordpress";
 
-    const USER_ACCOUNT_FIELDS = ["user_id", "user_nicename", "display_name", "user_login", "user_email"];
+    const USER_ACCOUNT_FIELDS = ["user_id", "user_nicename", "display_name", "user_login", "user_email", "user_registered"];
 
     private Tru_Fetcher_Api_User_Response $apiUserResponse;
     private Tru_Fetcher_Email $emailManager;

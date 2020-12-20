@@ -254,6 +254,10 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
 
     private function getFormFieldUserMetaData(array $field)
     {
+        if (property_exists($this->getUser()->data, $field["name"])) {
+            $name = $field["name"];
+            return $this->getUser()->data->$name;
+        }
         switch ($field["form_control"]) {
             case "file_upload":
             case "image_upload":
