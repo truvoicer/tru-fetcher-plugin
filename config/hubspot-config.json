@@ -1,0 +1,10 @@
+{
+  "hubspot_sdk": {
+    "dev": {
+      "api_key": "5ccb5dbf-5250-4394-969d-8d3a64cb1228"
+    },
+    "prod": {
+      "api_key": "4e461b67-6de3-4c1c-91df-8223f8db0b56"
+    }
+  }
+}

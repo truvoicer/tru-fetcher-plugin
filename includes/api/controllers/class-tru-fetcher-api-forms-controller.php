@@ -61,6 +61,11 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 			'callback'            => [ $this, "emailFormEndpoint" ],
 			'permission_callback' => '__return_true'
 		) );
+		register_rest_route( $this->publicEndpoint, '/redirect', array(
+			'methods'             => WP_REST_Server::CREATABLE,
+			'callback'            => [ $this, "redirectFormEndpoint" ],
+			'permission_callback' => '__return_true'
+		) );
         register_rest_route( $this->protectedEndpoint, '/user/metadata/save', array(
             'methods'  => WP_REST_Server::CREATABLE,
             'callback' => [ $this, "userMetaEndpointHandler" ],
@@ -131,6 +136,30 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
                 return false;
         }
     }
+
+	public function redirectFormEndpoint( WP_REST_Request $request ) {
+	    $formData = $request->get_params();
+	    $endpointProviders = $formData["endpoint_providers"];
+	    unset($formData["endpoint_providers"]);
+
+        if (is_array($endpointProviders) && count($endpointProviders) > 0) {
+            $processEndpointProviders = $this->apiFormHandler->formEndpointProvidersHandler($endpointProviders, $formData);
+            return $this->sendResponse(
+                "Form submitted.",
+                [
+                    "redirect_url" => isset($request["redirect_url"])? $request["redirect_url"] : false,
+                    "provider_results" => $processEndpointProviders
+                ]
+            );
+        }
+        return $this->sendResponse(
+            "The form has been successfully submitted.",
+            [
+                "redirect_url" => false,
+                "provider_results" => false
+            ]
+        );
+	}
 
 	public function emailFormEndpoint( WP_REST_Request $request ) {
         $requiredFields = ["from", "subject", "recipient"];

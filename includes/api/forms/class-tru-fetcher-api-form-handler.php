@@ -59,6 +59,75 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
         $this->apiFormsResponse = new Tru_Fetcher_Api_Forms_Response();
     }
 
+    public function formEndpointProvidersHandler(array $providersArray = [], array $formData = [])
+    {
+        return array_map(function ($provider) use ($formData) {
+            $result = [
+                "provider" => $provider["provider"],
+            ];
+            if (!isset($provider["form_field_mapping"])) {
+                $result["result"] = "No mappings";
+                return $result;
+            }
+            $result["result"] = $this->handleEndpointProvider($provider, $formData);
+            return $result;
+        }, $providersArray);
+    }
+
+    private function handleEndpointProvider(array $provider = [], array $formData = [])
+    {
+        switch ($provider["provider"]) {
+            case "hubspot":
+                return $this->createHubspotContact($provider, $formData);
+            default:
+                return false;
+        }
+    }
+
+    private function createHubspotContact(array $provider = [], array $formData = [])
+    {
+        Tru_Fetcher_Class_Loader::loadClass(
+            'includes/api/providers/class-tru-fetcher-api-providers-hubspot.php'
+        );
+        $hubspotClient = new Tru_Fetcher_Api_Providers_Hubspot();
+        return $hubspotClient->newContact(
+            $this->buildEndpointProviderData($formData, $provider["form_field_mapping"])
+        );
+    }
+
+    private function buildEndpointProviderData(array $formData = [], array $mappings = []) {
+        $dataArray = [];
+        foreach ($mappings as $item) {
+            if (!isset($item["provider_field_name"]) && !isset($item["form_field_name"])) {
+                continue;
+            }
+            if (!isset($formData[$item["form_field_name"]])) {
+                continue;
+            }
+            $dataArray[$item["provider_field_name"]] = $formData[$item["form_field_name"]];
+        }
+        return $this->endpointProvidersSpecialFieldsFilter($dataArray);
+    }
+
+    private function endpointProvidersSpecialFieldsFilter(array $data = []) {
+        $filteredData = $data;
+        foreach ($data as $key => $value) {
+            switch ($key) {
+                case "full_name":
+                case "name":
+                    $splitName = explode(" ", $value, 2);
+                    if (count($splitName) > 0) {
+                        $filteredData["firstname"] = $splitName[0];
+                        if (isset($splitName[1])) {
+                            $filteredData["lastname"] = $splitName[1];
+                        }
+                    }
+                    unset($filteredData[$key]);
+            }
+        }
+        return $filteredData;
+    }
+
     public function getFormsProgressData(WP_REST_Request $request)
     {
         if (!isset($request["form_field_groups"])) {

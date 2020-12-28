@@ -20,6 +20,12 @@ class ComposerStaticInit1c00118f633372d3bf6a126bf9fb8df7
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
         ),
+        'H' => 
+        array (
+            'Hubspot\\Tests\\' => 14,
+            'HubSpot\\Client\\' => 15,
+            'HubSpot\\' => 8,
+        ),
         'G' => 
         array (
             'GuzzleHttp\\Psr7\\' => 16,
@@ -40,6 +46,18 @@ class ComposerStaticInit1c00118f633372d3bf6a126bf9fb8df7
         'Psr\\Http\\Client\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-client/src',
+        ),
+        'Hubspot\\Tests\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/hubspot/api-client/tests',
+        ),
+        'HubSpot\\Client\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/hubspot/api-client/codegen',
+        ),
+        'HubSpot\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/hubspot/api-client/lib',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (

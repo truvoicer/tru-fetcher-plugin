@@ -1,6 +1,7 @@
 {
     "require": {
         "facebook/graph-sdk": "^5.7",
-        "guzzlehttp/guzzle": "^7.0"
+        "guzzlehttp/guzzle": "^7.0",
+        "hubspot/api-client": "^2.5"
     }
 }

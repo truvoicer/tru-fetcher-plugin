@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5476fdf780896dee927d88a063c2f1ea",
+    "content-hash": "fbdca126f02fb528b5128dea0bf8689f",
     "packages": [
         {
             "name": "facebook/graph-sdk",
@@ -283,6 +283,61 @@
                 "url"
             ],
             "time": "2020-09-30T07:37:11+00:00"
+        },
+        {
+            "name": "hubspot/api-client",
+            "version": "2.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/HubSpot/hubspot-api-php.git",
+                "reference": "cdff030aeb3b0715b2a78fa6ea02fd90381973fa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/HubSpot/hubspot-api-php/zipball/cdff030aeb3b0715b2a78fa6ea02fd90381973fa",
+                "reference": "cdff030aeb3b0715b2a78fa6ea02fd90381973fa",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "guzzlehttp/guzzle": "^6.2 | ^7.0",
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~2.12",
+                "phpspec/phpspec": "^6.1",
+                "phpunit/phpunit": "^8.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "HubSpot\\Client\\": "codegen/",
+                    "HubSpot\\": "lib/",
+                    "Hubspot\\Tests\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "HubSpot",
+                    "homepage": "https://hubspot.com/"
+                }
+            ],
+            "description": "Hubspot API client",
+            "homepage": "https://hubspot.com/",
+            "keywords": [
+                "api",
+                "hubspot",
+                "php",
+                "sdk",
+                "swagger"
+            ],
+            "time": "2020-12-03T09:32:39+00:00"
         },
         {
             "name": "psr/http-client",

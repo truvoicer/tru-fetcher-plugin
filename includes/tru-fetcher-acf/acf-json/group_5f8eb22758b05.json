@@ -27,7 +27,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "20",
+                        "width": "30",
                         "class": "",
                         "id": ""
                     },
@@ -85,7 +85,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "20",
+                        "width": "25",
                         "class": "",
                         "id": ""
                     },
@@ -105,7 +105,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "20",
+                        "width": "25",
                         "class": "",
                         "id": ""
                     },
@@ -117,6 +117,33 @@
                     "maxlength": ""
                 },
                 {
+                    "key": "field_5fe65dbab3a30",
+                    "label": "Label Position",
+                    "name": "label_position",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "choices": {
+                        "top": "Top",
+                        "left": "Left",
+                        "right": "Right"
+                    },
+                    "default_value": "top",
+                    "allow_null": 0,
+                    "multiple": 0,
+                    "ui": 1,
+                    "ajax": 0,
+                    "return_format": "value",
+                    "placeholder": ""
+                },
+                {
                     "key": "field_5f8ebbf1903c0",
                     "label": "Classes",
                     "name": "classes",
@@ -125,7 +152,27 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "20",
+                        "width": "30",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": ""
+                },
+                {
+                    "key": "field_5fe88793d8a78",
+                    "label": "Description",
+                    "name": "description",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "40",
                         "class": "",
                         "id": ""
                     },
@@ -289,6 +336,111 @@
                             ],
                             "wrapper": {
                                 "width": "60",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_5fe5d1114da7e",
+                            "label": "Show Dropzone",
+                            "name": "show_dropzone",
+                            "type": "true_false",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_5f8eb4e78a5eb",
+                                        "operator": "==",
+                                        "value": "file_upload"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "field": "field_5f8eb4e78a5eb",
+                                        "operator": "==",
+                                        "value": "image_upload"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "20",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "message": "",
+                            "default_value": 0,
+                            "ui": 1,
+                            "ui_on_text": "",
+                            "ui_off_text": ""
+                        },
+                        {
+                            "key": "field_5fe5c1d34c196",
+                            "label": "Dropzone Message",
+                            "name": "dropzone_message",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_5f8eb4e78a5eb",
+                                        "operator": "==",
+                                        "value": "file_upload"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "field": "field_5f8eb4e78a5eb",
+                                        "operator": "==",
+                                        "value": "image_upload"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": ""
+                        },
+                        {
+                            "key": "field_5fe5c2054c199",
+                            "label": "Accepted File Types Message",
+                            "name": "accepted_file_types_message",
+                            "type": "text",
+                            "instructions": "Placeholder [accepted] for accepted file types string.",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_5f8eb4e78a5eb",
+                                        "operator": "==",
+                                        "value": "file_upload"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "field": "field_5f8eb4e78a5eb",
+                                        "operator": "==",
+                                        "value": "image_upload"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "50",
                                 "class": "",
                                 "id": ""
                             },
@@ -717,9 +869,10 @@
                         "user_meta": "User Meta",
                         "user_profile": "User Profile",
                         "account_details": "Account Details",
+                        "redirect": "Redirect",
                         "custom": "Custom"
                     },
-                    "default_value": "email",
+                    "default_value": "redirect",
                     "allow_null": 0,
                     "multiple": 0,
                     "ui": 0,
@@ -780,6 +933,51 @@
                     "prepend": "",
                     "append": "",
                     "maxlength": ""
+                },
+                {
+                    "key": "field_5fe922cf19074",
+                    "label": "Redirect?",
+                    "name": "redirect",
+                    "type": "true_false",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "message": "",
+                    "default_value": 0,
+                    "ui": 1,
+                    "ui_on_text": "",
+                    "ui_off_text": ""
+                },
+                {
+                    "key": "field_5fe9230f19075",
+                    "label": "Redirect Url",
+                    "name": "redirect_url",
+                    "type": "url",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_5fe922cf19074",
+                                "operator": "==",
+                                "value": "1"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "50",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "default_value": "",
+                    "placeholder": ""
                 },
                 {
                     "key": "field_5f90732ddf7b8",
@@ -1039,6 +1237,132 @@
                             "prefix_name": 0
                         }
                     ]
+                },
+                {
+                    "key": "field_5fe920eae6e95",
+                    "label": "Endpoint Providers",
+                    "name": "",
+                    "type": "tab",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "placement": "top",
+                    "endpoint": 0
+                },
+                {
+                    "key": "field_5fe92150e6e96",
+                    "label": "Endpoint Providers",
+                    "name": "endpoint_providers",
+                    "type": "repeater",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "collapsed": "",
+                    "min": 0,
+                    "max": 0,
+                    "layout": "table",
+                    "button_label": "",
+                    "sub_fields": [
+                        {
+                            "key": "field_5fe92175e6e97",
+                            "label": "Provider",
+                            "name": "provider",
+                            "type": "select",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "30",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "choices": {
+                                "hubspot": "Hubspot"
+                            },
+                            "default_value": false,
+                            "allow_null": 0,
+                            "multiple": 0,
+                            "ui": 0,
+                            "return_format": "value",
+                            "ajax": 0,
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_5fe921cfe6e98",
+                            "label": "Form Field Mapping",
+                            "name": "form_field_mapping",
+                            "type": "repeater",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "70",
+                                "class": "",
+                                "id": ""
+                            },
+                            "show_in_graphql": 1,
+                            "collapsed": "",
+                            "min": 0,
+                            "max": 0,
+                            "layout": "table",
+                            "button_label": "",
+                            "sub_fields": [
+                                {
+                                    "key": "field_5fe92212e6e99",
+                                    "label": "Form Field Name",
+                                    "name": "form_field_name",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "50",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "show_in_graphql": 1,
+                                    "default_value": "",
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "maxlength": ""
+                                },
+                                {
+                                    "key": "field_5fe92250e6e9a",
+                                    "label": "Provider Field Name",
+                                    "name": "provider_field_name",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "50",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "show_in_graphql": 1,
+                                    "default_value": "",
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "maxlength": ""
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         }
@@ -1062,5 +1386,5 @@
     "description": "",
     "show_in_graphql": 0,
     "graphql_field_name": "form_builder",
-    "modified": 1606566387
+    "modified": 1609157413
 }
