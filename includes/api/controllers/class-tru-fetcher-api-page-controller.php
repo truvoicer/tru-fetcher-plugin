@@ -51,7 +51,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 
 	private function load_dependencies() {
         Tru_Fetcher_Class_Loader::loadClassList([
-            'includes/api/response/class-tru-fetcher-api-post-response.php',
+            'includes/api/response/class-tru-fetcher-api-page-response.php',
             'includes/listings/class-tru-fetcher-listings.php',
             'includes/sidebars/class-tru-fetcher-sidebars.php',
             'includes/menus/class-tru-fetcher-menu.php'
@@ -59,7 +59,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 	}
 
 	private function loadResponseObjects() {
-		$this->apiPostResponse = new Tru_Fetcher_Api_Post_Response();
+		$this->apiPostResponse = new Tru_Fetcher_Api_Page_Response();
 	}
 
 	public function register_routes() {

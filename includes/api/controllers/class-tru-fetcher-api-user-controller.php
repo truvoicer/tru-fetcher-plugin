@@ -60,7 +60,8 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
     {
         Tru_Fetcher_Class_Loader::loadClassList([
             'includes/api/response/class-tru-fetcher-api-user-response.php',
-            'includes/database/class-tru-fetcher-database.php'
+            'includes/database/class-tru-fetcher-database.php',
+            'includes/api/forms/class-tru-fetcher-api-form-handler.php'
         ]);
     }
 
@@ -130,10 +131,12 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
         }
         wp_new_user_notification($createUser, null, "user");
         update_user_meta($createUser, self::AUTH_TYPE_META_KEY, self::AUTH_TYPE_META_VALUE);
-
+        $apiFormHandler = new Tru_Fetcher_Api_Form_Handler();
+        $apiFormHandler->processEndpointProvidersByRequest($request);
         $getUserData = [
             "username" => $username,
-            "email" => $email
+            "email" => $email,
+            "redirect_url" => isset($request["redirect_url"])? $request["redirect_url"] : false
         ];
 
         return $this->sendResponse(

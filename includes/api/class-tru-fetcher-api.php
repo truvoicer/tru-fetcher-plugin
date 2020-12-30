@@ -30,6 +30,7 @@ class Tru_Fetcher_Api {
 	    Tru_Fetcher_Class_Loader::loadClassList([
             'includes/api/auth/class-tru-fetcher-api-auth-jwt.php',
             'includes/api/controllers/class-tru-fetcher-api-page-controller.php',
+            'includes/api/controllers/class-tru-fetcher-api-posts-controller.php',
             'includes/api/controllers/class-tru-fetcher-api-user-controller.php',
             'includes/api/controllers/class-tru-fetcher-api-comments-controller.php',
             'includes/api/controllers/class-tru-fetcher-api-forms-controller.php'
@@ -49,6 +50,8 @@ class Tru_Fetcher_Api {
 	public function loadApiControllers() {
 		$pageController = new Tru_Fetcher_Api_Page_Controller();
 		$pageController->init();
+		$postsController = new Tru_Fetcher_Api_Posts_Controller();
+		$postsController->init();
 		$userController = new Tru_Fetcher_Api_User_Controller();
 		$userController->init();
 		$commentsController = new Tru_Fetcher_Api_Comments_Controller();

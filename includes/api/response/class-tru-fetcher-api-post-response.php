@@ -2,54 +2,50 @@
 
 class Tru_Fetcher_Api_Post_Response
 {
-    public $post;
-    public $blocks_data;
-    public $site_config;
+    public $status;
+    public $message;
+    public $data;
 
     /**
      * @return mixed
      */
-    public function getPost()
-    {
-        return $this->post;
+    public function getMessage() {
+        return $this->message;
     }
 
     /**
-     * @param mixed $post
+     * @param mixed $message
      */
-    public function setPost($post)
-    {
-        $this->post = $post;
+    public function setMessage( $message ) {
+        $this->message = $message;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getStatus() {
+        return $this->status;
+    }
+
+    /**
+     * @param mixed $status
+     */
+    public function setStatus( $status ) {
+        $this->status = $status;
     }
 
     /**
      * @return mixed
      */
-    public function getBlocksData()
-    {
-        return $this->blocks_data;
+    public function getData() {
+        return $this->data;
     }
 
     /**
-     * @param mixed $blocks_data
+     * @param mixed $data
      */
-    public function setBlocksData($blocks_data)
-    {
-        $this->blocks_data = $blocks_data;
+    public function setData( $data ) {
+        $this->data = $data;
     }
-
-	/**
-	 * @return mixed
-	 */
-	public function getSiteConfig() {
-		return $this->site_config;
-	}
-
-	/**
-	 * @param mixed $site_config
-	 */
-	public function setSiteConfig( $site_config ) {
-		$this->site_config = $site_config;
-	}
-
 }

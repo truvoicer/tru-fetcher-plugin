@@ -103,7 +103,13 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
     }
 
     public function userMetaEndpointHandler($request) {
-        return $this->apiFormHandler->saveUserMetaData($request);
+        $this->apiFormHandler->saveUserMetaData($request);
+        return $this->sendResponse(
+            sprintf("User (%s) updated.", $request["user_nicename"]),
+            [
+                "redirect_url" => isset($request["redirect_url"])? $request["redirect_url"] : false
+            ]
+        );
     }
 
 	private function replaceDataPlaceholders($dataValue, $replaceArray = []) {
@@ -138,25 +144,11 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
     }
 
 	public function redirectFormEndpoint( WP_REST_Request $request ) {
-	    $formData = $request->get_params();
-	    $endpointProviders = $formData["endpoint_providers"];
-	    unset($formData["endpoint_providers"]);
-
-        if (is_array($endpointProviders) && count($endpointProviders) > 0) {
-            $processEndpointProviders = $this->apiFormHandler->formEndpointProvidersHandler($endpointProviders, $formData);
-            return $this->sendResponse(
-                "Form submitted.",
-                [
-                    "redirect_url" => isset($request["redirect_url"])? $request["redirect_url"] : false,
-                    "provider_results" => $processEndpointProviders
-                ]
-            );
-        }
+        $this->apiFormHandler->processEndpointProvidersByRequest($request);
         return $this->sendResponse(
             "The form has been successfully submitted.",
             [
-                "redirect_url" => false,
-                "provider_results" => false
+                "redirect_url" => isset($request["redirect_url"])? $request["redirect_url"] : false
             ]
         );
 	}
@@ -182,6 +174,7 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
                 "DATA_ARRAY" => $dataArray
             ]
         );
+        $this->apiFormHandler->processEndpointProvidersByRequest($request);
         if (!$sendEmail) {
             return $this->showError(
                 "send_email_error",
@@ -190,7 +183,9 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
         }
         return $this->sendResponse(
             "The form has been successfully submitted.",
-                []
+            [
+                "redirect_url" => isset($request["redirect_url"])? $request["redirect_url"] : false
+            ]
         );
 	}
 

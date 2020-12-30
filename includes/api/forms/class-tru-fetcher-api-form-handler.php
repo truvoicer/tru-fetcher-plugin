@@ -58,6 +58,15 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
     {
         $this->apiFormsResponse = new Tru_Fetcher_Api_Forms_Response();
     }
+    public function processEndpointProvidersByRequest(WP_REST_Request $request) {
+        $formData = $request->get_params();
+        $endpointProviders = $formData["endpoint_providers"];
+        $processEndpointProviders = [];
+        if (is_array($endpointProviders) && count($endpointProviders) > 0) {
+            $processEndpointProviders = $this->formEndpointProvidersHandler($endpointProviders, $formData);
+        }
+        return $processEndpointProviders;
+    }
 
     public function formEndpointProvidersHandler(array $providersArray = [], array $formData = [])
     {
@@ -394,12 +403,7 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
             $getUser,
             $data
         );
-        return $this->sendResponse(
-            $this->buildResponseObject(
-                self::STATUS_SUCCESS,
-                sprintf("User (%s) updated.", $data["user_nicename"]),
-                $data)
-        );
+        return true;
     }
 
     public function saveUserProfileFileUploads(WP_User $user, array $filesArray = [])
