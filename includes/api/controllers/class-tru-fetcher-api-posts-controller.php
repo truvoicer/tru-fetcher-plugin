@@ -81,28 +81,57 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
         }
         if (isset($request["categories"])) {
             $categories = $request["categories"];
-            if (is_array($categories) && count($categories ) > 0) {
+            if (is_array($categories) && count($categories) > 0) {
                 $categories = implode(",", $categories);
             } else {
                 $categories = 0;
             }
         }
         $args = [
-            'cat' => $showAllCategories? 0 : $categories,
+            'cat' => $showAllCategories ? 0 : $categories,
             'orderby' => 'date',
             'order' => 'DESC',
             'post_type' => 'post',
             'posts_per_page' => $postsPerPage,
+            'meta_key' => '_thumbnail_id',
             'offset' => $this->calculateOffset($pageNumber, $postsPerPage),
         ];
         $postQuery = new WP_Query($args);
+        $buildPostsArray = $this->buildPostsArray($postQuery->posts);
         return $this->sendResponse(
             "Post list request success",
-            $postQuery->posts
+            $buildPostsArray
         );
     }
 
-    private function calculateOffset($pageNumber, $postsPerPage) {
+    private function buildPostsArray($posts)
+    {
+        return array_map(function ($post) {
+            return [
+                "id" => $post->ID,
+                "post_name" => $post->post_name,
+                "post_title" => $post->post_title,
+                "post_excerpt" => $post->post_excerpt,
+                "post_modified" => $post->post_modified,
+                "featured_image" => get_the_post_thumbnail_url($post),
+                "post_category" => $this->buildTermsArray(get_the_category($post->ID))
+            ];
+        }, $posts);
+    }
+
+    private function buildTermsArray($terms)
+    {
+        return array_map(function ($term) {
+            return [
+                "id" => $term->term_id,
+                "name" => $term->name,
+                "slug" => $term->slug
+            ];
+        }, $terms);
+    }
+
+    private function calculateOffset($pageNumber, $postsPerPage)
+    {
         if ((int)$pageNumber === 1) {
             return 0;
         }

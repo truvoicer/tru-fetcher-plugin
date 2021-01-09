@@ -23,24 +23,27 @@
 class Tru_Fetcher_GraphQl
 {
     const RESOLVER_FILES = [
-        "type", "field", "resolver"
+        "type", "field", "resolver", "connection"
     ];
 
     private $listingsClass;
     private $sidebarClass;
+    private $postsClass;
 
     public function __construct()
     {
         $this->loadDependencies();
         $this->listingsClass = new Tru_Fetcher_Listings();
         $this->sidebarClass = new Tru_Fetcher_Sidebars();
+        $this->postsClass = new Tru_Fetcher_Posts();
     }
 
     private function loadDependencies()
     {
         Tru_Fetcher_Class_Loader::loadClassList([
             'includes/listings/class-tru-fetcher-listings.php',
-            'includes/sidebars/class-tru-fetcher-sidebars.php'
+            'includes/sidebars/class-tru-fetcher-sidebars.php',
+            'includes/posts/class-tru-fetcher-posts.php',
         ]);
     }
 

@@ -30,6 +30,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 	private $listingsClass;
 	private $sidebarClass;
 	private $menuClass;
+    private Tru_Fetcher_Posts $postsClass;
 
 	private $apiPostResponse;
 	private $templatePostType = "item_view_templates";
@@ -46,6 +47,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 		$this->listingsClass = new Tru_Fetcher_Listings();
 		$this->sidebarClass = new Tru_Fetcher_Sidebars();
 		$this->menuClass = new Tru_Fetcher_Menu();
+        $this->postsClass = new Tru_Fetcher_Posts();
 		add_action( 'rest_api_init', [$this, "register_routes"] );
 	}
 
@@ -54,6 +56,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
             'includes/api/response/class-tru-fetcher-api-page-response.php',
             'includes/listings/class-tru-fetcher-listings.php',
             'includes/sidebars/class-tru-fetcher-sidebars.php',
+            'includes/posts/class-tru-fetcher-posts.php',
             'includes/menus/class-tru-fetcher-menu.php'
         ]);
 	}
@@ -65,7 +68,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 	public function register_routes() {
 		register_rest_route( $this->publicEndpoint, '/template/item-view/(?<category_name>[\w-]+)', array(
 			'methods'  => WP_REST_Server::READABLE,
-			'callback' => [ $this, "getTemplate" ],
+			'callback' => [ $this, "getItemViewTemplate" ],
 			'permission_callback' => '__return_true'
 		) );
 		register_rest_route( $this->publicEndpoint, '/page', array(
@@ -109,49 +112,26 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 		return rest_ensure_response( $menuArray );
 	}
 
-	public function getTemplate( $request ) {
+	public function getItemViewTemplate( $request ) {
 		$categoryName = (string) $request['category_name'];
 		if ( ! isset( $categoryName ) ) {
 			return $this->showError( 'request_missing_parameters', "Category doesn't exist in request" );
 		}
 
-		$category = get_term_by( "slug", $categoryName, $this->listingsCategoriesTaxonomy );
-		if ( ! $category ) {
-			return $this->showError( 'request_invalid_parameters', "Category not found." );
-		}
-
-		$args            = [
-			'post_type'   => $this->templatePostType,
-			'numberposts' => 1,
-			'tax_query'   => [
-				[
-					'taxonomy' => $this->listingsCategoriesTaxonomy,
-					'field'    => 'term_id',
-					'terms'    => $category->term_id,
-				]
-			]
-		];
-		$getPageTemplate = get_posts( $args );
-		if (count($getPageTemplate) ===  0) {
-			return $this->showError( 'page_not_found',
-				sprintf("Page template not found for [%s] - [%s].", $this->listingsCategoriesTaxonomy, $category->name) );
-		}
-
-		$this->apiPostResponse = $this->buildApiResponse( $getPageTemplate[0] );
+        $getPageTemplate = $this->postsClass->getTemplate($categoryName, "listings_categories", "item_view_templates");
+        if (is_wp_error($getPageTemplate)) {
+            return $this->showError($getPageTemplate->get_error_code(), $getPageTemplate->get_error_message());
+        }
+		$this->apiPostResponse = $this->buildApiResponse( $getPageTemplate );
 		// Return the product as a response.
 		return rest_ensure_response( $this->apiPostResponse );
 	}
 
 	public function getPageBySlug( $request ) {
 		$pageName = (string) $request->get_param("page");
-		if ( ! isset( $pageName ) ) {
-			return $this->showError( 'request_missing_parameters', "Page name doesn't exist in request" );
-		}
-		if ( $pageName === "home" ) {
-			$pageId  = get_option( "page_on_front" );
-			$getPage = get_post( $pageId );
-		} else {
-			$getPage = get_page_by_path($request->get_param("page"));
+		$getPage = $this->postsClass->getPageBySlug($pageName);
+		if (is_wp_error($getPage)) {
+            return $this->showError($getPage->get_error_code(), $getPage->get_error_message());
 		}
 		$this->apiPostResponse = $this->buildApiResponse( $getPage );
 
