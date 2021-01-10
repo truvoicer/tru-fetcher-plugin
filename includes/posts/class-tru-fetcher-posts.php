@@ -32,7 +32,7 @@ class Tru_Fetcher_Posts {
     public function getTemplate( $categoryName, $taxonomyName, $postType ) {
         $category = get_term_by( "slug", $categoryName, $taxonomyName );
         if ( ! $category ) {
-            return new WP_Error('request_invalid_parameters', "Category not found.");
+            return new WP_Error('request_invalid_parameters', sprintf("Category [%s] not found.", $categoryName));
         }
 
         $args            = [
@@ -68,19 +68,20 @@ class Tru_Fetcher_Posts {
 	    if (count($getPost) === 0) {
 	        return new WP_Error("post_not_found", "Post not found.");
         }
-	    $getPostCategoryId = get_field("post_template_category", $getPost[0]->ID);
-        if ($getPostCategoryId === null || !$getPostCategoryId) {
+	    $getPostCategory = get_field("post_template_category", $getPost[0]->ID);
+        if ($getPostCategory === null || !$getPostCategory) {
             return new WP_Error("post_category_not_set", "Post category not set.");
         }
 
         $getPostTemplate = get_posts([
             'numberposts'      => 1,
             'post_type'        => 'post_templates',
-            "cat" => $getPostCategoryId
+            "cat" => $getPostCategory->term_id
         ]);
 
         if (count($getPostTemplate) === 0) {
-            return new WP_Error("post_template_not_found", "Post Template not found.");
+            return new WP_Error("post_template_not_found",
+                sprintf("Page template not found for post name [%s] - category name [%s].", $postName, $getPostCategory->slug));
         }
 
         return $getPostTemplate[0];
@@ -159,11 +160,13 @@ class Tru_Fetcher_Posts {
     }
 
     private function getCategoryPosts(WP_Post $post) {
-        $postCategoryId = get_field("post_template_category", $post->ID);
+        $category = get_field("post_template_category", $post->ID);
 
-        $category = get_category($postCategoryId);
-        if (is_wp_error($category)) {
-            return $category;
+        if (!$category) {
+            return new WP_Error(
+                'category_not_found',
+                "Post template category not found."
+            );
         }
         $args = array(
             'numberposts'	=> -1,
@@ -175,6 +178,7 @@ class Tru_Fetcher_Posts {
         );
 
         $getCategoryPosts = new WP_Query( $args );
+
         if (count($getCategoryPosts->posts) === 0) {
             return new WP_Error(
                 'category_posts_not_found',

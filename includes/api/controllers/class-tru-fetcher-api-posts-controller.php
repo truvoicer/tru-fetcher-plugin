@@ -92,15 +92,24 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
             'orderby' => 'date',
             'order' => 'DESC',
             'post_type' => 'post',
-            'posts_per_page' => $postsPerPage,
             'meta_key' => '_thumbnail_id',
+        ];
+
+        $offsetArgs = [
+            'posts_per_page' => $postsPerPage,
             'offset' => $this->calculateOffset($pageNumber, $postsPerPage),
         ];
-        $postQuery = new WP_Query($args);
+
+        $allPostsQuery = new WP_Query($args);
+        $postQuery = new WP_Query(array_merge($args, $offsetArgs));
         $buildPostsArray = $this->buildPostsArray($postQuery->posts);
         return $this->sendResponse(
             "Post list request success",
-            $buildPostsArray
+            [
+                "total_posts" => $allPostsQuery->post_count,
+                "total_pages" => round($allPostsQuery->post_count / $postsPerPage),
+                "posts" => $buildPostsArray,
+            ]
         );
     }
 
@@ -114,7 +123,8 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
                 "post_excerpt" => $post->post_excerpt,
                 "post_modified" => $post->post_modified,
                 "featured_image" => get_the_post_thumbnail_url($post),
-                "post_category" => $this->buildTermsArray(get_the_category($post->ID))
+                "post_category" => $this->buildTermsArray(get_the_category($post->ID)),
+                "post_template_category" => get_field("post_template_category", $post->ID)
             ];
         }, $posts);
     }

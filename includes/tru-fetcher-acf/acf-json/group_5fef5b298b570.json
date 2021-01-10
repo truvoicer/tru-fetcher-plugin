@@ -22,7 +22,7 @@
             "add_term": 1,
             "save_terms": 0,
             "load_terms": 0,
-            "return_format": "id",
+            "return_format": "object",
             "multiple": 0
         }
     ],
@@ -45,5 +45,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "post_options",
-    "modified": 1609522100
+    "modified": 1610279188
 }
