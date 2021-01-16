@@ -23,7 +23,7 @@
 class Tru_Fetcher_Sidebars {
 
     const ACF_WIDGETS = [
-      "social_media_widget", "button_widget"
+      "social_media_widget", "button_widget", "email_optin_widget"
     ];
 
 	private $menuClass;
@@ -63,12 +63,17 @@ class Tru_Fetcher_Sidebars {
 	}
 
 	public function buildSidebarArray($sidebarArray) {
+
 	    return array_map( function ( $item ) {
             $array              = [];
-            $instanceNumber     = substr( $item, strpos( $item, "-" ) + 1 );
-            $widgetInstanceName = str_replace( substr( $item, strpos( $item, "-" ) ), "", $item );
-
+            $splitItem = explode("-", $item);
+            $instanceNumber     = $splitItem[array_key_last($splitItem)];
+            unset($splitItem[array_key_last($splitItem)]);
+            $widgetInstanceName = implode("-", $splitItem);
             $widget_instances             = get_option( 'widget_' . $widgetInstanceName );
+            if (!$widget_instances) {
+                return false;
+            }
             $widgetData                   = $widget_instances[ $instanceNumber ];
             $array[ $widgetInstanceName ] = $widgetData;
 

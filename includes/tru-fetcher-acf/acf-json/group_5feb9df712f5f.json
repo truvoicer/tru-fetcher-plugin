@@ -88,6 +88,26 @@
             "step": ""
         },
         {
+            "key": "field_6002f943af5cf",
+            "label": "Show Sidebar",
+            "name": "show_sidebar",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "15",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "message": "",
+            "default_value": 0,
+            "ui": 1,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        },
+        {
             "key": "field_5feba097990c4",
             "label": "Show All Categories",
             "name": "show_all_categories",
@@ -158,5 +178,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "posts_block",
-    "modified": 1609281671
+    "modified": 1610807875
 }

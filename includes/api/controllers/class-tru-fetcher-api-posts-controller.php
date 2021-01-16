@@ -62,6 +62,70 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
             'callback' => [$this, "postListRequestHandler"],
             'permission_callback' => '__return_true'
         ));
+        register_rest_route($this->publicEndpoint, '/list/recent', array(
+            'methods' => WP_REST_Server::READABLE,
+            'callback' => [$this, "postListRecentRequestHandler"],
+            'permission_callback' => '__return_true'
+        ));
+        register_rest_route($this->publicEndpoint, '/category/list', array(
+            'methods' => WP_REST_Server::READABLE,
+            'callback' => [$this, "categoryListRequestHandler"],
+            'permission_callback' => '__return_true'
+        ));
+    }
+
+    public function postListRecentRequestHandler(WP_REST_Request $request)
+    {
+        $postCount = 5;
+        if (isset($request["number"])) {
+            $postCount = (int) $request["number"];
+        }
+        $args = [
+            'post_type' => "post",
+            "orderby" => "date",
+            "order" => "desc",
+            "posts_per_page" => $postCount
+        ];
+        $postList = [];
+        foreach (get_posts($args) as $post) {
+            $categoryName = false;
+            $category = get_field("post_template_category", $post->ID);
+            if ($category) {
+                $categoryName = $category->slug;
+            }
+            array_push($postList, [
+                "name" => $post->post_title,
+                "slug" => $post->post_name,
+                "date" => $post->post_date_gmt,
+                "thumb" => get_the_post_thumbnail_url($post->ID),
+                "category" => $categoryName
+            ]);
+        }
+        return $this->sendResponse(
+            "Post fetch successful",
+            $postList
+        );
+    }
+
+    public function categoryListRequestHandler(WP_REST_Request $request)
+    {
+        $args = [
+            'post_type' => "post"
+        ];
+        $categoryList = [];
+        foreach (get_categories() as $category) {
+            $args["cat"] = $category->term_id;
+            $getPosts = new WP_Query($args);
+            array_push($categoryList, [
+                "category_name" => $category->name,
+                "category_slug" => $category->slug,
+                "total_posts" => $getPosts->post_count
+            ]);
+        }
+        return $this->sendResponse(
+            "Categories fetch successful",
+            $categoryList
+        );
     }
 
     public function postListRequestHandler(WP_REST_Request $request)

@@ -73,6 +73,18 @@ function tru_fetcher_register_sidebars() {
     );
     register_sidebar( $blogSidebar );
 
+    $feedsSidebar = array(
+        'name'          =>  __( 'Feeds Sidebar' ),
+        'id'            => "feeds-sidebar",
+        'description'   => '',
+        'class'         => '',
+        'before_widget' => '<li id="%1$s" class="widget %2$s">',
+        'after_widget'  => "</li>\n",
+        'before_title'  => '<h2 class="widgettitle">',
+        'after_title'   => "</h2>\n",
+    );
+    register_sidebar( $feedsSidebar );
+
     $accountAreaSidebar = array(
         'name'          =>  __( 'Account Area Sidebar' ),
         'id'            => "account-area-sidebar",
