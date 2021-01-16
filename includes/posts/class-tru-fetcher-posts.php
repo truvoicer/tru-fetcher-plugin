@@ -32,7 +32,10 @@ class Tru_Fetcher_Posts {
     public function getTemplate( $categoryName, $taxonomyName, $postType ) {
         $category = get_term_by( "slug", $categoryName, $taxonomyName );
         if ( ! $category ) {
-            return new WP_Error('request_invalid_parameters', sprintf("Category [%s] not found.", $categoryName));
+            return new WP_Error('request_invalid_parameters', sprintf(
+                "Category not found for: Taxonomy [%s], Category [%s], Post Type [%s].",
+                $taxonomyName, $categoryName, $postType
+            ));
         }
 
         $args            = [
@@ -50,7 +53,10 @@ class Tru_Fetcher_Posts {
         if (count($getPageTemplate) ===  0) {
             return new WP_Error(
                 'page_not_found',
-                sprintf("Page template not found for [%s] - [%s].", $taxonomyName, $category->name)
+                sprintf(
+                    "Page template not found for: Taxonomy [%s], Category [%s], Post Type [%s].",
+                    $taxonomyName, $category->name, $postType
+                )
             );
         }
         return $getPageTemplate[0];
