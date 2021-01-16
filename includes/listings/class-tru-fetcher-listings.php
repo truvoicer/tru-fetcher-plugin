@@ -46,6 +46,9 @@ class Tru_Fetcher_Listings {
 	}
 
 	public static function buildListingFilters( $listingFiltersArray ) {
+	    if (!$listingFiltersArray) {
+	        return [];
+        }
 		return array_map( function ( $widgetItem ) {
 			if ( $widgetItem['type'] == "list" ) {
 				$selectedList       = $widgetItem['list'];
