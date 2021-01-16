@@ -106,9 +106,12 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
         return $this->sendResponse(
             "Post list request success",
             [
-                "total_posts" => $allPostsQuery->post_count,
-                "total_pages" => round($allPostsQuery->post_count / $postsPerPage),
                 "posts" => $buildPostsArray,
+                "controls" => [
+                    "current_page" => $pageNumber,
+                    "total_posts" => $allPostsQuery->post_count,
+                    "total_pages" => round($allPostsQuery->post_count / $postsPerPage),
+                ]
             ]
         );
     }
