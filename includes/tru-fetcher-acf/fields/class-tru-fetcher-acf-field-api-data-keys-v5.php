@@ -88,19 +88,26 @@ if (!class_exists('Tru_Fetcher_Acf_Field_Api_Data_Keys')) :
 
         function render_field($field)
         {
-            if (!isset(Tru_Fetcher::getTruFetcherSettings()["default_api_service"])) {
+            global $post;
+            $getPostListingCategories = get_the_terms($post, "listings_categories");
+            $requestData = [
+                "count" => 1000,
+                "order" => "asc",
+                "sort" => "key_name",
+            ];
+            if (is_array($getPostListingCategories) && count($getPostListingCategories) > 0) {
+                $requestData["service_name"] = str_replace("-", "_", $getPostListingCategories[0]->slug);
+            }
+            else if (isset(Tru_Fetcher::getTruFetcherSettings()["default_api_service"])) {
+                $requestData["service_id"] = Tru_Fetcher::getTruFetcherSettings()["default_api_service"];
+            } else {
                 return false;
             }
 
             $responseKeys = $this->fetcherApi->getApiDataList(
                 "serviceResponseKeyList",
                 [],
-                [
-                    "count" => 1000,
-                    "order" => "asc",
-                    "sort" => "key_name",
-                    "service_id" => Tru_Fetcher::getTruFetcherSettings()["default_api_service"]
-                ]
+                $requestData
             );
             if (is_wp_error($responseKeys)) {
                 return false;

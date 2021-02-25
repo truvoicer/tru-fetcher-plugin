@@ -34,7 +34,7 @@ function register_fetcher_single_item_post_type()
 		'label'                 => __( 'Single Items', 'text_domain' ),
 		'labels'                => $labels,
 		'supports'              => array( 'title' ),
-		'taxonomies'            => array( ),
+		'taxonomies'            => array( 'listings_categories' ),
 		'public'                => true,
 		'show_ui'               => true,
 		'show_in_menu'          => false,
