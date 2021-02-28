@@ -32,6 +32,20 @@
                 "operator": "==",
                 "value": "fetcher_items_lists"
             }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "ft_comparisons_list"
+            }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "ft_general_lists"
+            }
         ]
     ],
     "menu_order": 0,
@@ -44,5 +58,5 @@
     "description": "",
     "show_in_graphql": 0,
     "graphql_field_name": "items_list",
-    "modified": 1602112102
+    "modified": 1614419749
 }

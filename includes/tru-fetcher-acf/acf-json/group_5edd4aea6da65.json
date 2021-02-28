@@ -34,7 +34,7 @@
             "show_in_graphql": 1,
             "choices": {
                 "api": "Api",
-                "posts": "Posts"
+                "wordpress": "Wordpress"
             },
             "default_value": "api",
             "allow_null": 0,
@@ -46,7 +46,7 @@
         },
         {
             "key": "field_603122388c77d",
-            "label": "Posts Source",
+            "label": "Wordpress Source",
             "name": "",
             "type": "tab",
             "instructions": "",
@@ -56,7 +56,7 @@
                     {
                         "field": "field_6031219bb0faf",
                         "operator": "==",
-                        "value": "posts"
+                        "value": "wordpress"
                     }
                 ]
             ],
@@ -106,7 +106,7 @@
             },
             "show_in_graphql": 1,
             "post_type": [
-                "fetcher_items_lists"
+                "ft_comparisons_list"
             ],
             "taxonomy": "",
             "allow_null": 0,
@@ -1103,5 +1103,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "listings_block",
-    "modified": 1613836624
+    "modified": 1614420958
 }

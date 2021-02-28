@@ -24,9 +24,13 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base
 {
 
     const REPLACEABLE_POST_TYPES = [
-        "fetcher_items_lists" => "items_data",
         "filter_lists" => "list_items",
-        "fetcher_single_item" => ["data_keys", "custom_item_options"]
+        "fetcher_items_lists" => "items_data",
+        "fetcher_single_item" => ["data_keys", "custom_item_options"],
+        "ft_comparisons_list" => "items_data",
+        "ft_single_comparison" => ["data_keys", "custom_item_options"],
+        "ft_general_lists" => "items_data",
+        "ft_general_item" => ["data_keys", "custom_item_options"]
     ];
 
     public function blocks_init()

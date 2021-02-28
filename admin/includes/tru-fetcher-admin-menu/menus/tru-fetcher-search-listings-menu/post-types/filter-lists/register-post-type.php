@@ -2,13 +2,13 @@
 function register_filter_lists_post_type()
 {
 	$labels = array(
-		'name'                  => _x( 'Filter Lists', 'Filter Lists', 'text_domain' ),
-		'singular_name'         => _x( 'Filter List', 'Filter List', 'text_domain' ),
-		'menu_name'             => __( 'Filter Lists', 'text_domain' ),
-		'name_admin_bar'        => __( 'Filter Lists', 'text_domain' ),
+		'name'                  => _x( 'Search Filter Lists', 'Search Filter Lists', 'text_domain' ),
+		'singular_name'         => _x( 'Search Filter List', 'Search Filter List', 'text_domain' ),
+		'menu_name'             => __( 'Search Filter Lists', 'text_domain' ),
+		'name_admin_bar'        => __( 'Search Filter Lists', 'text_domain' ),
 	);
 	$args = array(
-		'label'                 => __( 'Filter Lists', 'text_domain' ),
+		'label'                 => __( 'Search Filter Lists', 'text_domain' ),
 		'labels'                => $labels,
 		'supports'              => array( 'title' ),
 		'taxonomies'            => array( ),

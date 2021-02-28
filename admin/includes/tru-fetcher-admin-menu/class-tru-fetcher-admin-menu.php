@@ -22,15 +22,44 @@
  */
 class Tru_Fetcher_Admin_Menu {
 
-	private $parentMenuTitle = "Tru Fetcher";
-	private $parentMenuPageTitle = "Tru Fetcher";
-	private $parentMenuSlug = "tru-fetcher-main-menu";
-	private $parentMenuCapability = "manage_options";
-	private $postTypeSubmenuArray = [];
-
-
-	public function __construct() {
-	}
+    private $adminMenus = [
+          [
+              "parentMenuTitle" => "Tru Fetcher Search Listings",
+              "parentMenuPageTitle" => "Tru Fetcher Search Listings",
+              "parentMenuSlug" => "tru-fetcher-search-listings-menu",
+              "parentMenuCapability" => "manage_options",
+              "parentMenuCallback" => "adminMenuDashboard",
+              "parentMenuIcon" => "dashicons-menu",
+              "postTypeSubmenuArray" => [],
+          ],
+          [
+              "parentMenuTitle" => "Tru Fetcher Comparisons",
+              "parentMenuPageTitle" => "Tru Fetcher Comparisons",
+              "parentMenuSlug" => "tru-fetcher-comparisons-menu",
+              "parentMenuCapability" => "manage_options",
+              "parentMenuCallback" => "adminMenuDashboard",
+              "parentMenuIcon" => "dashicons-menu",
+              "postTypeSubmenuArray" => [],
+          ],
+          [
+              "parentMenuTitle" => "Tru Fetcher Templates",
+              "parentMenuPageTitle" => "Tru Fetcher Templates",
+              "parentMenuSlug" => "tru-fetcher-templates-menu",
+              "parentMenuCapability" => "manage_options",
+              "parentMenuCallback" => "adminMenuDashboard",
+              "parentMenuIcon" => "dashicons-menu",
+              "postTypeSubmenuArray" => [],
+          ],
+          [
+              "parentMenuTitle" => "Tru Fetcher Settings",
+              "parentMenuPageTitle" => "Tru Fetcher Settings",
+              "parentMenuSlug" => "tru-fetcher-settings-menu",
+              "parentMenuCapability" => "manage_options",
+              "parentMenuCallback" => "adminMenuDashboard",
+              "parentMenuIcon" => "dashicons-menu",
+              "postTypeSubmenuArray" => [],
+          ],
+    ];
 
 	public function admin_menu_init() {
 		$this->define_post_types();
@@ -40,19 +69,25 @@ class Tru_Fetcher_Admin_Menu {
 	}
 
 	public function define_post_types() {
-		$this->directoryIncludes(
-		    'tru-fetcher-admin-menu/post-types',
-            'register-post-type.php',
-            'post_type'
-        );
+        foreach ($this->adminMenus as $key => $adminMenu) {
+            $this->directoryIncludes(
+                "tru-fetcher-admin-menu/menus/{$adminMenu["parentMenuSlug"]}/post-types",
+                'register-post-type.php',
+                'post_type',
+                $key
+            );
+        }
 	}
 
 	public function define_taxonomies() {
-		$this->directoryIncludes(
-		    'tru-fetcher-admin-menu/taxonomies',
-            'register-taxonomy.php',
-            'taxonomy'
-        );
+        foreach ($this->adminMenus as $key => $adminMenu) {
+            $this->directoryIncludes(
+                "tru-fetcher-admin-menu/menus/{$adminMenu["parentMenuSlug"]}/taxonomies",
+                'register-taxonomy.php',
+                'taxonomy',
+                $key
+            );
+        }
 	}
 
 	private function define_admin_menus() {
@@ -65,30 +100,32 @@ class Tru_Fetcher_Admin_Menu {
     }
 
 	public function add_admin_menus() {
-		add_menu_page(
-			$this->parentMenuPageTitle,
-			$this->parentMenuTitle,
-			$this->parentMenuCapability,
-			$this->parentMenuSlug,
-			[$this, "adminMenuDashboard"],
-			"",
-			2
-		);
-		foreach ($this->postTypeSubmenuArray as $submenu) {
-		    $menuSlug = "";
-		    if ($submenu["type"] === "post_type") {
-                $menuSlug = 'edit.php?post_type=' . $submenu["name"];
-            } elseif ($submenu["type"] === "taxonomy") {
-                $menuSlug = 'edit-tags.php?taxonomy=' . $submenu["name"];
+	    foreach ($this->adminMenus as $key => $adminMenu) {
+            add_menu_page(
+                $adminMenu["parentMenuPageTitle"],
+                $adminMenu["parentMenuTitle"],
+                $adminMenu["parentMenuCapability"],
+                $adminMenu["parentMenuSlug"],
+                [$this, $adminMenu["parentMenuCallback"]],
+                $adminMenu["parentMenuIcon"],
+                $key + 100
+            );
+            foreach ($adminMenu["postTypeSubmenuArray"] as $submenu) {
+                $menuSlug = "";
+                if ($submenu["type"] === "post_type") {
+                    $menuSlug = 'edit.php?post_type=' . $submenu["name"];
+                } elseif ($submenu["type"] === "taxonomy") {
+                    $menuSlug = 'edit-tags.php?taxonomy=' . $submenu["name"];
+                }
+                add_submenu_page(
+                    $adminMenu["parentMenuSlug"],
+                    $submenu["title"],
+                    $submenu["title"],
+                    'manage_options',
+                    $menuSlug
+                );
             }
-			add_submenu_page(
-				$this->parentMenuSlug,
-				$submenu["title"],
-				$submenu["title"],
-				'manage_options',
-                $menuSlug
-			);
-		}
+        }
 	}
 
     public function add_option_pages() {
@@ -96,12 +133,12 @@ class Tru_Fetcher_Admin_Menu {
             acf_add_options_sub_page(array(
                 'page_title' 	=> 'TruFetcher Settings',
                 'menu_title'	=> 'TruFetcher Settings',
-                'parent_slug'	=> $this->parentMenuSlug,
+                'parent_slug'	=> "tru-fetcher-settings-menu",
             ));
         }
     }
 
-	private function directoryIncludes( $pathName, $fileName, $type ) {
+	private function directoryIncludes( $pathName, $fileName, $type, $parentMenuIndex ) {
 		$dir = new DirectoryIterator( plugin_dir_path( dirname( __FILE__ ) ) . $pathName );
 		foreach ( $dir as $fileinfo ) {
 			if ( ! $fileinfo->isDot() ) {
@@ -111,7 +148,7 @@ class Tru_Fetcher_Admin_Menu {
 					"title" => ucwords(str_replace("-", " ", $fileinfo->getFilename())),
                     "type" => $type
 				];
-				array_push($this->postTypeSubmenuArray, $submenuArray );
+				array_push($this->adminMenus[$parentMenuIndex]["postTypeSubmenuArray"], $submenuArray );
 				require_once( $fileinfo->getRealPath() . '/' . $fileName );
 			}
 		}

@@ -79,7 +79,9 @@
                     },
                     "show_in_graphql": 1,
                     "post_type": [
-                        "fetcher_single_item"
+                        "fetcher_single_item",
+                        "ft_general_item",
+                        "ft_single_comparison"
                     ],
                     "taxonomy": "",
                     "allow_null": 0,
@@ -1252,5 +1254,5 @@
     "description": "",
     "show_in_graphql": 0,
     "graphql_field_name": "global_fields",
-    "modified": 1604270744
+    "modified": 1614422366
 }

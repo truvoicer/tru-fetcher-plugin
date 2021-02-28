@@ -3,6 +3,74 @@
     "title": "Single Item Post Type",
     "fields": [
         {
+            "key": "field_603a194846d43",
+            "label": "General",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_603a18f746d42",
+            "label": "Type",
+            "name": "type",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "choices": {
+                "api_data_keys": "Api Data Keys",
+                "custom": "Custom"
+            },
+            "default_value": "api_data_keys",
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_603a195b46d44",
+            "label": "Data Keys",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_603a18f746d42",
+                        "operator": "==",
+                        "value": "api_data_keys"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
             "key": "field_5f922e44839c1",
             "label": "Data keys",
             "name": "data_keys",
@@ -23,6 +91,31 @@
             "layout": "block",
             "prefix_label": 0,
             "prefix_name": 0
+        },
+        {
+            "key": "field_603a197846d45",
+            "label": "Custom",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_603a18f746d42",
+                        "operator": "==",
+                        "value": "custom"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "placement": "top",
+            "endpoint": 0
         },
         {
             "key": "field_5f9f42db84812",
@@ -54,6 +147,20 @@
                 "operator": "==",
                 "value": "fetcher_single_item"
             }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "ft_single_comparison"
+            }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "ft_general_item"
+            }
         ]
     ],
     "menu_order": 0,
@@ -66,5 +173,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "single_item",
-    "modified": 1604272934
+    "modified": 1614420392
 }
