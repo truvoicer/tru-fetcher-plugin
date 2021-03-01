@@ -4,7 +4,7 @@ if( !function_exists('RegisterComparisonItemDataKeysField') ) {
     {
         register_graphql_field(
             'fetcherSingleComparison',
-            'single_item_data_keys',
+            'comparison_item_data_keys',
             [
                 'type'        => 'String',
                 'description' => 'A single item data keys json array'
