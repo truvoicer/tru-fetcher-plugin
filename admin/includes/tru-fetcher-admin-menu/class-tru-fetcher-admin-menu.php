@@ -139,6 +139,9 @@ class Tru_Fetcher_Admin_Menu {
     }
 
 	private function directoryIncludes( $pathName, $fileName, $type, $parentMenuIndex ) {
+	    if (!is_dir(plugin_dir_path( dirname( __FILE__ ) ) . $pathName)) {
+	        return false;
+        }
 		$dir = new DirectoryIterator( plugin_dir_path( dirname( __FILE__ ) ) . $pathName );
 		foreach ( $dir as $fileinfo ) {
 			if ( ! $fileinfo->isDot() ) {
