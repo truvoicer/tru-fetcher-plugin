@@ -142,14 +142,16 @@ class Tru_Fetcher_Admin_Menu {
 		$dir = new DirectoryIterator( plugin_dir_path( dirname( __FILE__ ) ) . $pathName );
 		foreach ( $dir as $fileinfo ) {
 			if ( ! $fileinfo->isDot() ) {
-				$submenuArray = [
-					"name" => str_replace( "-", "_", $fileinfo->getFilename() ),
-					"slug" => $fileinfo->getFilename(),
-					"title" => ucwords(str_replace("-", " ", $fileinfo->getFilename())),
-                    "type" => $type
-				];
-				array_push($this->adminMenus[$parentMenuIndex]["postTypeSubmenuArray"], $submenuArray );
-				require_once( $fileinfo->getRealPath() . '/' . $fileName );
+			    if (file_exists($fileinfo->getRealPath() . '/' . $fileName)) {
+                    $submenuArray = [
+                        "name" => str_replace("-", "_", $fileinfo->getFilename()),
+                        "slug" => $fileinfo->getFilename(),
+                        "title" => ucwords(str_replace("-", " ", $fileinfo->getFilename())),
+                        "type" => $type
+                    ];
+                    array_push($this->adminMenus[$parentMenuIndex]["postTypeSubmenuArray"], $submenuArray);
+                    require_once($fileinfo->getRealPath() . '/' . $fileName);
+                }
 			}
 		}
 	}
