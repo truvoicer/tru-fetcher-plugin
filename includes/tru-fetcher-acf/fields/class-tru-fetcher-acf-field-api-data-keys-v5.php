@@ -106,7 +106,7 @@ if (!class_exists('Tru_Fetcher_Acf_Field_Api_Data_Keys')) :
 
             $responseKeys = $this->fetcherApi->getApiDataList(
                 "serviceResponseKeyList",
-                [],
+                [$requestData["service_id"]],
                 $requestData
             );
             if (is_wp_error($responseKeys)) {
