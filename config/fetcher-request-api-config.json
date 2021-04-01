@@ -5,6 +5,6 @@
     "categoryList": "/api/category/list",
     "categoryProvidersList": "/api/category/%s/providers",
     "serviceList": "/api/service/list",
-    "serviceResponseKeyList": "/api/service/%d/response/key/list"
+    "serviceResponseKeyList": "/api/service/response/key/list"
   }
 }
