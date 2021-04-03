@@ -839,10 +839,12 @@
                     "show_in_graphql": 1,
                     "choices": {
                         "text": "Text",
+                        "url": "URL",
                         "html": "HTML",
                         "number": "Number",
                         "date": "Date",
                         "true_false": "True \/ False",
+                        "color": "Color",
                         "image": "Image",
                         "image_list": "Image List",
                         "array": "Array"
@@ -884,6 +886,31 @@
                     "new_lines": ""
                 },
                 {
+                    "key": "field_60683b9a38ca5",
+                    "label": "Data Item Url",
+                    "name": "data_item_url",
+                    "type": "url",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_5f921ecc32585",
+                                "operator": "==",
+                                "value": "url"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "60",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "default_value": "",
+                    "placeholder": ""
+                },
+                {
                     "key": "field_5f92c2e36efd3",
                     "label": "Data Item Date",
                     "name": "data_item_date",
@@ -908,6 +935,30 @@
                     "display_format": "j F Y",
                     "return_format": "j F Y",
                     "first_day": 1
+                },
+                {
+                    "key": "field_60683b4a38ca4",
+                    "label": "Data Item Color",
+                    "name": "data_item_color",
+                    "type": "color_picker",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_5f921ecc32585",
+                                "operator": "==",
+                                "value": "color"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "60",
+                        "class": "",
+                        "id": ""
+                    },
+                    "show_in_graphql": 1,
+                    "default_value": ""
                 },
                 {
                     "key": "field_5f92c27a902bb",
@@ -1254,5 +1305,5 @@
     "description": "",
     "show_in_graphql": 0,
     "graphql_field_name": "global_fields",
-    "modified": 1614422366
+    "modified": 1617444805
 }
