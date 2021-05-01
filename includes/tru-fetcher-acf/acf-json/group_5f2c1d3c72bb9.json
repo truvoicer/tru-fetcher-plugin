@@ -3,6 +3,23 @@
     "title": "Hero Block",
     "fields": [
         {
+            "key": "field_606c993b13b39",
+            "label": "Imagery",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
             "key": "field_5f2c1d426eb49",
             "label": "Hero Background Image",
             "name": "hero_background_image",
@@ -78,6 +95,23 @@
             "mime_types": ""
         },
         {
+            "key": "field_606c999c13b3b",
+            "label": "Data",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
             "key": "field_5f945c7d4b76d",
             "label": "Hero Type",
             "name": "hero_type",
@@ -142,6 +176,23 @@
             "prepend": "",
             "append": "",
             "maxlength": ""
+        },
+        {
+            "key": "field_606c99b213b3c",
+            "label": "Search",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "placement": "top",
+            "endpoint": 0
         },
         {
             "key": "field_5f2c1d6c6eb4a",
@@ -210,6 +261,23 @@
                     "prefix_name": 0
                 }
             ]
+        },
+        {
+            "key": "field_606c996d13b3a",
+            "label": "Extra Data",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "show_in_graphql": 1,
+            "placement": "top",
+            "endpoint": 0
         },
         {
             "key": "field_5f94b17cfca09",
@@ -293,5 +361,5 @@
     "description": "",
     "show_in_graphql": 1,
     "graphql_field_name": "hero_block",
-    "modified": 1603630326
+    "modified": 1617729982
 }
