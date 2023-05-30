@@ -1,4 +1,5 @@
 <?php
+namespace TruFetcher\Includes\GraphQl;
 
 /**
  * Fired during plugin activation
@@ -32,19 +33,9 @@ class Tru_Fetcher_GraphQl
 
     public function __construct()
     {
-        $this->loadDependencies();
         $this->listingsClass = new Tru_Fetcher_Listings();
         $this->sidebarClass = new Tru_Fetcher_Sidebars();
         $this->postsClass = new Tru_Fetcher_Posts();
-    }
-
-    private function loadDependencies()
-    {
-        Tru_Fetcher_Class_Loader::loadClassList([
-            'includes/listings/class-tru-fetcher-listings.php',
-            'includes/sidebars/class-tru-fetcher-sidebars.php',
-            'includes/posts/class-tru-fetcher-posts.php',
-        ]);
     }
 
     public function init()

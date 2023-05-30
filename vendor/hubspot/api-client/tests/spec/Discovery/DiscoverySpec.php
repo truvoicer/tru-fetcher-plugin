@@ -20,9 +20,13 @@ class DiscoverySpec extends ObjectBehavior
 
     public function it_creates_clients()
     {
-        $this->cms()->shouldHaveType(\HubSpot\Discovery\Cms\Discovery::class);
-        $this->crm()->shouldHaveType(\HubSpot\Discovery\Crm\Discovery::class);
         $this->auth()->shouldHaveType(\HubSpot\Discovery\Auth\Discovery::class);
+        $this->automation()->shouldHaveType(\HubSpot\Discovery\Automation\Discovery::class);
+        $this->cms()->shouldHaveType(\HubSpot\Discovery\Cms\Discovery::class);
+        $this->conversations()->shouldHaveType(\HubSpot\Discovery\Conversations\Discovery::class);
+        $this->crm()->shouldHaveType(\HubSpot\Discovery\Crm\Discovery::class);
+        $this->events()->shouldHaveType(\HubSpot\Discovery\Events\Discovery::class);
+        $this->marketing()->shouldHaveType(\HubSpot\Discovery\Marketing\Discovery::class);
         $this->webhooks()->shouldHaveType(\HubSpot\Discovery\Webhooks\Discovery::class);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+namespace TruFetcher\Includes\Database;
 
 /**
  * Fired during plugin activation

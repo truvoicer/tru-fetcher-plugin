@@ -9,6 +9,7 @@ use HubSpot\Client\Crm\Objects\Api\BatchApi;
 use HubSpot\Client\Crm\Objects\Api\SearchApi;
 use HubSpot\Config;
 use HubSpot\Discovery\Crm\Objects\Discovery;
+use HubSpot\Discovery\Crm\Objects\FeedbackSubmissions\Discovery as FeedbackSubmissionsDiscovery;
 use PhpSpec\ObjectBehavior;
 
 class DiscoverySpec extends ObjectBehavior
@@ -28,6 +29,7 @@ class DiscoverySpec extends ObjectBehavior
         $this->associationsApi()->shouldHaveType(AssociationsApi::class);
         $this->basicApi()->shouldHaveType(BasicApi::class);
         $this->batchApi()->shouldHaveType(BatchApi::class);
+        $this->feedbackSubmissions()->shouldHaveType(FeedbackSubmissionsDiscovery::class);
         $this->searchApi()->shouldHaveType(SearchApi::class);
     }
 }

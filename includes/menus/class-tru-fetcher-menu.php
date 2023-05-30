@@ -1,4 +1,5 @@
 <?php
+namespace TruFetcher\Includes\Menus;
 
 /**
  * Fired during plugin activation
@@ -25,12 +26,7 @@ class Tru_Fetcher_Menu {
 	private $listingsClass;
 
 	public function __construct() {
-		$this->loadDependencies();
 		$this->listingsClass = new Tru_Fetcher_Listings();
-	}
-
-	private function loadDependencies() {
-	    Tru_Fetcher_Class_Loader::loadClass('includes/listings/class-tru-fetcher-listings.php');
 	}
 
 	public function getMenu( $menu ) {

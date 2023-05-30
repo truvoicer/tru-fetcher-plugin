@@ -5,7 +5,48 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/HubSpot/hubspot-api-php/compare/2.5.0...HEAD)
+## [Unreleased](https://github.com/HubSpot/hubspot-api-php/compare/2.8.1...HEAD)
+
+## [2.8.1](https://github.com/HubSpot/hubspot-api-php/releases/tag/2.8.1) - 2021-02-17
+
+### Fixed
+
+- fix generateToken method in `conversations()->visitorIdentification()` API clients
+
+## [2.8.0](https://github.com/HubSpot/hubspot-api-php/releases/tag/2.8.0) - 2021-02-16
+
+### Added
+
+- `conversations()->visitorIdentification()` API client
+- `events()` API client
+
+## [2.7.1](https://github.com/HubSpot/hubspot-api-php/releases/tag/2.7.1) - 2021-02-05
+
+### Fixed
+
+- fix createToken method in `marketing()->transactional()` API clients
+
+## [2.7.0](https://github.com/HubSpot/hubspot-api-php/releases/tag/2.7.0) - 2021-02-05
+
+### Added
+
+- `crm()->extensions()->accounting()` API client
+- `crm()->extensions()->calling()` API client
+- `crm()->extensions()->videoconferencing` API client
+- `crm()->objects()->feedbackSubmissions()` API client
+- `marketing()->transactional()` API client
+
+## [2.6.1](https://github.com/HubSpot/hubspot-api-php/releases/tag/2.6.1) - 2021-01-20
+
+### Fixed
+
+- fix batch methods in `cms()->blogs()` API clients
+
+## [2.6.0](https://github.com/HubSpot/hubspot-api-php/releases/tag/2.6.0) - 2021-01-19
+
+### Added
+
+- `automation()->actions()` API client
 
 ## [2.5.0](https://github.com/HubSpot/hubspot-api-php/releases/tag/2.5.0) - 2020-12-03
 

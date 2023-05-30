@@ -1,7 +1,7 @@
 <?php
-Tru_Fetcher_Class_Loader::loadClass(
-    'includes/api/controllers/class-tru-fetcher-api-controller-base.php'
-);
+namespace TruFetcher\Includes\Api\Forms;
+
+use TruFetcher\Includes\Api\Controller\Tru_Fetcher_Api_Controller_Base;
 
 /**
  * Fired during plugin activation
@@ -32,7 +32,6 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
 
     public function __construct()
     {
-        $this->load_dependencies();
         $this->loadResponseObjects();
         add_filter('mime_types', [$this, 'defineAllowedMimeTypes']);
     }
@@ -45,13 +44,6 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
         $existing_mimes["jpg"] = "image/jpg";
         $existing_mimes["jpeg"] = "image/jpeg";
         return $existing_mimes;
-    }
-
-    private function load_dependencies()
-    {
-        Tru_Fetcher_Class_Loader::loadClass(
-            'includes/api/response/class-tru-fetcher-api-forms-response.php'
-        );
     }
 
     private function loadResponseObjects()
@@ -95,9 +87,6 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
 
     private function createHubspotContact(array $provider = [], array $formData = [])
     {
-        Tru_Fetcher_Class_Loader::loadClass(
-            'includes/api/providers/class-tru-fetcher-api-providers-hubspot.php'
-        );
         $hubspotClient = new Tru_Fetcher_Api_Providers_Hubspot();
         return $hubspotClient->newContact(
             $this->buildEndpointProviderData($formData, $provider["form_field_mapping"])
@@ -372,7 +361,6 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
 
     public function getUserSavedItemCount($field)
     {
-        Tru_Fetcher_Class_Loader::loadClass("includes/database/class-tru-fetcher-database.php");
         $dbClass = new Tru_Fetcher_Database();
         $where = "user_id=%s";
         $getCount = $dbClass->getCount(

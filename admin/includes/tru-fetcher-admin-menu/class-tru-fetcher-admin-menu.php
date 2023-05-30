@@ -1,5 +1,5 @@
 <?php
-
+namespace TruFetcher\Includes\Admin\Menu;
 /**
  * Fired during plugin activation
  *

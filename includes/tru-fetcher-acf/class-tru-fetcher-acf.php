@@ -1,5 +1,5 @@
 <?php
-Tru_Fetcher_Class_Loader::loadClass('library/fetcher-api/class-tru-fetcher-request-api.php');
+namespace TruFetcher\Includes\TruFetcherAcf;
 
 /**
  * Fired during plugin activation

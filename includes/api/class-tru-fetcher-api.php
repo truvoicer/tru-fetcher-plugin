@@ -1,4 +1,11 @@
 <?php
+namespace TruFetcher\Includes\Api;
+
+use TruFetcher\Includes\Api\Controllers\Tru_Fetcher_Api_Comments_Controller;
+use TruFetcher\Includes\Api\Controllers\Tru_Fetcher_Api_Forms_Controller;
+use TruFetcher\Includes\Api\Controllers\Tru_Fetcher_Api_Page_Controller;
+use TruFetcher\Includes\Api\Controllers\Tru_Fetcher_Api_Posts_Controller;
+use TruFetcher\Includes\Api\Controllers\Tru_Fetcher_Api_User_Controller;
 
 /**
  * Fired during plugin activation
@@ -22,30 +29,10 @@
  */
 class Tru_Fetcher_Api {
 
-	public function __construct() {
-		$this->loadDependencies();
-	}
-
-	public function loadDependencies() {
-	    Tru_Fetcher_Class_Loader::loadClassList([
-            'includes/api/auth/class-tru-fetcher-api-auth-jwt.php',
-            'includes/api/controllers/class-tru-fetcher-api-page-controller.php',
-            'includes/api/controllers/class-tru-fetcher-api-posts-controller.php',
-            'includes/api/controllers/class-tru-fetcher-api-user-controller.php',
-            'includes/api/controllers/class-tru-fetcher-api-comments-controller.php',
-            'includes/api/controllers/class-tru-fetcher-api-forms-controller.php'
-        ]);
-	}
-
 	public function init() {
-		$this->loadApiAuth();
 		$this->loadApiControllers();
 	}
 
-	private function loadApiAuth() {
-		$truFetcherAuth = new Tru_Fetcher_Api_Auth_Jwt();
-		$truFetcherAuth->init();
-	}
 
 	public function loadApiControllers() {
 		$pageController = new Tru_Fetcher_Api_Page_Controller();

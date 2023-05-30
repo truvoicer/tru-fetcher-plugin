@@ -1,4 +1,5 @@
 <?php
+namespace TruFetcher\Includes\Listings;
 
 /**
  * Fired during plugin activation

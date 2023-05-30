@@ -1,4 +1,5 @@
 <?php
+namespace TruFetcher\Includes\Api\Controllers;
 
 /**
  * Fired during plugin activation

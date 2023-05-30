@@ -1,4 +1,5 @@
 <?php
+namespace TruFetcher\Includes\Posts;
 
 /**
  * Fired during plugin activation

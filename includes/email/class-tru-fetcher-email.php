@@ -1,4 +1,5 @@
 <?php
+namespace TruFetcher\Includes\Email;
 
 /**
  * Fired during plugin activation

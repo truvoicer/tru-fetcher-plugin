@@ -1,6 +1,6 @@
 <?php
-Tru_Fetcher_Class_Loader::loadClass('includes/api/controllers/class-tru-fetcher-api-controller-base.php');
 
+namespace TruFetcher\Includes\Api\Controllers;
 /**
  * Fired during plugin activation
  *
@@ -35,14 +35,10 @@ class Tru_Fetcher_Api_Comments_Controller extends Tru_Fetcher_Api_Controller_Bas
 	}
 
 	public function init() {
-		$this->load_dependencies();
 		$this->loadResponseObjects();
 		add_action( 'rest_api_init', [ $this, "register_routes" ] );
 	}
 
-	private function load_dependencies() {
-	    Tru_Fetcher_Class_Loader::loadClass('includes/api/response/class-tru-fetcher-api-comments-response.php');
-	}
 
 	private function loadResponseObjects() {
         $this->apiCommentsResponse = new Tru_Fetcher_Api_Comments_Response();

@@ -1,4 +1,6 @@
 <?php
+namespace TruFetcher\Includes\Api\Response;
+
 
 class Tru_Fetcher_Api_Comments_Response
 {

@@ -1,5 +1,11 @@
 <?php
-Tru_Fetcher_Class_Loader::loadClass('includes/api/controllers/class-tru-fetcher-api-controller-base.php');
+namespace TruFetcher\Includes\Api\Controllers;
+
+use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Page_Response;
+use TruFetcher\Includes\Listings\Tru_Fetcher_Listings;
+use TruFetcher\Includes\Menus\Tru_Fetcher_Menu;
+use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
+use TruFetcher\Includes\Sidebars\Tru_Fetcher_Sidebars;
 
 /**
  * Fired during plugin activation
@@ -42,7 +48,6 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
     }
 
 	public function init() {
-		$this->load_dependencies();
 		$this->loadResponseObjects();
 		$this->listingsClass = new Tru_Fetcher_Listings();
 		$this->sidebarClass = new Tru_Fetcher_Sidebars();
@@ -51,43 +56,33 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 		add_action( 'rest_api_init', [$this, "register_routes"] );
 	}
 
-	private function load_dependencies() {
-        Tru_Fetcher_Class_Loader::loadClassList([
-            'includes/api/response/class-tru-fetcher-api-page-response.php',
-            'includes/listings/class-tru-fetcher-listings.php',
-            'includes/sidebars/class-tru-fetcher-sidebars.php',
-            'includes/posts/class-tru-fetcher-posts.php',
-            'includes/menus/class-tru-fetcher-menu.php'
-        ]);
-	}
-
 	private function loadResponseObjects() {
 		$this->apiPostResponse = new Tru_Fetcher_Api_Page_Response();
 	}
 
 	public function register_routes() {
 		register_rest_route( $this->publicEndpoint, '/template/item-view/(?<category_name>[\w-]+)', array(
-			'methods'  => WP_REST_Server::READABLE,
+			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getItemViewTemplate" ],
 			'permission_callback' => '__return_true'
 		) );
 		register_rest_route( $this->publicEndpoint, '/page', array(
-			'methods'  => WP_REST_Server::READABLE,
+			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getPageBySlug" ],
 			'permission_callback' => '__return_true'
 		) );
 		register_rest_route( $this->publicEndpoint, '/menu/(?<menu_name>[\w-]+)', array(
-			'methods'  => WP_REST_Server::READABLE,
+			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getMenuByName" ],
 			'permission_callback' => '__return_true'
 		) );
 		register_rest_route( $this->publicEndpoint, '/sidebar/(?<sidebar_name>[\w-]+)', array(
-			'methods'  => WP_REST_Server::READABLE,
+			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getSidebar" ],
 			'permission_callback' => '__return_true'
 		) );
 		register_rest_route( $this->publicEndpoint, '/site/config', array(
-			'methods'  => WP_REST_Server::READABLE,
+			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getSiteConfig" ],
 			'permission_callback' => '__return_true'
 		) );

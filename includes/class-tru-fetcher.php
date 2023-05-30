@@ -1,4 +1,5 @@
 <?php
+namespace TruFetcher\Includes;
 
 /**
  * The file that defines the core plugin class
@@ -12,6 +13,13 @@
  * @package    Tru_Fetcher
  * @subpackage Tru_Fetcher/includes
  */
+
+use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_Jwt;
+use TruFetcher\Includes\Api\Tru_Fetcher_Api;
+use TruFetcher\Includes\Blocks\Tru_Fetcher_Blocks;
+use TruFetcher\Includes\Tru_Fetcher_Base;
+use TruFetcher\Includes\Tru_Fetcher_Health_Check;
+use TruFetcher\Includes\User\Tru_Fetcher_User;
 
 /**
  * The core plugin class.
@@ -27,35 +35,18 @@
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher {
+class Tru_Fetcher extends Tru_Fetcher_Base {
 
-	/**
-	 * The loader that's responsible for maintaining and registering all hooks that power
-	 * the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      Tru_Fetcher_Loader $loader Maintains and registers all hooks for the plugin.
-	 */
-	protected $loader;
+    public const TAXONOMY_ENDPOINT = "edit-tags.php?taxonomy=%s";
 
-	/**
-	 * The unique identifier of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      string $plugin_name The string used to uniquely identify this plugin.
-	 */
-	protected $plugin_name;
+    public const REACT_SCRIPT_NAME = "index";
+    public const ADMIN_NAME = "tr-news-app-admin";
 
-	/**
-	 * The current version of the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      string $version The current version of the plugin.
-	 */
-	protected $version;
+    private Tru_Fetcher_Health_Check $healthCheck;
+    private Tru_Fetcher_User $userManager;
+
+    protected string $reactScriptName = self::REACT_SCRIPT_NAME;
+    protected string $adminName = self::ADMIN_NAME;
 
 	/**
 	 * Define the core functionality of the plugin.
@@ -67,20 +58,15 @@ class Tru_Fetcher {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'TRU_FETCHER_VERSION' ) ) {
-			$this->version = TRU_FETCHER_VERSION;
-		} else {
-			$this->version = '1.0.0';
-		}
-		$this->plugin_name = 'tru-fetcher';
-		$this->load_dependencies();
+        parent::__construct();
+        $this->healthCheck = new Tru_Fetcher_Health_Check();
+        $this->userManager = new Tru_Fetcher_User();
 		$this->set_locale();
 		$this->define_admin_hooks();
-		$this->define_public_hooks();
-		$this->load_graphql();
+//		$this->load_graphql();
 		$this->loadApi();
-        $this->loadAcf();
-        $this->loadEmail();
+//        $this->loadAcf();
+//        $this->loadEmail();
 		$this->define_post_types();
 		$this->define_blocks();
 		$this->define_menus();
@@ -89,43 +75,6 @@ class Tru_Fetcher {
 
 	}
 
-	/**
-	 * Load the required dependencies for this plugin.
-	 *
-	 * Include the following files that make up the plugin:
-	 *
-	 * - Tru_Fetcher_Loader. Orchestrates the hooks of the plugin.
-	 * - Tru_Fetcher_i18n. Defines internationalization functionality.
-	 * - Tru_Fetcher_Admin. Defines all hooks for the admin area.
-	 * - Tru_Fetcher_Public. Defines all hooks for the public side of the site.
-	 *
-	 * Create an instance of the loader which will be used to register the hooks
-	 * with WordPress.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function load_dependencies() {
-
-        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tru-fetcher-class-loader.php';
-
-        Tru_Fetcher_Class_Loader::loadClassList([
-            'includes/class-tru-fetcher-base.php',
-            'includes/class-tru-fetcher-loader.php',
-            'includes/class-tru-fetcher-i18n.php',
-            'admin/class-tru-fetcher-admin.php',
-            'includes/listings/class-tru-fetcher-listings.php',
-            'includes/email/class-tru-fetcher-email.php',
-            'includes/api/class-tru-fetcher-api.php',
-            'includes/tru-fetcher-acf/class-tru-fetcher-acf.php',
-            'includes/graphql/class-tru-fetcher-graphql.php',
-            'includes/blocks/class-tru-fetcher-blocks.php',
-            'public/class-tru-fetcher-public.php'
-        ]);
-
-		$this->loader = new Tru_Fetcher_Loader();
-
-	}
 
 	/**
 	 * Define the locale for this plugin for internationalization.
@@ -139,8 +88,7 @@ class Tru_Fetcher {
 	private function set_locale() {
 
 		$plugin_i18n = new Tru_Fetcher_i18n();
-
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+		add_action( 'plugins_loaded', [$plugin_i18n, 'load_plugin_textdomain'] );
 
 	}
 
@@ -153,28 +101,89 @@ class Tru_Fetcher {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Tru_Fetcher_Admin( $this->get_plugin_name(), $this->get_version() );
+        $this->registerAdminScripts();
+        add_action( 'activated_plugin', [$this, 'activate'], 10, 2 );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
-	}
-
-	/**
-	 * Register all of the hooks related to the public-facing functionality
-	 * of the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function define_public_hooks() {
-
-		$plugin_public = new Tru_Fetcher_Public( $this->get_plugin_name(), $this->get_version() );
-
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
 	}
+    public function registerAdminScripts()
+    {
+        add_action('admin_enqueue_scripts', [$this, "enqueue_styles"]);
+        add_action('admin_enqueue_scripts', [$this, "enqueue_scripts"]);
+    }
+
+    /**
+     * Register the stylesheets for the admin area.
+     *
+     * @since    1.0.0
+     */
+    public function enqueue_styles()
+    {
+        wp_enqueue_style(
+            "{$this->plugin_name}-{$this->reactScriptName}",
+            TRU_FETCHER_PLUGIN_URL . "build/{$this->reactScriptName}.css",
+        );
+    }
+
+    public function enqueue_scripts()
+    {
+//      var_dump( str_replace('-', '_', "{$this->plugin_name}_react"));
+        wp_enqueue_script(
+            "{$this->plugin_name}-{$this->reactScriptName}",
+            TRU_FETCHER_PLUGIN_URL . "build/{$this->reactScriptName}.js",
+            array('wp-element'),
+            $this->version,
+            true
+        );
+        wp_localize_script(
+            "{$this->plugin_name}-{$this->reactScriptName}",
+            str_replace('-', '_', "{$this->plugin_name}_react"),
+            $this->buildReactLocalizedScriptData()
+        );
+        wp_enqueue_script(
+            "{$this->plugin_name}-{$this->adminName}",
+            TRU_FETCHER_PLUGIN_URL . "build/{$this->adminName}.js",
+            [],
+            $this->version,
+            true
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function buildReactLocalizedScriptData()
+    {
+        $getCurrentUser = self::getCurrentUser();
+
+        $authJwt = new Tru_Fetcher_Api_Auth_Jwt();
+        $authJwt->setSecret($this->getReactSecretKey());
+
+        $nonceActionName = $authJwt->getJwtKey('nonce', 'react', $getCurrentUser);
+
+        $nonce = wp_create_nonce(md5($nonceActionName));
+        $encodeNonce = $authJwt->jwtEncode('nonce', 'react', $getCurrentUser, ['nonce' => $nonce]);
+
+        $saveMeta = update_user_meta(
+            $getCurrentUser->ID,
+            'nonce_jwt',
+            $encodeNonce
+        );
+        if (!$saveMeta) {
+            throw new \Exception('Error saving nonce user meta');
+        }
+        return [
+            'apiConfig' => [
+                'app_name' => TRU_FETCHER_PLUGIN_NAME,
+                'baseUrl' => rest_url('tr-news-app/v1/admin'),
+            ],
+            'user' => [
+                'id' => $getCurrentUser->ID
+            ],
+            'nonce' => $nonce,
+        ];
+    }
 
 	public static function getFrontendUrl() {
 		$options = get_fields( "option" );
@@ -212,8 +221,8 @@ class Tru_Fetcher {
     }
 
 	private function load_graphql() {
-		$truFetcherGraphql = new Tru_Fetcher_GraphQl();
-		$truFetcherGraphql->init();
+//		$truFetcherGraphql = new Tru_Fetcher_GraphQl();
+//		$truFetcherGraphql->init();
 	}
 
 	private function loadApi() {
@@ -222,13 +231,13 @@ class Tru_Fetcher {
 	}
 
     private function loadAcf() {
-        $truFetcherAcf = new Tru_Fetcher_Acf();
-        $truFetcherAcf->acf_init();
+//        $truFetcherAcf = new Tru_Fetcher_Acf();
+//        $truFetcherAcf->acf_init();
     }
 
     private function loadEmail() {
-        $truFetcherEmail = new Tru_Fetcher_Email();
-	    $truFetcherEmail->init();
+//        $truFetcherEmail = new Tru_Fetcher_Email();
+//	    $truFetcherEmail->init();
     }
 
 	private function define_post_types() {
@@ -272,38 +281,6 @@ class Tru_Fetcher {
 	 * @since    1.0.0
 	 */
 	public function run() {
-		$this->loader->run();
-	}
 
-	/**
-	 * The name of the plugin used to uniquely identify it within the context of
-	 * WordPress and to define internationalization functionality.
-	 *
-	 * @return    string    The name of the plugin.
-	 * @since     1.0.0
-	 */
-	public function get_plugin_name() {
-		return $this->plugin_name;
 	}
-
-	/**
-	 * The reference to the class that orchestrates the hooks with the plugin.
-	 *
-	 * @return    Tru_Fetcher_Loader    Orchestrates the hooks of the plugin.
-	 * @since     1.0.0
-	 */
-	public function get_loader() {
-		return $this->loader;
-	}
-
-	/**
-	 * Retrieve the version number of the plugin.
-	 *
-	 * @return    string    The version number of the plugin.
-	 * @since     1.0.0
-	 */
-	public function get_version() {
-		return $this->version;
-	}
-
 }

@@ -2,8 +2,6 @@
 
 use GraphQL\Error\UserError;
 
-Tru_Fetcher_Class_Loader::loadClass('includes/posts/class-tru-fetcher-posts.php');
-
 add_action( 'graphql_register_types', 'register_post_with_template_connection', 99 );
 
 function register_post_with_template_connection() {

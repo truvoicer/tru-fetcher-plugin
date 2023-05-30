@@ -1,5 +1,5 @@
 <?php
-Tru_Fetcher_Class_Loader::loadClass('includes/api/controllers/class-tru-fetcher-api-controller-base.php');
+namespace TruFetcher\Includes\Api\Controllers;
 
 /**
  * Fired during plugin activation
@@ -38,16 +38,8 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 	}
 
 	public function init() {
-		$this->load_dependencies();
 		$this->loadResponseObjects();
 		add_action( 'rest_api_init', [ $this, "register_routes" ] );
-	}
-
-	private function load_dependencies() {
-        Tru_Fetcher_Class_Loader::loadClassList([
-            'includes/api/response/class-tru-fetcher-api-forms-response.php',
-            'includes/api/forms/class-tru-fetcher-api-form-handler.php'
-        ]);
 	}
 
 	private function loadResponseObjects() {

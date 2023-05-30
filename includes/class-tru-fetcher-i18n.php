@@ -1,4 +1,5 @@
 <?php
+namespace TruFetcher\Includes;
 
 /**
  * Define the internationalization functionality

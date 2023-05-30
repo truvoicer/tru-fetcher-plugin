@@ -1,4 +1,5 @@
 <?php
+namespace TruFetcher\Includes;
 
 /**
  * Fired during plugin activation

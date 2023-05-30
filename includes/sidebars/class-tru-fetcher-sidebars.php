@@ -1,4 +1,7 @@
 <?php
+namespace TruFetcher\Includes\Sidebars;
+
+use TruFetcher\Includes\Menus\Tru_Fetcher_Menu;
 
 /**
  * Fired during plugin activation
@@ -29,12 +32,7 @@ class Tru_Fetcher_Sidebars {
 	private $menuClass;
 
 	public function __construct() {
-		$this->loadDependencies();
 		$this->menuClass = new Tru_Fetcher_Menu();
-	}
-
-	private function loadDependencies() {
-	    Tru_Fetcher_Class_Loader::loadClass('includes/menus/class-tru-fetcher-menu.php');
 	}
 
 	public function getAllSidebars() {

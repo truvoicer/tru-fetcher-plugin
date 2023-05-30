@@ -1,8 +1,6 @@
 <?php
 use GraphQL\Error\UserError;
 
-Tru_Fetcher_Class_Loader::loadClass('includes/posts/class-tru-fetcher-posts.php');
-
 add_filter('graphql_resolve_field',
     function (
         $result,

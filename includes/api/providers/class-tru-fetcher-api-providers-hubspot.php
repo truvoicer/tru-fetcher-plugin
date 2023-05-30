@@ -1,7 +1,4 @@
 <?php
-Tru_Fetcher_Class_Loader::loadClass(
-    'includes/class-tru-fetcher-base.php'
-);
 
 /**
  * Fired during plugin activation

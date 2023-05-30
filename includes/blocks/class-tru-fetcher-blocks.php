@@ -1,4 +1,7 @@
 <?php
+namespace TruFetcher\Includes\Blocks;
+
+use TruFetcher\Includes\Tru_Fetcher_Base;
 
 /**
  * Fired during plugin activation
