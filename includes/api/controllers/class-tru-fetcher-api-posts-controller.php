@@ -1,6 +1,8 @@
 <?php
 namespace TruFetcher\Includes\Api\Controllers;
 
+use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Post_Response;
+
 /**
  * Fired during plugin activation
  *
@@ -51,23 +53,23 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
     public function register_routes()
     {
         register_rest_route($this->publicEndpoint, '/list/request', array(
-            'methods' => WP_REST_Server::CREATABLE,
+            'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "postListRequestHandler"],
             'permission_callback' => '__return_true'
         ));
         register_rest_route($this->publicEndpoint, '/list/recent', array(
-            'methods' => WP_REST_Server::READABLE,
+            'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "postListRecentRequestHandler"],
             'permission_callback' => '__return_true'
         ));
         register_rest_route($this->publicEndpoint, '/category/list', array(
-            'methods' => WP_REST_Server::READABLE,
+            'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "categoryListRequestHandler"],
             'permission_callback' => '__return_true'
         ));
     }
 
-    public function postListRecentRequestHandler(WP_REST_Request $request)
+    public function postListRecentRequestHandler(\WP_REST_Request $request)
     {
         $postCount = 5;
         if (isset($request["number"])) {
@@ -100,7 +102,7 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
         );
     }
 
-    public function categoryListRequestHandler(WP_REST_Request $request)
+    public function categoryListRequestHandler(\WP_REST_Request $request)
     {
         $args = [
             'post_type' => "post"
@@ -108,7 +110,7 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
         $categoryList = [];
         foreach (get_categories() as $category) {
             $args["cat"] = $category->term_id;
-            $getPosts = new WP_Query($args);
+            $getPosts = new \WP_Query($args);
             array_push($categoryList, [
                 "category_name" => $category->name,
                 "category_slug" => $category->slug,
@@ -121,7 +123,7 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
         );
     }
 
-    public function postListRequestHandler(WP_REST_Request $request)
+    public function postListRequestHandler(\WP_REST_Request $request)
     {
         $postsPerPage = 10;
         $showAllCategories = true;
@@ -157,8 +159,8 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
             'offset' => $this->calculateOffset($pageNumber, $postsPerPage),
         ];
 
-        $allPostsQuery = new WP_Query($args);
-        $postQuery = new WP_Query(array_merge($args, $offsetArgs));
+        $allPostsQuery = new \WP_Query($args);
+        $postQuery = new \WP_Query(array_merge($args, $offsetArgs));
         $buildPostsArray = $this->buildPostsArray($postQuery->posts);
         return $this->sendResponse(
             "Post list request success",

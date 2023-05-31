@@ -1,6 +1,9 @@
 <?php
 
 namespace TruFetcher\Includes\Api\Controllers;
+use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Comments_Response;
+use WP_REST_Server;
+
 /**
  * Fired during plugin activation
  *

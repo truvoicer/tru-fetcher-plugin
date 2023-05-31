@@ -1,6 +1,8 @@
 <?php
 
 // exit if accessed directly
+use TruFetcher\Includes\Tru_Fetcher;
+
 if (!defined('ABSPATH')) exit;
 
 

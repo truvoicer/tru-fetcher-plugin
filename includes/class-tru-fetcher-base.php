@@ -30,6 +30,8 @@ class Tru_Fetcher_Base {
     private string $reactSecretKey;
     private string $appSecretKey;
 
+    private string $appEnv;
+
     protected $version;
 
     /**
@@ -46,6 +48,7 @@ class Tru_Fetcher_Base {
         $dotenv = \Dotenv\Dotenv::createImmutable(TRU_FETCHER_PLUGIN_DIR);
         $dotenv->load();
         $this->set_locale();
+        $this->setAppEnv();
         $this->setReactSecretKey();
         $this->setAppSecretKey();
     }
@@ -133,6 +136,27 @@ class Tru_Fetcher_Base {
         }
         $this->appSecretKey = $_ENV['TRU_FETCHER_APP_SECRET'];
     }
+
+    /**
+     * @return string
+     */
+    public function getAppEnv(): string
+    {
+        return $this->appEnv;
+    }
+
+    /**
+     */
+    public function setAppEnv(): void
+    {
+        if (empty($_ENV['APP_ENV'])) {
+            $this->appEnv = 'prod';
+            return;
+        }
+        $this->appEnv = $_ENV['APP_ENV'];
+    }
+
+
     public static function getConfig($configName = null, $array = false) {
         if ($configName === null) {
             wp_die("Config name not valid");

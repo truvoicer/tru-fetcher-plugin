@@ -73,11 +73,11 @@ class Tru_Fetcher_DB_Engine_Base
         $data['notice'] = $notice;
 		add_action($notice, function () use ($data) {
             if (isset($data['tables'])) {
-                require_once(TR_NEWS_APP_PLUGIN_DIR . 'includes/db/templates/missing-tables.php');
+                require_once(TRU_FETCHER_PLUGIN_DIR . 'includes/db/templates/missing-tables.php');
             } else if (isset($data['missing_columns'])) {
-                require_once(TR_NEWS_APP_PLUGIN_DIR . 'includes/db/templates/missing-columns.php');
+                require_once(TRU_FETCHER_PLUGIN_DIR . 'includes/db/templates/missing-columns.php');
             } else if (isset($data['required_data'])) {
-                require_once(TR_NEWS_APP_PLUGIN_DIR . 'includes/db/templates/missing-required-data.php');
+                require_once(TRU_FETCHER_PLUGIN_DIR . 'includes/db/templates/missing-required-data.php');
             }
 		});
 	}

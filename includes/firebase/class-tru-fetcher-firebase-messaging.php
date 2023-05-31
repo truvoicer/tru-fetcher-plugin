@@ -46,7 +46,7 @@ class Tru_Fetcher_Firebase_Messaging
     const ALLOW_NOTIFICATIONS = 'allow_notifications';
     const CONFIG_FILE_EXT = '.json';
     const CONFIG_FILE = 'google/firebase/client_credentials';
-    const CONFIG_PATH = TR_NEWS_APP_PLUGIN_DIR . 'config/';
+    const CONFIG_PATH = TRU_FETCHER_PLUGIN_DIR . 'config/';
     private Factory $factory;
     private Messaging $messaging;
 

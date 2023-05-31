@@ -9,6 +9,7 @@ use TruFetcher\Includes\Firebase\Tru_Fetcher_Firebase_Messaging;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
 use TruFetcher\Includes\User\Tru_Fetcher_User;
+use WP_Error;
 
 /**
  * Fired during plugin activation

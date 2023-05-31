@@ -1,0 +1,18 @@
+.tr-news-app {
+  &__table {
+    &__tbody {
+      position: relative;
+    }
+    &__tr {
+      &__td {
+        position: relative;
+      }
+    }
+  }
+  &--datatable {
+    &--form-container {
+      overflow-x: scroll;
+      padding: 10px;
+    }
+  }
+}

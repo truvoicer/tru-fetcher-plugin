@@ -1,6 +1,8 @@
 <?php
 namespace TruFetcher\Includes\TruFetcherAcf;
 
+use TruFetcher\Includes\Tru_Fetcher;
+
 /**
  * Fired during plugin activation
  *

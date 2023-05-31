@@ -1,7 +1,9 @@
 <?php
 namespace TruFetcher\Includes\Blocks;
 
+use TruFetcher\Includes\Tru_Fetcher;
 use TruFetcher\Includes\Tru_Fetcher_Base;
+use WP_Post;
 
 /**
  * Fired during plugin activation

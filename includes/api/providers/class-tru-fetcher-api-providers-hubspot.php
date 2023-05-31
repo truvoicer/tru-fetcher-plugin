@@ -10,6 +10,8 @@
  * @subpackage Tru_Fetcher/includes
  */
 
+use TruFetcher\Includes\Tru_Fetcher_Base;
+
 /**
  * Fired during plugin activation.
  *
@@ -40,7 +42,7 @@ class Tru_Fetcher_Api_Providers_Hubspot extends Tru_Fetcher_Base
 
     private function getHubspotConfig() {
         $config = parent::getConfig(self::HUBSPOT_CONFIG);
-            switch (WP_APP_ENV) {
+            switch ($this->getAppEnv()) {
                 case "dev":
                     return $config->hubspot_sdk->dev;
                 case "prod":

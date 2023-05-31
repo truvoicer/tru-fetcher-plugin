@@ -45,7 +45,8 @@ define( 'TRU_FETCHER_VERSION', '1.0.0' );
 define( 'TRU_FETCHER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'TRU_FETCHER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TRU_FETCHER_PLUGIN_ADMIN_URL', TRU_FETCHER_PLUGIN_URL . 'admin' );
-define( 'TRU_FETCHER_PLUGIN_ADMIN_DIR', plugin_dir_path( __FILE__ ) . 'admin' );
+define( 'TRU_FETCHER_PLUGIN_ADMIN_DIR', plugin_dir_path( __FILE__ ) . 'includes/admin' );
+define( 'TRU_FETCHER_PLUGIN_ADMIN_RES_DIR', TRU_FETCHER_PLUGIN_ADMIN_DIR . '/resources' );
 
 
 
@@ -59,21 +60,18 @@ class_loader_init();
 
 /**
  * The code that runs during plugin activation.
- * This action is documented in includes/class-tru-fetcher-activator.php
+ * This action is documented in includes/class-tr-news-app-activator.php
  */
 function activate_tru_fetcher() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-tru-fetcher-activator.php';
-	$activator = new Tru_Fetcher_Activator();
-	$activator->activate();
+    (new Tru_Fetcher_Activator())->activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-tru-fetcher-deactivator.php
+ * This action is documented in includes/class-tr-news-app-deactivator.php
  */
 function deactivate_tru_fetcher() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-tru-fetcher-deactivator.php';
-	Tru_Fetcher_Deactivator::deactivate();
+    (new Tru_Fetcher_Deactivator())->deactivate();
 }
 
 register_activation_hook( __FILE__, 'activate_tru_fetcher' );

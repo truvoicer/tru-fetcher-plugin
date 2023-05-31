@@ -1,6 +1,9 @@
 <?php
 namespace TruFetcher\Includes\Api\Controllers;
 
+use WP_Error;
+use WP_User;
+
 /**
  * Fired during plugin activation
  *

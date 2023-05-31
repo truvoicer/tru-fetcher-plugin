@@ -1,0 +1,15 @@
+export const SESSION_STATE = "session";
+export const SESSION_AUTHENTICATED = "authenticated";
+export const SESSION_IS_AUTHENTICATING = "SESSION_IS_AUTHENTICATING";
+export const SESSION_USER = "user";
+export const SESSION_USER_ID = "id";
+export const SESSION_USER_EMAIL = "email";
+export const SESSION_USER_TOKEN = "token";
+export const SESSION_USER_TOKEN_EXPIRES_AT = "expires_at";
+export const SESSION_NONCE = "nonce";
+export const SESSION_API_URLS = "api_urls";
+export const SESSION_API_BASE_URL = "api_base_url";
+export const SESSION_REDIRECT_URL = "redirect_url";
+export const SESSION_REFRESH_COUNT = "session_refresh_count";
+export const SESSION_REFRESH_LIMIT = "session_refresh_limit";
+export const SESSION_ERROR = "error";

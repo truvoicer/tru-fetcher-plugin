@@ -1,6 +1,8 @@
 <?php
 namespace TruFetcher\Includes;
 
+use TruFetcher\Includes\Database\Tru_Fetcher_Database;
+
 /**
  * Fired during plugin activation
  *
@@ -31,8 +33,8 @@ class Tru_Fetcher_Activator {
 	}
 
 	public function activate() {
-		$this->dbClass->createSavedItemsTable();
-		$this->dbClass->createRatingsTable();
-		$this->dbClass->updateVersion();
+//		$this->dbClass->createSavedItemsTable();
+//		$this->dbClass->createRatingsTable();
+//		$this->dbClass->updateVersion();
 	}
 }

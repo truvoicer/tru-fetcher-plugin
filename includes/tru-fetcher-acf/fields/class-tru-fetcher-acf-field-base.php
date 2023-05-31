@@ -1,6 +1,8 @@
 <?php
 
 
+use TruFetcher\Includes\Tru_Fetcher_Base;
+
 class Tru_Fetcher_Acf_Field_Base extends acf_field
 {
 

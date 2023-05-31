@@ -1,6 +1,11 @@
 <?php
 namespace TruFetcher\Includes\GraphQl;
 
+use DirectoryIterator;
+use TruFetcher\Includes\Listings\Tru_Fetcher_Listings;
+use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
+use TruFetcher\Includes\Sidebars\Tru_Fetcher_Sidebars;
+
 /**
  * Fired during plugin activation
  *

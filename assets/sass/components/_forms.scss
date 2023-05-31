@@ -1,0 +1,16 @@
+.tr-news-app {
+  &__form {
+        position: relative;
+    &--add-btn {
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      bottom: 0;
+      cursor: pointer;
+      &--left-bottom {
+        bottom: -10px;
+        left: -9px;
+      }
+    }
+  }
+}

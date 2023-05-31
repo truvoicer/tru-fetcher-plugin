@@ -1,6 +1,7 @@
 <?php
 
 use GraphQL\Error\UserError;
+use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
 
 add_action( 'graphql_register_types', 'register_post_with_template_connection', 99 );
 

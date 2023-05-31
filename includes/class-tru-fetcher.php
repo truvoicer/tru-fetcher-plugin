@@ -14,6 +14,8 @@ namespace TruFetcher\Includes;
  * @subpackage Tru_Fetcher/includes
  */
 
+use DirectoryIterator;
+use TruFetcher\Includes\Admin\Tru_Fetcher_Admin;
 use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_Jwt;
 use TruFetcher\Includes\Api\Tru_Fetcher_Api;
 use TruFetcher\Includes\Blocks\Tru_Fetcher_Blocks;
@@ -62,6 +64,7 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
         $this->healthCheck = new Tru_Fetcher_Health_Check();
         $this->userManager = new Tru_Fetcher_User();
 		$this->set_locale();
+		$this->loadAdmin();
 		$this->define_admin_hooks();
 //		$this->load_graphql();
 		$this->loadApi();
@@ -69,7 +72,7 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 //        $this->loadEmail();
 		$this->define_post_types();
 		$this->define_blocks();
-		$this->define_menus();
+		$this->define_nav_menus();
 		$this->define_sidebars();
 		$this->define_widgets();
 
@@ -92,6 +95,10 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 
 	}
 
+    private function loadAdmin() {
+        $admin = new Tru_Fetcher_Admin();
+        $admin->init();
+    }
 	/**
 	 * Register all of the hooks related to the admin area functionality
 	 * of the plugin.
@@ -249,7 +256,7 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 	    $blocksManager->blocks_init();
 	}
 
-	private function define_menus() {
+	private function define_nav_menus() {
 		$this->directoryIncludes( 'includes/menus/register', 'register-menu.php' );
 	}
 
@@ -274,7 +281,9 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
             }
         }
     }
+    public function activate() {
 
+    }
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *

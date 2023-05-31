@@ -1,5 +1,6 @@
 <?php
 use GraphQL\Error\UserError;
+use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
 
 add_filter('graphql_resolve_field',
     function (

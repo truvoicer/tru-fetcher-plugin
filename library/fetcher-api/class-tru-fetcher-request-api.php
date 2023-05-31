@@ -1,6 +1,9 @@
 <?php
 
 // exit if accessed directly
+use TruFetcher\Includes\Tru_Fetcher;
+use TruFetcher\Includes\Tru_Fetcher_Base;
+
 if (!defined('ABSPATH')) exit;
 
 // check if class already exists

@@ -1,6 +1,10 @@
 <?php
 namespace TruFetcher\Includes\Posts;
 
+use WP_Error;
+use WP_Post;
+use WP_Query;
+
 /**
  * Fired during plugin activation
  *

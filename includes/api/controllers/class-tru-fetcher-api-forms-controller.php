@@ -1,6 +1,12 @@
 <?php
 namespace TruFetcher\Includes\Api\Controllers;
 
+use TruFetcher\Includes\Api\Forms\Tru_Fetcher_Api_Form_Handler;
+use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Forms_Response;
+use TruFetcher\Includes\Email\Tru_Fetcher_Email;
+use WP_REST_Request;
+use WP_REST_Server;
+
 /**
  * Fired during plugin activation
  *

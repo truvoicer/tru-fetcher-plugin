@@ -1,6 +1,8 @@
 <?php
 namespace TruFetcher\Includes\Email;
 
+use TruFetcher\Includes\Tru_Fetcher;
+
 /**
  * Fired during plugin activation
  *
@@ -136,7 +138,7 @@ class Tru_Fetcher_Email {
     }
 
 	private function getDefaultTemplateVariables() {
-		$date        = new DateTime();
+		$date        = new \DateTime();
 		return array_merge( self::DEFAULT_TEMPLATE_VARS, [
 			"SITE_NAME"  => get_option( 'blogname' ),
 			"SITE_URL"   => get_option( 'siteurl' ),

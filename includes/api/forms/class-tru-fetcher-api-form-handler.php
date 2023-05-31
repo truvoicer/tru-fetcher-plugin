@@ -1,7 +1,12 @@
 <?php
 namespace TruFetcher\Includes\Api\Forms;
 
-use TruFetcher\Includes\Api\Controller\Tru_Fetcher_Api_Controller_Base;
+use Tru_Fetcher_Api_Providers_Hubspot;
+use TruFetcher\Includes\Api\Controllers\Tru_Fetcher_Api_Controller_Base;
+use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Forms_Response;
+use TruFetcher\Includes\Database\Tru_Fetcher_Database;
+use WP_REST_Request;
+use WP_User;
 
 /**
  * Fired during plugin activation

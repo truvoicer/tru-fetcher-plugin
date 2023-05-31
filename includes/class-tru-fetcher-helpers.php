@@ -1,6 +1,8 @@
 <?php
 namespace TruFetcher\Includes;
 
+use TruFetcher\Includes\Admin\AdminMenu\Tru_Fetcher_Admin_Menu_Constants;
+
 /**
  * The file that defines the core plugin class
  *
@@ -188,5 +190,30 @@ class Tru_Fetcher_Helpers {
 
     public static function getRequestBooleanValue($value) {
         return isset($value) && ($value === '1' || $value === true || $value === 'true');
+    }
+
+
+    public static function loadPostType(string $postType, string $pageKey) {
+        $path = sprintf(
+            '%s/%s/post-types/%s/register-post-type.php',
+            TRU_FETCHER_PLUGIN_ADMIN_RES_DIR,
+            $pageKey,
+            $postType
+        );
+        if (file_exists($path)) {
+            require_once($path);
+        }
+    }
+
+    public static function loadTaxonomy(string $taxonomy, string $pageKey) {
+        $path = sprintf(
+            '%s/%s/taxonomies/%s/register-taxonomy.php',
+            TRU_FETCHER_PLUGIN_ADMIN_RES_DIR,
+            $pageKey,
+            $taxonomy
+        );
+        if (file_exists($path)) {
+            require_once($path);
+        }
     }
 }

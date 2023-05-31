@@ -1,6 +1,9 @@
 <?php
 namespace TruFetcher\Includes\Menus;
 
+use stdClass;
+use TruFetcher\Includes\Listings\Tru_Fetcher_Listings;
+
 /**
  * Fired during plugin activation
  *
