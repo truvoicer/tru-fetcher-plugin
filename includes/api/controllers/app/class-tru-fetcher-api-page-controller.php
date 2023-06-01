@@ -1,5 +1,5 @@
 <?php
-namespace TruFetcher\Includes\Api\Controllers;
+namespace TruFetcher\Includes\Api\Controllers\App;
 
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Page_Response;
 use TruFetcher\Includes\Listings\Tru_Fetcher_Listings;
@@ -38,11 +38,12 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 	private $menuClass;
     private Tru_Fetcher_Posts $postsClass;
 
-	private $apiPostResponse;
+	private Tru_Fetcher_Api_Page_Response $apiPostResponse;
 	private $templatePostType = "item_view_templates";
 	private $listingsCategoriesTaxonomy = "listings_categories";
 
     public function __construct() {
+        parent::__construct();
         $this->publicEndpoint = $this->publicNamespace . $this->namespace;
         $this->protectedEndpoint = $this->protectedNamespace . $this->namespace;
     }
@@ -123,15 +124,53 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 	}
 
 	public function getPageBySlug( $request ) {
-		$pageName = (string) $request->get_param("page");
+		$pageName = $request->get_param("page");
 		$getPage = $this->postsClass->getPageBySlug($pageName);
+
 		if (is_wp_error($getPage)) {
             return $this->showError($getPage->get_error_code(), $getPage->get_error_message());
 		}
-		$this->apiPostResponse = $this->buildApiResponse( $getPage );
+        $pageData = [];
+        $pageData['isFrontPage'] = Tru_Fetcher_Posts::isHomePage($getPage->ID);
+        $pageData['status'] = $getPage->post_status;
+        $pageData['id'] = $getPage->ID;
+        $pageData['authorId'] = $getPage->post_author;
+        $pageData['title'] = $getPage->post_title;
+        $pageData['slug'] = $getPage->post_name;
+        $pageData['uri'] = $getPage->guid;
+        $pageData['content'] = apply_filters( 'the_content', $getPage->post_content);
+        $pageData['date'] = $getPage->post_date;
+        $pageData['dateGmt'] = $getPage->post_date_gmt;
+        $pageData['modified'] = $getPage->post_modified;
+        $pageData['modifiedGmt'] = $getPage->post_modified_gmt;
+        $pageData['menuOrder'] = $getPage->menu_order;
+        $pageData['page_options'] = [];
+        $pageData['page_options']['fieldGroupName'] = null;
+        $pageData['page_options']['footerScripts'] = null;
+        $pageData['page_options']['footerScriptsOverride'] = null;
+        $pageData['page_options']['headerScripts'] = null;
+        $pageData['page_options']['headerScriptsOverride'] = null;
+        $pageData['page_options']['pageType'] = null;
 
-		// Return the product as a response.
-		return rest_ensure_response( $this->apiPostResponse );
+        $allSettings = [];
+        $allSettings['generalSettingsTitle'] = get_bloginfo('name');
+        $allSettings['generalSettingsUrl'] = get_bloginfo('url');
+        $allSettings['home_url'] = get_option('home');
+        $allSettings['site_url'] = get_option('siteurl');
+        $allSettings['readingSettingsPostsPerPage'] = get_option('posts_per_page');
+        $allSettings['generalSettingsDescription'] = get_bloginfo('description');
+        $allSettings['generalSettingsDateFormat'] = get_option('date_format');
+        $allSettings['generalSettingsLanguage'] = get_bloginfo('language');
+        $allSettings['generalSettingsStartOfWeek'] = get_option('start_of_week');
+        $allSettings['generalSettingsTimeFormat'] = get_option('time_format');
+        $allSettings['generalSettingsTimezone'] = get_option('timezone_string');
+        $allSettings['admin_email'] = get_option('admin_email');
+        $allSettings['default_category'] = get_option('default_category');
+
+        $this->apiPostResponse->setPage($pageData);
+        $this->apiPostResponse->setAllSettings($allSettings);
+
+        return $this->controllerHelpers->sendSuccessResponse('Page fetched successfully', $this->apiPostResponse);
 	}
 
 	private function buildApiResponse( $page ) {

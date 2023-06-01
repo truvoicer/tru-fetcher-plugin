@@ -1,26 +1,44 @@
 <?php
 namespace TruFetcher\Includes\Api\Response;
 
-class Tru_Fetcher_Api_Page_Response
+class Tru_Fetcher_Api_Page_Response extends Tru_Fetcher_Api_Response
 {
-    public $post;
+    public $page;
+
+    public array $allSettings;
     public $blocks_data;
     public $site_config;
 
     /**
      * @return mixed
      */
-    public function getPost()
+    public function getPage()
     {
-        return $this->post;
+        return $this->page;
     }
 
     /**
-     * @param mixed $post
+     * @param mixed $page
      */
-    public function setPost($post)
+    public function setPage($page)
     {
-        $this->post = $post;
+        $this->page = $page;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllSettings(): array
+    {
+        return $this->allSettings;
+    }
+
+    /**
+     * @param array $allSettings
+     */
+    public function setAllSettings(array $allSettings): void
+    {
+        $this->allSettings = $allSettings;
     }
 
     /**

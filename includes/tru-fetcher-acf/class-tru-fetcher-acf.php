@@ -89,13 +89,13 @@ class Tru_Fetcher_Acf {
         // load textdomain
 //        load_plugin_textdomain( 'TEXTDOMAIN', false, plugin_basename( dirname( __FILE__ ) ) . '/lang' );
 
-        include_once('fields/class-tru-fetcher-acf-field-base.php');
-        // include
-        foreach (self::ACF_FIELDS as $fieldName) {
-            if (isset($fieldName) && $fieldName !== "") {
-                include_once(sprintf('fields/class-tru-fetcher-acf-field-%s-v%d.php', $fieldName, $version));
-            }
-        }
+//        include_once('fields/class-tru-fetcher-acf-field-base.php');
+//        // include
+//        foreach (self::ACF_FIELDS as $fieldName) {
+//            if (isset($fieldName) && $fieldName !== "") {
+//                include_once(sprintf('fields/class-tru-fetcher-acf-field-%s-v%d.php', $fieldName, $version));
+//            }
+//        }
     }
 
 }

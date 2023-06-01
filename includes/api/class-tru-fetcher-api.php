@@ -1,9 +1,9 @@
 <?php
 namespace TruFetcher\Includes\Api;
 
+use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Page_Controller;
 use TruFetcher\Includes\Api\Controllers\Tru_Fetcher_Api_Comments_Controller;
 use TruFetcher\Includes\Api\Controllers\Tru_Fetcher_Api_Forms_Controller;
-use TruFetcher\Includes\Api\Controllers\Tru_Fetcher_Api_Page_Controller;
 use TruFetcher\Includes\Api\Controllers\Tru_Fetcher_Api_Posts_Controller;
 use TruFetcher\Includes\Api\Controllers\Tru_Fetcher_Api_User_Controller;
 

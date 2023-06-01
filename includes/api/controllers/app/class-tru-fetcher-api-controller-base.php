@@ -1,8 +1,9 @@
 <?php
-namespace TruFetcher\Includes\Api\Controllers;
 
-use WP_Error;
-use WP_User;
+namespace TruFetcher\Includes\Api\Controllers\App;
+
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Controller;
+use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_App;
 
 /**
  * Fired during plugin activation
@@ -25,16 +26,25 @@ use WP_User;
  * @author     Michael <michael@local.com>
  */
 class Tru_Fetcher_Api_Controller_Base {
-
     const STATUS_SUCCESS = "success";
 
-	protected string $publicNamespace = "tru-fetcher-api/public";
-	protected string $protectedNamespace = "tru-fetcher-api/protected";
+    protected string $publicNamespace = "tru-fetcher-api/public";
+    protected string $protectedNamespace = "tru-fetcher-api/protected";
 
-    private WP_User $user;
+    private \WP_User $user;
+
+    protected Tru_Fetcher_Api_Helpers_Controller $controllerHelpers;
+
+    protected Tru_Fetcher_Api_Auth_App $apiAuthApp;
+
+    public function __construct()
+    {
+        $this->controllerHelpers = new Tru_Fetcher_Api_Helpers_Controller();
+        $this->apiAuthApp = new Tru_Fetcher_Api_Auth_App();
+    }
 
     protected function showError( $code, $message ) {
-        return new WP_Error( $code,
+        return new \WP_Error( $code,
             esc_html__( $message, 'my-text-domain' ),
             array( 'status' => 404 ) );
     }
@@ -45,18 +55,19 @@ class Tru_Fetcher_Api_Controller_Base {
     }
 
     /**
-     * @return WP_User
+     * @return \WP_User
      */
-    public function getUser(): WP_User
+    public function getUser(): \WP_User
     {
         return $this->user;
     }
 
     /**
-     * @param WP_User $user
+     * @param \WP_User $user
      */
-    public function setUser(WP_User $user): void
+    public function setUser(\WP_User $user): void
     {
         $this->user = $user;
     }
+
 }

@@ -21,6 +21,7 @@ use TruFetcher\Includes\Api\Tru_Fetcher_Api;
 use TruFetcher\Includes\Blocks\Tru_Fetcher_Blocks;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 use TruFetcher\Includes\Tru_Fetcher_Health_Check;
+use TruFetcher\Includes\TruFetcherAcf\Tru_Fetcher_Acf;
 use TruFetcher\Includes\User\Tru_Fetcher_User;
 
 /**
@@ -68,7 +69,7 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 		$this->define_admin_hooks();
 //		$this->load_graphql();
 		$this->loadApi();
-//        $this->loadAcf();
+        $this->loadAcf();
 //        $this->loadEmail();
 		$this->define_post_types();
 		$this->define_blocks();
@@ -238,8 +239,8 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 	}
 
     private function loadAcf() {
-//        $truFetcherAcf = new Tru_Fetcher_Acf();
-//        $truFetcherAcf->acf_init();
+        $truFetcherAcf = new Tru_Fetcher_Acf();
+        $truFetcherAcf->acf_init();
     }
 
     private function loadEmail() {

@@ -98,11 +98,13 @@ class Tru_Fetcher_Posts {
         return $getPostTemplate[0];
     }
 
-    public function getPageBySlug( $slug ) {
-        if ( ! isset( $slug ) ) {
-            return new WP_Error('request_missing_parameters', "Page name doesn't exist in request");
-        }
-        if ( $slug === "home" ) {
+    public static function isHomePage($pageId) {
+        return $pageId === get_option( "page_on_front" );
+    }
+
+    public function getPageBySlug( ?string $slug = 'home' ) {
+
+        if ( !$slug || $slug === "home" ) {
             $pageId  = get_option( "page_on_front" );
             $getPage = get_post( $pageId );
         } else {
