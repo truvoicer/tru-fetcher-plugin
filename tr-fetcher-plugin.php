@@ -49,7 +49,12 @@ define( 'TRU_FETCHER_PLUGIN_ADMIN_DIR', plugin_dir_path( __FILE__ ) . 'includes/
 define( 'TRU_FETCHER_PLUGIN_ADMIN_RES_DIR', TRU_FETCHER_PLUGIN_ADMIN_DIR . '/resources' );
 
 
-
+if (!function_exists('get_fields')) {
+    function get_fields()
+    {
+        return false;
+    }
+}
 function class_loader_init() {
     require_once plugin_dir_path( __FILE__ ) . 'includes/class-tru-fetcher-auto-loader.php';
     spl_autoload_register(

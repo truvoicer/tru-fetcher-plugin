@@ -41,7 +41,7 @@ class Tru_Fetcher_Email {
 	public function __construct() {
 		$this->loadDependencies();
 		$this->defaultTemplateVariables = $this->getDefaultTemplateVariables();
-		$this->options                  = get_fields( "option" );
+		$this->options                  = \get_fields( "option" );
 	}
 
 	public function loadDependencies() {

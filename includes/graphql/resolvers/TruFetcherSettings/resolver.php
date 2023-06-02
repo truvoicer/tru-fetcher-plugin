@@ -11,7 +11,7 @@ $optionKeys = [
 ];
 add_filter( 'graphql_resolve_field', function( $result, $source, $args, $context, $info, $type_name, $field_key, $field, $field_resolver ) use($optionKeys) {
     if ( $field_key === 'truFetcherSettings' ) {
-        $optionFields = get_fields("option");
+        $optionFields = \get_fields("option");
 
         return [
             "settings_json" => json_encode(array_merge($optionKeys, ($optionFields)? $optionFields : [])),

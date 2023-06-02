@@ -43,7 +43,7 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
     public const TAXONOMY_ENDPOINT = "edit-tags.php?taxonomy=%s";
 
     public const REACT_SCRIPT_NAME = "index";
-    public const ADMIN_NAME = "tr-news-app-admin";
+    public const ADMIN_NAME = "tru-fetcher-admin";
 
     private Tru_Fetcher_Health_Check $healthCheck;
     private Tru_Fetcher_User $userManager;
@@ -194,7 +194,7 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
     }
 
 	public static function getFrontendUrl() {
-		$options = get_fields( "option" );
+		$options = \get_fields( "option" );
 		$frontendUrl = get_option( 'siteurl' );
 		if ( isset( $options["frontend_url"] ) ) {
 			$frontendUrl = $options["frontend_url"];
@@ -218,7 +218,7 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 	}
 
 	public static function getTruFetcherSettings() {
-		return get_fields( "option" );
+		return \get_fields( "option" );
 	}
 
     public static function isNotEmpty(string $string = null) {

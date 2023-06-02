@@ -51,7 +51,7 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
     {
         $this->publicEndpoint = $this->publicNamespace . $this->namespace;
         $this->protectedEndpoint = $this->protectedNamespace . $this->namespace;
-        $this->options = get_fields("option");
+        $this->options = \get_fields("option");
         $this->emailManager = new Tru_Fetcher_Email();
     }
 
@@ -413,7 +413,7 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
                 if ($internalProviderName !== $item->provider_name) {
                     return $item;
                 }
-                $item->data = get_fields((int)$item->item_id);
+                $item->data = \get_fields((int)$item->item_id);
                 return $item;
             }, $getResults);
         }

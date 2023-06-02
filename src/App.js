@@ -1,4 +1,4 @@
-import '../assets/sass/tr-news-app-admin.scss';
+import '../assets/sass/tru-fetcher-admin.scss';
 import React from 'react';
 import {Provider} from "react-redux";
 import store from "./library/redux/store";

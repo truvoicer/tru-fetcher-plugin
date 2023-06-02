@@ -76,7 +76,7 @@ class Tru_Fetcher_Sidebars {
             $array[ $widgetInstanceName ] = $widgetData;
 
             if (in_array($widgetInstanceName, self::ACF_WIDGETS)) {
-                $array[ $widgetInstanceName ] = get_fields( 'widget_' . $item );
+                $array[ $widgetInstanceName ] = \get_fields( 'widget_' . $item );
             }
             else if ( $widgetInstanceName === "nav_menu" ) {
                 if ( array_key_exists( "nav_menu", $widgetData ) ) {

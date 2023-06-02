@@ -41,8 +41,43 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base
     public function blocks_init()
     {
         $this->registerBlocks();
+        add_action( 'init', [$this, 'myguten_register_post_meta'] );
     }
 
+    function myguten_register_post_meta() {
+        register_post_meta( 'post', 'meta_fields_page_options_page_type', array(
+            'show_in_rest' => true,
+            'single' => true,
+            'type' => 'string',
+        ) );
+        register_post_meta( 'post', 'meta_fields_page_options_header_override', array(
+            'show_in_rest' => true,
+            'single' => true,
+            'type' => 'boolean',
+        ) );
+        register_post_meta( 'post', 'meta_fields_page_options_header_scripts', array(
+            'show_in_rest' => true,
+            'single' => true,
+            'type' => 'string',
+        ) );
+        register_post_meta( 'post', 'meta_fields_page_options_footer_override', array(
+            'show_in_rest' => true,
+            'single' => true,
+            'type' => 'boolean',
+        ) );
+        register_post_meta( 'post', 'meta_fields_page_options_footer_scripts', array(
+            'show_in_rest' => true,
+            'single' => true,
+            'type' => 'string',
+        ) );
+    }
+    public function myguten_register_template() {
+        $post_type_object = get_post_type_object( 'page' );
+        $post_type_object->template = array(
+            array( 'myguten/meta-block' ),
+        );
+        $post_type_object->template_lock = 'all';
+    }
     public function registerBlocks()
     {
         Tru_Fetcher::directoryIncludes('includes/blocks/register-blocks', 'acf-register.php');
@@ -51,7 +86,7 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base
     public function getBlockData($block)
     {
         acf_setup_meta($block['data'], $block['id'], true);
-        $fields = get_fields();
+        $fields = \get_fields();
         if (!$fields) {
             return [];
         }
@@ -75,7 +110,7 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base
             } else if (!$field instanceof WP_Post) {
                 $fields[$key] = $field;
             } else if (array_key_exists($field->post_type, self::REPLACEABLE_POST_TYPES)) {
-                $getFields = get_fields($field->ID);
+                $getFields = \get_fields($field->ID);
                 $fieldNames = self::REPLACEABLE_POST_TYPES[$field->post_type];
 
                 if (is_array($fieldNames)) {
