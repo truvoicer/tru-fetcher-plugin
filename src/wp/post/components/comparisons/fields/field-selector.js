@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { TextControl, TextareaControl, ToggleControl, DateTimePicker, ColorPicker, Button } from '@wordpress/components';
+import { Input, DatePicker, Button, Switch, ColorPicker  } from 'antd';
+const { TextArea } = Input;
 export const FIELDS = {
     TEXT: 'text',
     HTML: 'html',
@@ -15,8 +16,8 @@ export const FIELDS = {
 };
 export function getTextField({changeHandler, type, label, value}) {
     return (
-        <TextControl
-            label={ label }
+        <Input
+            placeholder={ label }
             value={ value }
             type={ type }
             onChange={ ( textValue ) => changeHandler( textValue ) }
@@ -29,11 +30,10 @@ export function getArrayField({changeHandler, label, value}) {
 
 export function getHtmlField({changeHandler, label, value}) {
     return (
-        <TextareaControl
-            label={ label }
-            help="Enter some text"
-            value={ text }
-            onChange={ ( value ) => changeHandler( value ) }
+        <TextArea
+            placeholder={ label }
+            value={ value }
+            onChange={ ( textValue ) => changeHandler( textValue ) }
         />
     )
 }
@@ -41,15 +41,7 @@ export function getHtmlField({changeHandler, label, value}) {
 export function getDateField({changeHandler, label, setModalComponent, setShowModal, value}) {
 
     return (
-        <Button
-            variant="primary"
-            onClick={() => {
-                setModalComponent(<DateTimePicker  onChange={(date) => { changeHandler( date ) }} />);
-                setShowModal(true);
-            }}
-        >
-            Select Date
-        </Button>
+        <DatePicker  onChange={(date, dateString) => { changeHandler( dateString ) }} />
     )
 }
 
@@ -58,9 +50,9 @@ export function getColorField({changeHandler, label, setModalComponent, setShowM
     return (
 
         <Button
-            variant="primary"
+            type="primary"
             onClick={() => {
-                setModalComponent(<ColorPicker onChange={(color) => { changeHandler( color ) }} />);
+                setModalComponent(<ColorPicker  onChange={(value, hex) => { changeHandler( hex ) }} />);
                 setShowModal(true);
             }}
         >
@@ -71,8 +63,8 @@ export function getColorField({changeHandler, label, setModalComponent, setShowM
 
 export function getTrueFalseField({changeHandler, label, value}) {
     return (
-        <ToggleControl
-            label={ label }
+        <Switch
+            checkedChildren="Yes" unCheckedChildren="No"
             checked={ value }
             onChange={ () => changeHandler( ! value ) }
         />
@@ -99,6 +91,7 @@ export default function buildFormField ({fieldType, value, changeHandler, setMod
         case FIELDS.TEXT:
             fieldProps.label = 'Text';
             fieldProps.type = 'text';
+            console.log({fieldProps})
             return getTextField(fieldProps);
         case FIELDS.URL:
             fieldProps.label = 'Url';

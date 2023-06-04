@@ -29,6 +29,7 @@
     "@wordpress/element": "^5.11.0",
     "@wordpress/i18n": "^4.34.0",
     "@wordpress/plugins": "^6.2.0",
+    "antd": "^5.5.2",
     "crypto-js": "^4.1.1",
     "formik": "^2.4.1",
     "moment": "^2.29.4",

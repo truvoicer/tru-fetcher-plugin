@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {Select, Table, Button, Modal, Header} from "semantic-ui-react";
+import {Table} from "semantic-ui-react";
+import { Col, Row, Select, Button, Modal } from 'antd';
 import PostMetaBoxContext from "../../contexts/PostMetaBoxContext";
 import {fetchRequest} from "../../../../library/api/middleware";
 import fetcherApiConfig from "../../../../library/api/fetcher-api/fetcherApiConfig";
@@ -40,15 +41,16 @@ const ItemDataKeysTab = ({onChange = false}) => {
     function getValueTypeOptions() {
         return Object.keys(FIELDS).map((key) => {
             return {
-                text: key.replaceAll('_', ' '),
+                label: key.replaceAll('_', ' '),
                 value: FIELDS[key],
             }
         })
     }
+
     function getDataKeysOptions() {
         return dataKeys.map((item) => {
             return {
-                text: item.key_value,
+                label: item.key_value,
                 value: item.id,
             }
         })
@@ -61,8 +63,10 @@ const ItemDataKeysTab = ({onChange = false}) => {
             dataItemKeyValue
         })
     }
+
     function getFormGroup({item, index}) {
         return (
+            // <Table columns={[]} dataSource={item} bordered />
             <Table definition>
                 <Table.Body>
                     <Table.Row>
@@ -118,6 +122,7 @@ const ItemDataKeysTab = ({onChange = false}) => {
             </Table>
         )
     }
+
     async function dataKeysRequest() {
         if (!isNotEmpty(selectedService)) {
             return;
@@ -133,14 +138,16 @@ const ItemDataKeysTab = ({onChange = false}) => {
             setDataKeys(results.data.data);
         }
     }
+
     function getServicesOptions() {
         return services.map((item) => {
             return {
-                text: item.service_label,
+                label: item.service_label,
                 value: item.id,
             }
         })
     }
+
     useEffect(() => {
         serviceListRequest();
     }, []);
@@ -150,58 +157,59 @@ const ItemDataKeysTab = ({onChange = false}) => {
     console.log('dataKeys', dataKeys)
     return (
         <>
-            <div className={'form-group'}>
-                <label className={'form-label'}>Service</label>
-            <Select
-                options={getServicesOptions()}
-                value={selectedService}
-                onChange={(e, data) => {
-                    setSelectedService(data.value);
-                }}
-            />
-            </div>
-            {postMetaBoxContext.data.data_keys.map((item, index) => {
-                return (
-                    <div key={index}>
-                        {getFormGroup({item, index})}
-                    </div>
-                )
-            })}
-            <Button
-                primary
-                onClick={(e) => {
-                    e.preventDefault();
-                    postMetaBoxContext.updateData('data_keys', [
-                        ...postMetaBoxContext.data.data_keys,
-                        {
-                            data_item_key: '',
-                            value_type: '',
-                            data_item_text: '',
-                        }
-                    ])
-                }}
-            >Add Row</Button>
+                <Row>
+                    <Col>
+                        <label className={'form-label'}>Service</label>
+                        <Select
+                            options={getServicesOptions()}
+                            value={selectedService}
+                            onChange={(e, data) => {
+                                setSelectedService(data.value);
+                            }}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        {postMetaBoxContext.data.data_keys.map((item, index) => {
+                            return (
+                                <div key={index}>
+                                    {getFormGroup({item, index})}
+                                </div>
+                            )
+                        })}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        {isNotEmpty(selectedService) && (
+                            <Button
+                                type={'primary'}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    postMetaBoxContext.updateData('data_keys', [
+                                        ...postMetaBoxContext.data.data_keys,
+                                        {
+                                            data_item_key: '',
+                                            value_type: '',
+                                            data_item_text: '',
+                                        }
+                                    ])
+                                }}
+                            >
+                                Add Row
+                            </Button>
+                        )}
+                    </Col>
+                </Row>
             <Modal
-                onClose={() => setShowModal(false)}
-                onOpen={() => setShowModal(true)}
+                title={modalHeader}
                 open={showModal}
+                onOk={() => setShowModal(false)}
+                onCancel={() => setShowModal(false)}
             >
-                <Modal.Header>{modalHeader}</Modal.Header>
-                <Modal.Content>
-                    {modalComponent}
-                </Modal.Content>
-                <Modal.Actions>
-                    <Button color='black' onClick={() => setShowModal(false)}>
-                        Cancel
-                    </Button>
-                    <Button
-                        content="Ok"
-                        labelPosition='right'
-                        icon='checkmark'
-                        onClick={() => setShowModal(false)}
-                        positive
-                    />
-                </Modal.Actions>
+
+                {modalComponent}
             </Modal>
         </>
     );

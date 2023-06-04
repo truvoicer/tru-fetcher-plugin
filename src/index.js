@@ -12,6 +12,8 @@ import { TextControl, PanelBody, PanelRow } from '@wordpress/components';
 /**
  * Import the stylesheet for the plugin.
  */
+
+import 'antd/dist/reset.css';
 import '../assets/sass/tru-fetcher-admin.scss';
 import PostMetaBox from "./wp/post/PostMetaBox";
 // import SidebarMetaboxLoader from "./wp/sidebar/SidebarMetaboxLoader";

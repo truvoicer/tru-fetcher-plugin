@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {Tab} from 'semantic-ui-react'
+// import {Tab} from 'semantic-ui-react'
+import {Tabs} from 'antd';
 import ItemGeneralTab from "./components/comparisons/ItemGeneralTab";
 import PostMetaBoxContext from "./contexts/PostMetaBoxContext";
 import ItemDataKeysTab from "./components/comparisons/ItemDataKeysTab";
@@ -8,6 +9,7 @@ import {APP_STATE} from "../../library/redux/constants/app-constants";
 import {SESSION_STATE} from "../../library/redux/constants/session-constants";
 import {connect} from "react-redux";
 import Auth from "../../components/auth/Auth";
+import {TabPanel} from '@wordpress/components';
 
 const PostMetaBoxTabs = ({session}) => {
     const [panes, setPanes] = useState([]);
@@ -27,19 +29,16 @@ const PostMetaBoxTabs = ({session}) => {
 
     const initialPanes = [
         {
+
             name: 'general',
-            menuItem: 'General',
-            render: (a) => {
-                return (
-                    <Tab.Pane attached={false}>
-                        <ItemGeneralTab
-                            onChange={(data) => {
-                                console.log({data})
-                            }}
-                        />
-                    </Tab.Pane>
-                )
-            }
+            label: 'General',
+            children: (
+                <ItemGeneralTab
+                    onChange={(data) => {
+                        console.log({data})
+                    }}
+                />
+            )
         },
     ]
 
@@ -64,56 +63,57 @@ const PostMetaBoxTabs = ({session}) => {
     }
 
     useEffect(() => {
-        setPanes(initialPanes)
+        setPanes(initialPanes.map((item, index) => {
+            const cloneItem = {...item};
+            cloneItem.key = index;
+            return cloneItem;
+        }))
     }, [])
     useEffect(() => {
         setPanes(paneState => {
             let cloneState = [...paneState];
+            let data = [];
             switch (metaBoxContext.data.type) {
                 case 'custom':
-                    return updatePanes({
+                    data = updatePanes({
                         insertPanes: [{
                             name: 'custom',
-                            menuItem: 'Custom',
-                            render: () => <Tab.Pane attached={false}>Custom</Tab.Pane>,
+                            label: 'Custom',
+                            children: 'Custom',
                         }],
                         removePanes: ['data_keys'],
                         panes: cloneState,
                     });
+                    break;
                 case 'api_data_keys':
                 default:
-                    return updatePanes({
+                    data = updatePanes({
                         insertPanes: [{
                             name: 'data_keys',
-                            menuItem: 'Data Keys',
-                            render: (a) => {
-                                return (
-                                    <Tab.Pane attached={false}>
-                                        <ItemDataKeysTab
-                                        />
-                                    </Tab.Pane>
-                                )
-                            }
+                            label: 'Data Keys',
+                            children: (
+                                <ItemDataKeysTab />
+                            )
                         }],
                         removePanes: ['custom'],
                         panes: cloneState,
                     });
+                    break;
             }
+            console.log({data})
+            return data.map((item, index) => {
+                const cloneItem = {...item};
+                cloneItem.key = index;
+                return cloneItem;
+            });
         })
     }, [metaBoxContext])
-    console.log({session})
+
     return (
         <Auth config={tru_fetcher_react?.api?.tru_fetcher}>
             <PostMetaBoxContext.Provider value={metaBoxContext}>
-                <Tab
-                    menu={{secondary: true, pointing: true}}
-                    panes={panes}
-                    onTabChange={(e, data) => {
-                        console.log({e, data})
 
-                        // setPanes(initialPanes)
-                    }}
-                />
+                <Tabs defaultActiveKey="1" items={panes}/>
             </PostMetaBoxContext.Provider>
         </Auth>
     );
