@@ -2,12 +2,12 @@ import React, {useEffect, useState} from 'react';
 import FormBuilder from "../../FormBuilder";
 import categoryOptions from "../../configs/category-options";
 import {fetchRequest} from "../../../../library/api/middleware";
-import {fetchTermsRequest} from "../../../../library/api/requests/term-requests";
+import {fetchTermsRequest} from "../../../../library/api/wp/requests/term-requests";
 import {isNotEmpty, isObject, isObjectEmpty} from "../../../../library/helpers/utils-helpers";
 import {
 	fetchAllOptionGroupsRequest,
 	getOptionGroupSelectData
-} from "../../../../library/api/requests/option-group-requests";
+} from "../../../../library/api/wp/requests/option-group-requests";
 import screenOptions from "../../configs/screen-options";
 import {buildFormFieldsData, setDatatableFormValues} from "../../../../library/helpers/datatable/formik-helpers";
 

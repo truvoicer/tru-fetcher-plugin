@@ -156,6 +156,13 @@ class Tru_Fetcher_Base {
         $this->appEnv = $_ENV['APP_ENV'];
     }
 
+    public function getEnv($envName): string
+    {
+        if (empty($_ENV[$envName])) {
+            return false;
+        }
+        return $_ENV[$envName];
+    }
 
     public static function getConfig($configName = null, $array = false) {
         if ($configName === null) {

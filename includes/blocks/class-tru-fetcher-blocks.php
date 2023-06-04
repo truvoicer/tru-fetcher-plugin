@@ -45,27 +45,27 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base
     }
 
     function myguten_register_post_meta() {
-        register_post_meta( 'post', 'meta_fields_page_options_page_type', array(
+        register_post_meta( 'page', 'meta_fields_page_options_page_type', array(
             'show_in_rest' => true,
             'single' => true,
             'type' => 'string',
         ) );
-        register_post_meta( 'post', 'meta_fields_page_options_header_override', array(
+        register_post_meta( 'page', 'meta_fields_page_options_header_override', array(
             'show_in_rest' => true,
             'single' => true,
             'type' => 'boolean',
         ) );
-        register_post_meta( 'post', 'meta_fields_page_options_header_scripts', array(
+        register_post_meta( 'page', 'meta_fields_page_options_header_scripts', array(
             'show_in_rest' => true,
             'single' => true,
             'type' => 'string',
         ) );
-        register_post_meta( 'post', 'meta_fields_page_options_footer_override', array(
+        register_post_meta( 'page', 'meta_fields_page_options_footer_override', array(
             'show_in_rest' => true,
             'single' => true,
             'type' => 'boolean',
         ) );
-        register_post_meta( 'post', 'meta_fields_page_options_footer_scripts', array(
+        register_post_meta( 'page', 'meta_fields_page_options_footer_scripts', array(
             'show_in_rest' => true,
             'single' => true,
             'type' => 'string',
@@ -86,7 +86,7 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base
     public function getBlockData($block)
     {
         acf_setup_meta($block['data'], $block['id'], true);
-        $fields = \get_fields();
+        $fields = \get_fields_clone();
         if (!$fields) {
             return [];
         }
@@ -110,7 +110,7 @@ class Tru_Fetcher_Blocks extends Tru_Fetcher_Base
             } else if (!$field instanceof WP_Post) {
                 $fields[$key] = $field;
             } else if (array_key_exists($field->post_type, self::REPLACEABLE_POST_TYPES)) {
-                $getFields = \get_fields($field->ID);
+                $getFields = \get_fields_clone($field->ID);
                 $fieldNames = self::REPLACEABLE_POST_TYPES[$field->post_type];
 
                 if (is_array($fieldNames)) {

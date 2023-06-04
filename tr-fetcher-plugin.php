@@ -39,8 +39,9 @@ require_once __DIR__ . '/vendor/autoload.php';
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-const TRU_FETCHER_PLUGIN_NAME = 'tr-news-app';
-const TRU_FETCHER_ERROR_PREFIX = 'tr_news_app_error';
+const TRU_FETCHER_PLUGIN_NAME = 'tru_fetcher';
+const TRU_FETCHER_PLUGIN_NAME_ACRONYM = 'trf';
+const TRU_FETCHER_ERROR_PREFIX = 'tru_fetcher_error';
 define( 'TRU_FETCHER_VERSION', '1.0.0' );
 define( 'TRU_FETCHER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'TRU_FETCHER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
@@ -49,12 +50,16 @@ define( 'TRU_FETCHER_PLUGIN_ADMIN_DIR', plugin_dir_path( __FILE__ ) . 'includes/
 define( 'TRU_FETCHER_PLUGIN_ADMIN_RES_DIR', TRU_FETCHER_PLUGIN_ADMIN_DIR . '/resources' );
 
 
-if (!function_exists('get_fields')) {
-    function get_fields()
-    {
-        return false;
-    }
+function get_fields_clone()
+{
+    return false;
 }
+//if (!function_exists('get_fields')) {
+//    function get_fields()
+//    {
+//        return false;
+//    }
+//}
 function class_loader_init() {
     require_once plugin_dir_path( __FILE__ ) . 'includes/class-tru-fetcher-auto-loader.php';
     spl_autoload_register(

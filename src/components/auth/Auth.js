@@ -11,13 +11,13 @@ import {checkToken, loadAxiosInterceptors} from "../../library/api/middleware";
 import {setAppHasLoadedAction, setInitialAppState} from "../../library/redux/actions/app-actions";
 import {setSessionIsAuthenticating} from "../../library/redux/reducers/session-reducer";
 import Loader from "../Loader";
-import {Icon} from "semantic-ui-react";
+import fetcherApiConfig from "../../library/api/fetcher-api/fetcherApiConfig";
 
-function Auth({children, app, session}) {
+function Auth({children, app, session, config}) {
 
     async function validateSession() {
         setSessionIsAuthenticating(true);
-        const checkTokenResults = await checkToken('react');
+        const checkTokenResults = await checkToken({tokenType: 'react', config: fetcherApiConfig});
         if (!checkTokenResults) {
             return;
         }
@@ -28,8 +28,8 @@ function Auth({children, app, session}) {
     }
 
     useEffect(() => {
-        const setInitialSession = setInitialSessionState();
-        const setInitialApp = setInitialAppState();
+        const setInitialSession = setInitialSessionState(config);
+        const setInitialApp = setInitialAppState(config);
         if (setInitialSession && setInitialApp) {
             setAppHasLoadedAction(true)
         }

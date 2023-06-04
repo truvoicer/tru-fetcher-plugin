@@ -1,4 +1,4 @@
-import apiConfig from "../api/config";
+import apiConfig from "./wp/config";
 import {isNotEmpty} from "../helpers/utils-helpers";
 import {
     getSessionApiUrlBaseAction,
@@ -7,9 +7,10 @@ import {
     setSessionLocalStorage,
     setSessionState
 } from "../redux/actions/session-actions";
-import {SESSION_USER_TOKEN} from "../redux/constants/session-constants";
+import {SESSION_STATE, SESSION_USER_TOKEN} from "../redux/constants/session-constants";
 import {getAppNameAction} from "../redux/actions/app-actions";
 import {getSignedJwt} from "../helpers/auth/jwt-helpers";
+import store from "../redux/store";
 
 const axios = require("axios");
 const sprintf = require('sprintf-js').sprintf
@@ -63,12 +64,22 @@ export function loadAxiosInterceptors(apiRequest) {
  */
 const getAuthHeader = () => {
     const sessionStorage = getSessionLocalStorage();
+    let token = false;
     //Return false if local session token is invalid
     if (typeof sessionStorage[SESSION_USER_TOKEN] === 'undefined' || !isNotEmpty(sessionStorage[SESSION_USER_TOKEN])) {
-        return false;
+        const sessionStore = store.getState()[SESSION_STATE];
+        if (!isNotEmpty(sessionStore?.user?.token)) {
+            return false;
+        }
+        token = sessionStore.user.token;
+    } else {
+        token = sessionStorage[SESSION_USER_TOKEN];
+        if (!validateToken()) {
+            return false;
+        }
     }
     return {
-        'Authorization': `Bearer ${sessionStorage[SESSION_USER_TOKEN]}`
+        'Authorization': `Bearer ${token}`
     };
 }
 const getUploadHeaders = () => {
@@ -81,6 +92,7 @@ const getUploadHeaders = () => {
  * Makes api fetch request
  * Returns false if headers are invalid
  *
+ * @param config
  * @param method
  * @param endpoint
  * @param params
@@ -89,28 +101,33 @@ const getUploadHeaders = () => {
  * @returns {boolean|Promise<AxiosResponse<any>>}
  */
 export async function sendRequest({
+    config = apiConfig,
     method = 'post',
     endpoint,
     params = {},
     data = {},
     upload = false,
 }) {
+    let requestParams = params;
     const apiRequest = getApiRequest();
     if (!apiRequest) {
         return false;
     }
-    const apiRequestAuthData = getApiRequestAuthData();
-    if (!apiRequestAuthData) {
-        return false;
-    }
-    if (!validateToken()) {
-        return false;
+    if (config?.wpRequest) {
+        const apiRequestAuthData = getApiRequestAuthData(config);
+        if (!apiRequestAuthData) {
+            return false;
+        }
+        requestParams = {...requestParams, ...apiRequestAuthData};
     }
     const urlBase = getSessionApiUrlBaseAction();
     if (!urlBase) {
         return false;
     }
     let headers = getAuthHeader();
+    if (!headers && config?.wpRequest) {
+        return false;
+    }
     if (upload) {
         headers = {...headers, ...getUploadHeaders()};
     }
@@ -118,10 +135,7 @@ export async function sendRequest({
         method,
         url: `${urlBase}/${endpoint}`,
         headers,
-        params: {
-            ...apiRequestAuthData,
-            params
-        },
+        params: requestParams,
         data
     }
     return await apiRequest.request(request);
@@ -131,34 +145,37 @@ export async function sendRequest({
  * Makes api fetch request
  * Returns false if headers are invalid
  *
+ * @param config
  * @param endpoint
  * @param params
  * @returns {boolean|Promise<AxiosResponse<any>>}
  */
-export async function fetchRequest({endpoint, params = {}}) {
+export async function fetchRequest({ config = apiConfig, endpoint, params = {}}) {
+    let requestParams = params;
     const apiRequest = getApiRequest();
     if (!apiRequest) {
         return false;
     }
-    const apiRequestAuthData = getApiRequestAuthData();
-    if (!apiRequestAuthData) {
-        return false;
-    }
-    if (!validateToken()) {
-        return false;
+    if (config?.wpRequest) {
+        const apiRequestAuthData = getApiRequestAuthData(config);
+        if (!apiRequestAuthData) {
+            return false;
+        }
+        requestParams = {...requestParams, ...apiRequestAuthData};
     }
     const urlBase = getSessionApiUrlBaseAction();
     if (!urlBase) {
         return false;
     }
+    let headers = getAuthHeader();
+    if (!headers && config?.wpRequest) {
+        return false;
+    }
     const request = {
         method: "get",
-        url: `${urlBase}/${endpoint}`,
-        headers: getAuthHeader(),
-        params: {
-            ...apiRequestAuthData,
-            params
-        }
+        url: `${urlBase}${endpoint}`,
+        headers,
+        params: requestParams
     }
     return await apiRequest.request(request);
 }
@@ -170,12 +187,6 @@ export async function fetchRequest({endpoint, params = {}}) {
  * @returns {boolean|Promise<AxiosResponse<any>>}
  */
 export function validateToken() {
-    const headers = getAuthHeader();
-    if (!headers) {
-        console.error('Header token incorrectly set');
-        // handleUnauthorized();
-        return false;
-    }
     const isTokenValid = isLocalStorageTokenValid();    //Checks token is valid and not expired
     if (!isTokenValid) {
         console.error('Token expired');
@@ -204,7 +215,10 @@ function buildApiRequestJwtSecret({secretType, secretApp, sessionUserId, appName
     );
 }
 
-export function getApiRequestAuthData() {
+export function getApiRequestAuthData(config = apiConfig) {
+    if (!config?.wpRequest) {
+        return {};
+    }
     const sessionNonce = getSessionNonceAction();
     const sessionUserId = getSessionUserIdAction();
     const appName = getAppNameAction();
@@ -235,12 +249,12 @@ export function getApiRequestAuthData() {
     return {payload: payloadJwt, user_id: sessionUserId};
 }
 
-export async function generateToken(tokenType) {
+export async function generateToken({tokenType, config = apiConfig}) {
     const apiRequest = getApiRequest();
     if (!apiRequest) {
         return false;
     }
-    const apiRequestAuthData = getApiRequestAuthData();
+    const apiRequestAuthData = getApiRequestAuthData(config);
     if (!apiRequestAuthData) {
         return false;
     }
@@ -250,46 +264,51 @@ export async function generateToken(tokenType) {
         params: {...apiRequestAuthData, token_type: tokenType}
     }
     const getRequest = await apiRequest.request(request);
-    if (handleTokenResponse(getRequest)) {
+    if (handleTokenResponse({config, result: getRequest})) {
         return true;
     }
     return false;
 }
 
-export async function checkToken(tokenType) {
+export async function checkToken({tokenType, config = apiConfig}) {
     const apiRequest = getApiRequest();
     if (!apiRequest) {
         return false;
     }
-    const apiRequestAuthData = getApiRequestAuthData();
+    const apiRequestAuthData = getApiRequestAuthData(config);
     if (!apiRequestAuthData) {
         return false;
     }
-    if (!validateToken()) {
-        return generateToken(tokenType);
+    let headers = getAuthHeader();
+    if (!headers && config?.wpRequest) {
+        return generateToken({tokenType, config});
     }
     const request = {
         method: "get",
-        url: `/token/check`,
-        headers: getAuthHeader(),
+        url: config?.endpoints?.checkToken,
+        headers,
         params: apiRequestAuthData
     }
+
     try {
         const getRequest = await apiRequest.request(request);
-        if (handleCheckResponse(getRequest)) {
+        if (handleTokenResponse({config, result: getRequest})) {
             return true;
         }
     } catch (e) {
-        return tokenRefresh(tokenType);
+        console.error(e)
+        if (config?.wpRequest) {
+            return tokenRefresh({tokenType, config});
+        }
     }
 }
 
-export async function tokenRefresh(tokenType) {
+export async function tokenRefresh({tokenType, config = apiConfig}) {
     const apiRequest = getApiRequest();
     if (!apiRequest) {
         return false;
     }
-    const apiRequestAuthData = getApiRequestAuthData();
+    const apiRequestAuthData = getApiRequestAuthData(config);
     if (!apiRequestAuthData) {
         return false;
     }
@@ -303,7 +322,7 @@ export async function tokenRefresh(tokenType) {
         params: {...apiRequestAuthData, token_type: tokenType}
     }
     const getRequest = await apiRequest.request(request);
-    if (handleTokenResponse(getRequest)) {
+    if (handleTokenResponse({config, result: getRequest})) {
         return true;
     }
     return false;
@@ -315,9 +334,14 @@ export function handleCheckResponse(result) {
     return false;
 }
 
-export function handleTokenResponse(result) {
-    const token = result?.data?.token;
-    const expiresAt = result?.data?.expiresAt;
+export function handleTokenResponse({result, config = apiConfig}) {
+    if (typeof config?.tokenResponseHandler !== 'function') {
+        return false;
+    }
+    const data = config.tokenResponseHandler(result);
+    const token = data?.token;
+    const expiresAt = data?.expiresAt;
+
     if (token) {
         //Set authenticated local storage data
         setSessionLocalStorage({token, expiresAt})

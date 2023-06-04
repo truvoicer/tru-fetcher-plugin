@@ -83,7 +83,7 @@ class Tru_Fetcher_Listings {
 				$blockAttributeId = $block['attrs']['id'];
 				acf_setup_meta( $block['attrs']['data'], $block['attrs']['id'], true );
 			}
-			$fields = \get_fields();
+			$fields = \get_fields_clone();
 			if ( $fields ) {
 				$blockName                     = str_replace( "acf/", "", $blockName );
 				$blockName                     = str_replace( "-", "_", $blockName );

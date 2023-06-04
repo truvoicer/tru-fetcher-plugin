@@ -9,7 +9,7 @@ import {isNotEmpty, isObject, isObjectEmpty} from "../../library/helpers/utils-h
 import CategoryOptionsForm from "../forms/CategoryOptionsForm";
 import {getCheckboxInput} from "../tables/fields";
 import OptionsGroupItems from "./OptionsGroupItems";
-import {fetchAllOptionGroupsRequest} from "../../library/api/requests/option-group-requests";
+import {fetchAllOptionGroupsRequest} from "../../library/api/wp/requests/option-group-requests";
 
 const OptionsGroups = ({session}) => {
 

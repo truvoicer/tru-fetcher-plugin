@@ -4,14 +4,10 @@ import {withSelect, withDispatch} from '@wordpress/data';
 import {PluginDocumentSettingPanel} from '@wordpress/edit-post';
 import {PanelRow, TextareaControl, ToggleControl, SelectControl, TabPanel} from '@wordpress/components';
 import {useState} from '@wordpress/element';
-import { dispatch } from '@wordpress/data';
-import {useEffect} from "../../../../../../wp-includes/js/dist/vendor/react";
 
 const POST_TYPES = ['item_view_templates', 'page'];
-const PageOptionsMetaBox = ({postType, metaFields, setMetaFields}) => {
-    console.log({metaFields})
-    const [tabName, setTabName] = useState('page_scripts');
-    if (!POST_TYPES.includes(postType)) return null;
+const PageOptionsMetaBox = ({config, postType, metaFields, setMetaFields}) => {
+
     return (
         <PluginDocumentSettingPanel
             title={__('Page Options')}
@@ -21,7 +17,7 @@ const PageOptionsMetaBox = ({postType, metaFields, setMetaFields}) => {
             <PanelRow>
                 <SelectControl
                     label={__("Page Type")}
-                    value={metaFields._meta_fields_page_options_page_type}
+                    value={metaFields.trf_page_options_page_options_page_type}
                     options={[
                         {value: 'general', label: 'General Page'},
                         {value: 'login', label: 'Login Page'},
@@ -29,7 +25,7 @@ const PageOptionsMetaBox = ({postType, metaFields, setMetaFields}) => {
                         {value: 'logout', label: 'Logout Page'},
                         {value: 'user_account', label: 'User Account Page'},
                     ]}
-                    onChange={(value) => dispatch('core/editor').editPost({page_type: value})}
+                    onChange={(value) => setMetaFields({trf_page_options_page_options_page_type: value})}
                     __nextHasNoMarginBottom
                 />
             </PanelRow>
@@ -56,33 +52,33 @@ const PageOptionsMetaBox = ({postType, metaFields, setMetaFields}) => {
                                         <PanelRow>
                                             <ToggleControl
                                                 label="Header Scripts Override"
-                                                checked={metaFields._meta_fields_page_options_header_override}
+                                                checked={metaFields.trf_page_options_page_options_header_override}
                                                 onChange={() => {
-                                                    setMetaFields({_meta_fields_page_options_header_override: !metaFields._meta_fields_page_options_header_override})
+                                                    setMetaFields({trf_page_options_page_options_header_override: !metaFields.trf_page_options_page_options_header_override})
                                                 }}
                                             />
                                         </PanelRow>
                                         <PanelRow>
                                             <TextareaControl
                                                 label="Header Scripts"
-                                                value={metaFields._meta_fields_page_options_header_scripts}
-                                                onChange={(value) => setMetaFields({_meta_fields_page_options_header_scripts: !metaFields._meta_fields_page_options_header_scripts})}
+                                                value={metaFields.trf_page_options_page_options_header_scripts}
+                                                onChange={(value) => setMetaFields({trf_page_options_page_options_header_scripts: !metaFields.trf_page_options_page_options_header_scripts})}
                                             />
                                         </PanelRow>
                                         <PanelRow>
                                             <ToggleControl
                                                 label="Footer Scripts Override"
-                                                checked={metaFields._meta_fields_page_options_footer_override}
+                                                checked={metaFields.trf_page_options_page_options_footer_override}
                                                 onChange={() => {
-                                                    setMetaFields({_meta_fields_page_options_footer_override: !metaFields._meta_fields_page_options_footer_override})
+                                                    setMetaFields({trf_page_options_page_options_footer_override: !metaFields.trf_page_options_page_options_footer_override})
                                                 }}
                                             />
                                         </PanelRow>
                                         <PanelRow>
                                             <TextareaControl
                                                 label="Footer Scripts"
-                                                value={metaFields._meta_fields_page_options_footer_scripts}
-                                                onChange={(value) => setMetaFields({_meta_fields_page_options_footer_scripts: !metaFields._meta_fields_page_options_footer_scripts})}
+                                                value={metaFields.trf_page_options_page_options_footer_scripts}
+                                                onChange={(value) => setMetaFields({trf_page_options_page_options_footer_scripts: !metaFields.trf_page_options_page_options_footer_scripts})}
                                             />
                                         </PanelRow>
                                     </>

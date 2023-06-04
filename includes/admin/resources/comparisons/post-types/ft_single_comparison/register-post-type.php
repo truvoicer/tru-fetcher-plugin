@@ -48,6 +48,7 @@ function register_fetcher_single_comparison_post_type()
 		'capability_type'       => 'page',
 		'show_in_graphql' => true,
 		'hierarchical' => true,
+        'show_in_rest' => true,
 		'graphql_single_name' => 'fetcherSingleComparison',
 		'graphql_plural_name' => 'fetcherSingleComparisons',
 	);

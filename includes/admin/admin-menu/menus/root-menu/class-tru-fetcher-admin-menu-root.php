@@ -105,16 +105,16 @@ class Tru_Fetcher_Admin_Menu_Root extends Tru_Fetcher_Admin_Menu_Base
             Tru_Fetcher_Admin_Menu_Constants::$submenusKey => [
                 new Tru_Fetcher_Admin_SubMenu_Comparison_Lists(),
                 new Tru_Fetcher_Admin_SubMenu_Single_Comparison(),
-                new Tru_Fetcher_Admin_SubMenu_Items_List(),
-                new Tru_Fetcher_Admin_SubMenu_Single_item(),
                 new Tru_Fetcher_Admin_SubMenu_Filter_Lists(),
-                new Tru_Fetcher_Admin_SubMenu_General_Lists(),
-                new Tru_Fetcher_Admin_SubMenu_General_Item(),
                 new Tru_Fetcher_Admin_SubMenu_Category_Templates(),
                 new Tru_Fetcher_Admin_SubMenu_Item_View_Templates(),
                 new Tru_Fetcher_Admin_SubMenu_Post_Templates(),
                 new Tru_Fetcher_Admin_SubMenu_Listings_Categories(),
                 new Tru_Fetcher_Admin_SubMenu_Settings(),
+//                new Tru_Fetcher_Admin_SubMenu_General_Lists(),
+//                new Tru_Fetcher_Admin_SubMenu_General_Item(),
+//                new Tru_Fetcher_Admin_SubMenu_Items_List(),
+//                new Tru_Fetcher_Admin_SubMenu_Single_item(),
             ]
         ]);
     }

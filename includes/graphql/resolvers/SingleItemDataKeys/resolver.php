@@ -4,7 +4,7 @@ add_filter( 'graphql_resolve_field', function( $result, $source, $args, $context
         if (is_array($result)) {
             return json_encode($result);
         }
-        return json_encode(\get_fields($source->ID));
+        return json_encode(\get_fields_clone($source->ID));
     }
     return $result;
 }, 10, 9 );

@@ -14,7 +14,7 @@ add_filter( 'graphql_resolve_field', function($result, $source, $args, $context,
         if (count($getPost) === 0) {
             throw new UserError( __( "Comparison post not found", 'wp-graphql' ) );
         }
-        return json_encode(\get_fields($source->ID));
+        return json_encode(\get_fields_clone($source->ID));
     }
     return $result;
 }, 10, 9 );

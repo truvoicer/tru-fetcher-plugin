@@ -2,6 +2,7 @@
 namespace TruFetcher\Includes\Admin;
 use TrNewsApp\Includes\Admin\AdminMenu\Tr_News_App_Admin_Menu;
 use TruFetcher\Includes\Admin\AdminMenu\Tru_Fetcher_Admin_Menu;
+use TruFetcher\Includes\Admin\Editor\Tru_Fetcher_Admin_Editor;
 use TruFetcher\Includes\Admin\OldAdminMenu\Tru_Fetcher_Old_Admin_Menu;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 
@@ -100,8 +101,12 @@ class Tru_Fetcher_Admin extends Tru_Fetcher_Base {
     ';
     }
 
+    private function loadEditor() {
+        (new Tru_Fetcher_Admin_Editor())->init();
+    }
     public function init() {
         $this->loadAdminMenu();
+        $this->loadEditor();
         add_action('admin_head', [$this, "gb_gutenberg_admin_styles"]);
     }
 }

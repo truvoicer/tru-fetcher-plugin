@@ -15,10 +15,12 @@ namespace TruFetcher\Includes;
  */
 
 use DirectoryIterator;
+use TruFetcher\Includes\Admin\Editor\Tru_Fetcher_Admin_Editor;
 use TruFetcher\Includes\Admin\Tru_Fetcher_Admin;
 use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_Jwt;
 use TruFetcher\Includes\Api\Tru_Fetcher_Api;
 use TruFetcher\Includes\Blocks\Tru_Fetcher_Blocks;
+use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 use TruFetcher\Includes\Tru_Fetcher_Health_Check;
 use TruFetcher\Includes\TruFetcherAcf\Tru_Fetcher_Acf;
@@ -47,6 +49,7 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 
     private Tru_Fetcher_Health_Check $healthCheck;
     private Tru_Fetcher_User $userManager;
+    private Tru_Fetcher_Taxonomy $taxonomyManager;
 
     protected string $reactScriptName = self::REACT_SCRIPT_NAME;
     protected string $adminName = self::ADMIN_NAME;
@@ -64,6 +67,7 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
         parent::__construct();
         $this->healthCheck = new Tru_Fetcher_Health_Check();
         $this->userManager = new Tru_Fetcher_User();
+        $this->taxonomyManager = new Tru_Fetcher_Taxonomy();
 		$this->set_locale();
 		$this->loadAdmin();
 		$this->define_admin_hooks();
@@ -163,6 +167,7 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
      */
     public function buildReactLocalizedScriptData()
     {
+        global $post_type;
         $getCurrentUser = self::getCurrentUser();
 
         $authJwt = new Tru_Fetcher_Api_Auth_Jwt();
@@ -182,19 +187,52 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
             throw new \Exception('Error saving nonce user meta');
         }
         return [
-            'apiConfig' => [
-                'app_name' => TRU_FETCHER_PLUGIN_NAME,
-                'baseUrl' => rest_url('tr-news-app/v1/admin'),
+            'api' => [
+                'wp' => [
+                    'baseUrl' => rest_url('tru-fetcher/admin'),
+                    'app_name' => TRU_FETCHER_PLUGIN_NAME,
+                    'nonce' => $nonce,
+                ],
+                'tru_fetcher' => [
+                    'baseUrl' => $this->getEnv('TRU_FETCHER_API_URL'),
+                    'token' => $this->getEnv('TRU_FETCHER_API_TOKEN'),
+                    'app_name' => TRU_FETCHER_PLUGIN_NAME,
+                ],
             ],
             'user' => [
                 'id' => $getCurrentUser->ID
             ],
-            'nonce' => $nonce,
+            'editor' => [
+                'metaFields' => Tru_Fetcher_Admin_Editor::getMetaFieldConfig()
+            ],
+            'currentScreen' => get_current_screen(),
+            'postType' => $post_type
         ];
     }
 
+    public function getLoadSelector() {
+        global $pagenow;
+        return get_current_screen();
+        switch ($pagenow) {
+            case 'post.php':
+                return 'post';
+            case 'post-new.php':
+                return 'post-new';
+            case 'edit-tags.php':
+                return 'edit-tags';
+            case 'term.php':
+                return 'term';
+            case 'term-new.php':
+                return 'term-new';
+            case 'edit.php':
+                return 'edit';
+            default:
+                return 'unknown';
+        }
+    }
+
 	public static function getFrontendUrl() {
-		$options = \get_fields( "option" );
+//		$options = \get_fields_clone( "option" );
 		$frontendUrl = get_option( 'siteurl' );
 		if ( isset( $options["frontend_url"] ) ) {
 			$frontendUrl = $options["frontend_url"];
@@ -218,7 +256,7 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 	}
 
 	public static function getTruFetcherSettings() {
-		return \get_fields( "option" );
+		return \get_fields_clone( "option" );
 	}
 
     public static function isNotEmpty(string $string = null) {

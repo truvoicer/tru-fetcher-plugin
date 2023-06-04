@@ -10,12 +10,12 @@ import {isNotEmpty, isObject, isObjectEmpty} from "../../../library/helpers/util
 import {
     fetchAllOptionGroupsRequest,
     getOptionGroupSelectData
-} from "../../../library/api/requests/option-group-requests";
+} from "../../../library/api/wp/requests/option-group-requests";
 import optionsGroupItems from "../OptionsGroupItems";
 import ScreenOptionsForm from "../../forms/menu/items/ScreenOptionsForm";
 import ArticleOptionsForm from "../../forms/ArticleOptionsForm";
 import AccessControlForm from "../../forms/menu/items/AccessControlForm";
-import {updateMenuItemRolesRequest} from "../../../library/api/requests/menu-requests";
+import {updateMenuItemRolesRequest} from "../../../library/api/wp/requests/menu-requests";
 
 const MenuItems = ({session, menu = null}) => {
     const [showCategoryOptionsFormModal, setShowCategoryOptionsFormModal] = useState(false);

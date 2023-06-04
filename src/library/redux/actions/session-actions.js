@@ -121,15 +121,18 @@ export function setIsAuthenticatingAction(isAuthenticating) {
  * Sets session redux state on successful authentication
  * @param token
  */
-export function setInitialSessionState() {
-    if (tr_news_app_react?.nonce) {
-        setSessionNonceAction(tr_news_app_react.nonce);
+export function setInitialSessionState(config) {
+    if (config?.nonce) {
+        setSessionNonceAction(config.nonce);
     }
-    if (tr_news_app_react?.apiConfig?.baseUrl) {
-        setSessionApiUrlBaseAction(tr_news_app_react.apiConfig.baseUrl);
+    if (config?.baseUrl) {
+        setSessionApiUrlBaseAction(config.baseUrl);
     }
-    if (tr_news_app_react?.user?.id) {
-        setSessionUserIdAction(tr_news_app_react.user.id);
+    if (config?.token) {
+        setSessionUserTokenAction(config?.token);
+    }
+    if (tru_fetcher_react?.user?.id) {
+        setSessionUserIdAction(tru_fetcher_react.user.id);
     }
     return true;
 }

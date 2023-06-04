@@ -31,7 +31,7 @@ if (!class_exists('Tru_Fetcher_Request_Api')) :
 
         private function getBaseUrl()
         {
-            $truFetcherSettings = \get_fields("option");
+            $truFetcherSettings = \get_fields_clone("option");
             if (isset($truFetcherSettings["api_url"]) && Tru_Fetcher::isNotEmpty($truFetcherSettings["api_url"])) {
                 return $truFetcherSettings["api_url"];
             }
@@ -45,7 +45,7 @@ if (!class_exists('Tru_Fetcher_Request_Api')) :
 
         private function getApiKey()
         {
-            $truFetcherSettings = \get_fields("option");
+            $truFetcherSettings = \get_fields_clone("option");
             if (isset($truFetcherSettings["api_key"]) && Tru_Fetcher::isNotEmpty($truFetcherSettings["api_key"])) {
                 return $truFetcherSettings["api_key"];
             }

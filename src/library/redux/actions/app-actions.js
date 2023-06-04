@@ -40,9 +40,9 @@ export function getAppNameAction(appName) {
  * Sets session redux state on successful authentication
  * @param token
  */
-export function setInitialAppState() {
-    if (tr_news_app_react?.apiConfig?.app_name) {
-        setAppNameAction(tr_news_app_react.apiConfig.app_name);
+export function setInitialAppState(config) {
+    if (config?.app_name) {
+        setAppNameAction(config.app_name);
     }
     return true;
 }

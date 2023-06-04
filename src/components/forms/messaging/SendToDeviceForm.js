@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import FormBuilder from "../FormBuilder";
 import sendToDevice from "../configs/messaging/send-to-device";
-import {fetchDevicesRequest, getDevicesSelectData} from "../../../library/api/requests/device-requests";
+import {fetchDevicesRequest, getDevicesSelectData} from "../../../library/api/wp/requests/device-requests";
 import {setFormConfigItemField} from "../helpers/form-helpers";
 import {isNotEmpty} from "../../../library/helpers/utils-helpers";
 import {sendRequest} from "../../../library/api/middleware";
