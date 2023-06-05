@@ -2,22 +2,17 @@
 
 namespace TruFetcher\Includes\DB\Engine;
 
-use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Menus;
-use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Option_Groups;
 use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Settings;
-use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Terms;
 use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Topic;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model;
 use TruFetcher\Includes\DB\Model\Constants\Tru_Fetcher_DB_Model_Constants;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Api_Tokens;
-use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Category_Options;
+
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Device_Topic;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Device;
-use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_MenuItems;
-use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Menu;
-use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_MenuItems_Roles;
-use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Option_Group;
-use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Option_Group_Items;
+
+
+use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Post_Meta;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Settings;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Topic;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_User_Device_Access;
@@ -104,7 +99,7 @@ class Tru_Fetcher_DB_Engine_Base
 
         if (!empty($failed)) {
             return new \WP_Error(
-                'tr_news_app_error_health_check',
+                'tru_fetcher_error_health_check',
                 'Table error',
                 $failed
             );
@@ -197,7 +192,7 @@ class Tru_Fetcher_DB_Engine_Base
         }
         if (count($errors)) {
             return new \WP_Error(
-                'tr_news_app_error_health_check',
+                'tru_fetcher_error_health_check',
                 'Table error',
                 $errors
             );
@@ -236,7 +231,7 @@ class Tru_Fetcher_DB_Engine_Base
         }
         if (count($errors)) {
             return new \WP_Error(
-                'tr_news_app_error_health_check',
+                'tru_fetcher_error_health_check',
                 'Table error',
                 $errors
             );
@@ -430,7 +425,7 @@ class Tru_Fetcher_DB_Engine_Base
         $checkMissingColumns = $this->compareModelColumns();
         if (count($checkMissingColumns['errors'])) {
             return new \WP_Error(
-                'tr_news_app_error_health_check',
+                'tru_fetcher_error_health_check',
                 'Errors checking missing table columns',
                 [
                     'success' => false,
@@ -885,7 +880,7 @@ class Tru_Fetcher_DB_Engine_Base
 
 	public function updateVersion()
 	{
-		add_option('tr_news_app_db_version', self::DB_VERSION);
+		add_option('tru_fetcher_db_version', self::DB_VERSION);
 	}
 
 	/**
@@ -901,14 +896,9 @@ class Tru_Fetcher_DB_Engine_Base
 			new Tru_Fetcher_DB_Model_Topic(),
 			new Tru_Fetcher_DB_Model_Device_Topic(),
 			new Tru_Fetcher_DB_Model_User_Device_Access(),
-            new Tru_Fetcher_DB_Model_Menu(),
-            new Tru_Fetcher_DB_Model_Category_Options(),
-			new Tru_Fetcher_DB_Model_MenuItems(),
-			new Tru_Fetcher_DB_Model_MenuItems_Roles(),
 			new Tru_Fetcher_DB_Model_Settings(),
-			new Tru_Fetcher_DB_Model_Option_Group(),
-			new Tru_Fetcher_DB_Model_Option_Group_Items(),
-            new Tru_Fetcher_DB_Model_Api_Tokens()
+            new Tru_Fetcher_DB_Model_Api_Tokens(),
+            new Tru_Fetcher_DB_Model_Post_Meta()
 		];
 	}
 	/**
@@ -920,10 +910,7 @@ class Tru_Fetcher_DB_Engine_Base
 	public static function getInitialTableData(): array
 	{
 		return [
-			new Tru_Fetcher_DB_Data_Option_Groups(),
 			new Tru_Fetcher_DB_Data_Settings(),
-			new Tru_Fetcher_DB_Data_Terms(),
-			new Tru_Fetcher_DB_Data_Menus(),
 			new Tru_Fetcher_DB_Data_Topic(),
 		];
 	}

@@ -2,10 +2,10 @@
     $linkClass = null;
     switch ($data['notice']) {
         case 'network_admin_notices':
-            $linkClass = 'tr_news_app_database_network_install';
+            $linkClass = 'tru_fetcher_database_network_install';
             break;
         case 'admin_notices':
-            $linkClass = 'tr_news_app_database_install';
+            $linkClass = 'tru_fetcher_database_install';
             break;
     }
 ?>

@@ -12,10 +12,10 @@ if (!$data['missing_columns']['success']) {
 $linkClass = null;
 switch ($data['notice']) {
     case 'network_admin_notices':
-        $linkClass = 'tr_news_app_db_network_update_columns';
+        $linkClass = 'tru_fetcher_db_network_update_columns';
         break;
     case 'admin_notices':
-        $linkClass = 'tr_news_app_db_update_columns';
+        $linkClass = 'tru_fetcher_db_update_columns';
         break;
 }
 ?>

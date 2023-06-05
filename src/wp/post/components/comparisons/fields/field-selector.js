@@ -20,12 +20,13 @@ export function getTextField({changeHandler, type, label, value}) {
             placeholder={ label }
             value={ value }
             type={ type }
-            onChange={ ( textValue ) => changeHandler( textValue ) }
+            onChange={ ( e ) => changeHandler( e.target.value ) }
         />
     )
 }
 
 export function getArrayField({changeHandler, label, value}) {
+    return null;
 }
 
 export function getHtmlField({changeHandler, label, value}) {
@@ -33,7 +34,7 @@ export function getHtmlField({changeHandler, label, value}) {
         <TextArea
             placeholder={ label }
             value={ value }
-            onChange={ ( textValue ) => changeHandler( textValue ) }
+            onChange={ ( e ) => changeHandler( e.target.value ) }
         />
     )
 }
@@ -72,12 +73,12 @@ export function getTrueFalseField({changeHandler, label, value}) {
 }
 
 export function getImageField({changeHandler, label}) {
-
-
+    return null;
 }
 
 export function getImageListField({changeHandler, label}) {
 
+    return null;
 }
 
 
@@ -91,7 +92,6 @@ export default function buildFormField ({fieldType, value, changeHandler, setMod
         case FIELDS.TEXT:
             fieldProps.label = 'Text';
             fieldProps.type = 'text';
-            console.log({fieldProps})
             return getTextField(fieldProps);
         case FIELDS.URL:
             fieldProps.label = 'Url';

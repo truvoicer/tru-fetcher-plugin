@@ -71,6 +71,8 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 		$this->set_locale();
 		$this->loadAdmin();
 		$this->define_admin_hooks();
+        $this->addUserActions();
+        $this->addAjaxActions();
 //		$this->load_graphql();
 		$this->loadApi();
         $this->loadAcf();
@@ -80,6 +82,7 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 		$this->define_nav_menus();
 		$this->define_sidebars();
 		$this->define_widgets();
+        $this->healthCheck();
 
 	}
 
@@ -112,12 +115,8 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
-
         $this->registerAdminScripts();
         add_action( 'activated_plugin', [$this, 'activate'], 10, 2 );
-
-
-
 	}
     public function registerAdminScripts()
     {
@@ -125,6 +124,19 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
         add_action('admin_enqueue_scripts', [$this, "enqueue_scripts"]);
     }
 
+    public function addUserActions()
+    {
+        add_action('deleted_user', [$this->userManager, 'deleteUserHandler'], 10, 3);
+    }
+    public function addAjaxActions()
+    {
+        add_action('wp_ajax_tru_fetcher_database_install_action', [$this->healthCheck, 'databaseInstallAction']);
+        add_action('wp_ajax_tru_fetcher_database_network_install_action', [$this->healthCheck, 'databaseNetworkInstallAction']);
+        add_action('wp_ajax_tru_fetcher_db_update_columns', [$this->healthCheck, 'databaseMissingColumnsUpdateAction']);
+        add_action('wp_ajax_tru_fetcher_db_network_update_columns', [$this->healthCheck, 'databaseNetworkMissingColumnsUpdateAction']);
+        add_action('wp_ajax_tru_fetcher_db_req_data_install', [$this->healthCheck, 'databaseRequiredDataInstallAction']);
+        add_action('wp_ajax_tru_fetcher_db_network_req_data_install', [$this->healthCheck, 'databaseNetworkRequiredDataInstallAction']);
+    }
     /**
      * Register the stylesheets for the admin area.
      *
@@ -320,8 +332,33 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
             }
         }
     }
-    public function activate() {
 
+    public function activate($plugin, $network_wide) {
+        $this->healthCheck->setIsNetworkWide($network_wide);
+        $run = $this->healthCheck->runHealthCheck();
+
+        if ($run) {
+            return true;
+        }
+        $install = $this->healthCheck->initialInstall();
+        if (!$install) {
+            error_log(json_encode([TRU_FETCHER_PLUGIN_NAME => 'Health check install failed']));
+            return false;
+        }
+        return true;
+    }
+
+    public function healthCheck()
+    {
+//        $activator = (new Tr_News_App_Activator())->activate();
+//        var_dump($activator);
+        $this->healthCheck->setIsNetworkWide(is_network_admin());
+        $this->healthCheck->setIsMultiSite(is_multisite());
+        $dbCheck = $this->healthCheck->runAdminHealthCheck();
+//        if (is_wp_error($dbCheck)) {
+//            $this->missingDbTables = $dbCheck->get_error_data();
+//        }
+//        $configCheck = Tr_News_App_Health_Check::firebaseConfigCheck();
     }
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.

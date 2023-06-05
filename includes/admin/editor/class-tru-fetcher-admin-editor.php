@@ -3,6 +3,7 @@ namespace TruFetcher\Includes\Admin\Editor;
 
 use TruFetcher\Includes\Admin\Editor\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
 use TruFetcher\Includes\Admin\Editor\MetaFields\Tru_Fetcher_Meta_Fields_Post_Options;
+use TruFetcher\Includes\Admin\PostTypes\Tru_Fetcher_Admin_Post_Types;
 use TruFetcher\Includes\Tru_Fetcher;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 use WP_Post;
@@ -34,24 +35,41 @@ class Tru_Fetcher_Admin_Editor extends Tru_Fetcher_Base
         Tru_Fetcher_Meta_Fields_Post_Options::class,
     ];
 
+    private array $singleItemPostTypes = [
+        Tru_Fetcher_Admin_Post_Types::FETCHER_SINGLE_COMPARISON_PT,
+    ];
+
     public function init()
     {
         add_action( 'init', [$this, 'registerPostMetaFields'] );
         add_action( 'add_meta_boxes', [$this, 'addEditorMetaBoxes'] );
+        add_action( 'save_post', [$this, 'metaBoxSaveHandler'] );
     }
-
+    public function metaBoxSaveHandler( $post_id ) {
+        if ( array_key_exists( 'wporg_field', $_POST ) ) {
+            update_post_meta(
+                $post_id,
+                '_wporg_meta_key',
+                $_POST['wporg_field']
+            );
+        }
+    }
     public function addEditorMetaBoxes() {
-        add_meta_box(
-            'trf_mb_ft_single_comparison',                 // Unique ID
-            'Custom Meta Box Title',      // Box title
-            [$this, 'wporg_custom_box_html'],  // Content callback, must be of type callable
-            'ft_single_comparison'                            // Post type
-        );
+        foreach ($this->singleItemPostTypes as $postType) {
+            add_meta_box(
+                'trf_mb_single_item',
+                'Custom Meta Box Title',
+                [$this, 'singleItemMetaBox'],
+                $postType
+            );
+        }
     }
-    public function wporg_custom_box_html( $post ) {
+    public function singleItemMetaBox( $post ) {
         ?>
-        <div id="trf_single_comparison">
-        </div>
+        <input type="hidden" name="trf_post_meta_type">
+        <input type="hidden" name="trf_post_meta_data_keys">
+        <input type="hidden" name="trf_post_meta_custom">
+        <div id="trf_single_comparison"></div>
         <?php
     }
     public static function getMetaFields(string $fieldGroup) {

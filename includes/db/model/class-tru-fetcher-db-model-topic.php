@@ -7,7 +7,7 @@ use TruFetcher\Includes\DB\Model\Constants\Tru_Fetcher_DB_Model_Constants;
 class Tru_Fetcher_DB_Model_Topic extends Tru_Fetcher_DB_Model
 {
 
-    const TABLE_NAME = 'tr_news_app_topic';
+    const TABLE_NAME = 'tru_fetcher_topic';
 
     const DEFAULT_TOPIC = 'all';
 

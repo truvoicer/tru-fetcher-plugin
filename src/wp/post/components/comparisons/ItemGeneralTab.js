@@ -1,14 +1,14 @@
 import React,{useState, useEffect, useContext} from 'react';
-import {Select} from "semantic-ui-react";
+import {Select} from 'antd';
 import PostMetaBoxContext from "../../contexts/PostMetaBoxContext";
 
 const selectOptions = [
     {
-        text: 'Api Data Keys',
+        label: 'Api Data Keys',
         value: 'api_data_keys',
     },
     {
-        text: 'Custom',
+        label: 'Custom',
         value: 'custom',
     }
 ]
@@ -17,6 +17,7 @@ const ItemGeneralTab = ({onChange = false}) => {
     return (
         <>
             <Select
+                style={{minWidth: 180}}
                 options={selectOptions}
                 value={postMetaBoxContext.data.type}
                 onChange={(e, data) => {

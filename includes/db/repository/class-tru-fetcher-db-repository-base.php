@@ -203,7 +203,7 @@ class Tru_Fetcher_DB_Repository_Base
         foreach ($this->getWhereQueryConditions() as $index => $condition) {
             if (!array_key_exists($condition['field'], $data)) {
                 return new \WP_Error(
-                    'tr_news_app_db_save_error',
+                    'tru_fetcher_db_save_error',
                     sprintf(
                         '%s not found in data',
                         $condition['field']
@@ -334,7 +334,7 @@ class Tru_Fetcher_DB_Repository_Base
         if (!isset($fieldValueData['fields']) || !is_array($fieldValueData['fields'])) {
             $this->addError(
                 new \WP_Error(
-                    'tr_news_app_db_fields_invalid',
+                    'tru_fetcher_db_fields_invalid',
                     'Fields is invalid'
                 )
             );
@@ -343,7 +343,7 @@ class Tru_Fetcher_DB_Repository_Base
         if (!isset($fieldValueData['values']) || !is_array($fieldValueData['values'])) {
             $this->addError(
                 new \WP_Error(
-                    'tr_news_app_db_values_invalid',
+                    'tru_fetcher_db_values_invalid',
                     'Values is invalid'
                 )
             );
@@ -352,7 +352,7 @@ class Tru_Fetcher_DB_Repository_Base
         if (!isset($fieldValueData['placeholders']) || !is_array($fieldValueData['placeholders'])) {
             $this->addError(
                 new \WP_Error(
-                    'tr_news_app_db_placeholders_invalid',
+                    'tru_fetcher_db_placeholders_invalid',
                     'Placeholders is invalid'
                 )
             );
@@ -402,7 +402,7 @@ class Tru_Fetcher_DB_Repository_Base
         if (!$results) {
             $this->addError(
                 new \WP_Error(
-                    'tr_news_app_db_insert_error',
+                    'tru_fetcher_db_insert_error',
                     $wpdb->last_error,
                     $validatedData
                 )
@@ -430,7 +430,7 @@ class Tru_Fetcher_DB_Repository_Base
         if (!$findDbRow) {
             $this->addError(
                 new \WP_Error(
-                    'tr_news_app_db_update_error',
+                    'tru_fetcher_db_update_error',
                     'Update item not found',
                     $validatedData
                 )
@@ -451,7 +451,7 @@ class Tru_Fetcher_DB_Repository_Base
         if (!$results) {
             $this->addError(
                 new \WP_Error(
-                    'tr_news_app_db_insert_error',
+                    'tru_fetcher_db_insert_error',
                     $wpdb->last_error,
                     $validatedData
                 )
@@ -490,7 +490,7 @@ class Tru_Fetcher_DB_Repository_Base
             false) {
             $this->addError(
                 new \WP_Error(
-                    'tr_news_app_db_delete_error',
+                    'tru_fetcher_db_delete_error',
                     $wpdb->last_error,
                     $data
                 )
@@ -499,7 +499,7 @@ class Tru_Fetcher_DB_Repository_Base
         } elseif ($wpdb->rows_affected === 0) {
             $this->addError(
                 new \WP_Error(
-                    'tr_news_app_db_delete_error',
+                    'tru_fetcher_db_delete_error',
                     'No rows deleted',
                     $data
                 )

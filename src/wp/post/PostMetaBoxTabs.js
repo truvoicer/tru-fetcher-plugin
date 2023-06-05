@@ -1,15 +1,13 @@
 import React, {useState, useEffect} from 'react';
-// import {Tab} from 'semantic-ui-react'
 import {Tabs} from 'antd';
 import ItemGeneralTab from "./components/comparisons/ItemGeneralTab";
 import PostMetaBoxContext from "./contexts/PostMetaBoxContext";
 import ItemDataKeysTab from "./components/comparisons/ItemDataKeysTab";
-import PostMetaBox from "./PostMetaBox";
 import {APP_STATE} from "../../library/redux/constants/app-constants";
 import {SESSION_STATE} from "../../library/redux/constants/session-constants";
 import {connect} from "react-redux";
 import Auth from "../../components/auth/Auth";
-import {TabPanel} from '@wordpress/components';
+import ItemCustomTab from "./components/comparisons/ItemCustomTab";
 
 const PostMetaBoxTabs = ({session}) => {
     const [panes, setPanes] = useState([]);
@@ -17,6 +15,16 @@ const PostMetaBoxTabs = ({session}) => {
         data: {
             type: 'api_data_keys',
             data_keys: [],
+            custom: {
+                item_image: null,
+                item_header: null,
+                item_text: null,
+                item_rating: null,
+                item_link_text: null,
+                item_link: null,
+                item_badge_text: null,
+                item_badge_link: null,
+            },
         },
         updateData: (key, value) => {
             setMetaBoxContext(state => {
@@ -62,24 +70,18 @@ const PostMetaBoxTabs = ({session}) => {
         return panes;
     }
 
-    useEffect(() => {
-        setPanes(initialPanes.map((item, index) => {
-            const cloneItem = {...item};
-            cloneItem.key = index;
-            return cloneItem;
-        }))
-    }, [])
-    useEffect(() => {
+    function updateTabsByType() {
         setPanes(paneState => {
             let cloneState = [...paneState];
             let data = [];
+            console.log({metaBoxContext})
             switch (metaBoxContext.data.type) {
                 case 'custom':
                     data = updatePanes({
                         insertPanes: [{
                             name: 'custom',
                             label: 'Custom',
-                            children: 'Custom',
+                            children: <ItemCustomTab />,
                         }],
                         removePanes: ['data_keys'],
                         panes: cloneState,
@@ -100,12 +102,37 @@ const PostMetaBoxTabs = ({session}) => {
                     });
                     break;
             }
-            console.log({data})
             return data.map((item, index) => {
                 const cloneItem = {...item};
                 cloneItem.key = index;
                 return cloneItem;
             });
+        })
+    }
+
+    function updateMetaHiddenFields(field) {
+        const fieldName = `trf_post_meta_${field}`;
+        const hiddenField = document.querySelector(`input[name="${fieldName}"]`);
+        const data = metaBoxContext.data[field];
+        if (typeof data === 'object' || Array.isArray(data)) {
+            hiddenField.value = JSON.stringify(data);
+        } else {
+            hiddenField.value = data;
+        }
+    }
+
+    useEffect(() => {
+        setPanes(initialPanes.map((item, index) => {
+            const cloneItem = {...item};
+            cloneItem.key = index;
+            return cloneItem;
+        }))
+    }, [])
+
+    useEffect(() => {
+        updateTabsByType();
+        Object.keys(metaBoxContext.data).forEach(field => {
+            updateMetaHiddenFields(field);
         })
     }, [metaBoxContext])
 

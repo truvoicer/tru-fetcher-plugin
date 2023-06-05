@@ -1,30 +1,24 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {Table} from "semantic-ui-react";
-import { Col, Row, Select, Button, Modal } from 'antd';
+import {Col, Row, Select, Button, Modal, Card, Space, Form} from 'antd';
 import PostMetaBoxContext from "../../contexts/PostMetaBoxContext";
 import {fetchRequest} from "../../../../library/api/middleware";
 import fetcherApiConfig from "../../../../library/api/fetcher-api/fetcherApiConfig";
 import {isNotEmpty} from "../../../../library/helpers/utils-helpers";
 import buildFormField, {FIELDS} from "./fields/field-selector";
 
-const ItemDataKeysTab = ({onChange = false}) => {
+const ItemDataKeysTab = () => {
     const [services, setServices] = useState([]);
     const [selectedService, setSelectedService] = useState('');
-    const [dataKeys, setDataKeys] = useState([]);
+    const [dataKeysOptions, setDataKeysOptions] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [modalComponent, setModalComponent] = useState(null);
     const [modalHeader, setModalHeader] = useState(null);
     const postMetaBoxContext = useContext(PostMetaBoxContext);
 
-    function updateDataKey({value, key, dataItemKeyValue}) {
+    function updateDataKey({value, key, index}) {
         const dataKeys = postMetaBoxContext.data.data_keys;
-        const findDataKeyIndex = dataKeys.findIndex(item => item['data_item_key'] === dataItemKeyValue);
-        if (findDataKeyIndex === -1) {
-            return;
-        }
-
         const cloneDataKeys = [...dataKeys];
-        cloneDataKeys[findDataKeyIndex][key] = value;
+        cloneDataKeys[index][key] = value;
         postMetaBoxContext.updateData('data_keys', cloneDataKeys);
     }
 
@@ -48,78 +42,79 @@ const ItemDataKeysTab = ({onChange = false}) => {
     }
 
     function getDataKeysOptions() {
-        return dataKeys.map((item) => {
+        const dataKeys = postMetaBoxContext.data.data_keys;
+        const usedKeys = dataKeys.map((item) => item.data_item_key);
+        const filteredDataKeysOptions = dataKeysOptions.filter((item) => {
+            return !usedKeys.includes(item.key_value);
+        });
+        return filteredDataKeysOptions.map((item) => {
             return {
                 label: item.key_value,
-                value: item.id,
+                value: item.key_value,
             }
         })
     }
 
-    function fieldChangeHandler({value, dataItemKeyValue}) {
+    function fieldChangeHandler({value, index}) {
         updateDataKey({
+            index,
             value,
-            key: 'data_item_text',
-            dataItemKeyValue
+            key: 'data_item_value',
         })
     }
 
     function getFormGroup({item, index}) {
         return (
-            // <Table columns={[]} dataSource={item} bordered />
-            <Table definition>
-                <Table.Body>
-                    <Table.Row>
-                        <Table.Cell>Data Item key</Table.Cell>
-                        <Table.Cell>
+            <Space direction="vertical" size={16}>
+                <Card style={{width: 300}}>
+                    <div>
+                        <Form.Item label="Data Item Key">
                             <Select
-                                options={getDataKeysOptions()}
+                                options={getDataKeysOptions({index})}
                                 onChange={(e, data) => {
                                     updateDataKey({
+                                        index,
                                         value: data.value,
                                         key: 'data_item_key',
-                                        dataItemKeyValue: item.data_item_key
                                     })
                                 }}
                             />
-                        </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                        <Table.Cell>Value Type</Table.Cell>
-                        <Table.Cell>
+                        </Form.Item>
+                    </div>
+                    <div>
+                        <Form.Item label="Value Type">
                             <Select
                                 options={getValueTypeOptions()}
                                 onChange={(e, data) => {
                                     updateDataKey({
+                                        index,
                                         value: data.value,
                                         key: 'value_type',
-                                        dataItemKeyValue: item.data_item_key
                                     })
                                 }}
                             />
-                        </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                        <Table.Cell>Data Item Text</Table.Cell>
-                        <Table.Cell>
+                        </Form.Item>
+                    </div>
+                    <div>
+                        <Form.Item label="Data Item Value">
                             {buildFormField({
                                 fieldType: item.value_type,
-                                value: item.data_item_text,
+                                value: item.data_item_value,
                                 index,
                                 changeHandler: (value) => {
                                     fieldChangeHandler({
+                                        index,
                                         value,
-                                        dataItemKeyValue: item.data_item_key
                                     })
                                 },
                                 setModalHeader,
                                 setModalComponent,
                                 setShowModal
                             })}
-                        </Table.Cell>
-                    </Table.Row>
-                </Table.Body>
-            </Table>
+                        </Form.Item>
+                    </div>
+                </Card>
+            </Space>
         )
     }
 
@@ -135,7 +130,7 @@ const ItemDataKeysTab = ({onChange = false}) => {
             }
         });
         if (Array.isArray(results?.data?.data)) {
-            setDataKeys(results.data.data);
+            setDataKeysOptions(results.data.data);
         }
     }
 
@@ -154,54 +149,54 @@ const ItemDataKeysTab = ({onChange = false}) => {
     useEffect(() => {
         dataKeysRequest();
     }, [selectedService]);
-    console.log('dataKeys', dataKeys)
+
     return (
         <>
-                <Row>
-                    <Col>
-                        <label className={'form-label'}>Service</label>
+            <Row>
+                <Col>
+                    <Form.Item label="Service">
                         <Select
+                            style={{minWidth: 180}}
                             options={getServicesOptions()}
                             value={selectedService}
                             onChange={(e, data) => {
                                 setSelectedService(data.value);
                             }}
                         />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        {postMetaBoxContext.data.data_keys.map((item, index) => {
-                            return (
-                                <div key={index}>
-                                    {getFormGroup({item, index})}
-                                </div>
-                            )
-                        })}
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        {isNotEmpty(selectedService) && (
-                            <Button
-                                type={'primary'}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    postMetaBoxContext.updateData('data_keys', [
-                                        ...postMetaBoxContext.data.data_keys,
-                                        {
-                                            data_item_key: '',
-                                            value_type: '',
-                                            data_item_text: '',
-                                        }
-                                    ])
-                                }}
-                            >
-                                Add Row
-                            </Button>
-                        )}
-                    </Col>
-                </Row>
+                    </Form.Item>
+                </Col>
+            </Row>
+            <Row>
+                {postMetaBoxContext.data.data_keys.map((item, index) => {
+                    return (
+                        <Col key={index}>
+                            {getFormGroup({item, index})}
+                        </Col>
+                    )
+                })}
+            </Row>
+            <Row>
+                <Col>
+                    {isNotEmpty(selectedService) && (
+                        <Button
+                            type={'primary'}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                postMetaBoxContext.updateData('data_keys', [
+                                    ...postMetaBoxContext.data.data_keys,
+                                    {
+                                        data_item_key: '',
+                                        value_type: '',
+                                        data_item_value: '',
+                                    }
+                                ])
+                            }}
+                        >
+                            Add Row
+                        </Button>
+                    )}
+                </Col>
+            </Row>
             <Modal
                 title={modalHeader}
                 open={showModal}

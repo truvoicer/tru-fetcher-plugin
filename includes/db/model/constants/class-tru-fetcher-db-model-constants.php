@@ -16,7 +16,7 @@ class Tru_Fetcher_DB_Model_Constants
 	public const FOREIGN_KEY_REFERENCE_COLUMN = 'foreign_key_reference_column';
 	public const FOREIGN_KEY_RELATION = 'foreign_key_relation';
 	public const VALUE_KEY = 'value';
-	public const ERROR_CODE_PREFIX = 'tr_news_app';
+	public const ERROR_CODE_PREFIX = 'tru_fetcher';
 	public const MODEL_KEY = 'model';
 
 	public const MODEL_NAME_KEY = 'model_name';

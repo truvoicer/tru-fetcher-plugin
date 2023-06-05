@@ -31,6 +31,9 @@ class Tru_Fetcher_DB_Data_Settings extends Tru_Fetcher_DB_Data
     ];
 
     public function install() {
+        return [
+            'success' => true,
+        ];
         if (!$this->doesTableExist()) {
             return [
                 'success' => false,
@@ -57,6 +60,9 @@ class Tru_Fetcher_DB_Data_Settings extends Tru_Fetcher_DB_Data
     }
 
     public function check() {
+        return [
+            'success' => true,
+        ];
         if (!$this->doesTableExist()) {
             return [
                 'success' => false,

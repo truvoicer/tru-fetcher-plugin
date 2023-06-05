@@ -7,7 +7,7 @@ use TruFetcher\Includes\DB\Model\Constants\Tru_Fetcher_DB_Model_Constants;
 class Tru_Fetcher_DB_Model_Device extends Tru_Fetcher_DB_Model
 {
 
-    const TABLE_NAME = 'tr_news_app_device';
+    const TABLE_NAME = 'tru_fetcher_device';
     public string $tableName = self::TABLE_NAME;
 
     private string $userIdColumn = 'user_id';

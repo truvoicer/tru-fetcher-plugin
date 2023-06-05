@@ -3,12 +3,11 @@
 namespace TruFetcher\Includes\DB\Model;
 
 use TruFetcher\Includes\DB\Model\Constants\Tru_Fetcher_DB_Model_Constants;
-use TruFetcher\Includes\DB\Model\WP\Tru_Fetcher_DB_Model_WP_Term;
 
 class Tru_Fetcher_DB_Model_Api_Tokens extends Tru_Fetcher_DB_Model
 {
 
-    const TABLE_NAME = 'tr_news_app_api_tokens';
+    const TABLE_NAME = 'tru_fetcher_api_tokens';
     public string $tableName = self::TABLE_NAME;
 
     protected array $tableConfig = [];

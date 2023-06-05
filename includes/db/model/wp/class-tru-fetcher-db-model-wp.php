@@ -10,7 +10,7 @@ abstract class Tru_Fetcher_DB_Model_WP
     public const ALIAS = 'alias';
     public const FIELDS = 'fields';
 
-    public const ERROR_PREFIX = 'tr_news_app_db_wp';
+    public const ERROR_PREFIX = 'tru_fetcher_db_wp';
 
     protected const WP_RETURN_DATA_TYPE = 'wp_return_data_type';
     protected const REQUIRED_FIELDS = 'required_fields';

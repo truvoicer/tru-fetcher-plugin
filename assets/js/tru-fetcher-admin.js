@@ -44,30 +44,30 @@ function processResponseDataItem(results) {
     resultList += '</ul>'
     return resultList;
 }
-// tr_news_app_db_update_columns
-$(document).on('click', '.tr_news_app_database_install', function (e) {
+// tru_fetcher_db_update_columns
+$(document).on('click', '.tru_fetcher_database_install', function (e) {
     e.preventDefault();
-    handleDatabaseActions('tr_news_app_database_install_action', this)
+    handleDatabaseActions('tru_fetcher_database_install_action', this)
 })
-$(document).on('click', '.tr_news_app_database_network_install', function (e) {
+$(document).on('click', '.tru_fetcher_database_network_install', function (e) {
     e.preventDefault();
-    handleDatabaseActions('tr_news_app_database_network_install_action', this)
+    handleDatabaseActions('tru_fetcher_database_network_install_action', this)
 })
-$(document).on('click', '.tr_news_app_db_req_data_install', function (e) {
+$(document).on('click', '.tru_fetcher_db_req_data_install', function (e) {
     e.preventDefault();
-    handleDatabaseActions('tr_news_app_db_req_data_install', this)
+    handleDatabaseActions('tru_fetcher_db_req_data_install', this)
 })
-$(document).on('click', '.tr_news_app_db_update_columns', function (e) {
+$(document).on('click', '.tru_fetcher_db_update_columns', function (e) {
     e.preventDefault();
-    handleDatabaseActions('tr_news_app_db_update_columns', this)
+    handleDatabaseActions('tru_fetcher_db_update_columns', this)
 })
-$(document).on('click', '.tr_news_app_db_network_update_columns', function (e) {
+$(document).on('click', '.tru_fetcher_db_network_update_columns', function (e) {
     e.preventDefault();
-    handleDatabaseActions('tr_news_app_db_network_update_columns', this)
+    handleDatabaseActions('tru_fetcher_db_network_update_columns', this)
 })
-$(document).on('click', '.tr_news_app_db_network_req_data_install', function (e) {
+$(document).on('click', '.tru_fetcher_db_network_req_data_install', function (e) {
     e.preventDefault();
-    handleDatabaseActions('tr_news_app_db_network_req_data_install', this)
+    handleDatabaseActions('tru_fetcher_db_network_req_data_install', this)
 })
 
 function handleDatabaseActions(action, e) {
@@ -107,11 +107,11 @@ function handleDatabaseActions(action, e) {
                 return;
             }
             switch (responseCode) {
-                case 'tr_news_app_db_install_error':
-                case 'tr_news_app_db_req_data_install_error':
+                case 'tru_fetcher_db_install_error':
+                case 'tru_fetcher_db_req_data_install_error':
                     break;
-                case 'tr_news_app_db_install_success':
-                case 'tr_news_app_db_req_data_install_success':
+                case 'tru_fetcher_db_install_success':
+                case 'tru_fetcher_db_req_data_install_success':
                     status = 'success';
                     break;
             }
