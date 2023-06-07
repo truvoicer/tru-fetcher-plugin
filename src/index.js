@@ -15,7 +15,8 @@ import { TextControl, PanelBody, PanelRow } from '@wordpress/components';
 
 import 'antd/dist/reset.css';
 import '../assets/sass/tru-fetcher-admin.scss';
-import PostMetaBox from "./wp/post/PostMetaBox";
+import SingleItemMetaBox from "./wp/post/MetaBoxes/single-item/SingleItemMetaBox";
+import ItemListMetaBox from "./wp/post/MetaBoxes/item-list/ItemListMetaBox";
 // import SidebarMetaboxLoader from "./wp/sidebar/SidebarMetaboxLoader";
 // render(<App  />, document.getElementById('tru_fetcher_admin'));
 console.log('tru_fetcher_react', tru_fetcher_react.currentScreen);
@@ -39,8 +40,10 @@ function loadByPostScreenId(id) {
         // } );
             break;
         case 'ft_single_comparison':
-            console.log('ft_single_comparison');
-            render(<PostMetaBox  />, document.getElementById('trf_single_comparison'));
+            render(<SingleItemMetaBox  />, document.getElementById('trf_mb_single_item_react'));
+            break;
+        case 'ft_comparisons_list':
+            render(<ItemListMetaBox  />, document.getElementById('trf_mb_item_list_react'));
             break;
     }
 }

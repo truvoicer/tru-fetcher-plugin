@@ -15,14 +15,12 @@ namespace TruFetcher\Includes;
  */
 
 use DirectoryIterator;
-use TruFetcher\Includes\Admin\Editor\Tru_Fetcher_Admin_Editor;
+use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
 use TruFetcher\Includes\Admin\Tru_Fetcher_Admin;
 use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_Jwt;
 use TruFetcher\Includes\Api\Tru_Fetcher_Api;
 use TruFetcher\Includes\Blocks\Tru_Fetcher_Blocks;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
-use TruFetcher\Includes\Tru_Fetcher_Base;
-use TruFetcher\Includes\Tru_Fetcher_Health_Check;
 use TruFetcher\Includes\TruFetcherAcf\Tru_Fetcher_Acf;
 use TruFetcher\Includes\User\Tru_Fetcher_User;
 
@@ -215,7 +213,7 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
                 'id' => $getCurrentUser->ID
             ],
             'editor' => [
-                'metaFields' => Tru_Fetcher_Admin_Editor::getMetaFieldConfig()
+                'metaFields' => Tru_Fetcher_Admin_Meta::getMetaFieldConfig()
             ],
             'currentScreen' => get_current_screen(),
             'postType' => $post_type

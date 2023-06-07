@@ -1,30 +1,28 @@
 import React, {useState, useEffect} from 'react';
 import {Tabs} from 'antd';
-import ItemGeneralTab from "./components/comparisons/ItemGeneralTab";
-import PostMetaBoxContext from "./contexts/PostMetaBoxContext";
-import ItemDataKeysTab from "./components/comparisons/ItemDataKeysTab";
-import {APP_STATE} from "../../library/redux/constants/app-constants";
-import {SESSION_STATE} from "../../library/redux/constants/session-constants";
+import ItemGeneralTab from "./tabs/ItemGeneralTab";
+import PostMetaBoxContext from "../../contexts/PostMetaBoxContext";
+import ItemDataKeysTab from "./tabs/ItemDataKeysTab";
+import {APP_STATE} from "../../../../library/redux/constants/app-constants";
+import {SESSION_STATE} from "../../../../library/redux/constants/session-constants";
 import {connect} from "react-redux";
-import Auth from "../../components/auth/Auth";
-import ItemCustomTab from "./components/comparisons/ItemCustomTab";
+import Auth from "../../../../components/auth/Auth";
+import ItemCustomTab from "./tabs/ItemCustomTab";
 
-const PostMetaBoxTabs = ({session}) => {
+const SingleItemMetaBoxTabs = ({session}) => {
     const [panes, setPanes] = useState([]);
     const [metaBoxContext, setMetaBoxContext] = useState({
         data: {
             type: 'api_data_keys',
             data_keys: [],
-            custom: {
-                item_image: null,
-                item_header: null,
-                item_text: null,
-                item_rating: null,
-                item_link_text: null,
-                item_link: null,
-                item_badge_text: null,
-                item_badge_link: null,
-            },
+            item_image: null,
+            item_header: null,
+            item_text: null,
+            item_rating: null,
+            item_link_text: null,
+            item_link: null,
+            item_badge_text: null,
+            item_badge_link: null,
         },
         updateData: (key, value) => {
             setMetaBoxContext(state => {
@@ -74,7 +72,6 @@ const PostMetaBoxTabs = ({session}) => {
         setPanes(paneState => {
             let cloneState = [...paneState];
             let data = [];
-            console.log({metaBoxContext})
             switch (metaBoxContext.data.type) {
                 case 'custom':
                     data = updatePanes({
@@ -111,8 +108,11 @@ const PostMetaBoxTabs = ({session}) => {
     }
 
     function updateMetaHiddenFields(field) {
-        const fieldName = `trf_post_meta_${field}`;
+        const fieldName = `trf_mb_post_meta_${field}`;
         const hiddenField = document.querySelector(`input[name="${fieldName}"]`);
+        if (!hiddenField) {
+            return;
+        }
         const data = metaBoxContext.data[field];
         if (typeof data === 'object' || Array.isArray(data)) {
             hiddenField.value = JSON.stringify(data);
@@ -154,4 +154,4 @@ export default connect(
         }
     },
     null
-)(PostMetaBoxTabs);
+)(SingleItemMetaBoxTabs);

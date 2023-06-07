@@ -1,10 +1,10 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {Col, Row, Select, Button, Modal, Card, Space, Form} from 'antd';
-import PostMetaBoxContext from "../../contexts/PostMetaBoxContext";
-import {fetchRequest} from "../../../../library/api/middleware";
-import fetcherApiConfig from "../../../../library/api/fetcher-api/fetcherApiConfig";
-import {isNotEmpty} from "../../../../library/helpers/utils-helpers";
-import buildFormField, {FIELDS} from "./fields/field-selector";
+import PostMetaBoxContext from "../../../contexts/PostMetaBoxContext";
+import {fetchRequest} from "../../../../../library/api/middleware";
+import fetcherApiConfig from "../../../../../library/api/fetcher-api/fetcherApiConfig";
+import {isNotEmpty} from "../../../../../library/helpers/utils-helpers";
+import buildFormField, {FIELDS} from "../../../components/comparisons/fields/field-selector";
 
 const CONFIG = [
     {label: 'Item Image', name: 'item_image', field: FIELDS.IMAGE},
@@ -23,12 +23,8 @@ const ItemCustomTab = () => {
     const postMetaBoxContext = useContext(PostMetaBoxContext);
 
     function updateDataKey({value, key}) {
-        const formValues = postMetaBoxContext.data.custom;
-        const cloneFormValues = {...formValues};
-        cloneFormValues[key] = value;
-        postMetaBoxContext.updateData('custom', cloneFormValues);
+        postMetaBoxContext.updateData(key, value);
     }
-
     return (
         <>
             <Row>
@@ -38,7 +34,7 @@ const ItemCustomTab = () => {
                             <Form.Item label={item.label}>
                                 {buildFormField({
                                     fieldType: item.field,
-                                    value: postMetaBoxContext.data.custom[item.name],
+                                    value: postMetaBoxContext.data[item.name],
                                     index,
                                     changeHandler: (value) => {
                                         updateDataKey({

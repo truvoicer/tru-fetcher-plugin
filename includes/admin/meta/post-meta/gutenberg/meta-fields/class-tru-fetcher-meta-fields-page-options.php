@@ -1,6 +1,6 @@
 <?php
 
-namespace TruFetcher\Includes\Admin\Editor\MetaFields;
+namespace TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields;
 
 /**
  * Fired during plugin activation

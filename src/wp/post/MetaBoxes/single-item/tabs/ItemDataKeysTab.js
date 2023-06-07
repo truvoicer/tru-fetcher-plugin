@@ -1,10 +1,10 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {Col, Row, Select, Button, Modal, Card, Space, Form} from 'antd';
-import PostMetaBoxContext from "../../contexts/PostMetaBoxContext";
-import {fetchRequest} from "../../../../library/api/middleware";
-import fetcherApiConfig from "../../../../library/api/fetcher-api/fetcherApiConfig";
-import {isNotEmpty} from "../../../../library/helpers/utils-helpers";
-import buildFormField, {FIELDS} from "./fields/field-selector";
+import PostMetaBoxContext from "../../../contexts/PostMetaBoxContext";
+import {fetchRequest} from "../../../../../library/api/middleware";
+import fetcherApiConfig from "../../../../../library/api/fetcher-api/fetcherApiConfig";
+import {isNotEmpty} from "../../../../../library/helpers/utils-helpers";
+import buildFormField, {FIELDS} from "../../../components/comparisons/fields/field-selector";
 
 const ItemDataKeysTab = () => {
     const [services, setServices] = useState([]);

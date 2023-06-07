@@ -1,6 +1,6 @@
 import React,{useState, useEffect, useContext} from 'react';
 import {Select} from 'antd';
-import PostMetaBoxContext from "../../contexts/PostMetaBoxContext";
+import PostMetaBoxContext from "../../../contexts/PostMetaBoxContext";
 
 const selectOptions = [
     {
