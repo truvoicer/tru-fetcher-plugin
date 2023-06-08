@@ -12,7 +12,9 @@ use Exception;
  * @subpackage Tru_Fetcher/includes
  */
 
+use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
 use TruFetcher\Includes\Tru_Fetcher_i18n;
+use TruFetcher\Includes\User\Tru_Fetcher_User;
 
 /**
  * Fired during plugin activation.
@@ -26,6 +28,9 @@ use TruFetcher\Includes\Tru_Fetcher_i18n;
  */
 class Tru_Fetcher_Base {
 
+    protected Tru_Fetcher_Health_Check $healthCheck;
+    protected Tru_Fetcher_User $userManager;
+    protected Tru_Fetcher_Taxonomy $taxonomyManager;
     protected $plugin_name;
     private string $reactSecretKey;
     private string $appSecretKey;
@@ -47,6 +52,9 @@ class Tru_Fetcher_Base {
         $this->plugin_name = TRU_FETCHER_PLUGIN_NAME;
         $dotenv = \Dotenv\Dotenv::createImmutable(TRU_FETCHER_PLUGIN_DIR);
         $dotenv->load();
+        $this->healthCheck = new Tru_Fetcher_Health_Check();
+        $this->userManager = new Tru_Fetcher_User();
+        $this->taxonomyManager = new Tru_Fetcher_Taxonomy();
         $this->set_locale();
         $this->setAppEnv();
         $this->setReactSecretKey();

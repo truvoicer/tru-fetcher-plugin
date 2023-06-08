@@ -7,7 +7,7 @@ import {APP_STATE} from "../../../../library/redux/constants/app-constants";
 import {SESSION_STATE} from "../../../../library/redux/constants/session-constants";
 import {connect} from "react-redux";
 import Auth from "../../../../components/auth/Auth";
-import ItemCustomTab from "./tabs/ItemCustomTab";
+import CustomItemFormFields from "../../components/item/CustomItemFormFields";
 
 const SingleItemMetaBoxTabs = ({session}) => {
     const [panes, setPanes] = useState([]);
@@ -78,7 +78,14 @@ const SingleItemMetaBoxTabs = ({session}) => {
                         insertPanes: [{
                             name: 'custom',
                             label: 'Custom',
-                            children: <ItemCustomTab />,
+                            children: <CustomItemFormFields
+                                onChange={({value, item, index}) => {
+                                    metaBoxContext.updateData(
+                                        item.name,
+                                        value,
+                                    )
+                                }}
+                            />,
                         }],
                         removePanes: ['data_keys'],
                         panes: cloneState,

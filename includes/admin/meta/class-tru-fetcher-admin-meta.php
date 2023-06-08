@@ -1,4 +1,5 @@
 <?php
+
 namespace TruFetcher\Includes\Admin\Meta;
 
 use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Item_List;
@@ -6,6 +7,7 @@ use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Met
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Post_Options;
 use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Single_Item;
 use TruFetcher\Includes\Admin\PostTypes\Tru_Fetcher_Admin_Post_Types;
+use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 
 /**
@@ -30,6 +32,8 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
  */
 class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
 {
+    use Tru_Fetcher_Traits_Errors;
+
     private string $metaBoxIdPrefix = 'trf_mb';
     public static array $fieldGroups = [
         Tru_Fetcher_Meta_Fields_Page_Options::class,
@@ -43,26 +47,99 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
 
     public function init()
     {
-        add_action( 'init', [$this, 'registerPostMetaFields'] );
-        add_action( 'init', [$this, 'myguten_register_post_meta'] );
-        add_action( 'add_meta_boxes', [$this, 'addEditorMetaBoxes'] );
-        add_action( 'save_post', [$this, 'metaBoxSaveHandler'] );
-    }
-    public function metaBoxSaveHandler( $post_id ) {
-        if ( array_key_exists( 'wporg_field', $_POST ) ) {
-            update_post_meta(
-                $post_id,
-                '_wporg_meta_key',
-                $_POST['wporg_field']
-            );
-        }
+        add_action('init', [$this, 'registerPostMetaFields']);
+        add_action('init', [$this, 'myguten_register_post_meta']);
+        add_action('add_meta_boxes', [$this, 'addEditorMetaBoxes']);
+        add_action('save_post', [$this, 'metaBoxSaveHandler']);
     }
 
-    private function buildMetaBoxId( $metaBoxClass ) {
+    private function buildMetaBoxId($metaBoxClass)
+    {
         $config = $metaBoxClass::CONFIG;
         return "{$this->metaBoxIdPrefix}_{$config['id']}";
     }
-    public function addEditorMetaBoxes() {
+
+    private function buildMetaBoxFieldId(array $field)
+    {
+        return "{$this->metaBoxIdPrefix}_post_meta_{$field['id']}";
+    }
+
+    private function buildMetaBoxFieldSaveValue($postField, array $field)
+    {
+        $emptyPostFieldValues = ['', [], null];
+        if (in_array($postField, $emptyPostFieldValues) ) {
+            return false;
+        }
+        switch ($field['type']) {
+            case 'array':
+                return json_decode(stripslashes($postField));
+            default:
+                return $postField;
+        }
+    }
+
+    private function buildMetaBoxFieldValue(array $field, $metaValue)
+    {
+        switch ($field['type']) {
+            case 'array':
+                return json_encode($metaValue);
+            default:
+                return $metaValue;
+        }
+    }
+
+    private function fetchMetaBoxFieldValue(int $postId, array $field)
+    {
+        $fieldId = $this->buildMetaBoxFieldId($field);
+        $fetchMeta = get_post_meta($postId, $fieldId, true);
+        if (!$fetchMeta) {
+            $this->addError(
+                new \WP_Error(
+                    'tru_fetcher_meta_box_fetch_error',
+                    "Invalid post id for meta box field {$fieldId} for post {$postId}"
+                )
+            );
+            return false;
+        }
+        if (empty($fetchMeta)) {
+            return $fetchMeta;
+        }
+        return $this->buildMetaBoxFieldValue($field, $fetchMeta);
+    }
+
+    public function metaBoxSaveHandler($post_id)
+    {
+        foreach ($this->metaBoxes as $metaBoxClass) {
+            $config = $metaBoxClass::CONFIG;
+            $fields = $config['fields'];
+            foreach ($fields as $field) {
+                $fieldId = $this->buildMetaBoxFieldId($field);
+                if (array_key_exists($fieldId, $_POST)) {
+                    $postField = $_POST[$fieldId];
+                    $saveValue = $this->buildMetaBoxFieldSaveValue($postField, $field);
+                    if (!$saveValue) {
+                        continue;
+                    }
+                    $update = update_post_meta(
+                        $post_id,
+                        $fieldId,
+                        $saveValue
+                    );
+                    if (!$update) {
+                        $this->addError(
+                            new \WP_Error(
+                                'tru_fetcher_meta_box_save_error',
+                                "Failed to save meta box field {$fieldId} for post {$post_id}"
+                            )
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    public function addEditorMetaBoxes()
+    {
         foreach ($this->metaBoxes as $metaBoxClass) {
             $config = $metaBoxClass::CONFIG;
             $id = $this->buildMetaBoxId($metaBoxClass);
@@ -77,22 +154,41 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
             }
         }
     }
-    public function renderMetaBox( $post ) {
+
+    public function buildInputArgs(array $inputArgs)
+    {
+        $args = [];
+        foreach ($inputArgs as $key => $value) {
+            $args[] = "{$key}='{$value}'";
+        }
+        return implode(' ', $args);
+    }
+
+    public function renderMetaBox($post)
+    {
         foreach ($this->metaBoxes as $metaBoxClass) {
             $config = $metaBoxClass::CONFIG;
             $id = $this->buildMetaBoxId($metaBoxClass);
             $fields = $config['fields'];
             foreach ($fields as $field) {
-                $fieldId = "{$this->metaBoxIdPrefix}_post_meta_{$field['id']}";
-                echo "<input type='hidden' id='{$fieldId}' name='{$fieldId}' />";
+                $fieldId = $this->buildMetaBoxFieldId($field);
+                $metaValue = $this->fetchMetaBoxFieldValue($post->ID, $field);
+                $inputArgs = [
+                    'id' => $fieldId,
+                    'name' => $fieldId,
+                    'type' => 'hidden',
+                ];
+                if ($metaValue) {
+                    $inputArgs['value'] = $metaValue;
+                }
+                echo "<input {$this->buildInputArgs($inputArgs)} />";
             }
             echo "<div id='{$id}_react'></div>";
         }
-        ?>
-
-        <?php
     }
-    public static function getMetaFields(string $fieldGroup) {
+
+    public static function getMetaFields(string $fieldGroup)
+    {
         $name = $fieldGroup::NAME;
         return array_map(function ($field) use ($name) {
             return [
@@ -107,7 +203,9 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
             ];
         }, $fieldGroup::FIELDS);
     }
-    public static function getMetaFieldConfig() {
+
+    public static function getMetaFieldConfig()
+    {
         return array_map(function ($fieldGroup) {
             return [
                 'name' => $fieldGroup::NAME,
@@ -115,7 +213,9 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
             ];
         }, self::$fieldGroups);
     }
-    function registerPostMetaFields() {
+
+    function registerPostMetaFields()
+    {
         foreach (self::getMetaFieldConfig() as $fieldGroup) {
             $fields = $fieldGroup['fields'];
             foreach ($fields as $field) {
@@ -128,32 +228,33 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
         }
     }
 
-    function myguten_register_post_meta() {
-        register_post_meta( 'page', 'meta_fields_page_options_page_type', array(
+    function myguten_register_post_meta()
+    {
+        register_post_meta('page', 'meta_fields_page_options_page_type', array(
             'show_in_rest' => true,
             'single' => true,
             'type' => 'string',
-        ) );
-        register_post_meta( 'page', 'meta_fields_page_options_header_override', array(
+        ));
+        register_post_meta('page', 'meta_fields_page_options_header_override', array(
             'show_in_rest' => true,
             'single' => true,
             'type' => 'boolean',
-        ) );
-        register_post_meta( 'page', 'meta_fields_page_options_header_scripts', array(
+        ));
+        register_post_meta('page', 'meta_fields_page_options_header_scripts', array(
             'show_in_rest' => true,
             'single' => true,
             'type' => 'string',
-        ) );
-        register_post_meta( 'page', 'meta_fields_page_options_footer_override', array(
+        ));
+        register_post_meta('page', 'meta_fields_page_options_footer_override', array(
             'show_in_rest' => true,
             'single' => true,
             'type' => 'boolean',
-        ) );
-        register_post_meta( 'page', 'meta_fields_page_options_footer_scripts', array(
+        ));
+        register_post_meta('page', 'meta_fields_page_options_footer_scripts', array(
             'show_in_rest' => true,
             'single' => true,
             'type' => 'string',
-        ) );
+        ));
     }
 
     public function replacePostTypes($fields)

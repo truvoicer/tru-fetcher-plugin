@@ -14,15 +14,31 @@ const selectOptions = [
 ]
 const ItemListSingleItem = ({onChange = false}) => {
     const postMetaBoxContext = useContext(PostMetaBoxContext);
+
+    function findPostTypeConfig(postTypeSlug) {
+        return tru_fetcher_react.postTypes.find(postType => postType.post_type === postTypeSlug);
+    }
+    function buildSelectOptions() {
+        const postTypeConfig = findPostTypeConfig('fetcher_single_item');
+        if (!postTypeConfig) {
+            return [];
+        }
+        return postTypeConfig.posts.map(postType => {
+            return {
+                label: postType.post_name,
+                value: postType.ID,
+            }
+        });
+    }
     return (
         <>
             <Select
                 style={{minWidth: 180}}
-                options={selectOptions}
-                value={postMetaBoxContext.data.type}
+                options={buildSelectOptions()}
+                value={''}
                 onChange={(e, data) => {
                     if (typeof onChange === 'function') {
-                        postMetaBoxContext.updateData('type', data.value)
+                        onChange({value: data.value, item: {name: 'single_item_id'}})
                     }
                 }}
             />

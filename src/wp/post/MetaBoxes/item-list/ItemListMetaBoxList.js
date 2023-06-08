@@ -5,7 +5,7 @@ import {APP_STATE} from "../../../../library/redux/constants/app-constants";
 import {SESSION_STATE} from "../../../../library/redux/constants/session-constants";
 import {connect} from "react-redux";
 import Auth from "../../../../components/auth/Auth";
-import ItemCustomTab from "../single-item/tabs/ItemCustomTab";
+import CustomItemFormFields from "../../components/item/CustomItemFormFields";
 import {isNotEmpty} from "../../../../library/helpers/utils-helpers";
 import ItemListSingleItem from "./types/ItemListSingleItem";
 
@@ -66,12 +66,28 @@ const ItemListMetaBoxList = ({session}) => {
         return metaBoxContext.data.item_list[index].type;
     }
 
-    function getItemComponent(item) {
+    function getItemComponent(item, index) {
         switch (item.type) {
             case 'single_item':
-                return <ItemListSingleItem/>
+                return <ItemListSingleItem
+                    onChange={({value, item}) => {
+                        updateItemListValue({
+                            value,
+                            key: item.name,
+                            index,
+                        })
+                    }}
+                />
             case 'custom':
-                return <ItemCustomTab/>
+                return <CustomItemFormFields
+                    onChange={({value, item}) => {
+                        updateItemListValue({
+                            value,
+                            key: item.name,
+                            index,
+                        })
+                    }}
+                />
             default:
                 return null;
         }
@@ -85,31 +101,29 @@ const ItemListMetaBoxList = ({session}) => {
 
     function getFormGroup({item, index}) {
         return (
-            <Space direction="vertical" size={16}>
-                <Card style={{width: '100%'}}>
-                    <div style={{display: 'flex'}}>
-                        <div>
-                            <Form.Item label="Type">
-                                <Select
-                                    style={{minWidth: 180}}
-                                    options={selectOptions}
-                                    value={getTypeSelectValue({index})}
-                                    onChange={(e, data) => {
-                                        updateItemListValue({
-                                            index,
-                                            key: 'type',
-                                            value: data.value
-                                        })
-                                    }}
-                                />
-                            </Form.Item>
-                        </div>
-                        <div>
-                            {getItemComponent(item)}
-                        </div>
-                    </div>
-                </Card>
-            </Space>
+            <Card style={{width: '100%'}}>
+                <Row>
+                    <Col span={6}>
+                        <Form.Item label="Type">
+                            <Select
+                                style={{minWidth: 180}}
+                                options={selectOptions}
+                                value={getTypeSelectValue({index})}
+                                onChange={(e, data) => {
+                                    updateItemListValue({
+                                        index,
+                                        key: 'type',
+                                        value: data.value
+                                    })
+                                }}
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col span={18}>
+                        {getItemComponent(item, index)}
+                    </Col>
+                </Row>
+            </Card>
         )
     }
 
@@ -119,7 +133,7 @@ const ItemListMetaBoxList = ({session}) => {
                 <Row>
                     {metaBoxContext.data.item_list.map((item, index) => {
                         return (
-                            <Col key={index}>
+                            <Col key={index} span={24}>
                                 {getFormGroup({item, index})}
                             </Col>
                         )

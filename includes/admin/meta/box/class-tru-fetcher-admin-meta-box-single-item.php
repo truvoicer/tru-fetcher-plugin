@@ -31,7 +31,7 @@ class Tru_Fetcher_Admin_Meta_Box_Single_Item extends Tru_Fetcher_Base
         'id' => 'single_item',
         'title' => 'Single Item',
         'post_types' => [
-            Tru_Fetcher_Admin_Post_Types::FETCHER_SINGLE_COMPARISON_PT,
+            Tru_Fetcher_Admin_Post_Types::FETCHER_SINGLE_ITEM_PT,
         ],
         'fields' => [
             [
