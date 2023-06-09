@@ -1,14 +1,14 @@
 import React from 'react'
-import {Message} from 'semantic-ui-react'
+import {Alert} from 'antd'
 
 const MessageBox = ({message = '', show = false}) => (
     <>
         {show &&
-            <Message>
+            <Alert>
                 <p>
                     {message}
                 </p>
-            </Message>
+            </Alert>
         }
     </>
 )

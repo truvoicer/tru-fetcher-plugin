@@ -3,7 +3,6 @@ import {SESSION_STATE} from "./library/redux/constants/session-constants";
 import {APP_ACTIVE_MENU_ITEM, APP_STATE} from "./library/redux/constants/app-constants";
 import {connect} from 'react-redux';
 import {useMatches, useNavigate, useParams, useRouteLoaderData} from "react-router-dom";
-import {Button} from "semantic-ui-react";
 import {getSessionNonceAction, getSessionUserIdAction} from "./library/redux/actions/session-actions";
 import {getAppNameAction} from "./library/redux/actions/app-actions";
 import {getSignedJwt} from "./library/helpers/auth/jwt-helpers";

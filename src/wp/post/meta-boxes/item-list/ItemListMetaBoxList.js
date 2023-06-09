@@ -8,6 +8,7 @@ import Auth from "../../../../components/auth/Auth";
 import CustomItemFormFields from "../../components/item/CustomItemFormFields";
 import {isNotEmpty} from "../../../../library/helpers/utils-helpers";
 import ItemListSingleItem from "./types/ItemListSingleItem";
+import {updateInitialValues, updateMetaHiddenFields} from "../helpers/metaboxes-helpers";
 
 const selectOptions = [
     {
@@ -26,9 +27,17 @@ const ItemListMetaBoxList = ({session}) => {
     const [metaBoxContext, setMetaBoxContext] = useState({
         data: {
             item_list: [],
-            updateData: updateData
+            updateData: updateData,
+            updateByKey: (key, value) => {
+                setMetaBoxContext(state => {
+                    let cloneState = {...state};
+                    cloneState[key] = value;
+                    return cloneState;
+                })
+            }
         },
     });
+    const [isInitialized, setIsInitialized] = useState(false);
 
     function updateData(key, value) {
         setMetaBoxContext(state => {
@@ -36,20 +45,6 @@ const ItemListMetaBoxList = ({session}) => {
             cloneState.data[key] = value;
             return cloneState;
         })
-    }
-
-    function updateMetaHiddenFields(field) {
-        const fieldName = `trf_mb_post_meta_${field}`;
-        const hiddenField = document.querySelector(`input[name="${fieldName}"]`);
-        if (!hiddenField) {
-            return;
-        }
-        const data = metaBoxContext.data[field];
-        if (typeof data === 'object' || Array.isArray(data)) {
-            hiddenField.value = JSON.stringify(data);
-        } else {
-            hiddenField.value = data;
-        }
     }
 
     function updateItemListValue({value, key, index}) {
@@ -93,11 +88,22 @@ const ItemListMetaBoxList = ({session}) => {
         }
     }
 
+
     useEffect(() => {
+        if (!isInitialized) {
+            return;
+        }
         Object.keys(metaBoxContext.data).forEach(field => {
-            updateMetaHiddenFields(field);
+            updateMetaHiddenFields({field, metaBoxContext, fieldGroupId: 'item_list'});
         })
     }, [metaBoxContext])
+
+    useEffect(() => {
+        updateInitialValues({fieldGroupId: 'item_list', metaBoxContext, setIsInitialized})
+    }, [])
+    useEffect(() => {
+
+    }, [])
 
     function getFormGroup({item, index}) {
         return (

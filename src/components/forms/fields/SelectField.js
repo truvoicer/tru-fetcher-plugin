@@ -1,5 +1,4 @@
 import React from 'react';
-// import {Select} from "semantic-ui-react";
 import Select from 'react-select'
 import {isNotEmpty} from "../../../library/helpers/utils-helpers";
 

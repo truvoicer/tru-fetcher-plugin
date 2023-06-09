@@ -3,7 +3,7 @@ import {FieldArray, Formik, isObject} from "formik";
 import {isSet, isNotEmpty} from "../../library/helpers/utils-helpers";
 import FieldBuilder from "./fields/builders/FieldBuilder";
 import LabelBuilder from "./fields/builders/LabelBuilder";
-import {Button, Grid, Modal} from "semantic-ui-react";
+import {Button, Grid, Modal} from "antd";
 import MessageBox from "./MessageBox";
 
 const sprintf = require("sprintf-js").sprintf;

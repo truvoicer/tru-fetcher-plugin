@@ -8,9 +8,11 @@ import {SESSION_STATE} from "../../../../library/redux/constants/session-constan
 import {connect} from "react-redux";
 import Auth from "../../../../components/auth/Auth";
 import CustomItemFormFields from "../../components/item/CustomItemFormFields";
+import {updateInitialValues, updateMetaHiddenFields} from "../helpers/metaboxes-helpers";
 
 const SingleItemMetaBoxTabs = ({session}) => {
     const [panes, setPanes] = useState([]);
+    const [isInitialized, setIsInitialized] = useState(false);
     const [metaBoxContext, setMetaBoxContext] = useState({
         data: {
             type: 'api_data_keys',
@@ -28,6 +30,13 @@ const SingleItemMetaBoxTabs = ({session}) => {
             setMetaBoxContext(state => {
                 let cloneState = {...state};
                 cloneState.data[key] = value;
+                return cloneState;
+            })
+        },
+        updateByKey: (key, value) => {
+            setMetaBoxContext(state => {
+                let cloneState = {...state};
+                cloneState[key] = value;
                 return cloneState;
             })
         }
@@ -114,19 +123,6 @@ const SingleItemMetaBoxTabs = ({session}) => {
         })
     }
 
-    function updateMetaHiddenFields(field) {
-        const fieldName = `trf_mb_post_meta_${field}`;
-        const hiddenField = document.querySelector(`input[name="${fieldName}"]`);
-        if (!hiddenField) {
-            return;
-        }
-        const data = metaBoxContext.data[field];
-        if (typeof data === 'object' || Array.isArray(data)) {
-            hiddenField.value = JSON.stringify(data);
-        } else {
-            hiddenField.value = data;
-        }
-    }
 
     useEffect(() => {
         setPanes(initialPanes.map((item, index) => {
@@ -138,10 +134,18 @@ const SingleItemMetaBoxTabs = ({session}) => {
 
     useEffect(() => {
         updateTabsByType();
+        if (!isInitialized) {
+            return;
+        }
         Object.keys(metaBoxContext.data).forEach(field => {
-            updateMetaHiddenFields(field);
+            updateMetaHiddenFields({field, metaBoxContext, fieldGroupId: 'single_item'});
         })
     }, [metaBoxContext])
+
+    useEffect(() => {
+        updateTabsByType();
+        updateInitialValues({fieldGroupId: 'single_item', metaBoxContext, setIsInitialized})
+    }, [])
 
     return (
         <Auth config={tru_fetcher_react?.api?.tru_fetcher}>

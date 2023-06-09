@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {SESSION_STATE} from "../../library/redux/constants/session-constants";
 import {APP_ACTIVE_MENU_ITEM, APP_STATE} from "../../library/redux/constants/app-constants";
 import {connect} from 'react-redux';
-import {Menu, Dropdown, Button} from "semantic-ui-react";
+import {Menu, Dropdown, Button} from "antd";
 import routeConfig from "../../library/routes/route-config";
 import {useMatches, useNavigate} from "react-router-dom";
 import {setActiveMenuItemAction} from "../../library/redux/actions/app-actions";

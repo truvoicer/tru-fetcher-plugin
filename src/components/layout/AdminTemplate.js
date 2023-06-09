@@ -3,7 +3,6 @@ import {SESSION_STATE} from "../../library/redux/constants/session-constants";
 import {APP_STATE} from "../../library/redux/constants/app-constants";
 import {connect} from 'react-redux';
 import MainMenu from "./MainMenu";
-import {Container, Divider} from 'semantic-ui-react'
 
 function AdminTemplate({app, session, children}) {
     return (

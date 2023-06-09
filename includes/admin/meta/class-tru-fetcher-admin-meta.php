@@ -155,6 +155,33 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
         }
     }
 
+    public function getMetaboxConfig(?array $postTypes = []) {
+        $data = [];
+        foreach ($this->metaBoxes as $metaBoxClass) {
+            $config = $metaBoxClass::CONFIG;
+            if (count($postTypes) && !count(array_intersect($postTypes, $config['post_types']))) {
+                continue;
+            }
+            $config['fields'] = array_map(function ($field) {
+                $field['field_name'] = $this->buildMetaBoxFieldId($field);
+                return $field;
+            }, $config['fields']);
+            $data[] = $config;
+        }
+        return $data;
+    }
+
+    public function getMetaboxPostTypes() {
+        $postTypes = [];
+        foreach ($this->metaBoxes as $metaBoxClass) {
+            $config = $metaBoxClass::CONFIG;
+            foreach ($config['post_types'] as $postType) {
+                $postTypes[] = $postType;
+            }
+        }
+        return $postTypes;
+    }
+
     public function buildInputArgs(array $inputArgs)
     {
         $args = [];
@@ -206,12 +233,14 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
 
     public static function getMetaFieldConfig()
     {
-        return array_map(function ($fieldGroup) {
-            return [
+        $data = [];
+        foreach (self::$fieldGroups as $fieldGroup) {
+            $data[] = [
                 'name' => $fieldGroup::NAME,
                 'fields' => self::getMetaFields($fieldGroup),
             ];
-        }, self::$fieldGroups);
+        }
+        return $data;
     }
 
     function registerPostMetaFields()
@@ -304,5 +333,13 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
             }
         }
         return $array;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMetaBoxes(): array
+    {
+        return $this->metaBoxes;
     }
 }
