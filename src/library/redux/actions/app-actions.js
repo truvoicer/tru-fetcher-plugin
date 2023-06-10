@@ -41,8 +41,8 @@ export function getAppNameAction(appName) {
  * @param token
  */
 export function setInitialAppState(config) {
-    if (config?.app_name) {
-        setAppNameAction(config.app_name);
+    if (tru_fetcher_react?.app_name) {
+        setAppNameAction(tru_fetcher_react.app_name);
     }
     return true;
 }

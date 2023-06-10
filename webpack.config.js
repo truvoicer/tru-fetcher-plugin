@@ -7,7 +7,7 @@ defaults.plugins.push(
         jQuery: 'jquery',
     }),
     new Dotenv({
-        path: './.env'
+        path: '.env'
     })
 )
 module.exports = {

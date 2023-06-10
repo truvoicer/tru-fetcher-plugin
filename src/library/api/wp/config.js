@@ -1,18 +1,27 @@
 //Api config and endpoints
+import {setSessionLocalStorage, setSessionState} from "../../redux/actions/session-actions";
+
 export default {
     wpRequest: true,
     endpoints: {
         login: '/login',
         checkToken: '/token/check',
         tokenRefresh: '/token/refresh',
-        currencies: '/currency/list',
-        currencyConvert: '/currency/convert',
+        posts: '/posts',
     },
-    tokenResponseHandler: (results) => {
-        return {
-            token: results?.data?.token,
-            expiresAt: results?.data?.expiresAt
+    tokenResponseHandler: (results, appKey) => {
+
+        const token = results?.data?.token;
+        const expiresAt = results?.data?.expiresAt;
+
+        if (token) {
+            //Set authenticated local storage data
+            setSessionLocalStorage({token, expiresAt, appKey})
+            //Set authenticated redux session state
+            setSessionState({token, expiresAt})
+            return true;
         }
+        return false;
     },
     tokenRefreshLimit: 1,
     tokenRefreshCount: 0

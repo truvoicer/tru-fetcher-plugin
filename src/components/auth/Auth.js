@@ -12,15 +12,21 @@ import {setAppHasLoadedAction, setInitialAppState} from "../../library/redux/act
 import {setSessionIsAuthenticating} from "../../library/redux/reducers/session-reducer";
 import Loader from "../Loader";
 import fetcherApiConfig from "../../library/api/fetcher-api/fetcherApiConfig";
+import {getApiRequestConfig} from "../../library/helpers/request-helpers";
 
 function Auth({children, app, session, config}) {
 
     async function validateSession() {
         setSessionIsAuthenticating(true);
-        const checkTokenResults = await checkToken({tokenType: 'react', config: fetcherApiConfig});
+        const apiConfig = getApiRequestConfig(config?.app_key)
+        if (!apiConfig) {
+            return;
+        }
+        const checkTokenResults = await checkToken({appKey: config.app_key, config: apiConfig});
         if (!checkTokenResults) {
             return;
         }
+
     }
 
     function checkAuth() {
@@ -41,6 +47,7 @@ function Auth({children, app, session, config}) {
         }
         validateSession()
     }, [app[APP_HAS_LOADED]])
+
     return (
         <>
             {(

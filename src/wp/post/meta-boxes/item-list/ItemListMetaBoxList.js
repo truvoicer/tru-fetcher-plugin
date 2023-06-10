@@ -20,22 +20,22 @@ const selectOptions = [
         value: 'custom',
     }
 ]
-const ItemListMetaBoxList = ({session}) => {
+const ItemListMetaBoxList = ({session, config}) => {
     const [showModal, setShowModal] = useState(false);
     const [modalComponent, setModalComponent] = useState(null);
     const [modalHeader, setModalHeader] = useState(null);
     const [metaBoxContext, setMetaBoxContext] = useState({
         data: {
             item_list: [],
-            updateData: updateData,
-            updateByKey: (key, value) => {
-                setMetaBoxContext(state => {
-                    let cloneState = {...state};
-                    cloneState[key] = value;
-                    return cloneState;
-                })
-            }
         },
+        updateData: updateData,
+        updateByKey: (key, value) => {
+            setMetaBoxContext(state => {
+                let cloneState = {...state};
+                cloneState[key] = value;
+                return cloneState;
+            })
+        }
     });
     const [isInitialized, setIsInitialized] = useState(false);
 
@@ -134,7 +134,7 @@ const ItemListMetaBoxList = ({session}) => {
     }
 
     return (
-        <Auth config={tru_fetcher_react?.api?.tru_fetcher}>
+        <Auth config={config}>
             <PostMetaBoxContext.Provider value={metaBoxContext}>
                 <Row>
                     {metaBoxContext.data.item_list.map((item, index) => {

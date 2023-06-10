@@ -33,4 +33,16 @@ class Tru_Fetcher_Admin_Post_Types {
     public const FETCHER_CATEGORY_TEMPLATES_PT = 'category_templates';
     public const FETCHER_ITEM_VIEW_TEMPLATES_PT = 'item_view_templates';
     public const FETCHER_POST_TEMPLATES_PT = 'post_templates';
+
+    public static function getPostTypeData(string $postType)
+    {
+        return [
+            'post_type' => $postType,
+            'posts' => get_posts([
+                'post_type' => $postType,
+                'posts_per_page' => -1,
+                'post_status' => 'any',
+            ])
+        ];
+    }
 }

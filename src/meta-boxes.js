@@ -19,6 +19,9 @@ function loadByPostScreenId(id) {
             if (!element) {
                 return;
             }
+            SingleItemMetaBoxTabs.defaultProps = {
+                config: tru_fetcher_react?.api?.tru_fetcher
+            };
             render(<MetaBoxContainer metaBoxComponent={SingleItemMetaBoxTabs}  />, element);
             break;
         case 'fetcher_items_lists':
@@ -26,6 +29,9 @@ function loadByPostScreenId(id) {
             if (!element) {
                 return;
             }
+            ItemListMetaBoxList.defaultProps = {
+                config: tru_fetcher_react?.api?.wp
+            };
             render(<MetaBoxContainer metaBoxComponent={ItemListMetaBoxList}  />, element);
             break;
     }

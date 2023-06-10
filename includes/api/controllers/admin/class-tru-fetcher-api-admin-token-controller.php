@@ -111,12 +111,12 @@ class Tru_Fetcher_Api_Admin_Token_Controller extends Tru_Fetcher_Api_Admin_Base_
     }
 
     public function generateTokenRequest(\WP_REST_Request $request) {
-        $tokenType = $request->get_param('token_type');
-        if (!$tokenType) {
+        $appKey = $request->get_param('app_key');
+        if (!$appKey) {
             $this->tokenResponse->addError(
                 new \WP_Error(
-                    $this->tokenResponse::BASE_API_RESPONSE_ERROR_CODE_PREFIX . "token_type",
-                    "Token type is required"
+                    $this->tokenResponse::BASE_API_RESPONSE_ERROR_CODE_PREFIX . "app_key",
+                    "App key is required"
                 )
             );
             return $this->controllerHelpers->sendErrorResponse(
@@ -125,7 +125,7 @@ class Tru_Fetcher_Api_Admin_Token_Controller extends Tru_Fetcher_Api_Admin_Base_
                 $this->tokenResponse
             );
         }
-        $generateToken = $this->apiAuth->generateToken($tokenType);
+        $generateToken = $this->apiAuth->generateToken($appKey);
         if (is_wp_error($generateToken)) {
             $this->tokenResponse->addError($generateToken);
             return $this->controllerHelpers->sendErrorResponse(

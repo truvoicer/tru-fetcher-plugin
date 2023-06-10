@@ -159,9 +159,14 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
         $data = [];
         foreach ($this->metaBoxes as $metaBoxClass) {
             $config = $metaBoxClass::CONFIG;
-            if (count($postTypes) && !count(array_intersect($postTypes, $config['post_types']))) {
+            if (count($postTypes) && !count(array_intersect($postTypes, array_map(function ($postType) {
+                    return $postType['name'];
+                }, $config['post_types'])))) {
                 continue;
             }
+//            foreach ($config['post_types'] as $index => $postType) {
+//                $config['post_types'][$index]['posts'] = Tru_Fetcher_Admin_Post_Types::getPostTypeData($postType['name']);
+//            }
             $config['fields'] = array_map(function ($field) {
                 $field['field_name'] = $this->buildMetaBoxFieldId($field);
                 return $field;
@@ -176,7 +181,7 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
         foreach ($this->metaBoxes as $metaBoxClass) {
             $config = $metaBoxClass::CONFIG;
             foreach ($config['post_types'] as $postType) {
-                $postTypes[] = $postType;
+                $postTypes[] = $postType['name'];
             }
         }
         return $postTypes;

@@ -10,7 +10,7 @@ import Auth from "../../../../components/auth/Auth";
 import CustomItemFormFields from "../../components/item/CustomItemFormFields";
 import {updateInitialValues, updateMetaHiddenFields} from "../helpers/metaboxes-helpers";
 
-const SingleItemMetaBoxTabs = ({session}) => {
+const SingleItemMetaBoxTabs = ({session, config}) => {
     const [panes, setPanes] = useState([]);
     const [isInitialized, setIsInitialized] = useState(false);
     const [metaBoxContext, setMetaBoxContext] = useState({
@@ -148,7 +148,7 @@ const SingleItemMetaBoxTabs = ({session}) => {
     }, [])
 
     return (
-        <Auth config={tru_fetcher_react?.api?.tru_fetcher}>
+        <Auth config={config}>
             <PostMetaBoxContext.Provider value={metaBoxContext}>
 
                 <Tabs defaultActiveKey="1" items={panes}/>

@@ -7,7 +7,7 @@ import {
     setSessionLocalStorage,
     setSessionState
 } from "../redux/actions/session-actions";
-import {SESSION_STATE, SESSION_USER_TOKEN} from "../redux/constants/session-constants";
+import {SESSION_STATE, SESSION_USER_TOKEN, SESSION_USER_TOKEN_EXPIRES_AT} from "../redux/constants/session-constants";
 import {getAppNameAction} from "../redux/actions/app-actions";
 import {getSignedJwt} from "../helpers/auth/jwt-helpers";
 import store from "../redux/store";
@@ -62,8 +62,8 @@ export function loadAxiosInterceptors(apiRequest) {
  * Build authorization header with bearer token from local storage
  * @returns {{Authorization: string}|boolean}
  */
-const getAuthHeader = () => {
-    const sessionStorage = getSessionLocalStorage();
+const getAuthHeader = (appKey) => {
+    const sessionStorage = getSessionLocalStorage(appKey);
     let token = false;
     //Return false if local session token is invalid
     if (typeof sessionStorage[SESSION_USER_TOKEN] === 'undefined' || !isNotEmpty(sessionStorage[SESSION_USER_TOKEN])) {
@@ -74,7 +74,7 @@ const getAuthHeader = () => {
         token = sessionStore.user.token;
     } else {
         token = sessionStorage[SESSION_USER_TOKEN];
-        if (!validateToken()) {
+        if (!validateToken(appKey)) {
             return false;
         }
     }
@@ -113,8 +113,9 @@ export async function sendRequest({
     if (!apiRequest) {
         return false;
     }
+    const appKey = config.app_key;
     if (config?.wpRequest) {
-        const apiRequestAuthData = getApiRequestAuthData(config);
+        const apiRequestAuthData = getApiRequestAuthData(config, appKey);
         if (!apiRequestAuthData) {
             return false;
         }
@@ -124,7 +125,7 @@ export async function sendRequest({
     if (!urlBase) {
         return false;
     }
-    let headers = getAuthHeader();
+    let headers = getAuthHeader(appKey);
     if (!headers && config?.wpRequest) {
         return false;
     }
@@ -150,14 +151,15 @@ export async function sendRequest({
  * @param params
  * @returns {boolean|Promise<AxiosResponse<any>>}
  */
-export async function fetchRequest({ config = apiConfig, endpoint, params = {}}) {
+export async function fetchRequest({ config, endpoint, params = {}}) {
     let requestParams = params;
     const apiRequest = getApiRequest();
     if (!apiRequest) {
         return false;
     }
+    const appKey = config.app_key;
     if (config?.wpRequest) {
-        const apiRequestAuthData = getApiRequestAuthData(config);
+        const apiRequestAuthData = getApiRequestAuthData(config, appKey);
         if (!apiRequestAuthData) {
             return false;
         }
@@ -167,7 +169,7 @@ export async function fetchRequest({ config = apiConfig, endpoint, params = {}})
     if (!urlBase) {
         return false;
     }
-    let headers = getAuthHeader();
+    let headers = getAuthHeader(appKey);
     if (!headers && config?.wpRequest) {
         return false;
     }
@@ -186,8 +188,8 @@ export async function fetchRequest({ config = apiConfig, endpoint, params = {}})
  *
  * @returns {boolean|Promise<AxiosResponse<any>>}
  */
-export function validateToken() {
-    const isTokenValid = isLocalStorageTokenValid();    //Checks token is valid and not expired
+export function validateToken(appKey) {
+    const isTokenValid = isLocalStorageTokenValid(appKey);    //Checks token is valid and not expired
     if (!isTokenValid) {
         console.error('Token expired');
         // handleUnauthorized();
@@ -198,8 +200,11 @@ export function validateToken() {
 
 function buildApiRequestJwtSecret({secretType, secretApp, sessionUserId, appName}) {
     let appSecret = null;
-    if (typeof process.env.TR_NEWS_APP_SECRET !== 'undefined' && process.env.TR_NEWS_APP_SECRET !== '') {
-        appSecret = process.env.TR_NEWS_APP_SECRET;
+    // if (typeof process?.env?.TRU_FETCHER_SECRET !== 'undefined' && process?.env?.TRU_FETCHER_SECRET !== '') {
+    //     appSecret = process.env.TRU_FETCHER_SECRET;
+    // }
+    if (typeof tru_fetcher_react?.api?.wp?.secret !== 'undefined' && tru_fetcher_react?.api?.wp?.secret !== '') {
+        appSecret = tru_fetcher_react.api.wp.secret;
     }
     if (!appSecret) {
         console.error('App secret is invalid');
@@ -215,7 +220,7 @@ function buildApiRequestJwtSecret({secretType, secretApp, sessionUserId, appName
     );
 }
 
-export function getApiRequestAuthData(config = apiConfig) {
+export function getApiRequestAuthData(config, appKey) {
     if (!config?.wpRequest) {
         return {};
     }
@@ -232,8 +237,9 @@ export function getApiRequestAuthData(config = apiConfig) {
         return false;
     }
     const payloadSecret = buildApiRequestJwtSecret({
+        config,
         secretType: 'nonce',
-        secretApp: 'react',
+        secretApp: appKey,
         sessionUserId,
         appName
     });
@@ -246,42 +252,42 @@ export function getApiRequestAuthData(config = apiConfig) {
             nonce: sessionNonce,
         }
     })
-    return {payload: payloadJwt, user_id: sessionUserId};
+    return {payload: payloadJwt, user_id: sessionUserId, app_key: appKey};
 }
 
-export async function generateToken({tokenType, config = apiConfig}) {
+export async function generateToken({appKey, config = apiConfig}) {
     const apiRequest = getApiRequest();
     if (!apiRequest) {
         return false;
     }
-    const apiRequestAuthData = getApiRequestAuthData(config);
+    const apiRequestAuthData = getApiRequestAuthData(config, appKey);
     if (!apiRequestAuthData) {
         return false;
     }
     const request = {
         method: "get",
         url: `/token/generate`,
-        params: {...apiRequestAuthData, token_type: tokenType}
+        params: {...apiRequestAuthData, app_key: appKey}
     }
     const getRequest = await apiRequest.request(request);
-    if (handleTokenResponse({config, result: getRequest})) {
+    if (handleTokenResponse({appKey, config, result: getRequest})) {
         return true;
     }
     return false;
 }
 
-export async function checkToken({tokenType, config = apiConfig}) {
+export async function checkToken({appKey, config}) {
     const apiRequest = getApiRequest();
     if (!apiRequest) {
         return false;
     }
-    const apiRequestAuthData = getApiRequestAuthData(config);
+    const apiRequestAuthData = getApiRequestAuthData(config, appKey);
     if (!apiRequestAuthData) {
         return false;
     }
-    let headers = getAuthHeader();
+    let headers = getAuthHeader(appKey);
     if (!headers && config?.wpRequest) {
-        return generateToken({tokenType, config});
+        return generateToken({appKey, config});
     }
     const request = {
         method: "get",
@@ -292,23 +298,30 @@ export async function checkToken({tokenType, config = apiConfig}) {
 
     try {
         const getRequest = await apiRequest.request(request);
-        if (handleTokenResponse({config, result: getRequest})) {
+        if (getRequest?.data?.status === 'success') {
+            const sessionStorage = getSessionLocalStorage(appKey);
+            setSessionState({
+                token: sessionStorage[SESSION_USER_TOKEN],
+                expiresAt: sessionStorage[SESSION_USER_TOKEN_EXPIRES_AT],
+            })
+
             return true;
         }
+        return false;
     } catch (e) {
         console.error(e)
         if (config?.wpRequest) {
-            return tokenRefresh({tokenType, config});
+            return tokenRefresh({appKey, config});
         }
     }
 }
 
-export async function tokenRefresh({tokenType, config = apiConfig}) {
+export async function tokenRefresh({appKey, config = apiConfig}) {
     const apiRequest = getApiRequest();
     if (!apiRequest) {
         return false;
     }
-    const apiRequestAuthData = getApiRequestAuthData(config);
+    const apiRequestAuthData = getApiRequestAuthData(config, appKey);
     if (!apiRequestAuthData) {
         return false;
     }
@@ -318,11 +331,11 @@ export async function tokenRefresh({tokenType, config = apiConfig}) {
     const request = {
         method: "get",
         url: `/token/refresh`,
-        headers: getAuthHeader(),
-        params: {...apiRequestAuthData, token_type: tokenType}
+        headers: getAuthHeader(appKey),
+        params: {...apiRequestAuthData, app_key: appKey}
     }
     const getRequest = await apiRequest.request(request);
-    if (handleTokenResponse({config, result: getRequest})) {
+    if (handleTokenResponse({appKey, config, result: getRequest})) {
         return true;
     }
     return false;
@@ -334,22 +347,11 @@ export function handleCheckResponse(result) {
     return false;
 }
 
-export function handleTokenResponse({result, config = apiConfig}) {
+export function handleTokenResponse({result, config, appKey}) {
     if (typeof config?.tokenResponseHandler !== 'function') {
         return false;
     }
-    const data = config.tokenResponseHandler(result);
-    const token = data?.token;
-    const expiresAt = data?.expiresAt;
-
-    if (token) {
-        //Set authenticated local storage data
-        setSessionLocalStorage({token, expiresAt})
-        //Set authenticated redux session state
-        setSessionState({token, expiresAt})
-        return true;
-    }
-    return false;
+    return config.tokenResponseHandler(result, appKey);
 }
 
 export function handleUnauthorized() {

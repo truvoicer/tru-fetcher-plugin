@@ -195,8 +195,8 @@ class Tru_Fetcher_Api_Auth extends Tru_Fetcher_Base
         );
     }
 
-    protected function validateUserToken(string $tokenType) {
-        $getUserToken = $this->buildUserToken($tokenType);
+    protected function validateUserToken(string $appKey) {
+        $getUserToken = $this->buildUserToken($appKey);
         if (is_wp_error($getUserToken)) {
             return $getUserToken;
         }
@@ -244,10 +244,10 @@ class Tru_Fetcher_Api_Auth extends Tru_Fetcher_Base
         );
     }
 
-    public function buildUserToken(string $tokenType)
+    public function buildUserToken(string $appKey)
     {
         $getUserToken = $this->apiTokensRepository->getUserToken(
-            $tokenType,
+            $appKey,
             $this->getUser(),
         );
         if (!$getUserToken) {
@@ -278,7 +278,7 @@ class Tru_Fetcher_Api_Auth extends Tru_Fetcher_Base
     }
 
 
-    public function generateToken(string $tokenType)
+    public function generateToken(string $appKey)
     {
         $user = $this->getUser();
         $jwtAuth = $this->getAuthJwt();
@@ -289,9 +289,9 @@ class Tru_Fetcher_Api_Auth extends Tru_Fetcher_Base
             $jwtAuth::ISSUED_AT => strtotime($issuedAt),
             $jwtAuth::EXPIRES_AT => strtotime($expiresAt)
         ];
-        $generateToken = $jwtAuth->jwtEncode(self::JWT_KEY_TYPE, $tokenType, $user, $tokenPayload);
+        $generateToken = $jwtAuth->jwtEncode(self::JWT_KEY_TYPE, $appKey, $user, $tokenPayload);
         return $this->saveUserToken(
-            $tokenType,
+            $appKey,
             $generateToken,
             $issuedAt,
             $expiresAt

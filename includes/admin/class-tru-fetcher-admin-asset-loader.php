@@ -135,6 +135,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
             $localizedScriptData = $this->buildDefaultLocalizedScriptData();
             $localizedScriptData['api'] = [];
             $localizedScriptData['api'] = array_merge($localizedScriptData['api'], $this->buildTruFetcherApiLocalizedScriptData());
+            $localizedScriptData['api'] = array_merge($localizedScriptData['api'], $this->buildWordpressApiLocalizedScriptData());
             $localizedScriptData = array_merge($localizedScriptData, $this->buildMetaFieldsLocalizedScriptData([$currentScreen->id]));
             wp_localize_script(
                 $handle,
@@ -209,13 +210,14 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
     {
         $getCurrentUser = self::getCurrentUser();
 
+        $appKey = 'wp_react';
         $authJwt = new Tru_Fetcher_Api_Auth_Jwt();
         $authJwt->setSecret($this->getReactSecretKey());
 
-        $nonceActionName = $authJwt->getJwtKey('nonce', 'react', $getCurrentUser);
+        $nonceActionName = $authJwt->getJwtKey('nonce', $appKey, $getCurrentUser);
 
         $nonce = wp_create_nonce(md5($nonceActionName));
-        $encodeNonce = $authJwt->jwtEncode('nonce', 'react', $getCurrentUser, ['nonce' => $nonce]);
+        $encodeNonce = $authJwt->jwtEncode('nonce', $appKey, $getCurrentUser, ['nonce' => $nonce]);
 
         $saveMeta = update_user_meta(
             $getCurrentUser->ID,
@@ -227,9 +229,10 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         }
         return [
             'wp' => [
-                'baseUrl' => rest_url('tru-fetcher/admin'),
-                'app_name' => TRU_FETCHER_PLUGIN_NAME,
+                'baseUrl' => rest_url('tru-fetcher-api/admin'),
+                'app_key' => $appKey,
                 'nonce' => $nonce,
+                'secret' => $this->getEnv('TRU_FETCHER_REACT_SECRET'),
             ]
         ];
     }
@@ -239,11 +242,12 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
      */
     public function buildTruFetcherApiLocalizedScriptData()
     {
+        $appKey = 'tru_fetcher_react';
         return [
             'tru_fetcher' => [
                 'baseUrl' => $this->getEnv('TRU_FETCHER_API_URL'),
                 'token' => $this->getEnv('TRU_FETCHER_API_TOKEN'),
-                'app_name' => TRU_FETCHER_PLUGIN_NAME,
+                'app_key' => $appKey,
             ]
         ];
     }
@@ -261,21 +265,6 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
             ],
             'currentScreen' => get_current_screen(),
         ];
-    }
-
-    public function getPostTypeData(array $postTypes = [])
-    {
-
-        return array_map(function ($postType) {
-            return [
-                'post_type' => $postType,
-                'posts' => get_posts([
-                    'post_type' => $postType,
-                    'posts_per_page' => -1,
-                    'post_status' => 'any',
-                ])
-            ];
-        }, $postTypes);
     }
 
 

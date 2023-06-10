@@ -385,7 +385,7 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
         return $fetchApiToken;
     }
 
-    public function generateToken(string $tokenType)
+    public function generateToken(string $appKey)
     {
         $user = $this->getUser();
         $jwtAuth = $this->getAuthJwt();
@@ -395,12 +395,12 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
 
         $generateToken = $jwtAuth->jwtRawEncode([
             'user_id' => $user->ID,
-            'type' => $tokenType,
+            'type' => $appKey,
             $jwtAuth::ISSUED_AT => strtotime($issuedAt),
             $jwtAuth::EXPIRES_AT => strtotime($expiresAt),
         ]);
         return $this->saveUserToken(
-            $tokenType,
+            $appKey,
             $generateToken,
             $issuedAt,
             $expiresAt

@@ -31,7 +31,7 @@ class Tru_Fetcher_Admin_Meta_Box_Item_List extends Tru_Fetcher_Base
         'id' => 'item_list',
         'title' => 'Item List',
         'post_types' => [
-            Tru_Fetcher_Admin_Post_Types::FETCHER_ITEMS_LIST_PT,
+            ['name' => Tru_Fetcher_Admin_Post_Types::FETCHER_ITEMS_LIST_PT],
         ],
         'fields' => [
             [
