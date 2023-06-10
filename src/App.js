@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {Provider} from "react-redux";
 import store from "./library/redux/store";
@@ -11,6 +10,9 @@ import {buildRouterData} from "./library/helpers/route-helpers";
 import routeConfig from "./library/routes/route-config";
 import {loadAxiosInterceptors} from "./library/api/middleware";
 import AppLoader from "./AppLoader";
+import Auth from "./components/auth/Auth";
+import Template from "./components/layout/Template";
+import SettingsContainer from "./settings/SettingsContainer";
 
 
 const App = ({apiConfig}) => {
@@ -25,7 +27,13 @@ const App = ({apiConfig}) => {
     return (
         <Provider store={store}>
             <AppLoader apiConfig={apiConfig}>
-                <RouterProvider router={router}/>
+                <Template>
+                    <Auth>
+                        <SettingsContainer>
+                            <RouterProvider router={router}/>
+                        </SettingsContainer>
+                    </Auth>
+                </Template>
             </AppLoader>
         </Provider>
     );

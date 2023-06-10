@@ -8,6 +8,7 @@ export default {
         checkToken: '/token/check',
         tokenRefresh: '/token/refresh',
         posts: '/posts',
+        settings: '/settings',
     },
     tokenResponseHandler: (results, appKey) => {
 

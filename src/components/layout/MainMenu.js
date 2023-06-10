@@ -50,26 +50,10 @@ function MainMenu({app, session}) {
         navigate(getNextRoute)
     }
 
-    function handleDropdownItemClick(e, {value}) {
-        menuClickHandler(value)
-    }
-
     function handleMenuItemClick(e) {
         menuClickHandler(e.key)
     }
 
-    function buildRouteItem(route, index, type) {
-        return (
-            <Menu.Item
-                key={`${type}_${index}`}
-                name={route?.key}
-                active={app[APP_ACTIVE_MENU_ITEM] === route?.key}
-                onClick={handleMenuItemClick}>
-                {route?.label}
-            </Menu.Item>
-        )
-    }
-    console.log({menuItems})
     return (
         <Menu
             onClick={handleMenuItemClick}
@@ -77,31 +61,6 @@ function MainMenu({app, session}) {
             mode="horizontal"
             items={menuItems}
         />
-    );
-    return (
-        <div>
-            <Menu pointing secondary>
-                {routeConfig.map((route, index) => {
-                    if (Array.isArray(route?.subRoutes)) {
-                        return (
-                            <Dropdown item text={route?.label} key={index}>
-                                <Dropdown.Menu>
-                                    {route?.subRoutes.map((subRoute, index) => {
-                                        return (
-                                            <Dropdown.Item value={subRoute?.key} key={index}
-                                                           onClick={handleDropdownItemClick}>
-                                                {subRoute?.label}
-                                            </Dropdown.Item>
-                                        );
-                                    })}
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        )
-                    }
-                    return buildRouteItem(route, index, 'menu')
-                })}
-            </Menu>
-        </div>
     );
 }
 

@@ -134,7 +134,7 @@ export async function sendRequest({
     }
     const request = {
         method,
-        url: `${urlBase}/${endpoint}`,
+        url: `${urlBase}${endpoint}`,
         headers,
         params: requestParams,
         data

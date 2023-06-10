@@ -28,13 +28,9 @@ export function buildRouterData(routes) {
 export function buildSubComponent(component, props = {}) {
     const Component = component;
     return (
-        <Template>
-            <Auth>
-                <AdminTemplate>
-                    <Component {...props} />
-                </AdminTemplate>
-            </Auth>
-        </Template>
+        <AdminTemplate>
+            <Component {...props} />
+        </AdminTemplate>
     )
 }
 

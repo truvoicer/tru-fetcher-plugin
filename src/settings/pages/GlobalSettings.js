@@ -1,11 +1,11 @@
 import React from 'react';
 
-const GeneralSettings = () => {
+const GlobalSettings = () => {
     return (
         <div>
-            
+
         </div>
     );
 };
 
-export default GeneralSettings;
+export default GlobalSettings;
