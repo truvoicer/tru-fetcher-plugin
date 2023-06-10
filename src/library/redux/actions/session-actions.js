@@ -155,10 +155,10 @@ export function setSessionState({token, expiresAt}) {
  * @param token
  * @param expires_at
  */
-export function setSessionLocalStorage({token, expiresAt}) {
+export function setSessionLocalStorage({token, expiresAt, appKey}) {
     const convertToUnixTimestamp = JSON.stringify(expiresAt * 1000);
-    localStorage.setItem(SESSION_USER_TOKEN, token);
-    localStorage.setItem(SESSION_USER_TOKEN_EXPIRES_AT, convertToUnixTimestamp);
+    localStorage.setItem(`${appKey}_${SESSION_USER_TOKEN}`, token);
+    localStorage.setItem(`${appKey}_${SESSION_USER_TOKEN_EXPIRES_AT}`, convertToUnixTimestamp);
     // navigate to the home route
 }
 
@@ -175,11 +175,12 @@ export function removeLocalSession() {
  * CHecks if token is past expiry date
  * @returns {boolean}
  */
-export function isLocalStorageTokenValid() {
-    const getLocalStorage = getSessionLocalStorage();
+export function isLocalStorageTokenValid(appKey) {
+    const getLocalStorage = getSessionLocalStorage(appKey);
     if (typeof getLocalStorage[SESSION_USER_TOKEN] === 'undefined' || typeof getLocalStorage[SESSION_USER_TOKEN_EXPIRES_AT] === 'undefined') {
         return false;
     }
+
     return Date.now() < getLocalStorage[SESSION_USER_TOKEN_EXPIRES_AT];
 }
 
@@ -187,9 +188,9 @@ export function isLocalStorageTokenValid() {
  * Returns local session storage object
  * @returns {{access_token: string, expires_at: any}}
  */
-export function getSessionLocalStorage() {
+export function getSessionLocalStorage(appKey) {
     return {
-        [SESSION_USER_TOKEN]: localStorage.getItem(SESSION_USER_TOKEN),
-        [SESSION_USER_TOKEN_EXPIRES_AT]: JSON.parse(localStorage.getItem(SESSION_USER_TOKEN_EXPIRES_AT))
+        [SESSION_USER_TOKEN]: localStorage.getItem(`${appKey}_${SESSION_USER_TOKEN}`),
+        [SESSION_USER_TOKEN_EXPIRES_AT]: JSON.parse(localStorage.getItem(`${appKey}_${SESSION_USER_TOKEN_EXPIRES_AT}`))
     }
 }

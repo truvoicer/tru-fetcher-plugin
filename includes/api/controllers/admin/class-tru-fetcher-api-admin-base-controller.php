@@ -27,7 +27,7 @@ use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_Admin;
  */
 class Tru_Fetcher_Api_Admin_Base_Controller {
 
-    protected string $adminNamespace = "tr-news-app/v1/admin";
+    protected string $adminNamespace = "tru-fetcher-api/admin";
     protected Tru_Fetcher_Api_Auth_Admin $apiAuth;
 
     protected Tru_Fetcher_Api_Helpers_Controller $controllerHelpers;

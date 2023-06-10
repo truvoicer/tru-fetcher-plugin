@@ -1,6 +1,8 @@
 <?php
 namespace TruFetcher\Includes\Api;
 
+use TruFetcher\Includes\Api\Controllers\Admin\Tru_Fetcher_Api_Admin_Posts_Controller;
+use TruFetcher\Includes\Api\Controllers\Admin\Tru_Fetcher_Api_Admin_Token_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Page_Controller;
 use TruFetcher\Includes\Api\Controllers\Tru_Fetcher_Api_Comments_Controller;
 use TruFetcher\Includes\Api\Controllers\Tru_Fetcher_Api_Forms_Controller;
@@ -30,11 +32,12 @@ use TruFetcher\Includes\Api\Controllers\Tru_Fetcher_Api_User_Controller;
 class Tru_Fetcher_Api {
 
 	public function init() {
-		$this->loadApiControllers();
+		$this->loadPublicApiControllers();
+		$this->loadAdminApiControllers();
 	}
 
 
-	public function loadApiControllers() {
+	public function loadPublicApiControllers() {
 		$pageController = new Tru_Fetcher_Api_Page_Controller();
 		$pageController->init();
 		$postsController = new Tru_Fetcher_Api_Posts_Controller();
@@ -45,5 +48,10 @@ class Tru_Fetcher_Api {
         $commentsController->init();
 		$formsController = new Tru_Fetcher_Api_Forms_Controller();
         $formsController->init();
+	}
+
+	public function loadAdminApiControllers() {
+		(new Tru_Fetcher_Api_Admin_Token_Controller())->init();
+		(new Tru_Fetcher_Api_Admin_Posts_Controller())->init();
 	}
 }

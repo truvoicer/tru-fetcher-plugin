@@ -37,13 +37,20 @@ class Tru_Fetcher_Api_Auth_Admin extends Tru_Fetcher_Api_Auth
 
     public function nonceRequestHandler(\WP_REST_Request $request)
     {
+        $appKey = $request->get_param('app_key');
+        if (!$appKey) {
+            return new \WP_Error(
+                Tru_Fetcher_Api_Admin_Token_Response::API_RESPONSE_ERROR_CODE_PREFIX . '_app_key',
+                "App key is required"
+            );
+        }
         $init = $this->requestInit($request);
         if (is_wp_error($init)) {
             return $init;
         }
         $decodePayloadAction = $this->authJwt->jwtDecode(
             'nonce',
-            'react',
+            $appKey,
             $this->getUser(),
             $this->getPayloadJwt(),
         );
@@ -52,10 +59,11 @@ class Tru_Fetcher_Api_Auth_Admin extends Tru_Fetcher_Api_Auth
 
         $decodeUserMetaEncodedNonce = $this->authJwt->jwtDecode(
             'nonce',
-            'react',
+            $appKey,
             $this->getUser(),
             $userMetaEncodedNonce,
         );
+
         if ($decodePayloadAction['payload']['nonce'] !== $decodeUserMetaEncodedNonce['payload']['nonce']) {
             return new \WP_Error(
                 Tru_Fetcher_Api_Admin_Token_Response::API_RESPONSE_ERROR_CODE_PREFIX . '_nonce',
@@ -64,7 +72,7 @@ class Tru_Fetcher_Api_Auth_Admin extends Tru_Fetcher_Api_Auth
         }
         $nonce = $decodeUserMetaEncodedNonce['payload']['nonce'];
 
-        $nonceActionName = $this->authJwt->getJwtKey('nonce', 'react', $this->getUser());
+        $nonceActionName = $this->authJwt->getJwtKey('nonce', $appKey, $this->getUser());
         $md5NonceAction = md5($nonceActionName);
 
         add_filter('nonce_user_logged_out', function ($uid, $action) use ($md5NonceAction) {
@@ -85,6 +93,13 @@ class Tru_Fetcher_Api_Auth_Admin extends Tru_Fetcher_Api_Auth
 
     public function tokenRequestHandler(\WP_REST_Request $request)
     {
+        $appKey = $request->get_param('app_key');
+        if (!$appKey) {
+            return new \WP_Error(
+                Tru_Fetcher_Api_Admin_Token_Response::API_RESPONSE_ERROR_CODE_PREFIX . '_app_key',
+                "App key is required"
+            );
+        }
         $validateNonce = $this->nonceRequestHandler($request);
         if (is_wp_error($validateNonce)) {
             return $validateNonce;
@@ -93,7 +108,7 @@ class Tru_Fetcher_Api_Auth_Admin extends Tru_Fetcher_Api_Auth
         if (is_wp_error($validateBearerToken)) {
             return $validateBearerToken;
         }
-        $validateUserToken = $this->validateUserToken('react');
+        $validateUserToken = $this->validateUserToken($appKey);
         if (is_wp_error($validateUserToken)) {
             return $validateUserToken;
         }
