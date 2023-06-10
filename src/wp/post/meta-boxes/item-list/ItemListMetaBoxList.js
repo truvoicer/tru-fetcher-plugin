@@ -6,9 +6,10 @@ import {SESSION_STATE} from "../../../../library/redux/constants/session-constan
 import {connect} from "react-redux";
 import Auth from "../../../../components/auth/Auth";
 import CustomItemFormFields from "../../components/item/CustomItemFormFields";
-import {isNotEmpty} from "../../../../library/helpers/utils-helpers";
 import ItemListSingleItem from "./types/ItemListSingleItem";
 import {updateInitialValues, updateMetaHiddenFields} from "../helpers/metaboxes-helpers";
+import {fetchRequest} from "../../../../library/api/middleware";
+import config from "../../../../library/api/wp/config";
 
 const selectOptions = [
     {
@@ -20,14 +21,18 @@ const selectOptions = [
         value: 'custom',
     }
 ]
-const ItemListMetaBoxList = ({session, config}) => {
+const ItemListMetaBoxList = ({session}) => {
     const [showModal, setShowModal] = useState(false);
     const [modalComponent, setModalComponent] = useState(null);
     const [modalHeader, setModalHeader] = useState(null);
     const [metaBoxContext, setMetaBoxContext] = useState({
         data: {
+            singleItemPosts: []
+        },
+        formData: {
             item_list: [],
         },
+        updateFormData: updateFormData,
         updateData: updateData,
         updateByKey: (key, value) => {
             setMetaBoxContext(state => {
@@ -46,25 +51,34 @@ const ItemListMetaBoxList = ({session, config}) => {
             return cloneState;
         })
     }
+    function updateFormData(key, value) {
+        setMetaBoxContext(state => {
+            let cloneState = {...state};
+            cloneState.formData[key] = value;
+            return cloneState;
+        })
+    }
 
     function updateItemListValue({value, key, index}) {
-        const itemList = metaBoxContext.data.item_list;
+        console.log({value, key, index})
+        const itemList = metaBoxContext.formData.item_list;
         const cloneItemList = [...itemList];
         cloneItemList[index][key] = value;
-        updateData('item_list', cloneItemList);
+        updateFormData('item_list', cloneItemList);
     }
 
     function getTypeSelectValue({index}) {
-        if (typeof metaBoxContext.data.item_list[index] === 'undefined') {
+        if (typeof metaBoxContext.formData.item_list[index] === 'undefined') {
             return '';
         }
-        return metaBoxContext.data.item_list[index].type;
+        return metaBoxContext.formData.item_list[index].type;
     }
 
     function getItemComponent(item, index) {
         switch (item.type) {
             case 'single_item':
                 return <ItemListSingleItem
+                    index={index}
                     onChange={({value, item}) => {
                         updateItemListValue({
                             value,
@@ -75,6 +89,7 @@ const ItemListMetaBoxList = ({session, config}) => {
                 />
             case 'custom':
                 return <CustomItemFormFields
+                    formItem={metaBoxContext.formData.item_list[index]}
                     onChange={({value, item}) => {
                         updateItemListValue({
                             value,
@@ -89,11 +104,27 @@ const ItemListMetaBoxList = ({session, config}) => {
     }
 
 
+    async function fetchSingleItemPostData() {
+        const results = await fetchRequest({
+            config: config,
+            endpoint: config.endpoints.posts,
+            params: {
+                post_type: 'fetcher_single_item',
+            }
+        });
+        console.log({results})
+        const posts = results?.data?.posts;
+        if (Array.isArray(posts)) {
+            updateData('singleItemPosts', posts)
+        }
+    }
+
+
     useEffect(() => {
         if (!isInitialized) {
             return;
         }
-        Object.keys(metaBoxContext.data).forEach(field => {
+        Object.keys(metaBoxContext.formData).forEach(field => {
             updateMetaHiddenFields({field, metaBoxContext, fieldGroupId: 'item_list'});
         })
     }, [metaBoxContext])
@@ -101,9 +132,10 @@ const ItemListMetaBoxList = ({session, config}) => {
     useEffect(() => {
         updateInitialValues({fieldGroupId: 'item_list', metaBoxContext, setIsInitialized})
     }, [])
-    useEffect(() => {
 
-    }, [])
+    useEffect(() => {
+        fetchSingleItemPostData();
+    }, []);
 
     function getFormGroup({item, index}) {
         return (
@@ -134,10 +166,10 @@ const ItemListMetaBoxList = ({session, config}) => {
     }
 
     return (
-        <Auth config={config}>
+        <Auth>
             <PostMetaBoxContext.Provider value={metaBoxContext}>
                 <Row>
-                    {metaBoxContext.data.item_list.map((item, index) => {
+                    {metaBoxContext.formData.item_list.map((item, index) => {
                         return (
                             <Col key={index} span={24}>
                                 {getFormGroup({item, index})}
@@ -151,8 +183,8 @@ const ItemListMetaBoxList = ({session, config}) => {
                             type={'primary'}
                             onClick={(e) => {
                                 e.preventDefault();
-                                updateData('item_list', [
-                                    ...metaBoxContext.data.item_list,
+                                updateFormData('item_list', [
+                                    ...metaBoxContext.formData.item_list,
                                     {
                                         type: '',
                                         single_item_id: null,

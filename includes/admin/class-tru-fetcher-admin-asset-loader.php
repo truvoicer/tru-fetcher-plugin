@@ -177,13 +177,13 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         wp_enqueue_script(
             "{$this->plugin_name}-{$this->adminReactScriptName}",
             TRU_FETCHER_PLUGIN_URL . "build/{$this->adminReactScriptName}.js",
-            [],
+            array('wp-element'),
             $this->version,
             true
         );
         $localizedScriptData = $this->buildDefaultLocalizedScriptData();
         $localizedScriptData['api'] = [];
-        $localizedScriptData['api'][] = $this->buildWordpressApiLocalizedScriptData();
+        $localizedScriptData['api'] = array_merge($localizedScriptData['api'], $this->buildWordpressApiLocalizedScriptData());
         wp_localize_script(
             "{$this->plugin_name}-{$this->adminReactScriptName}",
             str_replace('-', '_', "{$this->plugin_name}_react"),

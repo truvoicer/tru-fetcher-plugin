@@ -39,7 +39,7 @@ require_once __DIR__ . '/vendor/autoload.php';
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-const TRU_FETCHER_PLUGIN_NAME = 'tru_fetcher';
+const TRU_FETCHER_PLUGIN_NAME = 'tru-fetcher';
 const TRU_FETCHER_PLUGIN_NAME_ACRONYM = 'trf';
 const TRU_FETCHER_ERROR_PREFIX = 'tru_fetcher_error';
 define( 'TRU_FETCHER_VERSION', '1.0.0' );

@@ -1,4 +1,4 @@
-import '../assets/sass/tru-fetcher-admin.scss';
+
 import React from 'react';
 import {Provider} from "react-redux";
 import store from "./library/redux/store";
@@ -10,9 +10,10 @@ import {
 import {buildRouterData} from "./library/helpers/route-helpers";
 import routeConfig from "./library/routes/route-config";
 import {loadAxiosInterceptors} from "./library/api/middleware";
+import AppLoader from "./AppLoader";
 
 
-const App = () => {
+const App = ({apiConfig}) => {
     const routes = buildRouterData(routeConfig);
     const router = createHashRouter(
         routes,
@@ -20,9 +21,12 @@ const App = () => {
             basename: "/",
         }
     );
+
     return (
         <Provider store={store}>
-            <RouterProvider router={router}/>
+            <AppLoader apiConfig={apiConfig}>
+                <RouterProvider router={router}/>
+            </AppLoader>
         </Provider>
     );
 }

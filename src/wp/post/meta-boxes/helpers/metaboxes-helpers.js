@@ -6,8 +6,8 @@ export function updateInitialValues({fieldGroupId, metaBoxContext, setIsInitiali
     }
     console.log({findMetaFieldConfig, metaBoxContext})
 
-    let initialValues = {...metaBoxContext.data};
-    Object.keys(metaBoxContext.data).forEach(key => {
+    let initialValues = {...metaBoxContext.formData};
+    Object.keys(metaBoxContext.formData).forEach(key => {
         const findField = findMetaFieldConfig.fields.find(field => field.id === key);
         if (!findField) {
             return;
@@ -29,7 +29,7 @@ export function updateInitialValues({fieldGroupId, metaBoxContext, setIsInitiali
                 break;
         }
     })
-    metaBoxContext.updateByKey('data', initialValues);
+    metaBoxContext.updateByKey('formData', initialValues);
     setIsInitialized(true);
 }
 
@@ -49,7 +49,7 @@ export function updateMetaHiddenFields({fieldGroupId, field, metaBoxContext}) {
     if (!hiddenField) {
         return;
     }
-    const data = metaBoxContext.data[field];
+    const data = metaBoxContext.formData[field];
     if (typeof data === 'object' || Array.isArray(data)) {
         hiddenField.value = JSON.stringify(data);
     } else {

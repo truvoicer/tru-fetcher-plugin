@@ -16,10 +16,10 @@ const ItemDataKeysTab = () => {
     const postMetaBoxContext = useContext(PostMetaBoxContext);
 
     function updateDataKey({value, key, index}) {
-        const dataKeys = postMetaBoxContext.data.data_keys;
+        const dataKeys = postMetaBoxContext.formData.data_keys;
         const cloneDataKeys = [...dataKeys];
         cloneDataKeys[index][key] = value;
-        postMetaBoxContext.updateData('data_keys', cloneDataKeys);
+        postMetaBoxContext.updateFormData('data_keys', cloneDataKeys);
     }
 
     async function serviceListRequest() {
@@ -42,7 +42,7 @@ const ItemDataKeysTab = () => {
     }
 
     function getDataKeysOptions() {
-        const dataKeys = postMetaBoxContext.data.data_keys;
+        const dataKeys = postMetaBoxContext.formData.data_keys;
         const usedKeys = dataKeys.map((item) => item.data_item_key);
         const filteredDataKeysOptions = dataKeysOptions.filter((item) => {
             return !usedKeys.includes(item.key_value);
@@ -167,7 +167,7 @@ const ItemDataKeysTab = () => {
                 </Col>
             </Row>
             <Row>
-                {postMetaBoxContext.data.data_keys.map((item, index) => {
+                {postMetaBoxContext.formData.data_keys.map((item, index) => {
                     return (
                         <Col key={index}>
                             {getFormGroup({item, index})}
@@ -182,8 +182,8 @@ const ItemDataKeysTab = () => {
                             type={'primary'}
                             onClick={(e) => {
                                 e.preventDefault();
-                                postMetaBoxContext.updateData('data_keys', [
-                                    ...postMetaBoxContext.data.data_keys,
+                                postMetaBoxContext.updateFormData('data_keys', [
+                                    ...postMetaBoxContext.formData.data_keys,
                                     {
                                         data_item_key: '',
                                         value_type: '',

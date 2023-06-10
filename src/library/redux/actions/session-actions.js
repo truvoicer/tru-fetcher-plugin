@@ -1,6 +1,7 @@
 import store from "../store"
 import React from "react";
 import {
+    setSessionHasLoaded,
     setSessionUserToken,
     setSessionApiUrlBase,
     setSessionNonce,
@@ -19,8 +20,11 @@ import {isNotEmpty, isObject, isObjectEmpty} from "../../helpers/utils-helpers";
 
 /**
  * Sets userToken session redux state
- * @param token
+ * @param hasLoaded
  */
+export function setSessionHasLoadedAction(hasLoaded) {
+    store.dispatch(setSessionHasLoaded(hasLoaded));
+}
 export function setSessionUserTokenAction(token) {
     store.dispatch(setSessionUserToken(token));
 }
@@ -119,7 +123,7 @@ export function setIsAuthenticatingAction(isAuthenticating) {
 
 /**
  * Sets session redux state on successful authentication
- * @param token
+ * @param config
  */
 export function setInitialSessionState(config) {
     if (config?.nonce) {

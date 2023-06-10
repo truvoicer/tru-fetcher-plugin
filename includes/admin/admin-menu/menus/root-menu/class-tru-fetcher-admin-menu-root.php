@@ -110,7 +110,7 @@ class Tru_Fetcher_Admin_Menu_Root extends Tru_Fetcher_Admin_Menu_Base
                 new Tru_Fetcher_Admin_SubMenu_Item_View_Templates(),
                 new Tru_Fetcher_Admin_SubMenu_Post_Templates(),
                 new Tru_Fetcher_Admin_SubMenu_Listings_Categories(),
-                new Tru_Fetcher_Admin_SubMenu_Settings(),
+//                new Tru_Fetcher_Admin_SubMenu_Settings(),
 //                new Tru_Fetcher_Admin_SubMenu_Comparison_Lists(),
 //                new Tru_Fetcher_Admin_SubMenu_Single_Comparison(),
 //                new Tru_Fetcher_Admin_SubMenu_General_Lists(),

@@ -1,13 +1,16 @@
 import React from 'react';
 import {Provider} from "react-redux";
 import store from "../../../library/redux/store";
+import AppLoader from "../../../AppLoader";
 
 
-const MetaBoxContainer = ({metaBoxComponent}) => {
+const MetaBoxContainer = ({metaBoxComponent, apiConfig}) => {
     const MetaBoxComponent = metaBoxComponent;
     return (
         <Provider store={store}>
-            <MetaBoxComponent />
+            <AppLoader apiConfig={apiConfig}>
+                <MetaBoxComponent />
+            </AppLoader>
         </Provider>
     );
 }

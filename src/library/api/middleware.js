@@ -8,7 +8,7 @@ import {
     setSessionState
 } from "../redux/actions/session-actions";
 import {SESSION_STATE, SESSION_USER_TOKEN, SESSION_USER_TOKEN_EXPIRES_AT} from "../redux/constants/session-constants";
-import {getAppNameAction} from "../redux/actions/app-actions";
+import {getAppKeyAction, getAppNameAction} from "../redux/actions/app-actions";
 import {getSignedJwt} from "../helpers/auth/jwt-helpers";
 import store from "../redux/store";
 
@@ -113,7 +113,7 @@ export async function sendRequest({
     if (!apiRequest) {
         return false;
     }
-    const appKey = config.app_key;
+    const appKey = getAppKeyAction();
     if (config?.wpRequest) {
         const apiRequestAuthData = getApiRequestAuthData(config, appKey);
         if (!apiRequestAuthData) {
@@ -157,7 +157,7 @@ export async function fetchRequest({ config, endpoint, params = {}}) {
     if (!apiRequest) {
         return false;
     }
-    const appKey = config.app_key;
+    const appKey = getAppKeyAction();
     if (config?.wpRequest) {
         const apiRequestAuthData = getApiRequestAuthData(config, appKey);
         if (!apiRequestAuthData) {
@@ -276,7 +276,8 @@ export async function generateToken({appKey, config = apiConfig}) {
     return false;
 }
 
-export async function checkToken({appKey, config}) {
+export async function checkToken({config}) {
+    const appKey = getAppKeyAction();
     const apiRequest = getApiRequest();
     if (!apiRequest) {
         return false;

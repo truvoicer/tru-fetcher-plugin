@@ -11,5 +11,6 @@ export const SESSION_API_URLS = "api_urls";
 export const SESSION_API_BASE_URL = "api_base_url";
 export const SESSION_REDIRECT_URL = "redirect_url";
 export const SESSION_REFRESH_COUNT = "session_refresh_count";
+export const SESSION_HAS_LOADED = "session_has_loaded";
 export const SESSION_REFRESH_LIMIT = "session_refresh_limit";
 export const SESSION_ERROR = "error";

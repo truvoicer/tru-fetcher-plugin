@@ -16,7 +16,7 @@ const CONFIG = [
     {label: 'Item Badge Text', name: 'item_badge_text', field: FIELDS.TEXT},
     {label: 'Item Badge Link', name: 'item_badge_link', field: FIELDS.URL},
 ]
-const CustomItemFormFields = ({onChange}) => {
+const CustomItemFormFields = ({onChange, formItem}) => {
     const [showModal, setShowModal] = useState(false);
     const [modalComponent, setModalComponent] = useState(null);
     const [modalHeader, setModalHeader] = useState(null);
@@ -29,7 +29,7 @@ const CustomItemFormFields = ({onChange}) => {
                     <Form.Item label={item.label}>
                         {buildFormField({
                             fieldType: item.field,
-                            value: postMetaBoxContext.data[item.name],
+                            value: formItem[item.name],
                             index,
                             changeHandler: (value) => {
                                 if (typeof onChange === 'function') {

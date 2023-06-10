@@ -1,69 +1,42 @@
-import React,{useState, useEffect, useContext} from 'react';
+import React,{useContext} from 'react';
 import {Select} from 'antd';
 import PostMetaBoxContext from "../../../contexts/PostMetaBoxContext";
-import {fetchRequest} from "../../../../../library/api/middleware";
-import config from "../../../../../library/api/wp/config";
 
-const selectOptions = [
-    {
-        label: 'Single Item',
-        value: 'single_item',
-    },
-    {
-        label: 'Custom',
-        value: 'custom',
-    }
-]
-const ItemListSingleItem = ({onChange = false}) => {
+const ItemListSingleItem = ({onChange = false, index}) => {
     const postMetaBoxContext = useContext(PostMetaBoxContext);
-
-    // function findPostTypeConfig(postTypeSlug) {
-    //     return tru_fetcher_react.postTypes.find(postType => postType.post_type === postTypeSlug);
-    // }
     function buildSelectOptions() {
-        const postTypeConfig = findPostTypeConfig('fetcher_single_item');
-        if (!postTypeConfig) {
+        const singleItemPosts = postMetaBoxContext?.data?.singleItemPosts;
+        if (!Array.isArray(singleItemPosts)) {
             return [];
         }
-        return postTypeConfig.posts.map(postType => {
+        return singleItemPosts.map(postType => {
             return {
                 label: postType.post_name,
-                value: postType.ID,
+                value: postType.id,
             }
         });
     }
 
-    async function fetchSingleItemPostData() {
-        // const postTypeConfig = findPostTypeConfig('fetcher_single_item');
-        // if (!postTypeConfig) {
-        //     return;
-        // }
-        const results = await fetchRequest({
-            config: config,
-            endpoint: config.endpoints.posts,
-            params: {
-                post_type: 'fetcher_single_item',
-            }
-        });
-        console.log({results});
-
+    function getSelectValue() {
+        if (typeof postMetaBoxContext.formData.item_list[index] === 'undefined') {
+            return '';
+        }
+        return postMetaBoxContext.formData.item_list[index].single_item_id;
     }
 
-    useEffect(() => {
-        fetchSingleItemPostData();
-    }, []);
     return (
         <>
-            {/*<Select*/}
-            {/*    style={{minWidth: 180}}*/}
-            {/*    options={buildSelectOptions()}*/}
-            {/*    value={''}*/}
-            {/*    onChange={(e, data) => {*/}
-            {/*        if (typeof onChange === 'function') {*/}
-            {/*            onChange({value: data.value, item: {name: 'single_item_id'}})*/}
-            {/*        }*/}
-            {/*    }}*/}
-            {/*/>*/}
+            <Select
+                style={{minWidth: 180}}
+                options={buildSelectOptions()}
+                value={getSelectValue()}
+                onChange={(e, data) => {
+                    if (typeof onChange === 'function') {
+                        console.log({data})
+                        onChange({value: data.value, item: {name: 'single_item_id'}})
+                    }
+                }}
+            />
         </>
     );
 };

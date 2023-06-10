@@ -19,10 +19,10 @@ const ItemGeneralTab = ({onChange = false}) => {
             <Select
                 style={{minWidth: 180}}
                 options={selectOptions}
-                value={postMetaBoxContext.data.type}
+                value={postMetaBoxContext.formData.type}
                 onChange={(e, data) => {
                     if (typeof onChange === 'function') {
-                        postMetaBoxContext.updateData('type', data.value)
+                        postMetaBoxContext.updateFormData('type', data.value)
                     }
                 }}
             />

@@ -4,7 +4,7 @@ import '../assets/sass/tru-fetcher-admin.scss';
 import SingleItemMetaBoxTabs from "./wp/post/meta-boxes/single-item/SingleItemMetaBoxTabs";
 import ItemListMetaBoxList from "./wp/post/meta-boxes/item-list/ItemListMetaBoxList";
 import MetaBoxContainer from "./wp/post/meta-boxes/MetaBoxContainer";
-console.log('tru_fetcher_react', tru_fetcher_react);
+
 switch (tru_fetcher_react?.currentScreen?.base) {
     case 'post':
         loadByPostScreenId(tru_fetcher_react?.currentScreen?.id)
@@ -22,7 +22,7 @@ function loadByPostScreenId(id) {
             SingleItemMetaBoxTabs.defaultProps = {
                 config: tru_fetcher_react?.api?.tru_fetcher
             };
-            render(<MetaBoxContainer metaBoxComponent={SingleItemMetaBoxTabs}  />, element);
+            render(<MetaBoxContainer metaBoxComponent={SingleItemMetaBoxTabs} apiConfig={tru_fetcher_react?.api?.tru_fetcher}  />, element);
             break;
         case 'fetcher_items_lists':
             element = document.getElementById('trf_mb_item_list_react');
@@ -32,7 +32,7 @@ function loadByPostScreenId(id) {
             ItemListMetaBoxList.defaultProps = {
                 config: tru_fetcher_react?.api?.wp
             };
-            render(<MetaBoxContainer metaBoxComponent={ItemListMetaBoxList}  />, element);
+            render(<MetaBoxContainer metaBoxComponent={ItemListMetaBoxList} apiConfig={tru_fetcher_react?.api?.wp}  />, element);
             break;
     }
 }

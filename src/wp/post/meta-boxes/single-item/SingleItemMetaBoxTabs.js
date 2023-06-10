@@ -14,7 +14,8 @@ const SingleItemMetaBoxTabs = ({session, config}) => {
     const [panes, setPanes] = useState([]);
     const [isInitialized, setIsInitialized] = useState(false);
     const [metaBoxContext, setMetaBoxContext] = useState({
-        data: {
+        data: {},
+        formData: {
             type: 'api_data_keys',
             data_keys: [],
             item_image: null,
@@ -25,6 +26,13 @@ const SingleItemMetaBoxTabs = ({session, config}) => {
             item_link: null,
             item_badge_text: null,
             item_badge_link: null,
+        },
+        updateFormData: (key, value) => {
+            setMetaBoxContext(state => {
+                let cloneState = {...state};
+                cloneState.formData[key] = value;
+                return cloneState;
+            })
         },
         updateData: (key, value) => {
             setMetaBoxContext(state => {
@@ -81,15 +89,16 @@ const SingleItemMetaBoxTabs = ({session, config}) => {
         setPanes(paneState => {
             let cloneState = [...paneState];
             let data = [];
-            switch (metaBoxContext.data.type) {
+            switch (metaBoxContext.formData.type) {
                 case 'custom':
                     data = updatePanes({
                         insertPanes: [{
                             name: 'custom',
                             label: 'Custom',
                             children: <CustomItemFormFields
+                                formItem={metaBoxContext.formData}
                                 onChange={({value, item, index}) => {
-                                    metaBoxContext.updateData(
+                                    metaBoxContext.updateFormData(
                                         item.name,
                                         value,
                                     )
@@ -137,7 +146,7 @@ const SingleItemMetaBoxTabs = ({session, config}) => {
         if (!isInitialized) {
             return;
         }
-        Object.keys(metaBoxContext.data).forEach(field => {
+        Object.keys(metaBoxContext.formData).forEach(field => {
             updateMetaHiddenFields({field, metaBoxContext, fieldGroupId: 'single_item'});
         })
     }, [metaBoxContext])
