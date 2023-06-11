@@ -34,7 +34,7 @@ const PageOptionsMetaBox = ({config, postType, metaFields, setMetaFields}) => {
                     className="my-tab-panel"
                     activeClass="active-tab"
                     onSelect={(tabName) => {
-                        setTabName(tabName);
+                        // setTabName(tabName);
                     }}
                     tabs={[
                         {

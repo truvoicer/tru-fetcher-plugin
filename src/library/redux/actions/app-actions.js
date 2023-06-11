@@ -7,12 +7,19 @@ import {
     setAppCurrentScreen,
     setAppApi,
     setAppMetaFields,
-    setAppCurrentAppKey
+    setAppCurrentAppKey, setAppMetaBoxes
 } from "../reducers/app-reducer";
 import {setSessionApiUrlBaseAction, setSessionNonceAction, setSessionUserIdAction} from "./session-actions";
 import {SESSION_API_URLS, SESSION_STATE} from "../constants/session-constants";
 import {isNotEmpty, isObject, isObjectEmpty} from "../../helpers/utils-helpers";
-import {APP_API, APP_CURRENT_APP_KEY, APP_NAME, APP_STATE} from "../constants/app-constants";
+import {
+    APP_API,
+    APP_CURRENT_APP_KEY,
+    APP_META,
+    APP_META_META_FIELDS,
+    APP_NAME,
+    APP_STATE
+} from "../constants/app-constants";
 
 /**
  * Sets appHasLoaded state
@@ -41,6 +48,9 @@ export function setAppApiAction(apiConfig) {
 }
 export function setAppMetaFieldsAction(metaFields) {
     store.dispatch(setAppMetaFields(metaFields));
+}
+export function setAppMetaBoxesAction(metaBoxes) {
+    store.dispatch(setAppMetaBoxes(metaBoxes));
 }
 
 export function getAppNameAction(appName) {
@@ -98,6 +108,9 @@ export function getCurrentApiConfigAction() {
     return apiConfigs[findApiConfigKey];
 }
 
+export function getAppMetaFieldsAction() {
+    return store.getState()[APP_STATE][APP_META][APP_META_META_FIELDS];
+}
 /**
  * Sets session redux state on successful authentication
  * @param token
@@ -117,6 +130,9 @@ export function setInitialAppState(apiConfig) {
     }
     if (tru_fetcher_react?.meta?.metaFields) {
         setAppMetaFieldsAction(tru_fetcher_react.meta.metaFields);
+    }
+    if (tru_fetcher_react?.meta?.metaBoxes) {
+        setAppMetaBoxesAction(tru_fetcher_react.meta.metaBoxes);
     }
     return true;
 }

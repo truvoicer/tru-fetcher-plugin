@@ -8,3 +8,4 @@ export const APP_CURRENT_APP_KEY = "current_app_key";
 export const APP_API = "api";
 export const APP_META = "meta";
 export const APP_META_META_FIELDS = "metaFields";
+export const APP_META_META_BOXES = "metaBoxes";

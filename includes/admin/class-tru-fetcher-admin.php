@@ -2,6 +2,7 @@
 namespace TruFetcher\Includes\Admin;
 use TrNewsApp\Includes\Admin\AdminMenu\Tr_News_App_Admin_Menu;
 use TruFetcher\Includes\Admin\AdminMenu\Tru_Fetcher_Admin_Menu;
+use TruFetcher\Includes\Admin\Blocks\Tru_Fetcher_Admin_Blocks;
 use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
 use TruFetcher\Includes\Admin\OldAdminMenu\Tru_Fetcher_Old_Admin_Menu;
 use TruFetcher\Includes\Admin\PostTypes\Tru_Fetcher_Admin_Post_Types;
@@ -46,11 +47,15 @@ class Tru_Fetcher_Admin extends Tru_Fetcher_Base {
         $this->addUserActions();
         $this->healthCheck();
         $this->loadMeta();
+        $this->loadBlocks();
         (new Tru_Fetcher_Admin_Asset_loader())->init();
     }
 
     private function loadMeta() {
         (new Tru_Fetcher_Admin_Meta())->init();
+    }
+    private function loadBlocks() {
+        (new Tru_Fetcher_Admin_Blocks())->init();
     }
     public function healthCheck()
     {

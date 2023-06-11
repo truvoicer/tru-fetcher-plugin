@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/block.json",
+  "apiVersion": 2,
+  "name": "tru-fetcher/listings-block",
+  "version": "0.1.0",
+  "title": "Tf Listings Block",
+  "category": "widgets",
+  "icon": "list-view",
+  "description": "A block to display listings",
+  "supports": {
+    "html": false
+  },
+  "textdomain": "tru-fetcher",
+  "editorScript": "file:../../../../build/gutenberg.js"
+}

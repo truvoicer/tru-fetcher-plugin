@@ -3,9 +3,10 @@ import {Table, Button, Form, Input, Modal} from 'antd';
 import EditableRow from "./EditableRow";
 import EditableCell from "./EditableCell";
 
-const Datatable = ({columns = [], dataSource = [], onDelete, onSave, onAdd}) => {
+const NameValueDatatable = ({columns = [], dataSource = [], groups = [], onDelete, onSave, onAdd}) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [tableData, setTableData] = useState([]);
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -44,22 +45,83 @@ const Datatable = ({columns = [], dataSource = [], onDelete, onSave, onAdd}) => 
     }
 
     const components = {
+
         body: {
             row: EditableRow,
             cell: EditableCell,
         },
     };
+
+    function buildTableData() {
+        if (!groups.length) {
+            setTableData(dataSource);
+            return;
+        }
+        const cloneDataSource = [...dataSource];
+        let groupDataSource = [];
+        groups.forEach((group) => {
+            const groupData = group.names.map((groupNameData) => {
+                const find = cloneDataSource.find((item) => item?.name === groupNameData?.name);
+                if (find) {
+                    return find;
+                }
+                return {
+                    name: groupNameData?.name,
+                    value: '',
+                }
+            });
+            groupDataSource.push({
+                title: group.title,
+                type: 'group_header',
+            })
+            groupDataSource = [...groupDataSource, ...groupData];
+        })
+        let otherData = [];
+        cloneDataSource.forEach((item) => {
+            const find = groupDataSource.find((data) => data?.name === item?.name);
+            if (!find) {
+                otherData.push(item);
+            }
+        });
+        if (otherData.length) {
+            groupDataSource.push({
+                title: 'Other Settings',
+                type: 'group_header',
+            })
+            groupDataSource = [...groupDataSource, ...otherData];
+        }
+        setTableData(groupDataSource);
+    }
+
+    useEffect(() => {
+        buildTableData();
+    }, [dataSource]);
+
     return (
         <>
             <Button onClick={showModal} type="primary" style={{marginBottom: 16}}>
                 Add a row
             </Button>
             <Table
+                pagination={false}
+                size={'small'}
                 components={components}
                 rowClassName={() => 'editable-row'}
                 bordered
-                dataSource={dataSource}
+                dataSource={tableData}
                 columns={getColumns()}
+                onRow={(record, rowIndex) => {
+                    return {
+                        groups,
+                        record,
+                        rowIndex,
+                        onClick: (event) => {}, // click row
+                        onDoubleClick: (event) => {}, // double click row
+                        onContextMenu: (event) => {}, // right button click row
+                        onMouseEnter: (event) => {}, // mouse enter row
+                        onMouseLeave: (event) => {}, // mouse leave row
+                    };
+                }}
             />
             <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                 <Form
@@ -99,4 +161,4 @@ const Datatable = ({columns = [], dataSource = [], onDelete, onSave, onAdd}) => 
     );
 };
 
-export default Datatable;
+export default NameValueDatatable;

@@ -3,7 +3,7 @@ import {createSlice} from "@reduxjs/toolkit";
 import {
     APP_ACTIVE_MENU_ITEM, APP_API, APP_CURRENT_APP_KEY,
     APP_CURRENT_SCREEN,
-    APP_HAS_LOADED, APP_META, APP_META_META_FIELDS,
+    APP_HAS_LOADED, APP_META, APP_META_META_BOXES, APP_META_META_FIELDS,
     APP_NAME,
     APP_STATE
 } from "../constants/app-constants";
@@ -16,7 +16,8 @@ const defaultState = {
     [APP_CURRENT_APP_KEY]: null,
     [APP_API]: {},
     [APP_META]: {
-        [APP_META_META_FIELDS]: []
+        [APP_META_META_FIELDS]: [],
+        [APP_META_META_BOXES]: []
     }
 };
 const defaultReducers = {
@@ -41,6 +42,9 @@ const defaultReducers = {
     setAppMetaFields: (state, action) => {
         state[APP_META][APP_META_META_FIELDS] = action.payload;
     },
+    setAppMetaBoxes: (state, action) => {
+        state[APP_META][APP_META_META_BOXES] = action.payload;
+    },
 };
 
 export const appSlice = createSlice({
@@ -50,4 +54,13 @@ export const appSlice = createSlice({
 });
 
 export const appReducer = appSlice.reducer;
-export const {setAppHasLoaded, setAppName, setActiveMenuItem, setAppCurrentScreen, setAppCurrentAppKey, setAppApi, setAppMetaFields} = appSlice.actions;
+export const {
+    setAppHasLoaded,
+    setAppName,
+    setActiveMenuItem,
+    setAppCurrentScreen,
+    setAppCurrentAppKey,
+    setAppApi,
+    setAppMetaFields,
+    setAppMetaBoxes
+} = appSlice.actions;

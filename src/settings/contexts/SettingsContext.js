@@ -4,7 +4,8 @@ const contextData = {
     settings: [],
     updateSettings: () => {},
     addSetting: () => {},
-    removeSettingByIndex: () => {},
-    updateSettingByIndex: () => {},
+    removeSingleSetting: () => {},
+    updateSingleSetting: () => {},
+    createSingleSetting: () => {},
 }
 export default React.createContext(contextData);

@@ -10,13 +10,13 @@ import SingleItemOptionsMetaBox from "./SingleItemOptionsMetaBox";
 
 const POST_TYPES = ['post'];
 const SidebarMetaBoxLoader = (props) => {
-    console.log(tru_fetcher_react.editor.metaFields)
-
+    const metaFields = tru_fetcher_react?.meta?.metaFields || [];
+    console.log({metaFields});
     function getMetaFieldConfig() {
-        if (!Array.isArray(tru_fetcher_react?.editor?.metaFields)) {
+        if (!Array.isArray(metaFields)) {
             return false;
         }
-        return tru_fetcher_react?.editor?.metaFields.find((metaField) => {
+        return metaFields.find((metaField) => {
             if (props.postType === 'post' && metaField?.name === 'post_options') {
                 return true;
             }

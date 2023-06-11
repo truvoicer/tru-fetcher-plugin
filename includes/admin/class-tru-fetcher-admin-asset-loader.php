@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\Admin;
 
+use Exception;
 use TrNewsApp\Includes\Admin\AdminMenu\Tr_News_App_Admin_Menu;
 use TruFetcher\Includes\Admin\AdminMenu\Tru_Fetcher_Admin_Menu;
 use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
@@ -136,7 +137,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
             $localizedScriptData['api'] = [];
             $localizedScriptData['api'] = array_merge($localizedScriptData['api'], $this->buildTruFetcherApiLocalizedScriptData());
             $localizedScriptData['api'] = array_merge($localizedScriptData['api'], $this->buildWordpressApiLocalizedScriptData());
-            $localizedScriptData = array_merge($localizedScriptData, $this->buildMetaFieldsLocalizedScriptData([$currentScreen->id]));
+            $localizedScriptData = array_merge($localizedScriptData, $this->buildMetaBoxLocalizedScriptData([$currentScreen->id]));
             wp_localize_script(
                 $handle,
                 str_replace('-', '_', "{$this->plugin_name}_react"),
@@ -147,6 +148,9 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
 
     public function loadGutenbergAssets()
     {
+        // Automatically load imported dependencies and assets version.
+        $asset_file = include TRU_FETCHER_PLUGIN_DIR . "build/{$this->gutenbergReactScriptName}.asset.php";
+
         wp_enqueue_style(
             "{$this->plugin_name}-{$this->gutenbergReactScriptName}",
             TRU_FETCHER_PLUGIN_URL . "build/{$this->gutenbergReactScriptName}.css",
@@ -154,13 +158,13 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         wp_enqueue_script(
             "{$this->plugin_name}-{$this->gutenbergReactScriptName}",
             TRU_FETCHER_PLUGIN_URL . "build/{$this->gutenbergReactScriptName}.js",
-            array('wp-element'),
-            $this->version,
-            true
+            $asset_file['dependencies'],
+            $asset_file['version'],
         );
         $localizedScriptData = $this->buildDefaultLocalizedScriptData();
         $localizedScriptData['api'] = [];
         $localizedScriptData['api'][] = $this->buildTruFetcherApiLocalizedScriptData();
+        $localizedScriptData = array_merge($localizedScriptData, $this->buildMetaFieldsLocalizedScriptData());
         wp_localize_script(
             "{$this->plugin_name}-{$this->gutenbergReactScriptName}",
             str_replace('-', '_', "{$this->plugin_name}_react"),
@@ -194,11 +198,22 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
     /**
      * @throws Exception
      */
-    public function buildMetaFieldsLocalizedScriptData(array $postTypes)
+    public function buildMetaBoxLocalizedScriptData(array $postTypes)
     {
         return [
             'meta' => [
-                'metaFields' => (new Tru_Fetcher_Admin_Meta())->getMetaboxConfig($postTypes)
+                'metaBoxes' => (new Tru_Fetcher_Admin_Meta())->getMetaboxConfig($postTypes)
+            ],
+        ];
+    }
+    /**
+     * @throws Exception
+     */
+    public function buildMetaFieldsLocalizedScriptData(): array
+    {
+        return [
+            'meta' => [
+                'metaFields' => Tru_Fetcher_Admin_Meta::getMetaFieldConfig()
             ],
         ];
     }
@@ -225,7 +240,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
             $encodeNonce
         );
         if (!$saveMeta) {
-            throw new \Exception('Error saving nonce user meta');
+            throw new Exception('Error saving nonce user meta');
         }
         return [
             'wp' => [

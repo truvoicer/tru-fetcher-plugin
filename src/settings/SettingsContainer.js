@@ -31,6 +31,19 @@ const SettingsContainer = ({children}) => {
         }
     }
 
+    async function createSetting(setting) {
+        const results = await sendRequest({
+            config: config,
+            method: 'post',
+            endpoint: `${config.endpoints.settings}/create`,
+            data: setting
+        });
+
+        const settings = results?.data?.settings;
+        if (Array.isArray(settings)) {
+            settingsContextData.updateSettings(settings);
+        }
+    }
     async function updateSetting(setting) {
         const results = await sendRequest({
             config: config,
@@ -70,7 +83,7 @@ const SettingsContainer = ({children}) => {
             //     return cloneSettingsContext;
             // });
         },
-        removeSettingByIndex: (index) => {
+        removeSingleSetting: (index) => {
             setSettingsContextData((prevState) => {
                 let cloneSettingsContext = {...prevState};
                 let cloneSettings = [...cloneSettingsContext.settings];
@@ -81,19 +94,14 @@ const SettingsContainer = ({children}) => {
                 return cloneSettingsContext;
             });
         },
-        updateSettingByIndex: updateSettingByIndex,
+        updateSingleSetting: updateSingleSetting,
+        createSingleSetting: createSingleSetting,
     });
-    function updateSettingByIndex(setting) {
+    function updateSingleSetting(setting) {
         updateSetting(setting);
-        // setSettingsContextData((prevState) => {
-        //     let cloneSettingsContext = {...prevState};
-        //     let cloneSettings = [...cloneSettingsContext.settings];
-        //     if (typeof cloneSettings[index] !== 'undefined') {
-        //         cloneSettings[index][key] = value;
-        //     }
-        //     cloneSettingsContext.settings = cloneSettings;
-        //     return cloneSettingsContext;
-        // });
+    }
+    function createSingleSetting(setting) {
+        createSetting(setting);
     }
     console.log({settingsContextData})
     return (
