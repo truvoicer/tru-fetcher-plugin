@@ -1,6 +1,7 @@
 <?php
 namespace TruFetcher\Includes\Admin\Blocks;
 
+use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Listings;
 use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Item_List;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Post_Options;
@@ -33,15 +34,10 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
 {
     use Tru_Fetcher_Traits_Errors;
 
-    private string $metaBoxIdPrefix = 'trf_mb';
-    public static array $fieldGroups = [
-        Tru_Fetcher_Meta_Fields_Page_Options::class,
-        Tru_Fetcher_Meta_Fields_Post_Options::class,
-    ];
+    private string $blockAssetsPrefix = TRU_FETCHER_PLUGIN_DIR . "src/wp/blocks";
 
-    private array $metaBoxes = [
-        Tru_Fetcher_Admin_Meta_Box_Single_Item::class,
-        Tru_Fetcher_Admin_Meta_Box_Item_List::class,
+    private array $blocks = [
+        Tru_Fetcher_Admin_Blocks_Resources_Listings::class,
     ];
 
     public function init()
@@ -49,34 +45,46 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         add_action('init', [$this, 'registerBlocks']);
     }
 
-    public function registerBlocks()
+    public function buildBlockAssetsPath(string $blockName): string
     {
-        $blockTypeName = 'tru-fetcher/listings-block';
-        $args = [
-            'title' => __('Tru Fetcher Listings Block', 'tru-fetcher'),
-            'description' => __('A block to display listings', 'tru-fetcher'),
-            'textdomain' => 'tru-fetcher',
-            'keywords' => [
-                __('Tru Fetcher', 'tru-fetcher'),
-                __('Listings', 'tru-fetcher'),
-                __('Tru Fetcher Listings', 'tru-fetcher'),
-            ],
-            'icon' => 'list-view',
-            'category' => 'widgets',
-        ];
-        $path = TRU_FETCHER_PLUGIN_DIR . "src/wp/blocks/listings/listings.json";
-        if (!file_exists($path)) {
-            $this->addError(
-                new \WP_Error(
-                    'tru_fetcher_block_file_not_found',
-                    __('The block file was not found', 'tru-fetcher'),
-                    ['path' => $path]
-                )
-            );
-            return;
-        }
-        $registerBlock = register_block_type(new \WP_Block_Type($blockTypeName, $args));
-        var_dump($registerBlock);
+        return $this->blockAssetsPrefix . DIRECTORY_SEPARATOR . $blockName;
     }
 
+    public function registerBlocks()
+    {
+        foreach ($this->blocks as $block) {
+            $config = $block::CONFIG;
+            $id = $config['id'];
+            $path = $this->buildBlockAssetsPath($id);
+            if (!file_exists($path)) {
+                $this->addError(
+                    new \WP_Error(
+                        'tru_fetcher_block_error',
+                        __('The block file was not found', 'tru-fetcher'),
+                        ['path' => $path]
+                    )
+                );
+                return;
+            }
+            if (!register_block_type($path)) {
+                $this->addError(
+                    new \WP_Error(
+                        'tru_fetcher_block_error',
+                        __('Error registering block type', 'tru-fetcher'),
+                        ['path' => $path]
+                    )
+                );
+                return;
+            }
+        }
+    }
+
+    public function getBlocks() {
+        $data = [];
+        foreach ($this->blocks as $block) {
+            $config = $block::CONFIG;
+            $data[] = $config;
+        }
+        return $data;
+    }
 }

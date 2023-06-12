@@ -8,7 +8,6 @@
   "icon": "list-view",
   "description": "A block to display listings",
   "supports": {
-    "html": false
   },
   "textdomain": "tru-fetcher",
   "editorScript": "file:../../../../build/gutenberg.js"

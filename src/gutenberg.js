@@ -1,5 +1,6 @@
-import { registerPlugin } from '@wordpress/plugins';
+import { registerPlugin, getPlugin } from '@wordpress/plugins';
 import { registerBlockType } from '@wordpress/blocks';
+import { useeffect } from '@wordpress/element';
 import 'antd/dist/reset.css';
 import '../assets/sass/tru-fetcher-admin.scss';
 import SidebarMetaBoxLoader from "./wp/sidebar/SidebarMetaBoxLoader";
@@ -7,9 +8,11 @@ import SidebarMetaBoxLoader from "./wp/sidebar/SidebarMetaBoxLoader";
 import ListingsBlockEdit from "./wp/blocks/listings/ListingsBlockEdit";
 import ListingsBlockSave from "./wp/blocks/listings/ListingsBlockSave";
 
-registerPlugin( 'metadata-plugin', {
-    render: SidebarMetaBoxLoader
-} );
+if (!getPlugin('trf-fetcher-plugin')) {
+    registerPlugin( 'trf-metadata-plugin', {
+        render: SidebarMetaBoxLoader
+    } );
+}
 /**
  * WordPress dependencies
  */
@@ -21,9 +24,30 @@ export const blockStyle = {
     color: '#fff',
     padding: '20px',
 };
-
-// Register the block
-registerBlockType( 'tru-fetcher/listings-block', {
-    edit: ListingsBlockEdit,
-    save: ListingsBlockSave, // Object shorthand property - same as writing: save: save,
-} );
+console.log(tru_fetcher_react)
+if (
+    typeof tru_fetcher_react !== 'undefined' &&
+    typeof tru_fetcher_react.blocks !== 'undefined' &&
+    Array.isArray(tru_fetcher_react.blocks)
+) {
+    tru_fetcher_react.blocks.forEach((block) => {
+        let attData = {};
+        if (typeof block.attributes !== 'undefined' && Array.isArray(block.attributes)) {
+            block.attributes.forEach((attribute) => {
+                attData[attribute.id] = {
+                    type: attribute.type,
+                };
+            });
+        }
+        console.log({attData})
+        registerBlockType( block.name, {
+            attributes: {
+                listings_block_source: {
+                    type: 'string',
+                }
+            },
+            edit: ListingsBlockEdit,
+            save: ListingsBlockSave, // Object shorthand property - same as writing: save: save,
+        } );
+    });
+}

@@ -1,10 +1,14 @@
 import React from 'react';
+import { useBlockProps, RichText } from '@wordpress/block-editor';
 
-const ListingsBlockSave = () => {
+const ListingsBlockSave = (props) => {
+    const blockProps = useBlockProps.save();
     return (
-        <div>
-            Tru fetcher Listings block save
-        </div>
+        <RichText.Content
+            { ...blockProps }
+            tagName="p"
+            value={ props.attributes.content }
+        />
     );
 };
 

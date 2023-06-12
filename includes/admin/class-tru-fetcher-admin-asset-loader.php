@@ -5,6 +5,7 @@ namespace TruFetcher\Includes\Admin;
 use Exception;
 use TrNewsApp\Includes\Admin\AdminMenu\Tr_News_App_Admin_Menu;
 use TruFetcher\Includes\Admin\AdminMenu\Tru_Fetcher_Admin_Menu;
+use TruFetcher\Includes\Admin\Blocks\Tru_Fetcher_Admin_Blocks;
 use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
 use TruFetcher\Includes\Admin\OldAdminMenu\Tru_Fetcher_Old_Admin_Menu;
 use TruFetcher\Includes\Admin\PostTypes\Tru_Fetcher_Admin_Post_Types;
@@ -165,6 +166,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         $localizedScriptData['api'] = [];
         $localizedScriptData['api'][] = $this->buildTruFetcherApiLocalizedScriptData();
         $localizedScriptData = array_merge($localizedScriptData, $this->buildMetaFieldsLocalizedScriptData());
+        $localizedScriptData = array_merge($localizedScriptData, $this->buildBlocksLocalizedScriptData());
         wp_localize_script(
             "{$this->plugin_name}-{$this->gutenbergReactScriptName}",
             str_replace('-', '_', "{$this->plugin_name}_react"),
@@ -215,6 +217,15 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
             'meta' => [
                 'metaFields' => Tru_Fetcher_Admin_Meta::getMetaFieldConfig()
             ],
+        ];
+    }
+    /**
+     * @throws Exception
+     */
+    public function buildBlocksLocalizedScriptData(): array
+    {
+        return [
+            'blocks' => (new Tru_Fetcher_Admin_Blocks())->getBlocks()
         ];
     }
 
