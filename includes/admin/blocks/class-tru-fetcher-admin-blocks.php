@@ -53,25 +53,34 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
     public function registerBlocks()
     {
         foreach ($this->blocks as $block) {
-            $config = $block::CONFIG;
+            $blockClass = new $block();
+            $config = $blockClass::CONFIG;
             $id = $config['id'];
-            $path = $this->buildBlockAssetsPath($id);
-            if (!file_exists($path)) {
+            $name = $config['name'];
+            if (!method_exists($blockClass, 'renderBlock')) {
                 $this->addError(
                     new \WP_Error(
                         'tru_fetcher_block_error',
-                        __('The block file was not found', 'tru-fetcher'),
-                        ['path' => $path]
+                        __('The block class does not have a renderBlock method', 'tru-fetcher'),
+                        ['blockClass' => $blockClass]
                     )
                 );
                 return;
             }
-            if (!register_block_type($path)) {
+            $registerBlock = register_block_type($name, [
+                'api_version' => 3,
+                'editor_script' => 'gutenberg',
+                'render_callback' => function ($attributes, $content) use ($blockClass) {
+                    var_dump($attributes, $content);
+                    return $this->renderBlock($attributes, $content, $blockClass);
+                },
+            ]);
+            if (!$registerBlock) {
                 $this->addError(
                     new \WP_Error(
                         'tru_fetcher_block_error',
                         __('Error registering block type', 'tru-fetcher'),
-                        ['path' => $path]
+                        ['id' => $id, 'name' => $name]
                     )
                 );
                 return;
@@ -79,6 +88,19 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         }
     }
 
+    public function renderBlock( $block_attributes, $content, $blockClass ) {
+        $config = $blockClass::CONFIG;
+        $id = $config['id'];
+        $props = [
+            'id' => $id,
+            'data' => json_encode($block_attributes),
+        ];
+        $propsString = '';
+        foreach ($props as $key => $value) {
+            $propsString .= "$key='$value' ";
+        }
+        return "<div {$propsString}></div>";
+    }
     public function getBlocks() {
         $data = [];
         foreach ($this->blocks as $block) {

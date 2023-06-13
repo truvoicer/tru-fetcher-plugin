@@ -60,9 +60,9 @@ const DisplayTab = (props) => {
             />
             <ToggleControl
                 label="Show Filters"
-                checked={attributes?.show_filters}
+                checked={attributes?.show_filters_toggle}
                 onChange={(value) => {
-                    setAttributes({show_filters: value});
+                    setAttributes({show_filters_toggle: value});
                 }}
             />
         </PanelRow>

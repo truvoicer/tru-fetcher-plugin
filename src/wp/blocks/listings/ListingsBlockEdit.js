@@ -22,7 +22,7 @@ const ListingsBlockEdit = (props) => {
         TabComponent.defaultProps = props;
         return <TabComponent />;
     }
-
+console.log({attributes})
     return (
         <Panel>
             <PanelBody title="Listings Block" initialOpen={true}>

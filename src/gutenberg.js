@@ -36,18 +36,15 @@ if (
             block.attributes.forEach((attribute) => {
                 attData[attribute.id] = {
                     type: attribute.type,
+                    default: attribute.default,
                 };
             });
         }
         console.log({attData})
         registerBlockType( block.name, {
-            attributes: {
-                listings_block_source: {
-                    type: 'string',
-                }
-            },
+            title: block.title,
+            attributes: attData,
             edit: ListingsBlockEdit,
-            save: ListingsBlockSave, // Object shorthand property - same as writing: save: save,
         } );
     });
 }
