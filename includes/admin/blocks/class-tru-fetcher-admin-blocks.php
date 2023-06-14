@@ -7,6 +7,8 @@ use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Met
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Post_Options;
 use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Single_Item;
 use TruFetcher\Includes\Admin\PostTypes\Tru_Fetcher_Admin_Post_Types;
+use TruFetcher\Includes\Admin\Resources\Tru_Fetcher_Admin_Resources_Post_Types;
+use TruFetcher\Includes\Admin\Resources\Tru_Fetcher_Admin_Resources_Taxonomies;
 use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 
@@ -71,7 +73,6 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
                 'api_version' => 3,
                 'editor_script' => 'gutenberg',
                 'render_callback' => function ($attributes, $content) use ($blockClass) {
-                    var_dump($attributes, $content);
                     return $this->renderBlock($attributes, $content, $blockClass);
                 },
             ]);
@@ -88,23 +89,29 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         }
     }
 
-    public function renderBlock( $block_attributes, $content, $blockClass ) {
+    public function renderBlock( $blockAttributes, $content, $blockClass ) {
         $config = $blockClass::CONFIG;
         $id = $config['id'];
         $props = [
             'id' => $id,
-            'data' => json_encode($block_attributes),
+            'data' => json_encode($blockAttributes),
         ];
         $propsString = '';
         foreach ($props as $key => $value) {
             $propsString .= "$key='$value' ";
         }
-        return "<div {$propsString}></div>";
+        return "<div {$propsString}>&nbsp;</div>";
     }
     public function getBlocks() {
         $data = [];
         foreach ($this->blocks as $block) {
             $config = $block::CONFIG;
+            foreach ($config['post_types'] as $index => $postType) {
+                $config['post_types'][$index]['posts'] = Tru_Fetcher_Admin_Resources_Post_Types::getPostTypeData($postType['name']);
+            }
+            foreach ($config['taxonomies'] as $index => $taxonomy) {
+                $config['taxonomies'][$index]['terms'] = Tru_Fetcher_Admin_Resources_Taxonomies::getTerms($taxonomy['name']);
+            }
             $data[] = $config;
         }
         return $data;

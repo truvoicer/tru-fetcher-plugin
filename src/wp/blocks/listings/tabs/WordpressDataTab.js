@@ -6,37 +6,34 @@ const ApiTab = (props) => {
         attributes,
         setAttributes,
         className,
+        config
     } = props;
+    console.log({config})
+    function findListingsCategoryTerms() {
+        return tru_fetcher_react.blocks.taxonomies.find(taxonomy => taxonomy.slug === 'listings_category').terms;
+    }
     return (
         <PanelRow>
             <SelectControl
-                label="Api Fetch Type"
+                label="Listings Category"
                 onChange={(value) => {
-                    setAttributes({listing_block_type: value});
+                    setAttributes({listings_category: value});
                 }}
-                value={attributes?.listing_block_type}
+                value={attributes?.listings_category}
                 options={[
                     {
                         disabled: true,
                         label: 'Select an Option',
                         value: ''
-                    },
-                    {
-                        label: 'Search',
-                        value: 'search'
-                    },
-                    {
-                        label: 'Blog',
-                        value: 'blog'
                     },
                 ]}
             />
             <SelectControl
-                label="Api Listings Category"
+                label="Item List"
                 onChange={(value) => {
-                    setAttributes({api_listings_category: value});
+                    setAttributes({item_list: value});
                 }}
-                value={attributes?.api_listings_category}
+                value={attributes?.item_list}
                 options={[
                     {
                         disabled: true,
@@ -44,13 +41,6 @@ const ApiTab = (props) => {
                         value: ''
                     },
                 ]}
-            />
-            <ToggleControl
-                label="Select Providers"
-                checked={attributes?.select_providers}
-                onChange={(value) => {
-                    setAttributes({select_providers: value});
-                }}
             />
         </PanelRow>
     );

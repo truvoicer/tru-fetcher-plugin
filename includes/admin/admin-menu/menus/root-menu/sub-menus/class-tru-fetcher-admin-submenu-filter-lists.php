@@ -7,7 +7,7 @@ use TruFetcher\Includes\Admin\AdminMenu\Menus\Tru_Fetcher_Admin_Menu_Base;
 use TruFetcher\Includes\Admin\AdminMenu\Tru_Fetcher_Admin_Menu;
 use TruFetcher\Includes\Admin\AdminMenu\Tru_Fetcher_Admin_Menu_Constants;
 use TruFetcher\Includes\Admin\AdminPages\Tru_Fetcher_Admin_Page_Loader;
-use TruFetcher\Includes\Admin\PostTypes\Tru_Fetcher_Admin_Post_Types;
+use TruFetcher\Includes\Admin\Resources\Tru_Fetcher_Admin_Resources_Post_Types;
 
 /**
  * Fired during plugin activation
@@ -44,12 +44,12 @@ class Tru_Fetcher_Admin_SubMenu_Filter_Lists extends Tru_Fetcher_Admin_Menu_Base
             Tru_Fetcher_Admin_Menu_Constants::$menuSlugKey	=> self::$menuSlug,
             Tru_Fetcher_Admin_Menu_Constants::$slugKey => sprintf(
                 parent::POST_TYPE_ENDPOINT,
-                Tru_Fetcher_Admin_Post_Types::FETCHER_FILTER_LISTS_PT
+                Tru_Fetcher_Admin_Resources_Post_Types::FETCHER_FILTER_LISTS_PT
             ),
             Tru_Fetcher_Admin_Menu_Constants::$parentSlugKey	=> Tru_Fetcher_Admin_Menu_Root::$menuSlug,
             Tru_Fetcher_Admin_Menu_Constants::$iconKey => "dashicons-menu",
             Tru_Fetcher_Admin_Menu_Constants::$capabilityKey => "manage_options",
-            Tru_Fetcher_Admin_Menu_Constants::$postTypeKey => Tru_Fetcher_Admin_Post_Types::FETCHER_FILTER_LISTS_PT,
+            Tru_Fetcher_Admin_Menu_Constants::$postTypeKey => Tru_Fetcher_Admin_Resources_Post_Types::FETCHER_FILTER_LISTS_PT,
         ]);
     }
 

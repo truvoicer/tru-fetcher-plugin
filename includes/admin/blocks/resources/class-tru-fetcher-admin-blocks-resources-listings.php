@@ -3,6 +3,8 @@
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
 use TruFetcher\Includes\Admin\PostTypes\Tru_Fetcher_Admin_Post_Types;
+use TruFetcher\Includes\Admin\Resources\Tru_Fetcher_Admin_Resources_Post_Types;
+use TruFetcher\Includes\Admin\Resources\Tru_Fetcher_Admin_Resources_Taxonomies;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 
 /**
@@ -31,6 +33,12 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings
         'id' => 'listings-block',
         'name' => 'tru-fetcher/listings-block',
         'title' => 'Tf Listings Block',
+        'post_types' => [
+            ['name' => Tru_Fetcher_Admin_Resources_Post_Types::FETCHER_ITEMS_LIST_PT],
+        ],
+        'taxonomies' => [
+            ['name' => Tru_Fetcher_Admin_Resources_Taxonomies::LISTINGS_CATEGORIES_TAXONOMY],
+        ],
         'attributes' => [
             [
                 'id' => 'source',
@@ -38,12 +46,17 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings
                 'default' => 'api',
             ],
             [
-                'id' => 'api_type',
+                'id' => 'listing_block_type',
                 'type' => 'string',
                 'default' => 'search',
             ],
             [
-                'id' => 'category',
+                'id' => 'listings_category',
+                'type' => 'string',
+                'default' => '',
+            ],
+            [
+                'id' => 'api_listings_category',
                 'type' => 'string',
                 'default' => '',
             ],

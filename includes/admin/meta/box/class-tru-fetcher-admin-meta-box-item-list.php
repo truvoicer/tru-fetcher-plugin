@@ -2,7 +2,7 @@
 
 namespace TruFetcher\Includes\Admin\Meta\Box;
 
-use TruFetcher\Includes\Admin\PostTypes\Tru_Fetcher_Admin_Post_Types;
+use TruFetcher\Includes\Admin\Resources\Tru_Fetcher_Admin_Resources_Post_Types;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 
 /**
@@ -31,7 +31,7 @@ class Tru_Fetcher_Admin_Meta_Box_Item_List extends Tru_Fetcher_Base
         'id' => 'item_list',
         'title' => 'Item List',
         'post_types' => [
-            ['name' => Tru_Fetcher_Admin_Post_Types::FETCHER_ITEMS_LIST_PT],
+            ['name' => Tru_Fetcher_Admin_Resources_Post_Types::FETCHER_ITEMS_LIST_PT],
         ],
         'fields' => [
             [

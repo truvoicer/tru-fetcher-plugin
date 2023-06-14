@@ -160,7 +160,6 @@ class Tru_Fetcher_Admin_Menu {
         ) {
             Tru_Fetcher_Helpers::loadTaxonomy(
                 $menu[Tru_Fetcher_Admin_Menu_Constants::$taxonomyKey],
-                $menu[Tru_Fetcher_Admin_Menu_Constants::$categoryKey]
             );
         }
     }
@@ -172,7 +171,6 @@ class Tru_Fetcher_Admin_Menu {
         ) {
             Tru_Fetcher_Helpers::loadPostType(
                 $menu[Tru_Fetcher_Admin_Menu_Constants::$postTypeKey],
-                $menu[Tru_Fetcher_Admin_Menu_Constants::$categoryKey]
             );
         }
     }

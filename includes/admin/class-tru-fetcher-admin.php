@@ -1,12 +1,8 @@
 <?php
 namespace TruFetcher\Includes\Admin;
-use TrNewsApp\Includes\Admin\AdminMenu\Tr_News_App_Admin_Menu;
 use TruFetcher\Includes\Admin\AdminMenu\Tru_Fetcher_Admin_Menu;
 use TruFetcher\Includes\Admin\Blocks\Tru_Fetcher_Admin_Blocks;
 use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
-use TruFetcher\Includes\Admin\OldAdminMenu\Tru_Fetcher_Old_Admin_Menu;
-use TruFetcher\Includes\Admin\PostTypes\Tru_Fetcher_Admin_Post_Types;
-use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_Jwt;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 
 /**

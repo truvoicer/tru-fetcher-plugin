@@ -7,22 +7,15 @@ import tabConfig from "./tab-config";
 import ApiTab from "./tabs/ApiTab";
 
 const ListingsBlockEdit = (props) => {
-    const {
-        attributes,
-        setAttributes,
-        className,
-    } = props;
-    const blockProps = useBlockProps();
 
     function getTabComponent(tab) {
         if (!tab?.component) {
             return null;
         }
         let TabComponent = tab.component;
-        TabComponent.defaultProps = props;
-        return <TabComponent />;
+        return <TabComponent {...props} />;
     }
-console.log({attributes})
+
     return (
         <Panel>
             <PanelBody title="Listings Block" initialOpen={true}>

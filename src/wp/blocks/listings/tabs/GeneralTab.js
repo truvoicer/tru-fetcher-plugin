@@ -10,6 +10,7 @@ const GeneralTab = (props) => {
     return (
         <PanelRow>
             <SelectControl
+                label="Listing Data Source"
                 onChange={(value) => {
                     setAttributes({source: value});
                 }}

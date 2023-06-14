@@ -6,7 +6,6 @@ use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Item_List;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Post_Options;
 use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Single_Item;
-use TruFetcher\Includes\Admin\PostTypes\Tru_Fetcher_Admin_Post_Types;
 use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 
@@ -164,9 +163,6 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
                 }, $config['post_types'])))) {
                 continue;
             }
-//            foreach ($config['post_types'] as $index => $postType) {
-//                $config['post_types'][$index]['posts'] = Tru_Fetcher_Admin_Post_Types::getPostTypeData($postType['name']);
-//            }
             $config['fields'] = array_map(function ($field) {
                 $field['field_name'] = $this->buildMetaBoxFieldId($field);
                 return $field;

@@ -193,11 +193,10 @@ class Tru_Fetcher_Helpers {
     }
 
 
-    public static function loadPostType(string $postType, string $pageKey) {
+    public static function loadPostType(string $postType) {
         $path = sprintf(
-            '%s/%s/post-types/%s/register-post-type.php',
+            '%s/post-types/%s/register-post-type.php',
             TRU_FETCHER_PLUGIN_ADMIN_RES_DIR,
-            $pageKey,
             $postType
         );
         if (file_exists($path)) {
@@ -205,11 +204,10 @@ class Tru_Fetcher_Helpers {
         }
     }
 
-    public static function loadTaxonomy(string $taxonomy, string $pageKey) {
+    public static function loadTaxonomy(string $taxonomy) {
         $path = sprintf(
-            '%s/%s/taxonomies/%s/register-taxonomy.php',
+            '%s/taxonomies/%s/register-taxonomy.php',
             TRU_FETCHER_PLUGIN_ADMIN_RES_DIR,
-            $pageKey,
             $taxonomy
         );
         if (file_exists($path)) {

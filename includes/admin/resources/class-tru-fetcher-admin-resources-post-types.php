@@ -1,6 +1,6 @@
 <?php
 
-namespace TruFetcher\Includes\Admin\PostTypes;
+namespace TruFetcher\Includes\Admin\Resources;
 
 /**
  * Fired during plugin activation
@@ -22,7 +22,7 @@ namespace TruFetcher\Includes\Admin\PostTypes;
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Admin_Post_Types {
+class Tru_Fetcher_Admin_Resources_Post_Types {
     public const FETCHER_ITEMS_LIST_PT = 'fetcher_items_lists';
     public const FETCHER_SINGLE_ITEM_PT = 'fetcher_single_item';
     public const FETCHER_FILTER_LISTS_PT = 'filter_lists';

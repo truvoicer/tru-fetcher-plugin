@@ -16,8 +16,13 @@ export default [
         component: DisplayTab
     },
     {
-        name: 'api',
-        title: 'Api',
+        name: 'api_settings',
+        title: 'Api Settings',
+        component: ApiTab
+    },
+    {
+        name: 'wordpress_settings',
+        title: 'Wordpress Settings',
         component: ApiTab
     },
     {
