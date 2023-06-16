@@ -1,4 +1,4 @@
-import {sendRequest} from "../../middleware";
+import {sendRequest} from "../../state-middleware";
 
 export async function updateMenuItemRolesRequest({
     menuId,

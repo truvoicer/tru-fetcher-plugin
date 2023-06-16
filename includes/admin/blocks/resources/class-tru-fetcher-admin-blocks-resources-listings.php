@@ -34,7 +34,12 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings
         'name' => 'tru-fetcher/listings-block',
         'title' => 'Tf Listings Block',
         'post_types' => [
-            ['name' => Tru_Fetcher_Admin_Resources_Post_Types::FETCHER_ITEMS_LIST_PT],
+            [
+                'name' => Tru_Fetcher_Admin_Resources_Post_Types::FETCHER_ITEMS_LIST_PT
+            ],
+            [
+                'name' => Tru_Fetcher_Admin_Resources_Post_Types::FETCHER_SINGLE_ITEM_PT
+            ],
         ],
         'taxonomies' => [
             ['name' => Tru_Fetcher_Admin_Resources_Taxonomies::LISTINGS_CATEGORIES_TAXONOMY],
@@ -99,6 +104,21 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings
                 'id' => 'initial_load',
                 'type' => 'string',
                 'default' => 'search',
+            ],
+            [
+                'id' => 'list_start',
+                'type' => 'boolean',
+                'default' => false,
+            ],
+            [
+                'id' => 'list_end',
+                'type' => 'boolean',
+                'default' => false,
+            ],
+            [
+                'id' => 'custom_position',
+                'type' => 'boolean',
+                'default' => false,
             ],
         ]
     ];

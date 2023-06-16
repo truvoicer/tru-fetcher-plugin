@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import {buildRouterData} from "./library/helpers/route-helpers";
 import routeConfig from "./library/routes/route-config";
-import {loadAxiosInterceptors} from "./library/api/middleware";
+import {loadAxiosInterceptors} from "./library/api/state-middleware";
 import AppLoader from "./AppLoader";
 import Auth from "./components/auth/Auth";
 import Template from "./components/layout/Template";

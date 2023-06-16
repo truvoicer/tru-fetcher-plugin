@@ -7,7 +7,7 @@ import {
 } from "../../library/redux/constants/session-constants";
 import {APP_HAS_LOADED, APP_STATE} from "../../library/redux/constants/app-constants";
 import {connect} from "react-redux";
-import {checkToken, loadAxiosInterceptors} from "../../library/api/middleware";
+import {checkToken, loadAxiosInterceptors} from "../../library/api/state-middleware";
 import {
     getAppKeyAction,
     getCurrentApiConfigAction,

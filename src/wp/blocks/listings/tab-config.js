@@ -3,6 +3,7 @@ import ApiTab from "./tabs/ApiTab";
 import DisplayTab from "./tabs/DisplayTab";
 import SearchTab from "./tabs/SearchTab";
 import CustomItemsTab from "./tabs/CustomItemsTab";
+import WordpressDataTab from "./tabs/WordpressDataTab";
 
 export default [
     {
@@ -23,7 +24,7 @@ export default [
     {
         name: 'wordpress_settings',
         title: 'Wordpress Settings',
-        component: ApiTab
+        component: WordpressDataTab
     },
     {
         name: 'search',

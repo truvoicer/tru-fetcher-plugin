@@ -8,7 +8,7 @@ import Auth from "../../../../components/auth/Auth";
 import CustomItemFormFields from "../../components/item/CustomItemFormFields";
 import ItemListSingleItem from "./types/ItemListSingleItem";
 import {updateInitialValues, updateMetaHiddenFields} from "../helpers/metaboxes-helpers";
-import {fetchRequest} from "../../../../library/api/middleware";
+import {fetchRequest} from "../../../../library/api/state-middleware";
 import config from "../../../../library/api/wp/config";
 
 const selectOptions = [

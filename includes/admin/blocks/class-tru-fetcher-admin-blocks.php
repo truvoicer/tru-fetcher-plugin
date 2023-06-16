@@ -106,14 +106,31 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         $data = [];
         foreach ($this->blocks as $block) {
             $config = $block::CONFIG;
-            foreach ($config['post_types'] as $index => $postType) {
-                $config['post_types'][$index]['posts'] = Tru_Fetcher_Admin_Resources_Post_Types::getPostTypeData($postType['name']);
-            }
-            foreach ($config['taxonomies'] as $index => $taxonomy) {
-                $config['taxonomies'][$index]['terms'] = Tru_Fetcher_Admin_Resources_Taxonomies::getTerms($taxonomy['name']);
-            }
             $data[] = $config;
         }
         return $data;
+    }
+
+    public function getBlocksPostTypes() {
+        $postTypes = [];
+        foreach ($this->blocks as $block) {
+            $config = $block::CONFIG;
+            foreach ($config['post_types'] as $postType) {
+                $postType['posts'] = Tru_Fetcher_Admin_Resources_Post_Types::getPostTypeData($postType['name']);
+                $postTypes[] = $postType;
+            }
+        }
+        return $postTypes;
+    }
+    public function getBlocksTaxonomies() {
+        $taxonomies = [];
+        foreach ($this->blocks as $block) {
+            $config = $block::CONFIG;
+            foreach ($config['taxonomies'] as $taxonomy) {
+                $taxonomy['terms'] = Tru_Fetcher_Admin_Resources_Taxonomies::getTerms($taxonomy['name']);
+                $taxonomies[] = $taxonomy;
+            }
+        }
+        return $taxonomies;
     }
 }

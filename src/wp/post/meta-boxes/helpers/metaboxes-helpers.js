@@ -1,6 +1,7 @@
 
 export function updateInitialValues({fieldGroupId, metaBoxContext, setIsInitialized}) {
-    const findMetaFieldConfig = tru_fetcher_react.meta.metaFields.find(item => item?.id === fieldGroupId);
+    console.log(tru_fetcher_react)
+    const findMetaFieldConfig = tru_fetcher_react.meta.metaBoxes.find(item => item?.id === fieldGroupId);
     if (!findMetaFieldConfig) {
         return;
     }
@@ -34,7 +35,7 @@ export function updateInitialValues({fieldGroupId, metaBoxContext, setIsInitiali
 }
 
 export function updateMetaHiddenFields({fieldGroupId, field, metaBoxContext}) {
-    const findMetaFieldConfig = tru_fetcher_react.meta.metaFields.find(item => item?.id === fieldGroupId);
+    const findMetaFieldConfig = tru_fetcher_react.meta.metaBoxes.find(item => item?.id === fieldGroupId);
     if (!findMetaFieldConfig) {
         return;
     }

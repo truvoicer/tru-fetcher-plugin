@@ -8,6 +8,7 @@ export default {
         checkToken: '/token/login',
         tokenRefresh: '/token/refresh',
         serviceList: '/service/list',
+        categories: '/category/list',
         serviceResponseKeyList: '/service/response/key/list',
         currencyConvert: '/currency/convert',
     },

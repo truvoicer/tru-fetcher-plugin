@@ -43,6 +43,7 @@ if (
         }
         BlocksInterface.defaultProps = {
             config: block,
+            apiConfig: tru_fetcher_react.api,
         }
         registerBlockType( block.name, {
             title: block.title,

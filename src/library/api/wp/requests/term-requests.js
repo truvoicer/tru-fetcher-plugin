@@ -1,4 +1,4 @@
-import {fetchRequest, sendRequest} from "../../middleware";
+import {fetchRequest, sendRequest} from "../../state-middleware";
 
 export async function saveTermsRequest(data) {
     console.log({data})

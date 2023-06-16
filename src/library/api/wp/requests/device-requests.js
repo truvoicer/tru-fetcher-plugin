@@ -1,4 +1,4 @@
-import {fetchRequest} from "../../middleware";
+import {fetchRequest} from "../../state-middleware";
 
 export async function fetchDevicesRequest() {
     const results = await fetchRequest({

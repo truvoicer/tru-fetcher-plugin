@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import FormBuilder from "../FormBuilder";
 import {setFormConfigItemField} from "../helpers/form-helpers";
-import {sendRequest} from "../../../library/api/middleware";
+import {sendRequest} from "../../../library/api/state-middleware";
 import {fetchTopicsRequest, getTopicsSelectData} from "../../../library/api/wp/requests/topic-requests";
 import sendToTopic from "../configs/messaging/send-to-topic";
 

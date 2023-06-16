@@ -164,7 +164,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         );
         $localizedScriptData = $this->buildDefaultLocalizedScriptData();
         $localizedScriptData['api'] = [];
-        $localizedScriptData['api'][] = $this->buildTruFetcherApiLocalizedScriptData();
+        $localizedScriptData['api'] = array_merge($localizedScriptData['api'], $this->buildTruFetcherApiLocalizedScriptData());
         $localizedScriptData = array_merge($localizedScriptData, $this->buildMetaFieldsLocalizedScriptData());
         $localizedScriptData = array_merge($localizedScriptData, $this->buildBlocksLocalizedScriptData());
         wp_localize_script(
@@ -224,8 +224,11 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
      */
     public function buildBlocksLocalizedScriptData(): array
     {
+        $blocks = new Tru_Fetcher_Admin_Blocks();
         return [
-            'blocks' => (new Tru_Fetcher_Admin_Blocks())->getBlocks()
+            'post_types' => $blocks->getBlocksPostTypes(),
+            'taxonomies' => $blocks->getBlocksTaxonomies(),
+            'blocks' => $blocks->getBlocks()
         ];
     }
 

@@ -36,13 +36,10 @@ class Tru_Fetcher_Admin_Resources_Post_Types {
 
     public static function getPostTypeData(string $postType)
     {
-        return [
+        return get_posts([
             'post_type' => $postType,
-            'posts' => get_posts([
-                'post_type' => $postType,
-                'posts_per_page' => -1,
-                'post_status' => 'any',
-            ])
-        ];
+            'posts_per_page' => -1,
+            'post_status' => 'any',
+        ]);
     }
 }

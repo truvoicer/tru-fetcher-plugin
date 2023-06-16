@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import SettingsContext from "./contexts/SettingsContext";
-import {fetchRequest, sendRequest} from "../library/api/middleware";
+import {fetchRequest, sendRequest} from "../library/api/state-middleware";
 import config from "../library/api/wp/config";
 
 const SettingsContainer = ({children}) => {

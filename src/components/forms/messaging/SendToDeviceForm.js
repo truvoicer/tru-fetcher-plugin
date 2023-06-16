@@ -4,7 +4,7 @@ import sendToDevice from "../configs/messaging/send-to-device";
 import {fetchDevicesRequest, getDevicesSelectData} from "../../../library/api/wp/requests/device-requests";
 import {setFormConfigItemField} from "../helpers/form-helpers";
 import {isNotEmpty} from "../../../library/helpers/utils-helpers";
-import {sendRequest} from "../../../library/api/middleware";
+import {sendRequest} from "../../../library/api/state-middleware";
 
 const SendToDeviceForm = () => {
 

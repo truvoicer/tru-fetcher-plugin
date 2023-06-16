@@ -1,7 +1,7 @@
 import React from 'react';
 import {TabPanel, Panel, PanelBody, PanelRow, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
 
-const ApiTab = (props) => {
+const WordpressDataTab = (props) => {
     const {
         attributes,
         setAttributes,
@@ -9,9 +9,39 @@ const ApiTab = (props) => {
         config
     } = props;
     console.log({config})
-    function findListingsCategoryTerms() {
-        return tru_fetcher_react.blocks.taxonomies.find(taxonomy => taxonomy.slug === 'listings_category').terms;
+
+    function findSingleItemPosts() {
+        return tru_fetcher_react.post_types.find(postType => postType?.name === 'fetcher_single_item');
     }
+    function findListingsCategoryTerms() {
+        return tru_fetcher_react.taxonomies.find(taxonomy => taxonomy?.name === 'listings_categories');
+    }
+
+    function getListingsCategoryTermsSelectOptions() {
+        let listingsCategoryTerms = findListingsCategoryTerms();
+        if (!listingsCategoryTerms) {
+            return [];
+        }
+        return listingsCategoryTerms.terms.map(term => {
+            return {
+                label: term.name,
+                value: term.term_id
+            }
+        })
+    }
+    function findSingleItemPostsSelectOptions() {
+        let singleItemPosts = findSingleItemPosts();
+        if (!singleItemPosts) {
+            return [];
+        }
+        return singleItemPosts.posts.map(post => {
+            return {
+                label: post.post_title,
+                value: post.ID
+            }
+        })
+    }
+
     return (
         <PanelRow>
             <SelectControl
@@ -21,11 +51,14 @@ const ApiTab = (props) => {
                 }}
                 value={attributes?.listings_category}
                 options={[
-                    {
-                        disabled: true,
-                        label: 'Select an Option',
-                        value: ''
-                    },
+                    ...[
+                        {
+                            disabled: true,
+                            label: 'Select an Option',
+                            value: ''
+                        },
+                    ],
+                    ...getListingsCategoryTermsSelectOptions()
                 ]}
             />
             <SelectControl
@@ -35,15 +68,18 @@ const ApiTab = (props) => {
                 }}
                 value={attributes?.item_list}
                 options={[
+                    ...[
                     {
                         disabled: true,
                         label: 'Select an Option',
                         value: ''
                     },
-                ]}
+                ],
+                    ...findSingleItemPostsSelectOptions()
+            ]}
             />
         </PanelRow>
     );
 };
 
-export default ApiTab;
+export default WordpressDataTab;
