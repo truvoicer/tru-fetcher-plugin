@@ -1,5 +1,5 @@
 import React from 'react';
-import {TabPanel, Panel, PanelBody, PanelRow, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import {TabPanel, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
 
 const GeneralTab = (props) => {
     const {
@@ -8,7 +8,7 @@ const GeneralTab = (props) => {
         className,
     } = props;
     return (
-        <PanelRow>
+        <div>
             <SelectControl
                 label="Listing Data Source"
                 onChange={(value) => {
@@ -31,7 +31,7 @@ const GeneralTab = (props) => {
                     },
                 ]}
             />
-        </PanelRow>
+        </div>
     );
 };
 

@@ -1,7 +1,10 @@
 <?php
 namespace TruFetcher\Includes\Admin\Blocks;
 
+use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Form;
+use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Hero;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Listings;
+use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_User_Account;
 use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Item_List;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Post_Options;
@@ -40,6 +43,9 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
 
     private array $blocks = [
         Tru_Fetcher_Admin_Blocks_Resources_Listings::class,
+        Tru_Fetcher_Admin_Blocks_Resources_Hero::class,
+        Tru_Fetcher_Admin_Blocks_Resources_User_Account::class,
+        Tru_Fetcher_Admin_Blocks_Resources_Form::class,
     ];
 
     public function init()

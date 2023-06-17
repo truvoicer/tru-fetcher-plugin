@@ -1,5 +1,5 @@
 import React from 'react';
-import {TabPanel, Panel, PanelBody, PanelRow, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import {TabPanel, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
 import {fetchRequest} from "../../../../library/api/middleware";
 import fetcherApiConfig from "../../../../library/api/fetcher-api/fetcherApiConfig";
 
@@ -11,32 +11,32 @@ const ApiTab = (props) => {
         apiConfig
     } = props;
 
-    async function getFetcherCategories() {
-        const results = await fetchRequest({
-            config: fetcherApiConfig,
-            endpoint: fetcherApiConfig.endpoints.categories,
-            apiConfig: apiConfig?.tru_fetcher
-        })
-        if (results?.data?.data) {
-            return results.data.data;
-        } else {
-            return [];
-        }
+    function getFetcherCategories() {
+        return apiConfig?.tru_fetcher?.categories;
     }
-    async function getApiListingsCategoryOptions() {
-        const fetchercategories = await getFetcherCategories();
-        console.log({fetchercategories})
-        return fetchercategories.map((category) => {
+    function getApiListingsCategoryOptions() {
+        const fetcherCategories = getFetcherCategories();
+        return fetcherCategories.map((category) => {
             return {
                 label: category.category_label,
                 value: category.id
             }
         })
     }
-    const fetchercategories = getApiListingsCategoryOptions();
-    console.log({fetchercategories})
+    function getFetcherProviders() {
+        return apiConfig?.tru_fetcher?.providers;
+    }
+    function getApiListingsProviderOptions() {
+        const fetcherProviders = getFetcherProviders();
+        return fetcherProviders.map((provider) => {
+            return {
+                label: provider.provider_label,
+                value: provider.id
+            }
+        })
+    }
     return (
-        <PanelRow>
+        <div>
             <SelectControl
                 label="Api Fetch Type"
                 onChange={(value) => {
@@ -66,12 +66,15 @@ const ApiTab = (props) => {
                 }}
                 value={attributes?.api_listings_category}
                 options={[
+                    ...[
                     {
                         disabled: true,
                         label: 'Select an Option',
                         value: ''
                     },
-                ]}
+                ],
+                    ...getApiListingsCategoryOptions()
+            ]}
             />
             <ToggleControl
                 label="Select Providers"
@@ -80,7 +83,27 @@ const ApiTab = (props) => {
                     setAttributes({select_providers: value});
                 }}
             />
-        </PanelRow>
+            {attributes?.select_providers &&
+                <SelectControl
+                    label="Providers"
+                    multiple={true}
+                    onChange={(value) => {
+                        setAttributes({providers_list: value});
+                    }}
+                    value={attributes?.providers_list}
+                    options={[
+                        ...[
+                            {
+                                disabled: true,
+                                label: 'Select an Option',
+                                value: ''
+                            },
+                        ],
+                        ...getApiListingsProviderOptions()
+                    ]}
+                />
+            }
+        </div>
     );
 };
 

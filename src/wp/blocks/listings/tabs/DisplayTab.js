@@ -1,5 +1,5 @@
 import React from 'react';
-import {TabPanel, Panel, PanelBody, PanelRow, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import {TabPanel, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
 
 const DisplayTab = (props) => {
     const {
@@ -8,7 +8,7 @@ const DisplayTab = (props) => {
         className,
     } = props;
     return (
-        <PanelRow>
+        <div>
             <TextControl
                 label="Heading"
                 value={ attributes?.heading }
@@ -65,7 +65,7 @@ const DisplayTab = (props) => {
                     setAttributes({show_filters_toggle: value});
                 }}
             />
-        </PanelRow>
+        </div>
     );
 };
 

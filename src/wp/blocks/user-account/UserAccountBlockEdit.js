@@ -1,12 +1,8 @@
 import React from 'react';
 import {TabPanel, Panel, PanelBody, PanelRow} from "@wordpress/components";
-
-import {useBlockProps, RichText} from '@wordpress/block-editor';
-import GeneralTab from "./tabs/GeneralTab";
 import tabConfig from "./tab-config";
-import ApiTab from "./tabs/ApiTab";
 
-const ListingsBlockEdit = (props) => {
+const UserAccountBlockEdit = (props) => {
 
     function getTabComponent(tab) {
         if (!tab?.component) {
@@ -18,7 +14,7 @@ const ListingsBlockEdit = (props) => {
 
     return (
         <Panel>
-            <PanelBody title="Listings Block" initialOpen={true}>
+            <PanelBody title="User Account Block" initialOpen={true}>
                 <TabPanel
                     className="my-tab-panel"
                     activeClass="active-tab"
@@ -52,4 +48,4 @@ const ListingsBlockEdit = (props) => {
     );
 };
 
-export default ListingsBlockEdit;
+export default UserAccountBlockEdit;

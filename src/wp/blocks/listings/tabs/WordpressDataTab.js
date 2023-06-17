@@ -1,5 +1,6 @@
 import React from 'react';
-import {TabPanel, Panel, PanelBody, PanelRow, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import {TabPanel, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import {findSingleItemPostsSelectOptions, getListingsCategoryTermsSelectOptions} from "../../../helpers/wp-helpers";
 
 const WordpressDataTab = (props) => {
     const {
@@ -10,40 +11,9 @@ const WordpressDataTab = (props) => {
     } = props;
     console.log({config})
 
-    function findSingleItemPosts() {
-        return tru_fetcher_react.post_types.find(postType => postType?.name === 'fetcher_single_item');
-    }
-    function findListingsCategoryTerms() {
-        return tru_fetcher_react.taxonomies.find(taxonomy => taxonomy?.name === 'listings_categories');
-    }
-
-    function getListingsCategoryTermsSelectOptions() {
-        let listingsCategoryTerms = findListingsCategoryTerms();
-        if (!listingsCategoryTerms) {
-            return [];
-        }
-        return listingsCategoryTerms.terms.map(term => {
-            return {
-                label: term.name,
-                value: term.term_id
-            }
-        })
-    }
-    function findSingleItemPostsSelectOptions() {
-        let singleItemPosts = findSingleItemPosts();
-        if (!singleItemPosts) {
-            return [];
-        }
-        return singleItemPosts.posts.map(post => {
-            return {
-                label: post.post_title,
-                value: post.ID
-            }
-        })
-    }
 
     return (
-        <PanelRow>
+        <div>
             <SelectControl
                 label="Listings Category"
                 onChange={(value) => {
@@ -78,7 +48,7 @@ const WordpressDataTab = (props) => {
                     ...findSingleItemPostsSelectOptions()
             ]}
             />
-        </PanelRow>
+        </div>
     );
 };
 

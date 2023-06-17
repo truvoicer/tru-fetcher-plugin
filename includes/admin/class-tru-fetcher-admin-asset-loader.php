@@ -3,13 +3,10 @@
 namespace TruFetcher\Includes\Admin;
 
 use Exception;
-use TrNewsApp\Includes\Admin\AdminMenu\Tr_News_App_Admin_Menu;
-use TruFetcher\Includes\Admin\AdminMenu\Tru_Fetcher_Admin_Menu;
 use TruFetcher\Includes\Admin\Blocks\Tru_Fetcher_Admin_Blocks;
 use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
-use TruFetcher\Includes\Admin\OldAdminMenu\Tru_Fetcher_Old_Admin_Menu;
-use TruFetcher\Includes\Admin\PostTypes\Tru_Fetcher_Admin_Post_Types;
 use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_Jwt;
+use TruFetcher\Includes\Api\Tru_Fetcher_Api_Request;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 
 /**
@@ -228,7 +225,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         return [
             'post_types' => $blocks->getBlocksPostTypes(),
             'taxonomies' => $blocks->getBlocksTaxonomies(),
-            'blocks' => $blocks->getBlocks()
+            'blocks' => $blocks->getBlocks(),
         ];
     }
 
@@ -271,12 +268,22 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
      */
     public function buildTruFetcherApiLocalizedScriptData()
     {
+        $fetcherApi = new Tru_Fetcher_Api_Request();
+        $categories = $fetcherApi->getApiDataList("categoryList");
+        $providers = $fetcherApi->getApiDataList("providerList");
+        $services = $fetcherApi->getApiDataList("serviceList");
+        if (is_wp_error($categories)) {
+            return false;
+        }
         $appKey = 'tru_fetcher_react';
         return [
             'tru_fetcher' => [
                 'baseUrl' => $this->getEnv('TRU_FETCHER_API_URL'),
                 'token' => $this->getEnv('TRU_FETCHER_API_TOKEN'),
                 'app_key' => $appKey,
+                'categories' => $categories,
+                'providers' => $providers,
+                'services' => $services,
             ]
         ];
     }

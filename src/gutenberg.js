@@ -5,7 +5,10 @@ import 'antd/dist/reset.css';
 import '../assets/sass/tru-fetcher-admin.scss';
 import SidebarMetaBoxLoader from "./wp/sidebar/SidebarMetaBoxLoader";
 
-import BlocksInterface from "./wp/blocks/BlocksInterface";
+import ListingsBlockEdit from "./wp/blocks/listings/ListingsBlockEdit";
+import HeroBlockEdit from "./wp/blocks/hero/HeroBlockEdit";
+import UserAccountBlockEdit from "./wp/blocks/user-account/UserAccountBlockEdit";
+import FormBlockEdit from "./wp/blocks/form/FormBlockEdit";
 
 if (!getPlugin('trf-fetcher-plugin')) {
     registerPlugin( 'trf-metadata-plugin', {
@@ -41,7 +44,24 @@ if (
                 examplesAttData[attribute.id] = attribute.default;
             });
         }
-        BlocksInterface.defaultProps = {
+        let blockComponent;
+        switch (block?.id) {
+            case "listings-block":
+                blockComponent = ListingsBlockEdit;
+                break;
+            case "hero-block":
+                blockComponent = HeroBlockEdit;
+                break;
+            case "user-account-block":
+                blockComponent = UserAccountBlockEdit;
+                break;
+            case "form-block":
+                blockComponent = FormBlockEdit;
+                break;
+            default:
+                return;
+        }
+        blockComponent.defaultProps = {
             config: block,
             apiConfig: tru_fetcher_react.api,
         }
@@ -51,7 +71,7 @@ if (
             example: {
                 attributes: examplesAttData
             },
-            edit: BlocksInterface,
+            edit: blockComponent,
         } );
     });
 }

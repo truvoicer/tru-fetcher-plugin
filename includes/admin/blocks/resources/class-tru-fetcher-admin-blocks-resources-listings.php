@@ -106,9 +106,31 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings
                 'default' => 'search',
             ],
             [
+                'id' => 'initial_load_search_params',
+                'type' => 'array',
+                'default' => [],
+            ],
+            [
+                'id' => 'initial_load_request_params',
+                'type' => 'array',
+                'default' => [],
+            ],
+            [
+                'id' => 'initial_load_request_name',
+                'type' => 'string',
+            ],
+            [
+                'id' => 'initial_load_request_limit',
+                'type' => 'integer',
+            ],
+            [
                 'id' => 'list_start',
                 'type' => 'boolean',
                 'default' => false,
+            ],
+            [
+                'id' => 'list_start_items',
+                'type' => 'integer',
             ],
             [
                 'id' => 'list_end',
@@ -116,9 +138,25 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings
                 'default' => false,
             ],
             [
+                'id' => 'list_end_items',
+                'type' => 'integer',
+            ],
+            [
                 'id' => 'custom_position',
                 'type' => 'boolean',
                 'default' => false,
+            ],
+            [
+                'id' => 'custom_position_items',
+                'type' => 'integer',
+            ],
+            [
+                'id' => 'custom_position_insert_index',
+                'type' => 'integer',
+            ],
+            [
+                'id' => 'custom_position_per_page',
+                'type' => 'integer',
             ],
         ]
     ];
