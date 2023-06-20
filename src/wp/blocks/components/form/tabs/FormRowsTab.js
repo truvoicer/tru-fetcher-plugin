@@ -1,5 +1,6 @@
 import React from 'react';
-import {TextControl, SelectControl, ToggleControl, Button, Draggable} from "@wordpress/components";
+import {TextControl, SelectControl, ToggleControl, Button} from "@wordpress/components";
+import {Icon, chevronDown, chevronUp} from "@wordpress/icons";
 
 const FormRowsTab = (props) => {
     const {
@@ -84,14 +85,24 @@ const FormRowsTab = (props) => {
         cloneFormRows[rowIndex] = cloneFormRow;
         onChange({key: 'form_rows', value: cloneFormRows});
     }
-    function rowItemDragStartHandler(e) {
-        console.log({e})
-    }
-    function rowItemDragOverHandler(e) {
-        console.log({e})
-    }
-    function rowItemDragEndHandler(e) {
-        console.log({e})
+    function moveFormItem({rowIndex, formItemIndex, direction}) {
+        // let cloneAtts = {...data};
+        // let cloneFormRows = [...cloneAtts.form_rows];
+        // let cloneFormRow = {...cloneFormRows[rowIndex]};
+        // let formItems = cloneFormRow.form_items;
+        // let formItem = formItems[formItemIndex];
+        // let newIndex = formItemIndex + direction;
+        // if (newIndex < 0) {
+        //     newIndex = 0;
+        // }
+        // if (newIndex > formItems.length - 1) {
+        //     newIndex = formItems.length - 1;
+        // }
+        // formItems.splice(formItemIndex, 1);
+        // formItems.splice(newIndex, 0, formItem);
+        // cloneFormRow.form_items = formItems;
+        // cloneFormRows[rowIndex] = cloneFormRow;
+        // onChange({key: 'form_rows', value: cloneFormRows});
     }
     return (
         <div className={'tf--form--rows'}>
@@ -104,24 +115,25 @@ const FormRowsTab = (props) => {
                         </div>
                         <div className={'tf--form--row--items'}>
                             {row?.form_items.map((formItem, formItemIndex) => {
-                                const rowItemId = `tf_form-row_item_${formItemIndex}`;
                                 return (
-                                    <Draggable
-                                        elementId={rowItemId}
-                                        transferData={ {formItemIndex} }
-                                        onDragStart={ rowItemDragStartHandler }
-                                        onDragOver={ rowItemDragOverHandler }
-                                        onDragEnd={ rowItemDragEndHandler }
-                                    >
-                                        { ( { onDraggableStart, onDraggableEnd } ) => (
-                                    <div
-                                        id={rowItemId}
-                                        className={'tf--form--row--item'}
-                                        draggable
-                                        onDragStart={ onDraggableStart }
-                                        onDragEnd={ onDraggableEnd }>
-                                        <div className={'tf--form--item--header'}>
-                                            {`Item ${formItemIndex}`}
+                                    <div className={'tf--form--row--item'}>
+
+                                        <div className={'tf--form--row--item--header'}>
+                                            <h4>{`Item ${formItemIndex}`}</h4>
+                                            <div className={'tf--form--row--item--header--actions'}>
+                                                <a
+                                                    onClick={() => {
+
+                                                    }}>
+                                                    <Icon icon={chevronUp} />
+                                                </a>
+                                                <a
+                                                    onClick={() => {
+
+                                                    }}>
+                                                    <Icon icon={chevronDown} />
+                                                </a>
+                                            </div>
                                         </div>
                                         <SelectControl
                                             label="Form Control"
@@ -539,8 +551,6 @@ const FormRowsTab = (props) => {
                                             Delete Item
                                         </Button>
                                     </div>
-                                        ) }
-                                    </Draggable>
                                 )
                             })}
                         </div>
