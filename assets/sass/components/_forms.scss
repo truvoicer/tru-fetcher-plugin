@@ -53,6 +53,16 @@
         &__button {
 
         }
+        &--header {
+          display: flex;
+          justify-content: space-between;
+          h4 {
+            font-size: 16px !important;
+          }
+          &--actions {
+
+          }
+        }
       }
       &--endpoint-mappings {
         &--item {
