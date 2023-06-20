@@ -148,7 +148,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
     {
         // Automatically load imported dependencies and assets version.
         $asset_file = include TRU_FETCHER_PLUGIN_DIR . "build/{$this->gutenbergReactScriptName}.asset.php";
-
+        wp_enqueue_media();
         wp_enqueue_style(
             "{$this->plugin_name}-{$this->gutenbergReactScriptName}",
             TRU_FETCHER_PLUGIN_URL . "build/{$this->gutenbergReactScriptName}.css",
@@ -268,24 +268,28 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
      */
     public function buildTruFetcherApiLocalizedScriptData()
     {
-        $fetcherApi = new Tru_Fetcher_Api_Request();
-        $categories = $fetcherApi->getApiDataList("categoryList");
-        $providers = $fetcherApi->getApiDataList("providerList");
-        $services = $fetcherApi->getApiDataList("serviceList");
-        if (is_wp_error($categories)) {
-            return false;
-        }
         $appKey = 'tru_fetcher_react';
-        return [
+        $data = [
             'tru_fetcher' => [
                 'baseUrl' => $this->getEnv('TRU_FETCHER_API_URL'),
                 'token' => $this->getEnv('TRU_FETCHER_API_TOKEN'),
                 'app_key' => $appKey,
-                'categories' => $categories,
-                'providers' => $providers,
-                'services' => $services,
             ]
         ];
+        $fetcherApi = new Tru_Fetcher_Api_Request();
+        $categories = $fetcherApi->getApiDataList("categoryList");
+        if ($categories) {
+            $data['tru_fetcher']['categories'] = $categories;
+        }
+        $providers = $fetcherApi->getApiDataList("providerList");
+        if ($providers) {
+            $data['tru_fetcher']['providers'] = $providers;
+        }
+        $services = $fetcherApi->getApiDataList("serviceList");
+        if ($services) {
+            $data['tru_fetcher']['services'] = $services;
+        }
+        return $data;
     }
 
     /**

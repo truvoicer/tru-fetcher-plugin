@@ -34,7 +34,7 @@ const FormLayoutTab = (props) => {
                 ]}
             />
             <SelectControl
-                label="Method"
+                label="Align"
                 onChange={(value) => {
                     if (typeof onChange === 'function') {
                         onChange({key: 'align', value: value});
@@ -62,6 +62,7 @@ const FormLayoutTab = (props) => {
                 ]}
             />
             <TextControl
+                label="Classes"
                 placeholder="Classes"
                 value={ data?.classes }
                 onChange={ ( value ) => {
@@ -71,6 +72,7 @@ const FormLayoutTab = (props) => {
                 } }
             />
             <TextControl
+                label="Column Size"
                 placeholder="Column Size"
                 value={ data?.column_size }
                 onChange={ ( value ) => {

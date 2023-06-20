@@ -4,6 +4,7 @@ import '../assets/sass/tru-fetcher-admin.scss';
 import SingleItemMetaBoxTabs from "./wp/post/meta-boxes/single-item/SingleItemMetaBoxTabs";
 import ItemListMetaBoxList from "./wp/post/meta-boxes/item-list/ItemListMetaBoxList";
 import MetaBoxContainer from "./wp/post/meta-boxes/MetaBoxContainer";
+import FilterListsMetaBox from "./wp/post/meta-boxes/filter-lists/FilterListsMetaBox";
 
 switch (tru_fetcher_react?.currentScreen?.base) {
     case 'post':
@@ -33,6 +34,16 @@ function loadByPostScreenId(id) {
                 config: tru_fetcher_react?.api?.wp
             };
             render(<MetaBoxContainer metaBoxComponent={ItemListMetaBoxList} apiConfig={tru_fetcher_react?.api?.wp}  />, element);
+            break;
+        case 'filter_lists':
+            element = document.getElementById('trf_mb_filter_lists_react');
+            if (!element) {
+                return;
+            }
+            FilterListsMetaBox.defaultProps = {
+                config: tru_fetcher_react?.api?.wp
+            };
+            render(<MetaBoxContainer metaBoxComponent={FilterListsMetaBox} apiConfig={tru_fetcher_react?.api?.wp}  />, element);
             break;
     }
 }

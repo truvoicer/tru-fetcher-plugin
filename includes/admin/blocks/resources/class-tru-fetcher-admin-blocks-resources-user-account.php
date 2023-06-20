@@ -26,9 +26,9 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Admin_Blocks_Resources_User_Account
+class Tru_Fetcher_Admin_Blocks_Resources_User_Account extends Tru_Fetcher_Admin_Blocks_Resources_Base
 {
-    public const CONFIG = [
+    public array $config = [
         'id' => 'user-account-block',
         'name' => 'tru-fetcher/user-account-block',
         'title' => 'Tf User Account Block',

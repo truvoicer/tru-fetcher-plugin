@@ -58,6 +58,7 @@ const FormSettingsTab = (props) => {
                 ]}
             />
             <TextControl
+                label="Submit Button Label"
                 placeholder="Submit Button Label"
                 value={ data?.submit_button_label }
                 onChange={ ( value ) => {
@@ -67,6 +68,7 @@ const FormSettingsTab = (props) => {
                 } }
             />
             <TextControl
+                label="Add Item Button Label"
                 placeholder="Add Item Button Label"
                 value={ data?.add_item_button_label }
                 onChange={ ( value ) => {
@@ -76,6 +78,7 @@ const FormSettingsTab = (props) => {
                 } }
             />
             <TextControl
+                label="Form ID"
                 placeholder="Form ID"
                 value={ data?.form_id }
                 onChange={ ( value ) => {
@@ -85,6 +88,7 @@ const FormSettingsTab = (props) => {
                 } }
             />
             <TextControl
+                label="Heading"
                 placeholder="Heading"
                 value={ data?.heading }
                 onChange={ ( value ) => {
@@ -94,6 +98,7 @@ const FormSettingsTab = (props) => {
                 } }
             />
             <TextControl
+                label="Sub Heading"
                 placeholder="Sub Heading"
                 value={ data?.sub_heading }
                 onChange={ ( value ) => {

@@ -24,10 +24,10 @@ export function findTaxonomyData(taxonomy) {
 
 export function findPostTypeSelectOptions(postType) {
     const postTypes = findPostTypeData(postType)
-    if (!postTypes) {
+    if (!Array.isArray(postTypes?.posts)) {
         return [];
     }
-    return tru_fetcher_react.post_types.map(post => {
+    return postTypes.posts.map(post => {
         return {
             label: post.post_title,
             value: post.ID

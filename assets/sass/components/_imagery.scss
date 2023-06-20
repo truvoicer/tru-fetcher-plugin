@@ -1,0 +1,23 @@
+.tf {
+  &--imagery {
+    display: flex;
+    flex-direction: row;
+    &--group {
+      width: 250px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      h3 {
+        font-size: 16px !important;
+        font-weight: bold;
+      }
+      a {
+        cursor: pointer;
+        color: #007cba;
+        text-decoration: none;
+        font-size: 14px;
+      }
+    }
+  }
+}

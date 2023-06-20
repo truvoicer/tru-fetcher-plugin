@@ -82,6 +82,7 @@ const EndpointSettingsTab = (props) => {
             />
             {data?.endpoint === 'custom' && (
                 <TextControl
+                    label="Custom Endpoint"
                     placeholder="Custom Endpoint"
                     value={data?.custom_endpoint}
                     onChange={(value) => {
@@ -96,6 +97,7 @@ const EndpointSettingsTab = (props) => {
                     <div>
                         <h5>Email Settings</h5>
                         <TextControl
+                            label="Email Recipient"
                             placeholder="Email Recipient"
                             value={data?.email_recipient}
                             onChange={(value) => {
@@ -105,6 +107,7 @@ const EndpointSettingsTab = (props) => {
                             }}
                         />
                         <TextControl
+                            label="Email Subject"
                             placeholder="Email Subject"
                             value={data?.email_subject}
                             onChange={(value) => {
@@ -114,6 +117,7 @@ const EndpointSettingsTab = (props) => {
                             }}
                         />
                         <TextControl
+                            label="Email From"
                             placeholder="Email From"
                             value={data?.email_from}
                             onChange={(value) => {

@@ -2,6 +2,7 @@
 namespace TruFetcher\Includes\Api;
 
 // exit if accessed directly
+use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
 use TruFetcher\Includes\Tru_Fetcher;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 
@@ -9,6 +10,7 @@ if (!defined('ABSPATH')) exit;
 
 class Tru_Fetcher_Api_Request extends Tru_Fetcher_Base
 {
+    use Tru_Fetcher_Traits_Errors;
 
     const API_CONFIG_FILE = "fetcher-request-api-config";
     const ALLOWED_METHODS = ["GET", "POST"];
@@ -56,13 +58,22 @@ class Tru_Fetcher_Api_Request extends Tru_Fetcher_Base
     public function sendApiRequest(string $endpoint = null, string $method = null, array $data = [])
     {
         if (!Tru_Fetcher::isNotEmpty($endpoint)) {
-            return new \WP_Error("invalid_api_request_error", "Endpoint has not been set.");
+            $this->addError(
+                new \WP_Error("invalid_api_request_error", "Endpoint has not been set.")
+            );
+            return false;
         }
         if (!Tru_Fetcher::isNotEmpty($method)) {
-            return new \WP_Error("invalid_api_request_error", "Method has not been set.");
+            $this->addError(
+                new \WP_Error("invalid_api_request_error", "Method has not been set.")
+            );
+            return false;
         }
         if (!in_array(strtoupper($method), self::ALLOWED_METHODS)) {
-            return new \WP_Error("invalid_api_request_error", "Api request method not allowed.");
+            $this->addError(
+                new \WP_Error("invalid_api_request_error", "Api request method not allowed.")
+            );
+            return false;
         }
         $requestData = [
             'headers' => $this->getHeaders()
@@ -77,7 +88,10 @@ class Tru_Fetcher_Api_Request extends Tru_Fetcher_Base
             $response = $client->request(strtoupper($method), $endpoint, $requestData);
             return $this->responseHandler($response);
         } catch (\GuzzleHttp\Exception\GuzzleException $e) {
-            return new \WP_Error("api_request_guzzle_error", $e->getMessage());
+            $this->addError(
+                new \WP_Error("api_request_guzzle_error", $e->getMessage())
+            );
+            return false;
         }
     }
 
@@ -87,11 +101,14 @@ class Tru_Fetcher_Api_Request extends Tru_Fetcher_Base
             case 200:
                 return json_decode($response->getBody()->getContents());
             default:
-                return new \WP_Error(
-                    "api_response_error",
-                    "Error from Api",
-                    json_decode($response->getBody()->getContents())
+                $this->addError(
+                    new \WP_Error(
+                        "api_response_error",
+                        "Error from Api",
+                        json_decode($response->getBody()->getContents())
+                    )
                 );
+                return false;
         }
     }
 
@@ -107,7 +124,10 @@ class Tru_Fetcher_Api_Request extends Tru_Fetcher_Base
             return $getData;
         }
         if ($getData->status !== "success") {
-            return new \WP_Error("api_response_error", "Error from Api", $getData->data);
+            $this->addError(
+                new \WP_Error("api_response_error", "Error from Api", $getData->data)
+            );
+            return false;
         }
         return $getData->data;
     }

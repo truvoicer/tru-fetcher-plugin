@@ -9,8 +9,6 @@ const WordpressDataTab = (props) => {
         className,
         config
     } = props;
-    console.log({config})
-
 
     return (
         <div>

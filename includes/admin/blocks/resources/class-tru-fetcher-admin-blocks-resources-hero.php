@@ -26,9 +26,9 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Admin_Blocks_Resources_Hero
+class Tru_Fetcher_Admin_Blocks_Resources_Hero extends Tru_Fetcher_Admin_Blocks_Resources_Base
 {
-    public const CONFIG = [
+    public array $config = [
         'id' => 'hero-block',
         'name' => 'tru-fetcher/hero-block',
         'title' => 'Tf Hero Block',
@@ -107,8 +107,4 @@ class Tru_Fetcher_Admin_Blocks_Resources_Hero
         ]
     ];
 
-    public function renderBlock( $block_attributes, $content ) {
-        var_dump($block_attributes);
-        return '<div class="tru-fetcher-listings-block">sfdsfdsfdsfd</div>';
-    }
 }

@@ -5,11 +5,6 @@ use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resource
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Hero;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Listings;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_User_Account;
-use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Item_List;
-use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
-use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Post_Options;
-use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Single_Item;
-use TruFetcher\Includes\Admin\PostTypes\Tru_Fetcher_Admin_Post_Types;
 use TruFetcher\Includes\Admin\Resources\Tru_Fetcher_Admin_Resources_Post_Types;
 use TruFetcher\Includes\Admin\Resources\Tru_Fetcher_Admin_Resources_Taxonomies;
 use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
@@ -62,7 +57,7 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
     {
         foreach ($this->blocks as $block) {
             $blockClass = new $block();
-            $config = $blockClass::CONFIG;
+            $config = $blockClass->getConfig();
             $id = $config['id'];
             $name = $config['name'];
             if (!method_exists($blockClass, 'renderBlock')) {
@@ -78,9 +73,7 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
             $registerBlock = register_block_type($name, [
                 'api_version' => 3,
                 'editor_script' => 'gutenberg',
-                'render_callback' => function ($attributes, $content) use ($blockClass) {
-                    return $this->renderBlock($attributes, $content, $blockClass);
-                },
+                'render_callback' => [$blockClass, 'renderBlock'],
             ]);
             if (!$registerBlock) {
                 $this->addError(
@@ -95,23 +88,11 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         }
     }
 
-    public function renderBlock( $blockAttributes, $content, $blockClass ) {
-        $config = $blockClass::CONFIG;
-        $id = $config['id'];
-        $props = [
-            'id' => $id,
-            'data' => json_encode($blockAttributes),
-        ];
-        $propsString = '';
-        foreach ($props as $key => $value) {
-            $propsString .= "$key='$value' ";
-        }
-        return "<div {$propsString}>&nbsp;</div>";
-    }
     public function getBlocks() {
         $data = [];
         foreach ($this->blocks as $block) {
-            $config = $block::CONFIG;
+            $blockClass = new $block();
+            $config = $blockClass->getConfig();
             $data[] = $config;
         }
         return $data;
@@ -120,7 +101,8 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
     public function getBlocksPostTypes() {
         $postTypes = [];
         foreach ($this->blocks as $block) {
-            $config = $block::CONFIG;
+            $blockClass = new $block();
+            $config = $blockClass->getConfig();
             foreach ($config['post_types'] as $postType) {
                 $postType['posts'] = Tru_Fetcher_Admin_Resources_Post_Types::getPostTypeData($postType['name']);
                 $postTypes[] = $postType;
@@ -131,7 +113,8 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
     public function getBlocksTaxonomies() {
         $taxonomies = [];
         foreach ($this->blocks as $block) {
-            $config = $block::CONFIG;
+            $blockClass = new $block();
+            $config = $blockClass->getConfig();
             foreach ($config['taxonomies'] as $taxonomy) {
                 $taxonomy['terms'] = Tru_Fetcher_Admin_Resources_Taxonomies::getTerms($taxonomy['name']);
                 $taxonomies[] = $taxonomy;

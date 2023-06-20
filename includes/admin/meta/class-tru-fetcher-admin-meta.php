@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\Admin\Meta;
 
+use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Filter_Lists;
 use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Item_List;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Post_Options;
@@ -42,6 +43,7 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
     private array $metaBoxes = [
         Tru_Fetcher_Admin_Meta_Box_Single_Item::class,
         Tru_Fetcher_Admin_Meta_Box_Item_List::class,
+        Tru_Fetcher_Admin_Meta_Box_Filter_Lists::class,
     ];
 
     public function init()

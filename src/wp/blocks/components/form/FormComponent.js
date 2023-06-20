@@ -13,34 +13,36 @@ const FormComponent = (props) => {
     }
 
     return (
-        <TabPanel
-            className="my-tab-panel"
-            activeClass="active-tab"
-            onSelect={(tabName) => {
-                // setTabName(tabName);
-            }}
-            tabs={
-                tabConfig.map((tab) => {
-                    return {
-                        name: tab.name,
-                        title: tab.title,
-                    }
-                })
-            }>
-            {(tab) => {
-                return (
-                <>
-                    {tabConfig.map((item) => {
-                        if (item.name === tab.name) {
-                            return getTabComponent(item);
+        <div className={'tr-news-app__form-block'}>
+            <TabPanel
+                className="my-tab-panel"
+                activeClass="active-tab"
+                onSelect={(tabName) => {
+                    // setTabName(tabName);
+                }}
+                tabs={
+                    tabConfig.map((tab) => {
+                        return {
+                            name: tab.name,
+                            title: tab.title,
                         }
-                        return null;
-                    })}
-                </>
-                )
+                    })
+                }>
+                {(tab) => {
+                    return (
+                        <div className={'tr-news-app__form-block'} style={{display: 'flex', flexDirection: 'column'}}>
+                            {tabConfig.map((item) => {
+                                if (item.name === tab.name) {
+                                    return getTabComponent(item);
+                                }
+                                return null;
+                            })}
+                        </div>
+                    )
 
-            }}
-        </TabPanel>
+                }}
+            </TabPanel>
+        </div>
     );
 };
 
