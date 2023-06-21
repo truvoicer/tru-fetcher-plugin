@@ -112,7 +112,7 @@ class Tru_Fetcher_Api_Admin_Posts_Controller extends Tru_Fetcher_Api_Admin_Base_
                 "post_modified" => $post->post_modified,
                 "featured_image" => get_the_post_thumbnail_url($post),
                 "post_category" => $this->buildTermsArray(get_the_category($post->ID)),
-                "post_template_category" => get_field("post_template_category", $post->ID)
+//                "post_template_category" => get_field("post_template_category", $post->ID)
             ];
         }, $posts);
     }

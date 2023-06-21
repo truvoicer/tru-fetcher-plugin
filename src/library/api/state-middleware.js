@@ -68,6 +68,7 @@ const getAuthHeader = (appKey) => {
     //Return false if local session token is invalid
     if (typeof sessionStorage[SESSION_USER_TOKEN] === 'undefined' || !isNotEmpty(sessionStorage[SESSION_USER_TOKEN])) {
         const sessionStore = store.getState()[SESSION_STATE];
+        console.log({sessionStore})
         if (!isNotEmpty(sessionStore?.user?.token)) {
             return false;
         }
@@ -170,6 +171,7 @@ export async function fetchRequest({ config, endpoint, params = {}}) {
         return false;
     }
     let headers = getAuthHeader(appKey);
+    console.log({headers})
     if (!headers && config?.wpRequest) {
         return false;
     }

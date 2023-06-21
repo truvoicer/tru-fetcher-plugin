@@ -1,5 +1,5 @@
 import React from 'react';
-import {TabPanel, Panel, PanelBody, PanelRow} from "@wordpress/components";
+import {TabPanel} from "@wordpress/components";
 import tabConfig from "./tab-config";
 
 const Carousel = (props) => {
@@ -13,38 +13,34 @@ const Carousel = (props) => {
     }
 
     return (
-        <Panel>
-            <PanelBody title="Carousel Block" initialOpen={true}>
-                <TabPanel
-                    className="my-tab-panel"
-                    activeClass="active-tab"
-                    onSelect={(tabName) => {
-                        // setTabName(tabName);
-                    }}
-                    tabs={
-                        tabConfig.map((tab) => {
-                            return {
-                                name: tab.name,
-                                title: tab.title,
+            <TabPanel
+                className="my-tab-panel"
+                activeClass="active-tab"
+                onSelect={(tabName) => {
+                    // setTabName(tabName);
+                }}
+                tabs={
+                    tabConfig.map((tab) => {
+                        return {
+                            name: tab.name,
+                            title: tab.title,
+                        }
+                    })
+                }>
+                {(tab) => {
+                    return (
+                    <>
+                        {tabConfig.map((item) => {
+                            if (item.name === tab.name) {
+                                return getTabComponent(item);
                             }
-                        })
-                    }>
-                    {(tab) => {
-                        return (
-                        <>
-                            {tabConfig.map((item) => {
-                                if (item.name === tab.name) {
-                                    return getTabComponent(item);
-                                }
-                                return null;
-                            })}
-                        </>
-                        )
+                            return null;
+                        })}
+                    </>
+                    )
 
-                    }}
-                </TabPanel>
-            </PanelBody>
-        </Panel>
+                }}
+            </TabPanel>
     );
 };
 

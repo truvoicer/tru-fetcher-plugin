@@ -1,11 +1,36 @@
 import React from 'react';
 import {TabPanel, Panel, Button, TextControl, SelectControl, RangeControl} from "@wordpress/components";
-import {findSingleItemListsPostsSelectOptions} from "../../../../helpers/wp-helpers";
+import {findPostTypeSelectOptions, findSingleItemListsPostsSelectOptions} from "../../../../helpers/wp-helpers";
 const GeneralTab = (props) => {
     const {
         data,
         onChange
     } = props;
+
+    function addRequestParam() {
+        let cloneData = {...data};
+        let cloneRequestParams = [...cloneData.request_parameters];
+        cloneRequestParams.push({
+            name: '',
+            value: ''
+        });
+        onChange({key: 'request_parameters', value: cloneRequestParams});
+    }
+
+    function updateRequestParam({requestParamIndex, field, value}) {
+        let cloneData = {...data};
+        let cloneRequestParams = [...cloneData.request_parameters];
+        let cloneRequestParamsItem = {...cloneRequestParams[requestParamIndex]};
+        cloneRequestParamsItem[field] = value;
+        cloneRequestParams[requestParamIndex] = cloneRequestParamsItem;
+        onChange({key: 'request_parameters', value: cloneRequestParams});
+    }
+    function deleteRequestParam({requestParamIndex}) {
+        let cloneData = {...data};
+        let cloneRequestParams = [...cloneData.request_parameters];
+        cloneRequestParams.splice(requestParamIndex, 1);
+        onChange({key: 'request_parameters', value: cloneRequestParams});
+    }
 
     return (
         <div>
@@ -45,7 +70,7 @@ const GeneralTab = (props) => {
                             value: ''
                         },
                     ],
-                    ...findSingleItemListsPostsSelectOptions()
+                    ...findPostTypeSelectOptions('fetcher_items_lists')
                 ]}
             />
 
@@ -58,7 +83,7 @@ const GeneralTab = (props) => {
             />
             <TextControl
                 placeholder="carousel_sub_heading"
-                value={ attributes?.carousel_sub_heading }
+                value={ data?.carousel_sub_heading }
                 onChange={ ( value ) => {
                     onChange({key: 'carousel_sub_heading', value});
                 } }
@@ -93,7 +118,11 @@ const GeneralTab = (props) => {
                                         placeholder="Name"
                                         value={requestParam?.name}
                                         onChange={(value) => {
-
+                                            updateRequestParam({
+                                                requestParamIndex,
+                                                field: 'name',
+                                                value
+                                            })
                                         }}
                                     />
 
@@ -102,14 +131,18 @@ const GeneralTab = (props) => {
                                         placeholder="Value"
                                         value={requestParam?.value}
                                         onChange={(value) => {
-
+                                            updateRequestParam({
+                                                requestParamIndex,
+                                                field: 'value',
+                                                value
+                                            })
                                         }}
                                     />
                                     <Button
                                         variant="primary"
                                         onClick={(e) => {
                                             e.preventDefault()
-
+                                            deleteRequestParam({requestParamIndex})
                                         }}
                                     >
                                         Delete Request Param
@@ -121,15 +154,7 @@ const GeneralTab = (props) => {
                             variant="primary"
                             onClick={(e) => {
                                 e.preventDefault()
-                                addToFormItem({
-                                    rowIndex,
-                                    formItemIndex,
-                                    field: 'options',
-                                    defaultValues: {
-                                        label: '',
-                                        value: ''
-                                    }
-                                })
+                                addRequestParam()
                             }}
                         >
                             Add Option

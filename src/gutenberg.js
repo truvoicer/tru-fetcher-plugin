@@ -9,6 +9,7 @@ import ListingsBlockEdit from "./wp/blocks/listings/ListingsBlockEdit";
 import HeroBlockEdit from "./wp/blocks/hero/HeroBlockEdit";
 import UserAccountBlockEdit from "./wp/blocks/user-account/UserAccountBlockEdit";
 import FormBlockEdit from "./wp/blocks/form/FormBlockEdit";
+import CarouselBlockEdit from "./wp/blocks/carousel/CarouselBlockEdit";
 
 if (!getPlugin('trf-fetcher-plugin')) {
     registerPlugin( 'trf-metadata-plugin', {
@@ -57,6 +58,9 @@ if (
                 break;
             case "form-block":
                 blockComponent = FormBlockEdit;
+                break;
+            case "carousel-block":
+                blockComponent = CarouselBlockEdit;
                 break;
             default:
                 return;
