@@ -98,3 +98,9 @@ export function updateParam({attr, index, key, value, attributes, setAttributes}
     cloneSearchParam[index][key] = value;
     setAttributes({[attr]: cloneSearchParam});
 }
+export function deleteParam({attr, index, key, value, attributes, setAttributes}) {
+    let cloneAtts = {...attributes};
+    let cloneSearchParam = [...cloneAtts[attr]];
+    cloneSearchParam.splice(index, 1);
+    setAttributes({[attr]: cloneSearchParam});
+}

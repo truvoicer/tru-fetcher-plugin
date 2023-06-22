@@ -10,6 +10,12 @@ import HeroBlockEdit from "./wp/blocks/hero/HeroBlockEdit";
 import UserAccountBlockEdit from "./wp/blocks/user-account/UserAccountBlockEdit";
 import FormBlockEdit from "./wp/blocks/form/FormBlockEdit";
 import CarouselBlockEdit from "./wp/blocks/carousel/CarouselBlockEdit";
+import OptInBlockEdit from "./wp/blocks/opt-in/OptInBlockEdit";
+import PostsBlockEdit from "./wp/blocks/posts/PostsBlockEdit";
+import FormProgressBlockEdit from "./wp/blocks/form-progress/FormProgressBlockEdit";
+import UserStatsBlockEdit from "./wp/blocks/user-stats/UserStatsBlockEdit";
+import UserSocialBlockEdit from "./wp/blocks/user-social/UserSocialBlockEdit";
+import UserProfileBlockEdit from "./wp/blocks/user-profile/UserProfileBlockEdit";
 
 if (!getPlugin('trf-fetcher-plugin')) {
     registerPlugin( 'trf-metadata-plugin', {
@@ -61,6 +67,27 @@ if (
                 break;
             case "carousel-block":
                 blockComponent = CarouselBlockEdit;
+                break;
+            case "opt-in-block":
+                blockComponent = OptInBlockEdit;
+                break;
+            case "posts-block":
+                blockComponent = PostsBlockEdit;
+                break;
+            case "form-progress-widget-block":
+                blockComponent = FormProgressBlockEdit;
+                break;
+            case "user-stats-widget-block":
+                blockComponent = UserStatsBlockEdit;
+                break;
+            case "user-social-widget-block":
+                blockComponent = UserSocialBlockEdit;
+                break;
+            case "user-profile-widget-block":
+                blockComponent = UserProfileBlockEdit;
+                break;
+            case "widget-board-block":
+                blockComponent = UserProfileBlockEdit;
                 break;
             default:
                 return;

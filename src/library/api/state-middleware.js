@@ -68,7 +68,7 @@ const getAuthHeader = (appKey) => {
     //Return false if local session token is invalid
     if (typeof sessionStorage[SESSION_USER_TOKEN] === 'undefined' || !isNotEmpty(sessionStorage[SESSION_USER_TOKEN])) {
         const sessionStore = store.getState()[SESSION_STATE];
-        console.log({sessionStore})
+        // console.log({sessionStore})
         if (!isNotEmpty(sessionStore?.user?.token)) {
             return false;
         }
@@ -302,11 +302,19 @@ export async function checkToken({config}) {
     try {
         const getRequest = await apiRequest.request(request);
         if (getRequest?.data?.status === 'success') {
-            const sessionStorage = getSessionLocalStorage(appKey);
-            setSessionState({
-                token: sessionStorage[SESSION_USER_TOKEN],
-                expiresAt: sessionStorage[SESSION_USER_TOKEN_EXPIRES_AT],
-            })
+            switch (config?.tokenSource) {
+                case 'env':
+                    setSessionAuthenticatedAction(true);
+                    setIsAuthenticatingAction(false);
+                    break;
+                default:
+                    const sessionStorage = getSessionLocalStorage(appKey);
+                    setSessionState({
+                        token: sessionStorage[SESSION_USER_TOKEN],
+                        expiresAt: sessionStorage[SESSION_USER_TOKEN_EXPIRES_AT],
+                    })
+                    break;
+            }
 
             return true;
         }

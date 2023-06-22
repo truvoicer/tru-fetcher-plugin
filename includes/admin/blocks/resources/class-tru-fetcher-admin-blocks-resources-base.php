@@ -43,6 +43,27 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         return "<div {$propsString}>&nbsp;</div>";
     }
 
+    protected function mergeConfigs(array $blockResources)
+    {
+        foreach ($blockResources as $blockResource) {
+            $blockResourceInstance = new $blockResource();
+            foreach ($blockResourceInstance->getConfig()['post_types'] as $postType) {
+                if (!in_array($postType['name'], array_column($this->config['post_types'], 'name'))) {
+                    $this->config['post_types'][] = $postType;
+                }
+            }
+            foreach ($blockResourceInstance->getConfig()['taxonomies'] as $taxonomy) {
+                if (!in_array($taxonomy['name'], array_column($this->config['taxonomies'], 'name'))) {
+                    $this->config['taxonomies'][] = $taxonomy;
+                }
+            }
+            foreach ($blockResourceInstance->getConfig()['attributes'] as $attribute) {
+                if (!in_array($attribute['id'], array_column($this->config['attributes'], 'id'))) {
+                    $this->config['attributes'][] = $attribute;
+                }
+            }
+        }
+    }
     /**
      * @return array
      */

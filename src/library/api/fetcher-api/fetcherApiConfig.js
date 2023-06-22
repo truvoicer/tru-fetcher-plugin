@@ -16,6 +16,7 @@ export default {
         const token = results?.data?.data?.session?.access_token;
         const expiresAt = results?.data?.data?.session?.expires_at;
         if (token) {
+            console.log('tokenResponseHandler', {token, expiresAt, appKey})
             //Set authenticated local storage data
             setSessionLocalStorage({token, expiresAt, appKey})
             //Set authenticated redux session state
@@ -25,5 +26,6 @@ export default {
         return false;
     },
     tokenRefreshLimit: 1,
-    tokenRefreshCount: 0
+    tokenRefreshCount: 0,
+    tokenSource: 'env',
 }

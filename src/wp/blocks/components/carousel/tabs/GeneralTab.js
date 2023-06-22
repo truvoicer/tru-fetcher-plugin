@@ -1,35 +1,37 @@
 import React from 'react';
 import {TabPanel, Panel, Button, TextControl, SelectControl, RangeControl} from "@wordpress/components";
 import {findPostTypeSelectOptions, findSingleItemListsPostsSelectOptions} from "../../../../helpers/wp-helpers";
+
 const GeneralTab = (props) => {
     const {
         data,
         onChange
     } = props;
 
-    function addRequestParam() {
+    function addArrayItem({key}) {
         let cloneData = {...data};
-        let cloneRequestParams = [...cloneData.request_parameters];
+        let cloneRequestParams = [...cloneData[key]];
         cloneRequestParams.push({
             name: '',
             value: ''
         });
-        onChange({key: 'request_parameters', value: cloneRequestParams});
+        onChange({key, value: cloneRequestParams});
     }
 
-    function updateRequestParam({requestParamIndex, field, value}) {
+    function updateArrayItem({key, index, field, value}) {
         let cloneData = {...data};
-        let cloneRequestParams = [...cloneData.request_parameters];
-        let cloneRequestParamsItem = {...cloneRequestParams[requestParamIndex]};
+        let cloneRequestParams = [...cloneData[key]];
+        let cloneRequestParamsItem = {...cloneRequestParams[index]};
         cloneRequestParamsItem[field] = value;
-        cloneRequestParams[requestParamIndex] = cloneRequestParamsItem;
-        onChange({key: 'request_parameters', value: cloneRequestParams});
+        cloneRequestParams[index] = cloneRequestParamsItem;
+        onChange({key, value: cloneRequestParams});
     }
-    function deleteRequestParam({requestParamIndex}) {
+
+    function deleteArrayItem({key, index}) {
         let cloneData = {...data};
-        let cloneRequestParams = [...cloneData.request_parameters];
-        cloneRequestParams.splice(requestParamIndex, 1);
-        onChange({key: 'request_parameters', value: cloneRequestParams});
+        let cloneRequestParams = [...cloneData[key]];
+        cloneRequestParams.splice(index, 1);
+        onChange({key, value: cloneRequestParams});
     }
 
     return (
@@ -56,48 +58,53 @@ const GeneralTab = (props) => {
                     },
                 ]}
             />
-            <SelectControl
-                label="Item List"
-                onChange={(value) => {
-                    onChange({key: 'item_list', value});
-                }}
-                value={data?.item_list}
-                options={[
-                    ...[
-                        {
-                            disabled: true,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                    ],
-                    ...findPostTypeSelectOptions('fetcher_items_lists')
-                ]}
-            />
+            {data?.carousel_content === 'items' && (
+                <SelectControl
+                    label="Item List"
+                    onChange={(value) => {
+                        onChange({key: 'item_list', value});
+                    }}
+                    value={data?.item_list}
+                    options={[
+                        ...[
+                            {
+                                disabled: true,
+                                label: 'Select an Option',
+                                value: ''
+                            },
+                        ],
+                        ...findPostTypeSelectOptions('fetcher_items_lists')
+                    ]}
+                />
+            )}
 
             <TextControl
-                placeholder="Tab Label"
-                value={ data?.carousel_heading }
-                onChange={ ( value ) => {
+                label="Carousel Heading"
+                placeholder="Carousel Heading"
+                value={data?.carousel_heading}
+                onChange={(value) => {
                     onChange({key: 'carousel_heading', value});
-                } }
+                }}
             />
             <TextControl
+                label="carousel_sub_heading"
                 placeholder="carousel_sub_heading"
-                value={ data?.carousel_sub_heading }
-                onChange={ ( value ) => {
+                value={data?.carousel_sub_heading}
+                onChange={(value) => {
                     onChange({key: 'carousel_sub_heading', value});
-                } }
+                }}
             />
             {data?.carousel_content === 'request' && (
                 <div>
                     <h4>Request</h4>
 
                     <TextControl
+                        label="Tab Label"
                         placeholder="Tab Label"
-                        value={ data?.request_name }
-                        onChange={ ( value ) => {
+                        value={data?.request_name}
+                        onChange={(value) => {
                             onChange({key: 'carousel_heading', value});
-                        } }
+                        }}
                     />
 
                     <RangeControl
@@ -118,8 +125,9 @@ const GeneralTab = (props) => {
                                         placeholder="Name"
                                         value={requestParam?.name}
                                         onChange={(value) => {
-                                            updateRequestParam({
-                                                requestParamIndex,
+                                            updateArrayItem({
+                                                key: 'request_parameters',
+                                                index: requestParamIndex,
                                                 field: 'name',
                                                 value
                                             })
@@ -131,8 +139,9 @@ const GeneralTab = (props) => {
                                         placeholder="Value"
                                         value={requestParam?.value}
                                         onChange={(value) => {
-                                            updateRequestParam({
-                                                requestParamIndex,
+                                            updateArrayItem({
+                                                key: 'request_parameters',
+                                                index: requestParamIndex,
                                                 field: 'value',
                                                 value
                                             })
@@ -142,7 +151,10 @@ const GeneralTab = (props) => {
                                         variant="primary"
                                         onClick={(e) => {
                                             e.preventDefault()
-                                            deleteRequestParam({requestParamIndex})
+                                            deleteArrayItem({
+                                                key: 'request_parameters',
+                                                index: requestParamIndex
+                                            })
                                         }}
                                     >
                                         Delete Request Param
@@ -154,14 +166,71 @@ const GeneralTab = (props) => {
                             variant="primary"
                             onClick={(e) => {
                                 e.preventDefault()
-                                addRequestParam()
+                                addArrayItem({key: 'request_parameters'})
                             }}
                         >
-                            Add Option
+                            Add Request Param
                         </Button>
                     </div>
                 </div>
             )}
+            <div>
+                <h5>Carousel Settings</h5>
+                {data.carousel_settings.map((carouselSetting, carouselSettingIndex) => {
+                    return (
+                        <div style={{display: 'flex'}}>
+                            <TextControl
+                                label="Name"
+                                placeholder="Name"
+                                value={carouselSetting?.name}
+                                onChange={(value) => {
+                                    updateArrayItem({
+                                        key: 'carousel_settings',
+                                        index: carouselSettingIndex,
+                                        field: 'name',
+                                        value
+                                    })
+                                }}
+                            />
+
+                            <TextControl
+                                label="Value"
+                                placeholder="Value"
+                                value={carouselSetting?.value}
+                                onChange={(value) => {
+                                    updateArrayItem({
+                                        key: 'carousel_settings',
+                                        index: carouselSettingIndex,
+                                        field: 'value',
+                                        value
+                                    })
+                                }}
+                            />
+                            <Button
+                                variant="primary"
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    deleteArrayItem({
+                                        key: 'carousel_settings',
+                                        index: carouselSettingIndex,
+                                    })
+                                }}
+                            >
+                                Delete Carousel Setting
+                            </Button>
+                        </div>
+                    );
+                })}
+                <Button
+                    variant="primary"
+                    onClick={(e) => {
+                        e.preventDefault()
+                        addArrayItem({key: 'carousel_settings'})
+                    }}
+                >
+                    Add Carousel Setting
+                </Button>
+            </div>
         </div>
     );
 };

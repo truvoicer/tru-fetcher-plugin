@@ -133,6 +133,7 @@ export function setInitialSessionState(config) {
         setSessionApiUrlBaseAction(config.baseUrl);
     }
     if (config?.token) {
+        console.log('setInitialSessionState', config?.token)
         setSessionUserTokenAction(config?.token);
     }
     if (tru_fetcher_react?.user?.id) {

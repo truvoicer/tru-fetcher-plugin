@@ -25,6 +25,7 @@ namespace TruFetcher\Includes\Admin\Resources;
 class Tru_Fetcher_Admin_Resources_Taxonomies {
 
     public const LISTINGS_CATEGORIES_TAXONOMY = 'listings_categories';
+    public const CATEGORY_TAXONOMY = 'category';
 
     public static function getTerms(string $taxonomy) {
         $getTerms = get_terms([

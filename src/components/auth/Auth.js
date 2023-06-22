@@ -37,7 +37,6 @@ function Auth({children, app, session}) {
 
     useEffect(() => {
         const config = getCurrentApiConfigAction();
-        console.log(config)
         if (setInitialSessionState(config)) {
             setSessionHasLoadedAction(true)
         }

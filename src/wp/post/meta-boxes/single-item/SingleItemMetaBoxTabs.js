@@ -155,7 +155,6 @@ const SingleItemMetaBoxTabs = ({session, config}) => {
         updateTabsByType();
         updateInitialValues({fieldGroupId: 'single_item', metaBoxContext, setIsInitialized})
     }, [])
-
     return (
         <Auth config={config}>
             <PostMetaBoxContext.Provider value={metaBoxContext}>
