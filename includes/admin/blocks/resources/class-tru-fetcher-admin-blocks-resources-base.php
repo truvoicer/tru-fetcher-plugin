@@ -57,11 +57,6 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
                     $this->config['taxonomies'][] = $taxonomy;
                 }
             }
-            foreach ($blockResourceInstance->getConfig()['attributes'] as $attribute) {
-                if (!in_array($attribute['id'], array_column($this->config['attributes'], 'id'))) {
-                    $this->config['attributes'][] = $attribute;
-                }
-            }
         }
     }
     /**

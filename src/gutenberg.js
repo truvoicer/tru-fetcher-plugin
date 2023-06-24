@@ -16,6 +16,7 @@ import FormProgressBlockEdit from "./wp/blocks/form-progress/FormProgressBlockEd
 import UserStatsBlockEdit from "./wp/blocks/user-stats/UserStatsBlockEdit";
 import UserSocialBlockEdit from "./wp/blocks/user-social/UserSocialBlockEdit";
 import UserProfileBlockEdit from "./wp/blocks/user-profile/UserProfileBlockEdit";
+import WidgetBoardBlockEdit from "./wp/blocks/widget-board/WidgetBoardBlockEdit";
 
 if (!getPlugin('trf-fetcher-plugin')) {
     registerPlugin( 'trf-metadata-plugin', {
@@ -42,52 +43,53 @@ if (
     tru_fetcher_react.blocks.forEach((block) => {
         let attData = {};
         let examplesAttData = {};
-        if (typeof block.attributes !== 'undefined' && Array.isArray(block.attributes)) {
-            block.attributes.forEach((attribute) => {
-                attData[attribute.id] = {
+        if (typeof block.attributes !== 'undefined' && typeof block.attributes === 'object') {
+            Object.keys(block.attributes).forEach((key) => {
+                const attribute = block.attributes[key];
+                attData[key] = {
                     type: attribute.type,
                     default: attribute.default,
                 };
-                examplesAttData[attribute.id] = attribute.default;
+                examplesAttData[key] = attribute.default;
             });
         }
         let blockComponent;
         switch (block?.id) {
-            case "listings-block":
+            case "listings_block":
                 blockComponent = ListingsBlockEdit;
                 break;
-            case "hero-block":
+            case "hero_block":
                 blockComponent = HeroBlockEdit;
                 break;
-            case "user-account-block":
+            case "user_account_block":
                 blockComponent = UserAccountBlockEdit;
                 break;
-            case "form-block":
+            case "form_block":
                 blockComponent = FormBlockEdit;
                 break;
-            case "carousel-block":
+            case "carousel_block":
                 blockComponent = CarouselBlockEdit;
                 break;
-            case "opt-in-block":
+            case "opt_in_block":
                 blockComponent = OptInBlockEdit;
                 break;
-            case "posts-block":
+            case "posts_block":
                 blockComponent = PostsBlockEdit;
                 break;
-            case "form-progress-widget-block":
+            case "form_progress_widget_block":
                 blockComponent = FormProgressBlockEdit;
                 break;
-            case "user-stats-widget-block":
+            case "user_stats_widget_block":
                 blockComponent = UserStatsBlockEdit;
                 break;
-            case "user-social-widget-block":
+            case "user_social_widget_block":
                 blockComponent = UserSocialBlockEdit;
                 break;
-            case "user-profile-widget-block":
+            case "user_profile_widget_block":
                 blockComponent = UserProfileBlockEdit;
                 break;
-            case "widget-board-block":
-                blockComponent = UserProfileBlockEdit;
+            case "widget_board_block":
+                blockComponent = WidgetBoardBlockEdit;
                 break;
             default:
                 return;
@@ -96,13 +98,19 @@ if (
             config: block,
             apiConfig: tru_fetcher_react.api,
         }
-        registerBlockType( block.name, {
-            title: block.title,
-            attributes: attData,
-            example: {
-                attributes: examplesAttData
-            },
-            edit: blockComponent,
-        } );
+        let blockOptions = {};
+        blockOptions.title = block.title;
+        blockOptions.attributes = attData;
+        blockOptions.example = {
+            attributes: examplesAttData
+        };
+        blockOptions.edit = blockComponent;
+        if (Array.isArray(block?.parent)) {
+            blockOptions.parent = block.parent;
+        }
+        if (Array.isArray(block?.ancestors)) {
+            blockOptions.ancestor = block.ancestor;
+        }
+        registerBlockType( block.name, blockOptions );
     });
 }

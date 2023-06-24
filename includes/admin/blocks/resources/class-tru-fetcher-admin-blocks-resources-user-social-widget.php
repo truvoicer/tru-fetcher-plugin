@@ -28,15 +28,19 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
  */
 class Tru_Fetcher_Admin_Blocks_Resources_User_Social_Widget extends Tru_Fetcher_Admin_Blocks_Resources_Base
 {
-
+    public const BLOCK_ID = 'user_social_widget_block';
+    public const BLOCK_NAME = 'tru-fetcher/user-social-widget-block';
     public array $config = [
-        'id' => 'user-social-widget-block',
-        'name' => 'tru-fetcher/user-social-widget-block',
+        'id' => self::BLOCK_ID,
+        'name' => self::BLOCK_NAME,
         'title' => 'Tf User Social Widget Block',
+        'parent' => [
+            Tru_Fetcher_Admin_Blocks_Resources_Widget_Board::BLOCK_NAME,
+        ],
         'post_types' => [],
         'taxonomies' => [],
         'attributes' => [
-            [
+            'heading' => [
                 'id' => 'heading',
                 'type' => 'text',
             ],

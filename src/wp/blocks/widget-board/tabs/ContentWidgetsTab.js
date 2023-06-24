@@ -1,9 +1,18 @@
 import React from 'react';
-import {TabPanel, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import {DropdownMenu, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
 import UserStats from "../../components/user-stats/UserStats";
 import UserSocial from "../../components/user-social/UserSocial";
 import UserProfile from "../../components/user-profile/UserProfile";
 import FormProgress from "../../components/form-progress/FormProgress";
+import {
+    plusCircleFilled,
+    more,
+    arrowLeft,
+    arrowRight,
+    arrowUp,
+    arrowDown,
+} from '@wordpress/icons';
+import widgetConfig from "../../configs/widget-config";
 
 const ContentWidgetsTab = (props) => {
     const {
@@ -13,7 +22,7 @@ const ContentWidgetsTab = (props) => {
         apiConfig
     } = props;
 
-    function formChangeHandler({key, value, component}) {
+    function formChangeHandler({key, value, widget}) {
         setAttributes({
             ...attributes,
             [key]: value
@@ -21,7 +30,7 @@ const ContentWidgetsTab = (props) => {
     }
     function getWidgetComponent(widget) {
         let Component;
-        switch (widget?.component) {
+        switch (widget?.id) {
             case 'user-stats':
                 Component = UserStats;
                 break;
@@ -40,10 +49,30 @@ const ContentWidgetsTab = (props) => {
         Component.defaultProps = {
             data: attributes,
             onChange: ({key, value}) => {
-                formChangeHandler({key, value, component: widget?.component});
+                formChangeHandler({key, value, widget});
             }
         }
         return <Component />;
+    }
+    function insertWidget(widget) {
+        setAttributes({
+            ...attributes,
+            content_widgets: [
+                ...attributes?.content_widgets,
+                widget
+            ]
+        });
+    }
+    function getDropDownControls() {
+        return widgetConfig?.map((widget) => {
+           return {
+                title: widget?.title,
+                icon: more,
+                onClick: () => {
+                    insertWidget(widget);
+                }
+           }
+        });
     }
     return (
         <div>
@@ -54,6 +83,11 @@ const ContentWidgetsTab = (props) => {
                     </div>
                 );
             })}
+            <DropdownMenu
+                icon={ plusCircleFilled }
+                label="Select a widget"
+                controls={ getDropDownControls() }
+            />
         </div>
     );
 };

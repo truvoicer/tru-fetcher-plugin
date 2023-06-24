@@ -28,15 +28,19 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
  */
 class Tru_Fetcher_Admin_Blocks_Resources_User_Profile_Widget extends Tru_Fetcher_Admin_Blocks_Resources_Base
 {
-
+    public const BLOCK_ID = 'user_profile_widget_block';
+    public const BLOCK_NAME = 'tru-fetcher/user-profile-widget-block';
     public array $config = [
-        'id' => 'user-profile-widget-block',
-        'name' => 'tru-fetcher/user-profile-widget-block',
+        'id' => self::BLOCK_ID,
+        'name' => self::BLOCK_NAME,
         'title' => 'Tf User Profile Widget Block',
+        'parent' => [
+            Tru_Fetcher_Admin_Blocks_Resources_Widget_Board::BLOCK_NAME,
+        ],
         'post_types' => [],
         'taxonomies' => [],
         'attributes' => [
-            [
+            'heading' => [
                 'id' => 'heading',
                 'type' => 'text',
             ],

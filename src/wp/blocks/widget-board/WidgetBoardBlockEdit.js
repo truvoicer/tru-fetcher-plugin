@@ -1,8 +1,9 @@
 import React from 'react';
 import {TabPanel, Panel, PanelBody, PanelRow} from "@wordpress/components";
-import GeneralTab from "../components/form-progress/tabs/GeneralTab";
+import GeneralTab from "./tabs/GeneralTab";
 import ContentWidgetsTab from "./tabs/ContentWidgetsTab";
 import SidebarWidgetsTab from "./tabs/SidebarWidgetsTab";
+import {InnerBlocks, useBlockProps} from '@wordpress/block-editor';
 
 const WidgetBoardBlockEdit = (props) => {
 
@@ -38,38 +39,40 @@ const WidgetBoardBlockEdit = (props) => {
     }
 
     return (
-        <Panel>
-            <PanelBody title="User Account Block" initialOpen={true}>
-                <TabPanel
-                    className="my-tab-panel"
-                    activeClass="active-tab"
-                    onSelect={(tabName) => {
-                        // setTabName(tabName);
-                    }}
-                    tabs={
-                        getTabConfig().map((tab) => {
-                            return {
-                                name: tab.name,
-                                title: tab.title,
-                            }
-                        })
-                    }>
-                    {(tab) => {
-                        return (
-                        <>
-                            {getTabConfig().map((item) => {
-                                if (item.name === tab.name) {
-                                    return getTabComponent(item);
+        <div {...useBlockProps()}>
+            <Panel>
+                <PanelBody title="User Account Block" initialOpen={true}>
+                    <TabPanel
+                        className="my-tab-panel"
+                        activeClass="active-tab"
+                        onSelect={(tabName) => {
+                            // setTabName(tabName);
+                        }}
+                        tabs={
+                            getTabConfig().map((tab) => {
+                                return {
+                                    name: tab.name,
+                                    title: tab.title,
                                 }
-                                return null;
-                            })}
-                        </>
-                        )
+                            })
+                        }>
+                        {(tab) => {
+                            return (
+                                <>
+                                    {getTabConfig().map((item) => {
+                                        if (item.name === tab.name) {
+                                            return getTabComponent(item);
+                                        }
+                                        return null;
+                                    })}
+                                </>
+                            )
 
-                    }}
-                </TabPanel>
-            </PanelBody>
-        </Panel>
+                        }}
+                    </TabPanel>
+                </PanelBody>
+            </Panel>
+        </div>
     );
 };
 

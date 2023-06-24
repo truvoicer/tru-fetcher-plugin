@@ -28,38 +28,43 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
  */
 class Tru_Fetcher_Admin_Blocks_Resources_User_Stats_Widget extends Tru_Fetcher_Admin_Blocks_Resources_Base
 {
+    public const BLOCK_ID = 'user_stats_widget_block';
+    public const BLOCK_NAME = 'tru-fetcher/user-stats-widget-block';
 
     public array $config = [
-        'id' => 'user-stats-widget-block',
-        'name' => 'tru-fetcher/user-stats-widget-block',
+        'id' => self::BLOCK_ID,
+        'name' => self::BLOCK_NAME,
         'title' => 'Tf User Stats Widget Block',
+        'parent' => [
+            Tru_Fetcher_Admin_Blocks_Resources_Widget_Board::BLOCK_NAME,
+        ],
         'post_types' => [],
         'taxonomies' => [],
         'attributes' => [
-            [
+            'show_provider_stats' => [
                 'id' => 'show_provider_stats',
                 'type' => 'boolean',
                 'default' => false,
             ],
-            [
+            'show_item_stats' => [
                 'id' => 'show_item_stats',
                 'type' => 'boolean',
                 'default' => false,
             ],
-            [
+            'show_saved_items_stats' => [
                 'id' => 'show_saved_items_stats',
                 'type' => 'boolean',
                 'default' => false,
             ],
-            [
+            'provider_heading' => [
                 'id' => 'provider_heading',
                 'type' => 'text',
             ],
-            [
+            'item_heading' => [
                 'id' => 'item_heading',
                 'type' => 'text',
             ],
-            [
+            'saved_items_heading' => [
                 'id' => 'saved_items_heading',
                 'type' => 'text',
             ],

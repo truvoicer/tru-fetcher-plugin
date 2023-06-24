@@ -2,18 +2,20 @@ import React from 'react';
 import {Panel, PanelBody, TabPanel} from "@wordpress/components";
 import GeneralTab from "./tabs/GeneralTab";
 import OptInInfoTab from "./tabs/OptInInfoTab";
-import FormComponent from "../components/form/FormComponent";
-import Carousel from "../components/carousel/Carousel";
+import { useInnerBlocksProps, InnerBlocks, useBlockProps } from '@wordpress/block-editor';
+import {getChildBlockIds} from "../../helpers/wp-helpers";
+
 
 const OptInBlockEdit = (props) => {
     const {attributes, setAttributes} = props;
+    const { children, ...innerBlocksProps } = useInnerBlocksProps(  );
     function formChangeHandler({key, value}) {
         setAttributes({
             ...attributes,
             [key]: value
         });
     }
-
+    console.log({innerBlocksProps, children})
     function getTabConfig() {
         let tabConfig = [
             {
@@ -27,28 +29,6 @@ const OptInBlockEdit = (props) => {
                 component: OptInInfoTab
             },
         ];
-        if (attributes?.optin_type === 'form') {
-            FormComponent.defaultProps = {
-                data: attributes,
-                onChange: formChangeHandler
-            };
-            tabConfig.push({
-                name: 'form',
-                title: 'Form',
-                component: FormComponent
-            });
-        }
-        if (attributes?.show_carousel) {
-            Carousel.defaultProps = {
-                data: attributes,
-                onChange: formChangeHandler
-            };
-            tabConfig.push({
-                name: 'carousel',
-                title: 'Carousel',
-                component: Carousel
-            });
-        }
         return tabConfig;
     }
     function getTabComponent(tab) {
@@ -59,6 +39,7 @@ const OptInBlockEdit = (props) => {
         return <TabComponent {...props} />;
     }
     return (
+        <div { ...useBlockProps() }>
         <Panel>
             <PanelBody title="Opt In Block" initialOpen={true}>
                 <TabPanel
@@ -89,8 +70,10 @@ const OptInBlockEdit = (props) => {
 
                     }}
                 </TabPanel>
+                <InnerBlocks allowedBlocks={ getChildBlockIds(props?.config) } />
             </PanelBody>
         </Panel>
+        </div>
     );
 };
 

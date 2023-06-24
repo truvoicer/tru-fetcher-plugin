@@ -20,7 +20,7 @@ const GeneralTab = (props) => {
             />
             <ToggleControl
                 label="Show Sidebar?"
-                checked={data?.show_sidebar}
+                checked={attributes?.show_sidebar}
                 onChange={(value) => {
                     setAttributes({show_sidebar: value});
                 }}

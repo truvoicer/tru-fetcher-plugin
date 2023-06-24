@@ -28,29 +28,31 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
  */
 class Tru_Fetcher_Admin_Blocks_Resources_Widget_Board extends Tru_Fetcher_Admin_Blocks_Resources_Base
 {
+    public const BLOCK_ID = 'widget_board_block';
+    public const BLOCK_NAME = 'tru-fetcher/widget-board-block';
 
     public array $config = [
-        'id' => 'widget-board-block',
-        'name' => 'tru-fetcher/widget-board-block',
+        'id' => self::BLOCK_ID,
+        'name' => self::BLOCK_NAME,
         'title' => 'Tf Widget Board Block',
         'post_types' => [],
         'taxonomies' => [],
         'attributes' => [
-            [
+            'show_sidebar' => [
                 'id' => 'show_sidebar',
                 'type' => 'boolean',
                 'default' => false,
             ],
-            [
+            'heading' => [
                 'id' => 'heading',
                 'type' => 'string',
             ],
-            [
+            'content_widgets' => [
                 'id' => 'content_widgets',
                 'type' => 'array',
                 'default' => [],
             ],
-            [
+            'sidebar_widgets' => [
                 'id' => 'sidebar_widgets',
                 'type' => 'array',
                 'default' => [],

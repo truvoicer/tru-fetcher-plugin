@@ -104,3 +104,10 @@ export function deleteParam({attr, index, key, value, attributes, setAttributes}
     cloneSearchParam.splice(index, 1);
     setAttributes({[attr]: cloneSearchParam});
 }
+
+export function getChildBlockIds(config) {
+    if (!Array.isArray(config?.children)) {
+        return []
+    }
+    return config?.children;
+}

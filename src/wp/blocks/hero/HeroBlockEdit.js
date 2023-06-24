@@ -1,6 +1,7 @@
 import React from 'react';
 import {TabPanel, Panel, PanelBody, PanelRow} from "@wordpress/components";
 import tabConfig from "./tab-config";
+import {InnerBlocks, useBlockProps} from '@wordpress/block-editor';
 
 const HeroBlockEdit = (props) => {
 
@@ -13,38 +14,40 @@ const HeroBlockEdit = (props) => {
     }
 
     return (
-        <Panel>
-            <PanelBody title="Hero Block" initialOpen={true}>
-                <TabPanel
-                    className="my-tab-panel"
-                    activeClass="active-tab"
-                    onSelect={(tabName) => {
-                        // setTabName(tabName);
-                    }}
-                    tabs={
-                        tabConfig.map((tab) => {
-                            return {
-                                name: tab.name,
-                                title: tab.title,
-                            }
-                        })
-                    }>
-                    {(tab) => {
-                        return (
-                        <>
-                            {tabConfig.map((item) => {
-                                if (item.name === tab.name) {
-                                    return getTabComponent(item);
+        <div {...useBlockProps()}>
+            <Panel>
+                <PanelBody title="Hero Block" initialOpen={true}>
+                    <TabPanel
+                        className="my-tab-panel"
+                        activeClass="active-tab"
+                        onSelect={(tabName) => {
+                            // setTabName(tabName);
+                        }}
+                        tabs={
+                            tabConfig.map((tab) => {
+                                return {
+                                    name: tab.name,
+                                    title: tab.title,
                                 }
-                                return null;
-                            })}
-                        </>
-                        )
+                            })
+                        }>
+                        {(tab) => {
+                            return (
+                                <>
+                                    {tabConfig.map((item) => {
+                                        if (item.name === tab.name) {
+                                            return getTabComponent(item);
+                                        }
+                                        return null;
+                                    })}
+                                </>
+                            )
 
-                    }}
-                </TabPanel>
-            </PanelBody>
-        </Panel>
+                        }}
+                    </TabPanel>
+                </PanelBody>
+            </Panel>
+        </div>
     );
 };
 

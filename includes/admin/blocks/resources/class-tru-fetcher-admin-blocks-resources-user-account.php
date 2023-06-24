@@ -28,23 +28,25 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
  */
 class Tru_Fetcher_Admin_Blocks_Resources_User_Account extends Tru_Fetcher_Admin_Blocks_Resources_Base
 {
+    public const BLOCK_ID = 'user_account_block';
+    public const BLOCK_NAME = 'tru-fetcher/user-account-block';
     public array $config = [
-        'id' => 'user-account-block',
-        'name' => 'tru-fetcher/user-account-block',
+        'id' => self::BLOCK_ID,
+        'name' => self::BLOCK_NAME,
         'title' => 'Tf User Account Block',
         'post_types' => [],
         'taxonomies' => [],
         'attributes' => [
-            [
+            'component' => [
                 'id' => 'component',
                 'type' => 'string',
                 'default' => 'dashboard',
             ],
-            [
+            'tab_label' => [
                 'id' => 'tab_label',
                 'type' => 'string',
             ],
-            [
+            'heading' => [
                 'id' => 'heading',
                 'type' => 'string',
             ],
