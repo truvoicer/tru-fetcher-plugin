@@ -35,9 +35,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Form extends Tru_Fetcher_Admin_Blocks_R
         'id' => self::BLOCK_ID,
         'name' => self::BLOCK_NAME,
         'title' => self::BLOCK_TITLE,
-        'ancestor' => [
-            Tru_Fetcher_Admin_Blocks_Resources_Opt_In::BLOCK_NAME,
-        ],
+//        'ancestor' => [
+//            Tru_Fetcher_Admin_Blocks_Resources_Opt_In::BLOCK_NAME,
+//        ],
         'post_types' => [],
         'taxonomies' => [],
         'attributes' => [

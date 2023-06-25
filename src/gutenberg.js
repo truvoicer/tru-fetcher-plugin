@@ -19,6 +19,7 @@ import UserSocialBlockEdit from "./wp/blocks/widgets/user-social/UserSocialBlock
 import UserProfileBlockEdit from "./wp/blocks/widgets/user-profile/UserProfileBlockEdit";
 import SidebarWidgetBlockEdit from "./wp/blocks/widgets/groups/SidebarWidgetBlockEdit";
 import ContentWidgetBlockEdit from "./wp/blocks/widgets/groups/ContentWidgetBlockEdit";
+import TabsBlockEdit from "./wp/blocks/tabs-block/TabsBlockEdit";
 
 if (!getPlugin('trf-fetcher-plugin')) {
     registerPlugin( 'trf-metadata-plugin', {
@@ -92,12 +93,15 @@ if (
             case "widget_board_block":
                 blockComponent = WidgetBoardBlockEdit;
                 break;
-            case "sidebar_widgets_block":
-                blockComponent = SidebarWidgetBlockEdit;
+            case "tabs_block":
+                blockComponent = TabsBlockEdit;
                 break;
-            case "content_widgets_block":
-                blockComponent = ContentWidgetBlockEdit;
-                break;
+            // case "sidebar_widgets_block":
+            //     blockComponent = SidebarWidgetBlockEdit;
+            //     break;
+            // case "content_widgets_block":
+            //     blockComponent = ContentWidgetBlockEdit;
+            //     break;
             default:
                 return;
         }

@@ -7,7 +7,7 @@ const GeneralTab = (props) => {
         data,
         onChange
     } = props;
-
+    console.log({data})
     function addArrayItem({key}) {
         let cloneData = {...data};
         let cloneRequestParams = [...cloneData[key]];

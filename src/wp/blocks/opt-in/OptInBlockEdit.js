@@ -2,17 +2,40 @@ import React from 'react';
 import {Panel, PanelBody, TabPanel} from "@wordpress/components";
 import GeneralTab from "./tabs/GeneralTab";
 import OptInInfoTab from "./tabs/OptInInfoTab";
-import { useInnerBlocksProps, InnerBlocks, useBlockProps } from '@wordpress/block-editor';
-import InnerBlocksTab from "./tabs/InnerBlocksTab";
+import { useInnerBlocksProps, InnerBlocks, useBlockProps, store as blockEditorStore } from '@wordpress/block-editor';
+import {getBlockAttributesById, getChildBlockIds, getChildBlockParams} from "../../helpers/wp-helpers";
+import Carousel from "../components/carousel/Carousel";
+import FormComponent from "../components/form/FormComponent";
+import { useSelect, useDispatch } from '@wordpress/data';
+
 
 const OptInBlockEdit = (props) => {
-    const {attributes, setAttributes} = props;
-    function formChangeHandler({key, value}) {
-        setAttributes({
-            ...attributes,
-            [key]: value
-        });
+    const {attributes, setAttributes, clientId} = props;
+    const blockProps = useBlockProps();
+
+    function formChangeHandler({key, value, blockId}) {
+        if (blockId) {
+            let blockAttributes = attributes[blockId] || getBlockAttributesById(blockId);
+            if (typeof blockAttributes === 'undefined' || !blockAttributes) {
+                blockAttributes = {};
+            }
+            const newAttributes = {
+                ...blockAttributes,
+                [key]: value
+            }
+            setAttributes({
+                ...attributes,
+                [blockId]: newAttributes
+            });
+        } else {
+            setAttributes({
+                ...attributes,
+                [key]: value
+            });
+        }
     }
+    // console.log({innerBlocksProps, children})
+
     function getTabConfig() {
         let tabConfig = [
             {
@@ -25,12 +48,33 @@ const OptInBlockEdit = (props) => {
                 title: 'Opt In Info',
                 component: OptInInfoTab
             },
-            {
-                name: 'inner_blocks',
-                title: 'Form/Carousel',
-                component: InnerBlocksTab
-            },
         ];
+        if (attributes?.optin_type === 'form') {
+            FormComponent.defaultProps = {
+                data: attributes?.form_block || getBlockAttributesById('form_block'),
+                onChange: ({key, value}) => {
+                    formChangeHandler({key, value, blockId: 'form_block'});
+                }
+            };
+            tabConfig.push({
+                name: 'form',
+                title: 'Form',
+                component: FormComponent
+            });
+        }
+        if (attributes?.show_carousel) {
+            Carousel.defaultProps = {
+                data: attributes?.carousel_block || getBlockAttributesById('carousel_block'),
+                onChange: ({key, value}) => {
+                    formChangeHandler({key, value, blockId: 'carousel_block'});
+                }
+            };
+            tabConfig.push({
+                name: 'carousel',
+                title: 'Carousel',
+                component: Carousel
+            });
+        }
         return tabConfig;
     }
     function getTabComponent(tab) {

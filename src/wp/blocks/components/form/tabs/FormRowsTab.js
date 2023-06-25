@@ -1,6 +1,6 @@
 import React from 'react';
 import {TextControl, SelectControl, ToggleControl, Button} from "@wordpress/components";
-import {Icon, chevronDown, chevronUp} from "@wordpress/icons";
+import {Icon, chevronDown, chevronUp, trash} from "@wordpress/icons";
 
 const FormRowsTab = (props) => {
     const {
@@ -85,24 +85,40 @@ const FormRowsTab = (props) => {
         cloneFormRows[rowIndex] = cloneFormRow;
         onChange({key: 'form_rows', value: cloneFormRows});
     }
+
+    function moveRow({rowIndex, direction}) {
+        let cloneAtts = {...data};
+        let cloneFormRows = [...cloneAtts.form_rows];
+        let formRow = cloneFormRows[rowIndex];
+        let newIndex = rowIndex + direction;
+        if (newIndex < 0) {
+            newIndex = 0;
+        }
+        if (newIndex > cloneFormRows.length - 1) {
+            newIndex = cloneFormRows.length - 1;
+        }
+        cloneFormRows.splice(rowIndex, 1);
+        cloneFormRows.splice(newIndex, 0, formRow);
+        onChange({key: 'form_rows', value: cloneFormRows});
+    }
     function moveFormItem({rowIndex, formItemIndex, direction}) {
-        // let cloneAtts = {...data};
-        // let cloneFormRows = [...cloneAtts.form_rows];
-        // let cloneFormRow = {...cloneFormRows[rowIndex]};
-        // let formItems = cloneFormRow.form_items;
-        // let formItem = formItems[formItemIndex];
-        // let newIndex = formItemIndex + direction;
-        // if (newIndex < 0) {
-        //     newIndex = 0;
-        // }
-        // if (newIndex > formItems.length - 1) {
-        //     newIndex = formItems.length - 1;
-        // }
-        // formItems.splice(formItemIndex, 1);
-        // formItems.splice(newIndex, 0, formItem);
-        // cloneFormRow.form_items = formItems;
-        // cloneFormRows[rowIndex] = cloneFormRow;
-        // onChange({key: 'form_rows', value: cloneFormRows});
+        let cloneAtts = {...data};
+        let cloneFormRows = [...cloneAtts.form_rows];
+        let cloneFormRow = {...cloneFormRows[rowIndex]};
+        let formItems = cloneFormRow.form_items;
+        let formItem = formItems[formItemIndex];
+        let newIndex = formItemIndex + direction;
+        if (newIndex < 0) {
+            newIndex = 0;
+        }
+        if (newIndex > formItems.length - 1) {
+            newIndex = formItems.length - 1;
+        }
+        formItems.splice(formItemIndex, 1);
+        formItems.splice(newIndex, 0, formItem);
+        cloneFormRow.form_items = formItems;
+        cloneFormRows[rowIndex] = cloneFormRow;
+        onChange({key: 'form_rows', value: cloneFormRows});
     }
     return (
         <div className={'tf--form--rows'}>
@@ -111,7 +127,26 @@ const FormRowsTab = (props) => {
                     <div className={'tf--form--row'}>
                     <div className={'tf--form--row--body'}>
                         <div className={'tf--form--row--header'}>
-                            {`Row ${rowIndex}`}
+                            {`Row ${rowIndex}`}<div className={'tf--form--actions'}>
+                            <a onClick={() => {
+                                moveRow({  rowIndex, direction: -1})
+                            }}>
+                                <Icon icon={chevronUp} />
+                            </a>
+                            <a onClick={() => {
+                                moveRow({  rowIndex, direction: 1})
+                            }}>
+                                <Icon icon={chevronDown} />
+                            </a>
+                            <a onClick={(e) => {
+                                e.preventDefault()
+                                deleteRow({
+                                    rowIndex
+                                });
+                            }}>
+                                <Icon icon={trash} />
+                            </a>
+                        </div>
                         </div>
                         <div className={'tf--form--row--items'}>
                             {row?.form_items.map((formItem, formItemIndex) => {
@@ -120,18 +155,24 @@ const FormRowsTab = (props) => {
 
                                         <div className={'tf--form--row--item--header'}>
                                             <h4>{`Item ${formItemIndex}`}</h4>
-                                            <div className={'tf--form--row--item--header--actions'}>
-                                                <a
-                                                    onClick={() => {
-
+                                            <div className={'tf--form--actions'}>
+                                                <a onClick={() => {
+                                                    moveFormItem({  rowIndex, formItemIndex, direction: -1})
                                                     }}>
                                                     <Icon icon={chevronUp} />
                                                 </a>
-                                                <a
-                                                    onClick={() => {
-
+                                                <a onClick={() => {
+                                                    moveFormItem({  rowIndex, formItemIndex, direction: 1})
                                                     }}>
                                                     <Icon icon={chevronDown} />
+                                                </a>
+                                                <a onClick={(e) => {
+                                                        e.preventDefault()
+                                                        deleteRow({
+                                                            rowIndex
+                                                        });
+                                                    }}>
+                                                    <Icon icon={trash} />
                                                 </a>
                                             </div>
                                         </div>
@@ -537,19 +578,6 @@ const FormRowsTab = (props) => {
                                                 />
                                             </>
                                         )}
-
-                                        <Button
-                                            variant="primary"
-                                            onClick={(e) => {
-                                                e.preventDefault()
-                                                deleteFormItem({
-                                                    rowIndex,
-                                                    formItemIndex,
-                                                });
-                                            }}
-                                        >
-                                            Delete Item
-                                        </Button>
                                     </div>
                                 )
                             })}
@@ -564,17 +592,6 @@ const FormRowsTab = (props) => {
                             }}
                         >
                             Add Form Item
-                        </Button>
-                        <Button
-                            variant="primary"
-                            onClick={(e) => {
-                                e.preventDefault()
-                                deleteRow({
-                                    rowIndex
-                                })
-                            }}
-                        >
-                            Delete Row
                         </Button>
                     </div>
                 );

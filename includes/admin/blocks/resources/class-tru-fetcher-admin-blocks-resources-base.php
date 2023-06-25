@@ -58,6 +58,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
                     $this->config['taxonomies'][] = $taxonomy;
                 }
             }
+            $this->config['attributes'][] = [
+                'id' => $blockResourceInstance::BLOCK_ID,
+                'type' => 'object',
+                'default' => null,
+            ];
         }
     }
     /**

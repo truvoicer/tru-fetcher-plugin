@@ -23,6 +23,11 @@
 
     }
 
+    &--actions {
+      a {
+        cursor: pointer;
+      }
+    }
     &--row {
       &--body {
         display: flex;
@@ -58,9 +63,6 @@
           justify-content: space-between;
           h4 {
             font-size: 16px !important;
-          }
-          &--actions {
-
           }
         }
       }

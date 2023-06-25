@@ -140,3 +140,17 @@ export function getChildBlockParams({blockEditorStore, select, clientId, callbac
         // childBlockAttributes
     };
 }
+export function getBlockAttributesById(blockId) {
+    const findBlock = tru_fetcher_react.blocks.find(block => block?.id === blockId);
+    if (!findBlock) {
+        return false;
+    }
+    if (typeof findBlock.attributes !== 'undefined' && Array.isArray(findBlock.attributes)) {
+        let attData = {};
+        findBlock.attributes.map((attribute) => {
+            attData[attribute.id] = attribute.default;
+        });
+        return attData;
+    }
+    return false;
+}

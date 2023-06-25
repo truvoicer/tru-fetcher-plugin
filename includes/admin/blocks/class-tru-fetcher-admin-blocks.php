@@ -10,6 +10,7 @@ use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resource
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Opt_In;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Posts;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Sidebar_Widgets;
+use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Tabs;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_User_Account;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_User_Profile_Widget;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_User_Social_Widget;
@@ -59,6 +60,7 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         Tru_Fetcher_Admin_Blocks_Resources_User_Profile_Widget::class,
         Tru_Fetcher_Admin_Blocks_Resources_User_Social_Widget::class,
         Tru_Fetcher_Admin_Blocks_Resources_Widget_Board::class,
+        Tru_Fetcher_Admin_Blocks_Resources_Tabs::class,
 //        Tru_Fetcher_Admin_Blocks_Resources_Sidebar_Widgets::class,
 //        Tru_Fetcher_Admin_Blocks_Resources_Content_Widgets::class,
     ];

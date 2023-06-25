@@ -1,0 +1,37 @@
+.tf {
+  &--widgets {
+    &--container {
+      background-color: #cccccc;
+      border: 1px solid #616d29;
+      box-shadow: rgba(1, 1, 1, 0.7);
+      padding: 10px;
+    }
+
+    &--item {
+      &:not(:first-child) {
+        margin-top: 10px;
+        background-color: #ffffff;
+        border: 1px solid #0c0c0c;
+      }
+
+      &--header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        h1 {
+          font-size: 16px !important;
+        }
+
+        &--controls {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          a {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}
