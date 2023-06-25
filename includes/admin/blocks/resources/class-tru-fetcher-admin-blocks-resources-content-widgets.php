@@ -26,26 +26,33 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Admin_Blocks_Resources_User_Social_Widget extends Tru_Fetcher_Admin_Blocks_Resources_Base
+class Tru_Fetcher_Admin_Blocks_Resources_Content_Widgets extends Tru_Fetcher_Admin_Blocks_Resources_Base
 {
-    public const BLOCK_ID = 'user_social_widget_block';
-    public const BLOCK_NAME = 'tru-fetcher/user-social-widget-block';
-    public const BLOCK_TITLE = 'Tf User Social Widget Block';
+    public const BLOCK_ID = 'content_widgets_block';
+    public const BLOCK_NAME = 'tru-fetcher/content-widgets-block';
+    public const BLOCK_TITLE = 'Tf Content Widgets Block';
+
     public array $config = [
         'id' => self::BLOCK_ID,
         'name' => self::BLOCK_NAME,
         'title' => self::BLOCK_TITLE,
-//        'ancestor' => [
-//            Tru_Fetcher_Admin_Blocks_Resources_Sidebar_Widgets::BLOCK_NAME,
-//            Tru_Fetcher_Admin_Blocks_Resources_Content_Widgets::BLOCK_NAME,
-//        ],
+        'ancestor' => [
+            Tru_Fetcher_Admin_Blocks_Resources_Widget_Board::BLOCK_NAME,
+        ],
+        'children' => [
+            Tru_Fetcher_Admin_Blocks_Resources_Form_Progress_Widget::class,
+            Tru_Fetcher_Admin_Blocks_Resources_User_Profile_Widget::class,
+            Tru_Fetcher_Admin_Blocks_Resources_User_Social_Widget::class,
+            Tru_Fetcher_Admin_Blocks_Resources_User_Stats_Widget::class,
+        ],
         'post_types' => [],
         'taxonomies' => [],
         'attributes' => [
             [
-                'id' => 'heading',
-                'type' => 'text',
-            ],
+                'id' => 'widgets',
+                'type' => 'array',
+                'default' => [],
+            ]
         ]
     ];
 }

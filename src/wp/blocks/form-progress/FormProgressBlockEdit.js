@@ -1,16 +1,33 @@
 import React from 'react';
 import {Panel, PanelBody, TabPanel} from "@wordpress/components";
 import FormProgress from "../components/form-progress/FormProgress";
-import {InnerBlocks, useBlockProps} from '@wordpress/block-editor';
+import {useBlockProps, store as blockEditorStore} from '@wordpress/block-editor';
+import {getChildBlockParams} from "../../helpers/wp-helpers";
+import { useSelect, useDispatch } from '@wordpress/data';
 
 const FormProgressBlockEdit = (props) => {
-    const {attributes, setAttributes} = props;
 
+    const { updateBlockAttributes } = useDispatch( blockEditorStore );
+    const {attributes, setAttributes, clientId} = props;
+
+    const { columnsIds, hasChildBlocks, rootClientId, hasParents, parentAttributes } = useSelect(
+        ( select ) => {
+            return getChildBlockParams({blockEditorStore, select, clientId});
+        },
+        [ clientId ]
+    );
     function formChangeHandler({key, value}) {
-        setAttributes({
+        const newAttributes = {
             ...attributes,
             [key]: value
-        });
+        };
+        setAttributes(newAttributes);
+
+        if (hasParents) {
+            updateBlockAttributes( rootClientId, {
+                [props.config.id]: newAttributes,
+            } );
+        }
     }
 
     return (

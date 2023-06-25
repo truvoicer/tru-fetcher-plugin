@@ -30,10 +30,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Carousel extends Tru_Fetcher_Admin_Bloc
 {
     public const BLOCK_ID = 'carousel_block';
     public const BLOCK_NAME = 'tru-fetcher/carousel-block';
+    public const BLOCK_TITLE = 'Tf Carousel Block';
     public array $config = [
         'id' => self::BLOCK_ID,
         'name' => self::BLOCK_NAME,
-        'title' => 'Tf Carousel Block',
+        'title' => self::BLOCK_TITLE,
         'ancestor' => [
             Tru_Fetcher_Admin_Blocks_Resources_Opt_In::BLOCK_NAME,
         ],
@@ -42,37 +43,37 @@ class Tru_Fetcher_Admin_Blocks_Resources_Carousel extends Tru_Fetcher_Admin_Bloc
         ],
         'taxonomies' => [],
         'attributes' => [
-            'carousel_content' => [
+            [
                 'id' => 'carousel_content',
                 'type' => 'string',
                 'default' => 'items',
             ],
-            'item_list' => [
+            [
                 'id' => 'item_list',
                 'type' => 'integer',
             ],
-            'carousel_heading' => [
+            [
                 'id' => 'carousel_heading',
                 'type' => 'string',
             ],
-            'carousel_sub_heading' => [
+            [
                 'id' => 'carousel_sub_heading',
                 'type' => 'string',
             ],
-            'request_name' => [
+            [
                 'id' => 'request_name',
                 'type' => 'string',
             ],
-            'request_limit' => [
+            [
                 'id' => 'request_limit',
                 'type' => 'integer',
             ],
-            'request_parameters' => [
+            [
                 'id' => 'request_parameters',
                 'type' => 'array',
                 'default' => [],
             ],
-            'carousel_settings' => [
+            [
                 'id' => 'carousel_settings',
                 'type' => 'array',
                 'default' => [],

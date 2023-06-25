@@ -1,12 +1,11 @@
 import React from 'react';
 import {TabPanel, Panel, PanelBody, PanelRow} from "@wordpress/components";
 import GeneralTab from "./tabs/GeneralTab";
-import ContentWidgetsTab from "./tabs/ContentWidgetsTab";
-import SidebarWidgetsTab from "./tabs/SidebarWidgetsTab";
+import WidgetsTab from "./tabs/WidgetsTab";
 import {InnerBlocks, useBlockProps} from '@wordpress/block-editor';
 
 const WidgetBoardBlockEdit = (props) => {
-
+    const {attributes, setAttributes} = props;
     function getTabConfig() {
         let tabConfig = [
             {
@@ -15,18 +14,11 @@ const WidgetBoardBlockEdit = (props) => {
                 component: GeneralTab
             },
             {
-                name: 'content_widgets',
-                title: 'Content Widgets',
-                component: ContentWidgetsTab
+                name: 'widgets',
+                title: 'Widgets',
+                component: WidgetsTab
             },
         ];
-        if (props.attributes?.show_sidebar) {
-            tabConfig.push({
-                name: 'sidebar_widgets',
-                title: 'Sidebar Widgets',
-                component: SidebarWidgetsTab
-            });
-        }
         return tabConfig;
     }
 
@@ -38,10 +30,11 @@ const WidgetBoardBlockEdit = (props) => {
         return <TabComponent {...props} />;
     }
 
+    // console.log({attributes})
     return (
         <div {...useBlockProps()}>
             <Panel>
-                <PanelBody title="User Account Block" initialOpen={true}>
+                <PanelBody title="Widget Board Block" initialOpen={true}>
                     <TabPanel
                         className="my-tab-panel"
                         activeClass="active-tab"

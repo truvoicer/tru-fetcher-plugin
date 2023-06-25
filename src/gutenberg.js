@@ -13,10 +13,12 @@ import CarouselBlockEdit from "./wp/blocks/carousel/CarouselBlockEdit";
 import OptInBlockEdit from "./wp/blocks/opt-in/OptInBlockEdit";
 import PostsBlockEdit from "./wp/blocks/posts/PostsBlockEdit";
 import FormProgressBlockEdit from "./wp/blocks/form-progress/FormProgressBlockEdit";
-import UserStatsBlockEdit from "./wp/blocks/user-stats/UserStatsBlockEdit";
-import UserSocialBlockEdit from "./wp/blocks/user-social/UserSocialBlockEdit";
-import UserProfileBlockEdit from "./wp/blocks/user-profile/UserProfileBlockEdit";
 import WidgetBoardBlockEdit from "./wp/blocks/widget-board/WidgetBoardBlockEdit";
+import UserStatsBlockEdit from "./wp/blocks/widgets/user-stats/UserStatsBlockEdit";
+import UserSocialBlockEdit from "./wp/blocks/widgets/user-social/UserSocialBlockEdit";
+import UserProfileBlockEdit from "./wp/blocks/widgets/user-profile/UserProfileBlockEdit";
+import SidebarWidgetBlockEdit from "./wp/blocks/widgets/groups/SidebarWidgetBlockEdit";
+import ContentWidgetBlockEdit from "./wp/blocks/widgets/groups/ContentWidgetBlockEdit";
 
 if (!getPlugin('trf-fetcher-plugin')) {
     registerPlugin( 'trf-metadata-plugin', {
@@ -43,14 +45,13 @@ if (
     tru_fetcher_react.blocks.forEach((block) => {
         let attData = {};
         let examplesAttData = {};
-        if (typeof block.attributes !== 'undefined' && typeof block.attributes === 'object') {
-            Object.keys(block.attributes).forEach((key) => {
-                const attribute = block.attributes[key];
-                attData[key] = {
+        if (typeof block.attributes !== 'undefined' && Array.isArray(block.attributes)) {
+            block.attributes.forEach((attribute) => {
+                attData[attribute.id] = {
                     type: attribute.type,
                     default: attribute.default,
                 };
-                examplesAttData[key] = attribute.default;
+                examplesAttData[attribute.id] = attribute.default;
             });
         }
         let blockComponent;
@@ -91,6 +92,12 @@ if (
             case "widget_board_block":
                 blockComponent = WidgetBoardBlockEdit;
                 break;
+            case "sidebar_widgets_block":
+                blockComponent = SidebarWidgetBlockEdit;
+                break;
+            case "content_widgets_block":
+                blockComponent = ContentWidgetBlockEdit;
+                break;
             default:
                 return;
         }
@@ -108,7 +115,7 @@ if (
         if (Array.isArray(block?.parent)) {
             blockOptions.parent = block.parent;
         }
-        if (Array.isArray(block?.ancestors)) {
+        if (Array.isArray(block?.ancestor)) {
             blockOptions.ancestor = block.ancestor;
         }
         registerBlockType( block.name, blockOptions );

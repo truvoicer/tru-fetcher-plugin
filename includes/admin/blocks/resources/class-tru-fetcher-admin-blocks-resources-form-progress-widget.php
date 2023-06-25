@@ -31,36 +31,41 @@ class Tru_Fetcher_Admin_Blocks_Resources_Form_Progress_Widget extends Tru_Fetche
     public const BLOCK_ID = 'form_progress_widget_block';
     public const BLOCK_NAME = 'tru-fetcher/form-progress-widget-block';
 
+    public const BLOCK_TITLE = 'Tf Form Progress Widget Block';
     public array $config = [
         'id' => self::BLOCK_ID,
         'name' => self::BLOCK_NAME,
-        'title' => 'Tf Form Progress Widget Block',
+        'title' => self::BLOCK_TITLE,
+//        'ancestor' => [
+//            Tru_Fetcher_Admin_Blocks_Resources_Sidebar_Widgets::BLOCK_NAME,
+//            Tru_Fetcher_Admin_Blocks_Resources_Content_Widgets::BLOCK_NAME,
+//        ],
         'post_types' => [],
         'taxonomies' => [],
         'attributes' => [
-            'heading' => [
+            [
                 'id' => 'heading',
                 'type' => 'string',
             ],
-            'top_text' => [
+            [
                 'id' => 'top_text',
                 'type' => 'string',
             ],
-            'bottom_text' => [
+            [
                 'id' => 'bottom_text',
                 'type' => 'string',
             ],
-            'complete_text' => [
+            [
                 'id' => 'complete_text',
                 'type' => 'string',
                 'default' => 'Completed',
             ],
-            'not_complete_text' => [
+            [
                 'id' => 'not_complete_text',
                 'type' => 'string',
                 'default' => 'Not Completed',
             ],
-            'form_field_groups' => [
+            [
                 'id' => 'form_field_groups',
                 'type' => 'array',
                 'default' => [],

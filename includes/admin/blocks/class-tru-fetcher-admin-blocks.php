@@ -2,12 +2,14 @@
 namespace TruFetcher\Includes\Admin\Blocks;
 
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Carousel;
+use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Content_Widgets;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Form;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Form_Progress_Widget;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Hero;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Listings;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Opt_In;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Posts;
+use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Sidebar_Widgets;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_User_Account;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_User_Profile_Widget;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_User_Social_Widget;
@@ -57,6 +59,8 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         Tru_Fetcher_Admin_Blocks_Resources_User_Profile_Widget::class,
         Tru_Fetcher_Admin_Blocks_Resources_User_Social_Widget::class,
         Tru_Fetcher_Admin_Blocks_Resources_Widget_Board::class,
+//        Tru_Fetcher_Admin_Blocks_Resources_Sidebar_Widgets::class,
+//        Tru_Fetcher_Admin_Blocks_Resources_Content_Widgets::class,
     ];
 
     public function init()
@@ -109,6 +113,20 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         foreach ($this->blocks as $block) {
             $blockClass = new $block();
             $config = $blockClass->getConfig();
+            if (isset($config['children'])) {
+                foreach ($config['children'] as $index => $child) {
+                    $config['children'][$index] = [
+                        'id' => $child::BLOCK_ID,
+                        'name' => $child::BLOCK_NAME,
+                        'title' => $child::BLOCK_TITLE,
+                    ];
+                    $config['attributes'][] = [
+                        'id' => $child::BLOCK_ID,
+                        'type' => 'object',
+//                        'default' => [],
+                    ];
+                }
+            }
             $data[] = $config;
         }
         return $data;

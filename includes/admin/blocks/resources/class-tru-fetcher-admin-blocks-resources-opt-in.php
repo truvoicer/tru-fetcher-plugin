@@ -29,34 +29,35 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
 class Tru_Fetcher_Admin_Blocks_Resources_Opt_In extends Tru_Fetcher_Admin_Blocks_Resources_Base
 {
     public const BLOCK_ID = 'opt_in_block';
+    public const BLOCK_TITLE = 'Tf Opt In Block';
     public const BLOCK_NAME = 'tru-fetcher/opt-in-block';
 
     public array $config = [
         'id' => self::BLOCK_ID,
         'name' => self::BLOCK_NAME,
-        'title' => 'Tf Opt In Block',
-        'children' => [
-            Tru_Fetcher_Admin_Blocks_Resources_Form::BLOCK_NAME,
-            Tru_Fetcher_Admin_Blocks_Resources_Carousel::BLOCK_NAME,
-        ],
+        'title' => self::BLOCK_TITLE,
+//        'children' => [
+//            Tru_Fetcher_Admin_Blocks_Resources_Form::class,
+//            Tru_Fetcher_Admin_Blocks_Resources_Carousel::class,
+//        ],
         'post_types' => [],
         'taxonomies' => [],
         'attributes' => [
-            'optin_type' => [
+            [
                 'id' => 'optin_type',
                 'type' => 'string',
                 'default' => 'form',
             ],
-            'show_carousel' => [
+            [
                 'id' => 'show_carousel',
                 'type' => 'boolean',
                 'default' => false,
             ],
-            'heading' => [
+            [
                 'id' => 'heading',
                 'type' => 'string',
             ],
-            'text' => [
+            [
                 'id' => 'text',
                 'type' => 'string',
             ],

@@ -30,18 +30,20 @@ class Tru_Fetcher_Admin_Blocks_Resources_User_Stats_Widget extends Tru_Fetcher_A
 {
     public const BLOCK_ID = 'user_stats_widget_block';
     public const BLOCK_NAME = 'tru-fetcher/user-stats-widget-block';
+    public const BLOCK_TITLE = 'Tf User Stats Widget Block';
 
     public array $config = [
         'id' => self::BLOCK_ID,
         'name' => self::BLOCK_NAME,
-        'title' => 'Tf User Stats Widget Block',
-        'parent' => [
-            Tru_Fetcher_Admin_Blocks_Resources_Widget_Board::BLOCK_NAME,
-        ],
+        'title' => self::BLOCK_TITLE,
+//        'ancestor' => [
+//            Tru_Fetcher_Admin_Blocks_Resources_Sidebar_Widgets::BLOCK_NAME,
+//            Tru_Fetcher_Admin_Blocks_Resources_Content_Widgets::BLOCK_NAME,
+//        ],
         'post_types' => [],
         'taxonomies' => [],
         'attributes' => [
-            'show_provider_stats' => [
+            [
                 'id' => 'show_provider_stats',
                 'type' => 'boolean',
                 'default' => false,

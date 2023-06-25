@@ -1,11 +1,12 @@
 import React from 'react';
-import {Panel, PanelBody} from "@wordpress/components";
-import Carousel from "../components/carousel/Carousel";
+import {Panel, PanelBody, TabPanel} from "@wordpress/components";
 import {useBlockProps, store as blockEditorStore} from '@wordpress/block-editor';
-import {getChildBlockParams} from "../../helpers/wp-helpers";
 import { useSelect, useDispatch } from '@wordpress/data';
+import {getChildBlockParams} from "../../../helpers/wp-helpers";
+import UserStats from "../../components/user-stats/UserStats";
 
-const CarouselBlockEdit = (props) => {
+const UserStatsBlockEdit = (props) => {
+
     const { updateBlockAttributes } = useDispatch( blockEditorStore );
     const {attributes, setAttributes, clientId} = props;
 
@@ -32,8 +33,8 @@ const CarouselBlockEdit = (props) => {
     return (
         <div {...useBlockProps()}>
             <Panel>
-                <PanelBody title="Carousel Block" initialOpen={true}>
-                    <Carousel
+                <PanelBody title="User Stats Widget Block" initialOpen={true}>
+                    <UserStats
                         data={props.attributes}
                         onChange={formChangeHandler}
                     />
@@ -43,4 +44,4 @@ const CarouselBlockEdit = (props) => {
     );
 };
 
-export default CarouselBlockEdit;
+export default UserStatsBlockEdit;

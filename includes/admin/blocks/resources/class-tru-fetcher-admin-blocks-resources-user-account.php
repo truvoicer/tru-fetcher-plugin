@@ -30,23 +30,24 @@ class Tru_Fetcher_Admin_Blocks_Resources_User_Account extends Tru_Fetcher_Admin_
 {
     public const BLOCK_ID = 'user_account_block';
     public const BLOCK_NAME = 'tru-fetcher/user-account-block';
+    public const BLOCK_TITLE = 'Tf User Account Block';
     public array $config = [
         'id' => self::BLOCK_ID,
         'name' => self::BLOCK_NAME,
-        'title' => 'Tf User Account Block',
+        'title' => self::BLOCK_TITLE,
         'post_types' => [],
         'taxonomies' => [],
         'attributes' => [
-            'component' => [
+            [
                 'id' => 'component',
                 'type' => 'string',
                 'default' => 'dashboard',
             ],
-            'tab_label' => [
+            [
                 'id' => 'tab_label',
                 'type' => 'string',
             ],
-            'heading' => [
+            [
                 'id' => 'heading',
                 'type' => 'string',
             ],

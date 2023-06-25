@@ -1,11 +1,12 @@
 import React from 'react';
-import {Panel, PanelBody} from "@wordpress/components";
-import Carousel from "../components/carousel/Carousel";
+import {Panel, PanelBody, TabPanel} from "@wordpress/components";
 import {useBlockProps, store as blockEditorStore} from '@wordpress/block-editor';
-import {getChildBlockParams} from "../../helpers/wp-helpers";
 import { useSelect, useDispatch } from '@wordpress/data';
+import UserProfile from "../../components/user-profile/UserProfile";
+import {getChildBlockParams} from "../../../helpers/wp-helpers";
 
-const CarouselBlockEdit = (props) => {
+const UserProfileBlockEdit = (props) => {
+
     const { updateBlockAttributes } = useDispatch( blockEditorStore );
     const {attributes, setAttributes, clientId} = props;
 
@@ -23,17 +24,18 @@ const CarouselBlockEdit = (props) => {
         setAttributes(newAttributes);
 
         if (hasParents) {
+            // const findParentWidget = parentAttributes.widgets.find(widget => widget.id === props.config.id);
             updateBlockAttributes( rootClientId, {
                 [props.config.id]: newAttributes,
             } );
         }
     }
-
+    // console.log({parentAttributes})
     return (
         <div {...useBlockProps()}>
             <Panel>
-                <PanelBody title="Carousel Block" initialOpen={true}>
-                    <Carousel
+                <PanelBody title="User Profile Widget Block" initialOpen={true}>
+                    <UserProfile
                         data={props.attributes}
                         onChange={formChangeHandler}
                     />
@@ -43,4 +45,4 @@ const CarouselBlockEdit = (props) => {
     );
 };
 
-export default CarouselBlockEdit;
+export default UserProfileBlockEdit;

@@ -1,24 +1,40 @@
 import React from 'react';
 import {Panel, PanelBody} from "@wordpress/components";
 import FormComponent from "../components/form/FormComponent";
-import {InnerBlocks, useBlockProps} from '@wordpress/block-editor';
+import {useBlockProps, store as blockEditorStore} from '@wordpress/block-editor';
+import { useSelect, useDispatch } from '@wordpress/data';
+import {getChildBlockParams} from "../../helpers/wp-helpers";
 
 const FormBlockEdit = (props) => {
-    const {attributes, setAttributes} = props;
+    const { updateBlockAttributes } = useDispatch( blockEditorStore );
+    const {attributes, setAttributes, clientId} = props;
+
+    const { columnsIds, hasChildBlocks, rootClientId, hasParents, parentAttributes } = useSelect(
+        ( select ) => {
+            return getChildBlockParams({blockEditorStore, select, clientId});
+        },
+        [ clientId ]
+    );
 
     function formChangeHandler({key, value}) {
-        setAttributes({
+        const newAttributes = {
             ...attributes,
             [key]: value
-        });
+        };
+        setAttributes(newAttributes);
+
+        if (hasParents) {
+            updateBlockAttributes( rootClientId, {
+                [props.config.id]: newAttributes,
+            } );
+        }
     }
-    console.log({attributes})
     return (
         <div {...useBlockProps()}>
             <Panel>
                 <PanelBody title="Form Block" initialOpen={true}>
                     <FormComponent
-                        data={props.attributes}
+                        data={(hasParents && parentAttributes)? parentAttributes : props.attributes}
                         onChange={formChangeHandler}
                     />
                 </PanelBody>

@@ -111,3 +111,32 @@ export function getChildBlockIds(config) {
     }
     return config?.children;
 }
+export function getChildBlockById(config, id) {
+    if (!Array.isArray(config?.children)) {
+        return false
+    }
+    return config.children.find(child => child?.id === id);
+}
+export function getChildBlockParams({blockEditorStore, select, clientId, callback = false}) {
+    const selectBlockEditorStore = select( blockEditorStore );
+    const { getBlockOrder, getBlockRootClientId, getBlockParents, getBlockAttributes } =
+        selectBlockEditorStore;
+    const parents = getBlockParents(clientId);
+    const rootId = getBlockRootClientId( clientId );
+    const columnsIds = getBlockOrder( clientId )
+    // const childBlockAttributes = columnsIds.map((clientId) => {
+    //     return getBlockAttributes(clientId);
+    // })
+    if (typeof callback === 'function') {
+        return callback({selectBlockEditorStore, clientId, rootId, parents});
+    }
+    return {
+        hasParents: parents.length > 0,
+        hasChildBlocks: getBlockOrder( clientId ).length > 0,
+        rootClientId: rootId,
+        parentColumnsIds: getBlockOrder( rootId ),
+        columnsIds,
+        parentAttributes: getBlockAttributes(rootId),
+        // childBlockAttributes
+    };
+}

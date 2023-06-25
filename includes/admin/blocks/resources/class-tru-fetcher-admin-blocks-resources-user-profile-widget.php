@@ -30,17 +30,19 @@ class Tru_Fetcher_Admin_Blocks_Resources_User_Profile_Widget extends Tru_Fetcher
 {
     public const BLOCK_ID = 'user_profile_widget_block';
     public const BLOCK_NAME = 'tru-fetcher/user-profile-widget-block';
+    public const BLOCK_TITLE = 'Tf User Profile Widget Block';
     public array $config = [
         'id' => self::BLOCK_ID,
         'name' => self::BLOCK_NAME,
-        'title' => 'Tf User Profile Widget Block',
-        'parent' => [
-            Tru_Fetcher_Admin_Blocks_Resources_Widget_Board::BLOCK_NAME,
-        ],
+        'title' => self::BLOCK_TITLE,
+//        'ancestor' => [
+//            Tru_Fetcher_Admin_Blocks_Resources_Sidebar_Widgets::BLOCK_NAME,
+//            Tru_Fetcher_Admin_Blocks_Resources_Content_Widgets::BLOCK_NAME,
+//        ],
         'post_types' => [],
         'taxonomies' => [],
         'attributes' => [
-            'heading' => [
+            [
                 'id' => 'heading',
                 'type' => 'text',
             ],

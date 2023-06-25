@@ -30,29 +30,34 @@ class Tru_Fetcher_Admin_Blocks_Resources_Widget_Board extends Tru_Fetcher_Admin_
 {
     public const BLOCK_ID = 'widget_board_block';
     public const BLOCK_NAME = 'tru-fetcher/widget-board-block';
+    public const BLOCK_TITLE = 'Tf Widget Board Block';
 
     public array $config = [
         'id' => self::BLOCK_ID,
         'name' => self::BLOCK_NAME,
-        'title' => 'Tf Widget Board Block',
+        'title' => self::BLOCK_TITLE,
+//        'children' => [
+//            Tru_Fetcher_Admin_Blocks_Resources_Sidebar_Widgets::class,
+//            Tru_Fetcher_Admin_Blocks_Resources_Content_Widgets::class,
+//        ],
         'post_types' => [],
         'taxonomies' => [],
         'attributes' => [
-            'show_sidebar' => [
+            [
                 'id' => 'show_sidebar',
                 'type' => 'boolean',
                 'default' => false,
             ],
-            'heading' => [
+            [
                 'id' => 'heading',
                 'type' => 'string',
             ],
-            'content_widgets' => [
+            [
                 'id' => 'content_widgets',
                 'type' => 'array',
                 'default' => [],
             ],
-            'sidebar_widgets' => [
+            [
                 'id' => 'sidebar_widgets',
                 'type' => 'array',
                 'default' => [],

@@ -3,19 +3,16 @@ import {Panel, PanelBody, TabPanel} from "@wordpress/components";
 import GeneralTab from "./tabs/GeneralTab";
 import OptInInfoTab from "./tabs/OptInInfoTab";
 import { useInnerBlocksProps, InnerBlocks, useBlockProps } from '@wordpress/block-editor';
-import {getChildBlockIds} from "../../helpers/wp-helpers";
-
+import InnerBlocksTab from "./tabs/InnerBlocksTab";
 
 const OptInBlockEdit = (props) => {
     const {attributes, setAttributes} = props;
-    const { children, ...innerBlocksProps } = useInnerBlocksProps(  );
     function formChangeHandler({key, value}) {
         setAttributes({
             ...attributes,
             [key]: value
         });
     }
-    console.log({innerBlocksProps, children})
     function getTabConfig() {
         let tabConfig = [
             {
@@ -27,6 +24,11 @@ const OptInBlockEdit = (props) => {
                 name: 'optin_info',
                 title: 'Opt In Info',
                 component: OptInInfoTab
+            },
+            {
+                name: 'inner_blocks',
+                title: 'Form/Carousel',
+                component: InnerBlocksTab
             },
         ];
         return tabConfig;
@@ -70,7 +72,6 @@ const OptInBlockEdit = (props) => {
 
                     }}
                 </TabPanel>
-                <InnerBlocks allowedBlocks={ getChildBlockIds(props?.config) } />
             </PanelBody>
         </Panel>
         </div>
