@@ -117,7 +117,7 @@ const GeneralTab = (props) => {
                     />
                     <div>
                         <h5>Request Parameters</h5>
-                        {data.request_parameters.map((requestParam, requestParamIndex) => {
+                        {Array.isArray(data?.request_parameters) && data.request_parameters.map((requestParam, requestParamIndex) => {
                             return (
                                 <div style={{display: 'flex'}}>
                                     <TextControl
@@ -176,7 +176,7 @@ const GeneralTab = (props) => {
             )}
             <div>
                 <h5>Carousel Settings</h5>
-                {data.carousel_settings.map((carouselSetting, carouselSettingIndex) => {
+                {Array.isArray(data?.carousel_settings) && data.carousel_settings.map((carouselSetting, carouselSettingIndex) => {
                     return (
                         <div style={{display: 'flex'}}>
                             <TextControl

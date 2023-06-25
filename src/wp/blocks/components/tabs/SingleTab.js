@@ -13,22 +13,22 @@ const SingleTab = (props) => {
         data = [],
         onChange
     } = props;
-    function formChangeHandler({key, value, index}) {
-        // const cloneTabs = [...data];
-        // if (typeof onChange === 'function') {
-        //     onChange({key: 'tabs', value: cloneTabs});
-        // }
+    function formChangeHandler({key, value}) {
+        const cloneTabs = [...data];
+        if (typeof onChange === 'function') {
+            onChange({key, value});
+        }
     }
     function getTabProps(block_id) {
         let dataProps = {};
         const blockAtts =  getBlockAttributesById(block_id);
-        console.log({blockAtts})
         if (isObject(blockAtts) && !isObjectEmpty(blockAtts)) {
             dataProps = {...dataProps, ...blockAtts};
         }
         if (typeof data[block_id] === 'object') {
             dataProps = {...dataProps, ...data[block_id]};
         }
+        console.log({dataProps})
         return dataProps;
     }
     function getTabConfig() {
@@ -40,10 +40,6 @@ const SingleTab = (props) => {
             },
         ];
         if (data?.custom_tabs_type === 'custom_carousel') {
-            Carousel.defaultProps = {
-                data: getTabProps('carousel_block'),
-                onChange: formChangeHandler
-            }
             tabConfig.push({
                 name: 'custom_carousel',
                 title: 'Custom Carousel',
@@ -51,10 +47,6 @@ const SingleTab = (props) => {
             });
         }
         if (data?.custom_tabs_type === 'custom_content') {
-            TextContent.defaultProps = {
-                data: data?.custom_content,
-                onChange: formChangeHandler
-            }
             tabConfig.push({
                 name: 'custom_content',
                 title: 'Custom Content',
@@ -62,10 +54,6 @@ const SingleTab = (props) => {
             });
         }
         if (data?.custom_tabs_type === 'form') {
-            FormComponent.defaultProps = {
-                data: data?.form,
-                onChange: formChangeHandler
-            }
             tabConfig.push({
                 name: 'form',
                 title: 'Form',
@@ -79,8 +67,25 @@ const SingleTab = (props) => {
         if (!tab?.component) {
             return null;
         }
+        let componentProps = {
+            onChange: formChangeHandler
+        };
+        switch (tab.name) {
+            case 'custom_carousel':
+                componentProps.data = getTabProps('carousel_block');
+                break;
+            case 'custom_content':
+                componentProps.data = data?.custom_content;
+                break;
+            case 'form':
+                componentProps.data = getTabProps('form_block');
+                break;
+            default:
+                componentProps.data = data;
+                break;
+        }
         let TabComponent = tab.component;
-        return <TabComponent {...props} />;
+        return <TabComponent {...componentProps} />;
     }
 console.log({data})
     return (
