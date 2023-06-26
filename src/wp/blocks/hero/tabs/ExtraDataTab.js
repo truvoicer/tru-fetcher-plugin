@@ -16,6 +16,7 @@ const ExtraDataTab = (props) => {
                     return (
                         <div style={{display: 'flex'}}>
                             <TextControl
+                                label="Param Name"
                                 placeholder="Param Name"
                                 value={ attributes.hero_extra_data[index].name }
                                 onChange={ ( value ) => {
@@ -31,6 +32,7 @@ const ExtraDataTab = (props) => {
                             />
 
                             <TextControl
+                                label="Param Value"
                                 placeholder="Param Value"
                                 value={ attributes?.hero_extra_data[index].value }
                                 onChange={ ( value ) => {

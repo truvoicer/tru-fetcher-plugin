@@ -11,6 +11,7 @@ const TextContent = (props) => {
     return (
         <div>
             <TextControl
+                label="Content"
                 placeholder="Content"
                 value={data?.content}
                 onChange={(value) => {

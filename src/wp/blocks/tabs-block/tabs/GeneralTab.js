@@ -61,6 +61,7 @@ const GeneralTab = (props) => {
                 ]}
             />
             <TextControl
+                label="Heading"
                 placeholder="Heading"
                 value={attributes?.heading}
                 onChange={(value) => {
@@ -68,6 +69,7 @@ const GeneralTab = (props) => {
                 }}
             />
             <TextControl
+                label="Sub Heading"
                 placeholder="Sub Heading"
                 value={attributes?.sub_heading}
                 onChange={(value) => {
@@ -75,6 +77,7 @@ const GeneralTab = (props) => {
                 }}
             />
             <TextControl
+                label="CTA"
                 placeholder="CTA"
                 value={attributes?.cta}
                 onChange={(value) => {

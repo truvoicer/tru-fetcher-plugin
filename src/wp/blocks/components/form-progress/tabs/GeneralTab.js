@@ -36,6 +36,7 @@ const GeneralTab = (props) => {
     return (
         <div>
             <TextControl
+                label="Heading"
                 placeholder="Heading"
                 value={data?.heading}
                 onChange={(value) => {
@@ -43,6 +44,7 @@ const GeneralTab = (props) => {
                 }}
             />
             <TextControl
+                label="Top Text"
                 placeholder="Top Text"
                 value={data?.top_text}
                 onChange={(value) => {
@@ -50,6 +52,7 @@ const GeneralTab = (props) => {
                 }}
             />
             <TextControl
+                label="Bottom Text"
                 placeholder="Bottom Text"
                 value={data?.bottom_text}
                 onChange={(value) => {
@@ -57,6 +60,7 @@ const GeneralTab = (props) => {
                 }}
             />
             <TextControl
+                label="Complete Text"
                 placeholder="Complete Text"
                 value={data?.complete_text}
                 onChange={(value) => {
@@ -64,6 +68,7 @@ const GeneralTab = (props) => {
                 }}
             />
             <TextControl
+                label="Not Complete Text"
                 placeholder="Not Complete Text"
                 value={data?.not_complete_text}
                 onChange={(value) => {
@@ -76,6 +81,7 @@ const GeneralTab = (props) => {
                     return (
                         <div style={{display: 'flex'}}>
                             <TextControl
+                                label="Name"
                                 placeholder="Name"
                                 value={ group.name }
                                 onChange={ ( value ) => {
@@ -89,6 +95,7 @@ const GeneralTab = (props) => {
                             />
 
                             <TextControl
+                                label="Percentage"
                                 placeholder="Percentage"
                                 value={ group.percentage }
                                 onChange={ ( value ) => {

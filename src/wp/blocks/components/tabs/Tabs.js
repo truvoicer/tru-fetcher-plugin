@@ -33,6 +33,13 @@ const Tabs = (props) => {
             onChange({key: 'tabs', value: cloneTabs});
         }
     }
+    function deleteTab({index}) {
+        const cloneTabs = [...data];
+        cloneTabs.splice(index, 1);
+        if (typeof onChange === 'function') {
+            onChange({key: 'tabs', value: cloneTabs});
+        }
+    }
 
     function moveTabItem({index, item, direction}) {
         let cloneTabs = [...data];
@@ -51,6 +58,7 @@ const Tabs = (props) => {
     }
     function getSingleTabComponent(item, index) {
         SingleTab.defaultProps = {
+            index,
             data: item,
             moveUp: () => {
                 moveTabItem({index, item, direction: -1});
@@ -60,6 +68,9 @@ const Tabs = (props) => {
             },
             onChange: ({key, value}) => {
                 formChangeHandler({key, value, index});
+            },
+            deleteTab: () => {
+                deleteTab({index});
             }
         }
         return <SingleTab />;

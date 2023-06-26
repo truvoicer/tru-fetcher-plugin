@@ -1,5 +1,5 @@
 <?php
-namespace TruFetcher\Includes\Api\Controllers;
+namespace TruFetcher\Includes\Api\Controllers\App;
 
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Post_Response;
 
@@ -26,16 +26,13 @@ use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Post_Response;
 class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
 {
 
-    private string $namespace = "/posts";
-    private string $publicEndpoint;
-    private string $protectedEndpoint;
+    protected ?string $namespace = "/posts";
 
     private Tru_Fetcher_Api_Post_Response $apiPostResponse;
 
     public function __construct()
     {
-        $this->publicEndpoint = $this->publicNamespace . $this->namespace;
-        $this->protectedEndpoint = $this->protectedNamespace . $this->namespace;
+        parent::__construct();
     }
 
     public function init()
@@ -55,17 +52,22 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
         register_rest_route($this->publicEndpoint, '/list/request', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "postListRequestHandler"],
-            'permission_callback' => '__return_true'
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
         register_rest_route($this->publicEndpoint, '/list/recent', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "postListRecentRequestHandler"],
-            'permission_callback' => '__return_true'
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
         register_rest_route($this->publicEndpoint, '/category/list', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "categoryListRequestHandler"],
-            'permission_callback' => '__return_true'
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
+        ));
+        register_rest_route($this->publicEndpoint, '/category/list', array(
+            'methods' => \WP_REST_Server::READABLE,
+            'callback' => [$this, "categoryListRequestHandler"],
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
     }
 

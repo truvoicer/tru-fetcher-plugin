@@ -1,5 +1,6 @@
 import React from 'react';
 import {Panel, PanelBody, TabPanel} from "@wordpress/components";
+import {Icon, chevronDown, chevronUp, trash} from "@wordpress/icons";
 import GeneralTab from "./tabs/GeneralTab";
 import Carousel from "../carousel/Carousel";
 import TextContent from "../text-content/TextContent";
@@ -10,27 +11,47 @@ import {isObject, isObjectEmpty} from "../../../../library/helpers/utils-helpers
 const SingleTab = (props) => {
 
     const {
-        data = [],
-        onChange
+        data,
+        onChange,
+        index,
+        moveUp,
+        moveDown,
+        deleteTab,
     } = props;
-    function formChangeHandler({key, value}) {
-        const cloneTabs = [...data];
-        if (typeof onChange === 'function') {
-            onChange({key, value});
+
+
+    function formChangeHandler({key, value, blockId}) {
+        if (blockId) {
+            let blockAttributes = data[blockId] || getBlockAttributesById(blockId);
+            if (typeof blockAttributes === 'undefined' || !blockAttributes) {
+                blockAttributes = {};
+            }
+            const newAttributes = {
+                ...blockAttributes,
+                [key]: value
+            }
+            if (typeof onChange === 'function') {
+                onChange({key: blockId, value: newAttributes});
+            }
+        } else {
+            if (typeof onChange === 'function') {
+                onChange({key, value});
+            }
         }
     }
+
     function getTabProps(block_id) {
         let dataProps = {};
-        const blockAtts =  getBlockAttributesById(block_id);
+        const blockAtts = getBlockAttributesById(block_id);
         if (isObject(blockAtts) && !isObjectEmpty(blockAtts)) {
             dataProps = {...dataProps, ...blockAtts};
         }
         if (typeof data[block_id] === 'object') {
             dataProps = {...dataProps, ...data[block_id]};
         }
-        console.log({dataProps})
         return dataProps;
     }
+
     function getTabConfig() {
         let tabConfig = [
             {
@@ -73,13 +94,17 @@ const SingleTab = (props) => {
         switch (tab.name) {
             case 'custom_carousel':
                 componentProps.data = getTabProps('carousel_block');
-                break;
-            case 'custom_content':
-                componentProps.data = data?.custom_content;
+                componentProps.onChange = ({key, value}) => {
+                    formChangeHandler({key, value, blockId: 'carousel_block'});
+                }
                 break;
             case 'form':
                 componentProps.data = getTabProps('form_block');
+                componentProps.onChange = ({key, value}) => {
+                    formChangeHandler({key, value, blockId: 'form_block'});
+                }
                 break;
+            case 'custom_content':
             default:
                 componentProps.data = data;
                 break;
@@ -87,36 +112,62 @@ const SingleTab = (props) => {
         let TabComponent = tab.component;
         return <TabComponent {...componentProps} />;
     }
-console.log({data})
-    return (
-        <TabPanel
-            className="my-tab-panel"
-            activeClass="active-tab"
-            onSelect={(tabName) => {
-                // setTabName(tabName);
-            }}
-            tabs={
-                getTabConfig().map((tab) => {
-                    return {
-                        name: tab.name,
-                        title: tab.title,
-                    }
-                })
-            }>
-            {(tab) => {
-                return (
-                    <>
-                        {getTabConfig().map((item) => {
-                            if (item.name === tab.name) {
-                                return getTabComponent(item);
-                            }
-                            return null;
-                        })}
-                    </>
-                )
 
-            }}
-        </TabPanel>
+    return (
+        <div className="tf--list--item tf--list--item--no-header">
+            <div className="tf--list--item--content">
+                <Panel>
+                    <PanelBody title={`Tab (${index})`} initialOpen={true}>
+                        <TabPanel
+                            className="my-tab-panel"
+                            activeClass="active-tab"
+                            onSelect={(tabName) => {
+                                // setTabName(tabName);
+                            }}
+                            tabs={
+                                getTabConfig().map((tab) => {
+                                    return {
+                                        name: tab.name,
+                                        title: tab.title,
+                                    }
+                                })
+                            }>
+                            {(tab) => {
+                                return (
+                                    <>
+                                        {getTabConfig().map((item) => {
+                                            if (item.name === tab.name) {
+                                                return getTabComponent(item);
+                                            }
+                                            return null;
+                                        })}
+                                    </>
+                                )
+
+                            }}
+                        </TabPanel>
+                    </PanelBody>
+                </Panel>
+            </div>
+            <div className={'tf--list--item--actions'}>
+                <a onClick={() => {
+                    moveUp()
+                }}>
+                    <Icon icon={chevronUp}/>
+                </a>
+                <a onClick={() => {
+                    moveDown()
+                }}>
+                    <Icon icon={chevronDown}/>
+                </a>
+                <a onClick={(e) => {
+                    e.preventDefault()
+                    deleteTab();
+                }}>
+                    <Icon icon={trash}/>
+                </a>
+            </div>
+        </div>
     );
 };
 

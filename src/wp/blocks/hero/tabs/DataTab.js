@@ -36,6 +36,7 @@ const DataTab = (props) => {
                 ]}
             />
             <TextControl
+                label="Hero Title"
                 placeholder="Hero Title"
                 value={ attributes?.hero_title }
                 onChange={ ( value ) => {
@@ -43,6 +44,7 @@ const DataTab = (props) => {
                 } }
             />
             <TextControl
+                label="Hero Text"
                 placeholder="Hero Text"
                 value={ attributes?.hero_text }
                 onChange={ ( value ) => {

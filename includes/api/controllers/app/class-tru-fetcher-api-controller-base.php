@@ -30,6 +30,9 @@ class Tru_Fetcher_Api_Controller_Base {
 
     protected string $publicNamespace = "tru-fetcher-api/public";
     protected string $protectedNamespace = "tru-fetcher-api/protected";
+    protected ?string $namespace = null;
+    protected string $publicEndpoint;
+    protected string $protectedEndpoint;
 
     private \WP_User $user;
 
@@ -39,6 +42,8 @@ class Tru_Fetcher_Api_Controller_Base {
 
     public function __construct()
     {
+        $this->publicEndpoint = $this->publicNamespace . $this->namespace;
+        $this->protectedEndpoint = $this->protectedNamespace . $this->namespace;
         $this->controllerHelpers = new Tru_Fetcher_Api_Helpers_Controller();
         $this->apiAuthApp = new Tru_Fetcher_Api_Auth_App();
     }

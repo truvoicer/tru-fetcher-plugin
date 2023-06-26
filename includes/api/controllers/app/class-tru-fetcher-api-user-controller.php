@@ -1,5 +1,5 @@
 <?php
-namespace TruFetcher\Includes\Api\Controllers;
+namespace TruFetcher\Includes\Api\Controllers\App;
 
 use TruFetcher\Includes\Api\Forms\Tru_Fetcher_Api_Form_Handler;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_User_Response;
@@ -42,15 +42,12 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
     private Tru_Fetcher_Api_User_Response $apiUserResponse;
     private Tru_Fetcher_Email $emailManager;
 
-    private string $namespace = "/users";
-    private string $publicEndpoint;
-    private string $protectedEndpoint;
+    protected ?string $namespace = "/users";
     private $options;
 
     public function __construct()
     {
-        $this->publicEndpoint = $this->publicNamespace . $this->namespace;
-        $this->protectedEndpoint = $this->protectedNamespace . $this->namespace;
+        parent::__construct();
         $this->options = get_fields_clone("option");
         $this->emailManager = new Tru_Fetcher_Email();
     }
@@ -71,47 +68,47 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
         register_rest_route($this->publicEndpoint, '/create', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "createUser"],
-            'permission_callback' => '__return_true'
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
         register_rest_route($this->protectedEndpoint, '/account/data/request', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "userDataRequest"],
-            'permission_callback' => '__return_true'
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
         register_rest_route($this->protectedEndpoint, '/update', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "updateUser"],
-            'permission_callback' => '__return_true'
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
         register_rest_route($this->publicEndpoint, '/password-reset', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "passwordReset"],
-            'permission_callback' => '__return_true'
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
         register_rest_route($this->publicEndpoint, '/password-reset/validate', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "passwordResetValidate"],
-            'permission_callback' => '__return_true'
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
         register_rest_route($this->protectedEndpoint, '/item/save', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "saveItem"],
-            'permission_callback' => '__return_true'
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
         register_rest_route($this->protectedEndpoint, '/item/rating/save', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "saveItemRating"],
-            'permission_callback' => '__return_true'
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
         register_rest_route($this->protectedEndpoint, '/item/list', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "getItemListData"],
-            'permission_callback' => '__return_true'
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
         register_rest_route($this->protectedEndpoint, '/item/list-by-user', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "getItemListDataByUser"],
-            'permission_callback' => '__return_true'
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
     }
 

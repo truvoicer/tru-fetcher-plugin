@@ -46,6 +46,7 @@ const GeneralTab = (props) => {
                 ]}
             />
             <TextControl
+                label="Tab Label"
                 placeholder="Tab Label"
                 value={ attributes?.tab_label }
                 onChange={ ( value ) => {
@@ -53,6 +54,7 @@ const GeneralTab = (props) => {
                 } }
             />
             <TextControl
+                label="Heading"
                 placeholder="Heading"
                 value={ attributes?.heading }
                 onChange={ ( value ) => {

@@ -41,6 +41,7 @@ const SearchTab = (props) => {
                     ]}
                     />
                     <TextControl
+                        label="Categories Placeholder"
                         placeholder="Categories Placeholder"
                         value={attributes?.hero_search__categories_placeholder}
                         onChange={(value) => {
@@ -48,6 +49,7 @@ const SearchTab = (props) => {
                         }}
                     />
                     <TextControl
+                        label="Search Placeholder"
                         placeholder="Search Placeholder"
                         value={attributes?.hero_search__search_placeholder}
                         onChange={(value) => {
@@ -55,6 +57,7 @@ const SearchTab = (props) => {
                         }}
                     />
                     <TextControl
+                        label="Location Placeholder"
                         placeholder="Location Placeholder"
                         value={attributes?.hero_search__location_placeholder}
                         onChange={(value) => {
@@ -62,6 +65,7 @@ const SearchTab = (props) => {
                         }}
                     />
                     <TextControl
+                        label="Search Button Label"
                         placeholder="Search Button Label"
                         value={attributes?.hero_search__search_button_label}
                         onChange={(value) => {
@@ -69,6 +73,7 @@ const SearchTab = (props) => {
                         }}
                     />
                     <TextControl
+                        label="Featured Categories Label"
                         placeholder="Featured Categories Label"
                         value={attributes?.hero_search__featured_categories_label}
                         onChange={(value) => {

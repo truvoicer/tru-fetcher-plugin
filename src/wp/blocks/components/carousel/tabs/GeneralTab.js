@@ -7,7 +7,7 @@ const GeneralTab = (props) => {
         data,
         onChange
     } = props;
-    console.log({data})
+
     function addArrayItem({key}) {
         let cloneData = {...data};
         let cloneRequestParams = [...cloneData[key]];
@@ -99,8 +99,8 @@ const GeneralTab = (props) => {
                     <h4>Request</h4>
 
                     <TextControl
-                        label="Tab Label"
-                        placeholder="Tab Label"
+                        label="Request Name"
+                        placeholder="Request Name"
                         value={data?.request_name}
                         onChange={(value) => {
                             onChange({key: 'carousel_heading', value});

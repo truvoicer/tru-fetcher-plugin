@@ -1,0 +1,25 @@
+.tf {
+  &--list {
+    &--item {
+      &:not(:first-child) {
+        margin-top: 10px;
+      }
+      &--no-header {
+        display: flex;
+        .tf--list--item--content {
+          flex: 1;
+        }
+        .tf--list--item--actions {
+          display: flex;
+          flex-direction: column;
+          border-right: 1px solid #e0e0e0;
+          border-top: 1px solid #e0e0e0;
+          border-bottom: 1px solid #e0e0e0;
+          a {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}

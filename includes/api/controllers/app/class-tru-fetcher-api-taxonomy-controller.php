@@ -1,8 +1,9 @@
 <?php
 
 namespace TruFetcher\Includes\Api\Controllers\App;
+
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Taxonomy_Response;
-use TruFetcher\Includes\Taxonomies\Tru_Fetcher_Taxonomy;
+use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
 
 /**
  * Fired during plugin activation
@@ -26,15 +27,12 @@ use TruFetcher\Includes\Taxonomies\Tru_Fetcher_Taxonomy;
  */
 class Tru_Fetcher_Api_Taxonomy_Controller extends Tru_Fetcher_Api_Controller_Base {
 
-	private string $publicEndpoint;
-	private string $protectedEndpoint;
+    protected ?string $namespace = "/taxonomy";
     private Tru_Fetcher_Taxonomy $trNewsAppTaxonomy;
     private Tru_Fetcher_Api_Taxonomy_Response $apiTaxonomyResponse;
 
 	public function __construct() {
         parent::__construct();
-	    $this->publicEndpoint = $this->publicNamespace;
-	    $this->protectedEndpoint = $this->protectedNamespace;
 	}
 
 	public function init() {
@@ -51,7 +49,7 @@ class Tru_Fetcher_Api_Taxonomy_Controller extends Tru_Fetcher_Api_Controller_Bas
 	}
 
 	public function register_routes() {
-		register_rest_route( $this->publicEndpoint, '/taxonomy/(?<taxonomy>[\w-]+)/terms', array(
+		register_rest_route( $this->publicEndpoint, '/(?<taxonomy>[\w-]+)/terms', array(
 			'methods'             => \WP_REST_Server::READABLE,
 			'callback'            => [ $this, "getTerms" ],
             'permission_callback' => [$this->apiAuthApp, 'publicTokenRequestHandler']
@@ -61,12 +59,12 @@ class Tru_Fetcher_Api_Taxonomy_Controller extends Tru_Fetcher_Api_Controller_Bas
 			'callback'            => [ $this, "createTerm" ],
             'permission_callback' => [$this->apiAuthApp, 'publicTokenRequestHandler']
 		) );
-		register_rest_route( $this->publicEndpoint, '/taxonomy/(?<taxonomy>[\w-]+)/term/update', array(
+		register_rest_route( $this->publicEndpoint, '/(?<taxonomy>[\w-]+)/term/update', array(
 			'methods'             => \WP_REST_Server::EDITABLE,
 			'callback'            => [ $this, "updateTerm" ],
             'permission_callback' => [$this->apiAuthApp, 'publicTokenRequestHandler']
 		) );
-		register_rest_route( $this->publicEndpoint, '/taxonomy/(?<taxonomy>[\w-]+)/term/delete', array(
+		register_rest_route( $this->publicEndpoint, '/(?<taxonomy>[\w-]+)/term/delete', array(
 			'methods'             => \WP_REST_Server::DELETABLE,
 			'callback'            => [ $this, "deleteTerm" ],
             'permission_callback' => [$this->apiAuthApp, 'publicTokenRequestHandler']

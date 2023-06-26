@@ -11,7 +11,7 @@ const Carousel = (props) => {
         let TabComponent = tab.component;
         return <TabComponent {...props} />;
     }
-    console.log({props})
+
     return (
             <TabPanel
                 className="my-tab-panel"

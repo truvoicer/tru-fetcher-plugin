@@ -12,6 +12,7 @@ const GeneralTab = (props) => {
     return (
         <div>
             <TextControl
+                label="Heading"
                 placeholder="Heading"
                 value={ attributes?.heading }
                 onChange={ ( value ) => {

@@ -52,6 +52,7 @@ const SearchTab = (props) => {
                             return (
                                 <div style={{display: 'flex'}}>
                                     <TextControl
+                                        label="Param Name"
                                         placeholder="Param Name"
                                         value={attributes.initial_load_search_params[index].name}
                                         onChange={(value) => {
@@ -67,6 +68,7 @@ const SearchTab = (props) => {
                                     />
 
                                     <TextControl
+                                        label="Param Value"
                                         placeholder="Param Value"
                                         value={attributes?.initial_load_search_params[index].value}
                                         onChange={(value) => {
@@ -114,6 +116,7 @@ const SearchTab = (props) => {
                             return (
                                 <div style={{display: 'flex'}}>
                                     <TextControl
+                                        label="Param Name"
                                         placeholder="Param Name"
                                         value={ attributes.initial_load_request_params[index].name }
                                         onChange={ ( value ) => {
@@ -129,6 +132,7 @@ const SearchTab = (props) => {
                                     />
 
                                     <TextControl
+                                        label="Param Value"
                                         placeholder="Param Value"
                                         value={ attributes?.initial_load_request_params[index].value }
                                         onChange={ ( value ) => {

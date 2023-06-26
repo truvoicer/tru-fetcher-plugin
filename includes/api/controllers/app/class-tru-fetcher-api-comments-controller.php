@@ -1,6 +1,6 @@
 <?php
 
-namespace TruFetcher\Includes\Api\Controllers;
+namespace TruFetcher\Includes\Api\Controllers\App;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Comments_Response;
 use WP_REST_Server;
 
@@ -28,13 +28,10 @@ class Tru_Fetcher_Api_Comments_Controller extends Tru_Fetcher_Api_Controller_Bas
 
     private Tru_Fetcher_Api_Comments_Response $apiCommentsResponse;
 
-    private string $namespace = "/comments";
-	private string $publicEndpoint;
-	private string $protectedEndpoint;
+    protected ?string $namespace = "/comments";
 
 	public function __construct() {
-	    $this->publicEndpoint = $this->publicNamespace . $this->namespace;
-	    $this->protectedEndpoint = $this->protectedNamespace . $this->namespace;
+        parent::__construct();
 	}
 
 	public function init() {
@@ -51,22 +48,22 @@ class Tru_Fetcher_Api_Comments_Controller extends Tru_Fetcher_Api_Controller_Bas
 		register_rest_route( $this->publicEndpoint, '/list/(?<category>[\w-]+)/(?<provider>[\w-]+)/(?<item_id>[\w-]+)', array(
 			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => [ $this, "getCommentsForItem" ],
-			'permission_callback' => '__return_true'
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
 		) );
 		register_rest_route( $this->publicEndpoint, '/user/(?<user_id>[\w-]+)/list', array(
 			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => [ $this, "getCommentsForUser" ],
-			'permission_callback' => '__return_true'
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
 		) );
 		register_rest_route( $this->protectedEndpoint, '/create', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "createComment" ],
-			'permission_callback' => '__return_true'
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
 		) );
 		register_rest_route( $this->protectedEndpoint, '/update', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "updateComment" ],
-			'permission_callback' => '__return_true'
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
 		) );
 	}
 

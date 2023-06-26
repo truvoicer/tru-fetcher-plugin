@@ -29,9 +29,7 @@ use TruFetcher\Includes\Sidebars\Tru_Fetcher_Sidebars;
  */
 class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 
-    private string $namespace = "/pages";
-    private string $publicEndpoint;
-    private string $protectedEndpoint;
+    protected ?string $namespace = "/pages";
 
 	private $listingsClass;
 	private $sidebarClass;
@@ -44,8 +42,6 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 
     public function __construct() {
         parent::__construct();
-        $this->publicEndpoint = $this->publicNamespace . $this->namespace;
-        $this->protectedEndpoint = $this->protectedNamespace . $this->namespace;
     }
 
 	public function init() {
@@ -65,27 +61,27 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 		register_rest_route( $this->publicEndpoint, '/template/item-view/(?<category_name>[\w-]+)', array(
 			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getItemViewTemplate" ],
-			'permission_callback' => '__return_true'
+			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
 		) );
 		register_rest_route( $this->publicEndpoint, '/page', array(
 			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getPageBySlug" ],
-			'permission_callback' => '__return_true'
+			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
 		) );
 		register_rest_route( $this->publicEndpoint, '/menu/(?<menu_name>[\w-]+)', array(
 			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getMenuByName" ],
-			'permission_callback' => '__return_true'
+			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
 		) );
 		register_rest_route( $this->publicEndpoint, '/sidebar/(?<sidebar_name>[\w-]+)', array(
 			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getSidebar" ],
-			'permission_callback' => '__return_true'
+			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
 		) );
 		register_rest_route( $this->publicEndpoint, '/site/config', array(
 			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getSiteConfig" ],
-			'permission_callback' => '__return_true'
+			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
 		) );
 	}
 

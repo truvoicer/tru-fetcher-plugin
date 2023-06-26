@@ -34,6 +34,7 @@ const RequestOptions = (props) => {
     return (
         <div>
             <TextControl
+                label="Name"
                 placeholder="Name"
                 value={data?.name}
                 onChange={(value) => {
@@ -55,6 +56,7 @@ const RequestOptions = (props) => {
                 return (
                     <div style={{display: 'flex'}}>
                         <TextControl
+                            label="Param Name"
                             placeholder="Param Name"
                             value={param.name}
                             onChange={(value) => {
@@ -67,6 +69,7 @@ const RequestOptions = (props) => {
                         />
 
                         <TextControl
+                            label="Param Value"
                             placeholder="Param Value"
                             value={param.value}
                             onChange={(value) => {

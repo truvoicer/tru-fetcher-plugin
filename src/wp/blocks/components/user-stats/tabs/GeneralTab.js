@@ -33,6 +33,7 @@ const GeneralTab = (props) => {
             />
             {data?.show_provider_stats && (
                 <TextControl
+                    label="Provider Heading"
                     placeholder="Provider Heading"
                     value={data?.provider_heading}
                     onChange={(value) => {
@@ -42,6 +43,7 @@ const GeneralTab = (props) => {
             )}
             {data?.show_item_stats && (
                 <TextControl
+                    label="Item Heading"
                     placeholder="Item Heading"
                     value={data?.item_heading}
                     onChange={(value) => {
@@ -51,6 +53,7 @@ const GeneralTab = (props) => {
             )}
             {data?.show_saved_items_stats && (
                 <TextControl
+                    label="Saved Items Heading"
                     placeholder="Saved Items Heading"
                     value={data?.saved_items_heading}
                     onChange={(value) => {
