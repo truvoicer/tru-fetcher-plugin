@@ -2,6 +2,7 @@
 namespace TruFetcher\Includes\Api\Controllers\App;
 
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Post_Response;
+use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
 
 /**
  * Fired during plugin activation
@@ -49,6 +50,11 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
 
     public function register_routes()
     {
+        register_rest_route($this->publicEndpoint, '/(?<post_slug>[\w-]+)', array(
+            'methods' => \WP_REST_Server::CREATABLE,
+            'callback' => [$this, "postWithTemplateRequestHandler"],
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
+        ));
         register_rest_route($this->publicEndpoint, '/list/request', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "postListRequestHandler"],
@@ -71,6 +77,32 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
         ));
     }
 
+    public function postWithTemplateRequestHandler(\WP_REST_Request $request)
+    {
+        $postSlug = $request->get_param("post_slug");
+
+        $postsClass = new Tru_Fetcher_Posts();
+        $post = $postsClass->getPostByName($postSlug);
+        if (is_wp_error($post)) {
+            return $this->sendResponse(
+                "Post fetch error",
+                $this->apiPostResponse
+            );
+        }
+        $postTemplate = $postsClass->getPostTemplateByPost($post);
+        if (is_wp_error($postTemplate)) {
+            return $this->sendResponse(
+                "Post template fetch error",
+                $this->apiPostResponse
+            );
+        }
+        $this->apiPostResponse->setPost($post);
+        $this->apiPostResponse->setPostTemplate($postTemplate);
+        return $this->sendResponse(
+            "Post fetch successful",
+            $this->apiPostResponse
+        );
+    }
     public function postListRecentRequestHandler(\WP_REST_Request $request)
     {
         $postCount = 5;

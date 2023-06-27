@@ -67,19 +67,8 @@ class Tru_Fetcher_Posts {
         return $getPageTemplate[0];
     }
 
-    public function getPostTemplateByPostName($postName = null) {
-	    if ($postName === null || $postName === "") {
-            return new WP_Error("post_name_empty", "Post name is empty.");
-        }
-	    $getPost = get_posts([
-            'numberposts'      => 1,
-            'post_type'        => 'post',
-            "name" => $postName
-        ]);
-	    if (count($getPost) === 0) {
-	        return new WP_Error("post_not_found", "Post not found.");
-        }
-	    $getPostCategory = get_field("post_template_category", $getPost[0]->ID);
+    public function getPostTemplateByPost(\WP_Post $post) {
+	    $getPostCategory = get_field("post_template_category", $post->ID);
         if ($getPostCategory === null || !$getPostCategory) {
             return new WP_Error("post_category_not_set", "Post category not set.");
         }
@@ -92,7 +81,7 @@ class Tru_Fetcher_Posts {
 
         if (count($getPostTemplate) === 0) {
             return new WP_Error("post_template_not_found",
-                sprintf("Page template not found for post name [%s] - category name [%s].", $postName, $getPostCategory->slug));
+                sprintf("Page template not found for post name [%s] - category name [%s].", $post->post_title, $getPostCategory->slug));
         }
 
         return $getPostTemplate[0];
@@ -103,13 +92,19 @@ class Tru_Fetcher_Posts {
     }
 
     public function getPageBySlug( ?string $slug = 'home' ) {
-
         if ( !$slug || $slug === "home" ) {
             $pageId  = get_option( "page_on_front" );
             $getPage = get_post( $pageId );
-        } else {
-            $getPage = get_page_by_path($slug);
+            if (empty($getPage)) {
+                return new WP_Error("page_error", "Home page does not exist.");
+            }
+            return $getPage;
         }
+        $getPage = get_page_by_path($slug);
+        if (empty($getPage)) {
+            return new WP_Error("page_error", sprintf("Page %s does not exist.", $slug));
+        }
+
         return $getPage;
     }
 
@@ -157,7 +152,7 @@ class Tru_Fetcher_Posts {
         return false;
     }
 
-    private function getPostByName($postName) {
+    public function getPostByName($postName) {
         $getPost = get_posts([
             'numberposts'      => 1,
             'post_type'        => 'post',
@@ -199,5 +194,9 @@ class Tru_Fetcher_Posts {
             );
         }
         return $getCategoryPosts->posts;
+    }
+
+    public function getItemDataKeysByPostType() {
+
     }
 }

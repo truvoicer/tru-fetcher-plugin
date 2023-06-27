@@ -1,52 +1,42 @@
 <?php
 namespace TruFetcher\Includes\Api\Response;
 
-class Tru_Fetcher_Api_Post_Response
+class Tru_Fetcher_Api_Post_Response extends Tru_Fetcher_Api_Response
 {
-    public $status;
-    public $message;
-    public $data;
+
+    public ?\WP_Post $post;
+    public ?\WP_Post $postTemplate;
 
     /**
-     * @return mixed
+     * @return \WP_Post|null
      */
-    public function getMessage() {
-        return $this->message;
+    public function getPost(): ?\WP_Post
+    {
+        return $this->post;
     }
 
     /**
-     * @param mixed $message
+     * @param \WP_Post|null $post
      */
-    public function setMessage( $message ) {
-        $this->message = $message;
-    }
-
-
-    /**
-     * @return mixed
-     */
-    public function getStatus() {
-        return $this->status;
+    public function setPost(?\WP_Post $post): void
+    {
+        $this->post = $post;
     }
 
     /**
-     * @param mixed $status
+     * @return \WP_Post|null
      */
-    public function setStatus( $status ) {
-        $this->status = $status;
+    public function getPostTemplate(): ?\WP_Post
+    {
+        return $this->postTemplate;
     }
 
     /**
-     * @return mixed
+     * @param \WP_Post|null $postTemplate
      */
-    public function getData() {
-        return $this->data;
+    public function setPostTemplate(?\WP_Post $postTemplate): void
+    {
+        $this->postTemplate = $postTemplate;
     }
 
-    /**
-     * @param mixed $data
-     */
-    public function setData( $data ) {
-        $this->data = $data;
-    }
 }

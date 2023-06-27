@@ -17,7 +17,7 @@ const PageOptionsMetaBox = ({config, postType, metaFields, setMetaFields}) => {
             <PanelRow>
                 <SelectControl
                     label={__("Page Type")}
-                    value={metaFields.trf_page_options_page_options_page_type}
+                    value={metaFields.tf_mg_post_meta_page_options_page_type}
                     options={[
                         {value: 'general', label: 'General Page'},
                         {value: 'login', label: 'Login Page'},
@@ -25,7 +25,7 @@ const PageOptionsMetaBox = ({config, postType, metaFields, setMetaFields}) => {
                         {value: 'logout', label: 'Logout Page'},
                         {value: 'user_account', label: 'User Account Page'},
                     ]}
-                    onChange={(value) => setMetaFields({trf_page_options_page_options_page_type: value})}
+                    onChange={(value) => setMetaFields({tf_mg_post_meta_page_options_page_type: value})}
                     __nextHasNoMarginBottom
                 />
             </PanelRow>
@@ -52,33 +52,33 @@ const PageOptionsMetaBox = ({config, postType, metaFields, setMetaFields}) => {
                                         <PanelRow>
                                             <ToggleControl
                                                 label="Header Scripts Override"
-                                                checked={metaFields.trf_page_options_page_options_header_override}
+                                                checked={metaFields.tf_mg_post_meta_page_options_header_override}
                                                 onChange={() => {
-                                                    setMetaFields({trf_page_options_page_options_header_override: !metaFields.trf_page_options_page_options_header_override})
+                                                    setMetaFields({tf_mg_post_meta_page_options_header_override: !metaFields.tf_mg_post_meta_page_options_header_override})
                                                 }}
                                             />
                                         </PanelRow>
                                         <PanelRow>
                                             <TextareaControl
                                                 label="Header Scripts"
-                                                value={metaFields.trf_page_options_page_options_header_scripts}
-                                                onChange={(value) => setMetaFields({trf_page_options_page_options_header_scripts: !metaFields.trf_page_options_page_options_header_scripts})}
+                                                value={metaFields.tf_mg_post_meta_page_options_header_scripts}
+                                                onChange={(value) => setMetaFields({tf_mg_post_meta_page_options_header_scripts: !metaFields.tf_mg_post_meta_page_options_header_scripts})}
                                             />
                                         </PanelRow>
                                         <PanelRow>
                                             <ToggleControl
                                                 label="Footer Scripts Override"
-                                                checked={metaFields.trf_page_options_page_options_footer_override}
+                                                checked={metaFields.tf_mg_post_meta_page_options_footer_override}
                                                 onChange={() => {
-                                                    setMetaFields({trf_page_options_page_options_footer_override: !metaFields.trf_page_options_page_options_footer_override})
+                                                    setMetaFields({tf_mg_post_meta_page_options_footer_override: !metaFields.tf_mg_post_meta_page_options_footer_override})
                                                 }}
                                             />
                                         </PanelRow>
                                         <PanelRow>
                                             <TextareaControl
                                                 label="Footer Scripts"
-                                                value={metaFields.trf_page_options_page_options_footer_scripts}
-                                                onChange={(value) => setMetaFields({trf_page_options_page_options_footer_scripts: !metaFields.trf_page_options_page_options_footer_scripts})}
+                                                value={metaFields.tf_mg_post_meta_page_options_footer_scripts}
+                                                onChange={(value) => setMetaFields({tf_mg_post_meta_page_options_footer_scripts: !metaFields.tf_mg_post_meta_page_options_footer_scripts})}
                                             />
                                         </PanelRow>
                                     </>

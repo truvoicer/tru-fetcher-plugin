@@ -22,13 +22,15 @@ namespace TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields;
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Meta_Fields_Post_Options
+class Tru_Fetcher_Meta_Fields_Post_Options extends Tru_Fetcher_Meta_Fields_Base
 {
-    public const NAME = 'post_options';
-    public const FIELDS = [
+    public const META_KEY_POST_TEMPLATE_CATEGORY = 'post_options_post_template_category';
+
+    protected string $name = 'post_options';
+    protected array $fields = [
         [
-            'post_type' => 'post',
-            'meta_key' => 'post_options_post_template_category',
+            'post_type' => ['post'],
+            'meta_key' => self::META_KEY_POST_TEMPLATE_CATEGORY,
             'args' => [
                 'show_in_rest' => true,
                 'single' => true,

@@ -21,6 +21,7 @@ import SidebarWidgetBlockEdit from "./wp/blocks/widgets/groups/SidebarWidgetBloc
 import ContentWidgetBlockEdit from "./wp/blocks/widgets/groups/ContentWidgetBlockEdit";
 import TabsBlockEdit from "./wp/blocks/tabs-block/TabsBlockEdit";
 
+console.log(tru_fetcher_react)
 if (!getPlugin('trf-fetcher-plugin')) {
     registerPlugin( 'trf-metadata-plugin', {
         render: SidebarMetaBoxLoader
@@ -37,7 +38,6 @@ export const blockStyle = {
     color: '#fff',
     padding: '20px',
 };
-console.log(tru_fetcher_react)
 if (
     typeof tru_fetcher_react !== 'undefined' &&
     typeof tru_fetcher_react.blocks !== 'undefined' &&

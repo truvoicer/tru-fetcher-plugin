@@ -11,7 +11,6 @@ import SingleItemOptionsMetaBox from "./SingleItemOptionsMetaBox";
 const POST_TYPES = ['post'];
 const SidebarMetaBoxLoader = (props) => {
     const metaFields = tru_fetcher_react?.meta?.metaFields || [];
-    console.log({metaFields});
     function getMetaFieldConfig() {
         if (!Array.isArray(metaFields)) {
             return false;
@@ -24,6 +23,15 @@ const SidebarMetaBoxLoader = (props) => {
                 return true;
             }
             if (props.postType === 'ft_single_comparison' && metaField?.name === 'page_options') {
+                return true;
+            }
+            if (props.postType === 'category_templates' && metaField?.name === 'page_options') {
+                return true;
+            }
+            if (props.postType === 'item_view_templates' && metaField?.name === 'page_options') {
+                return true;
+            }
+            if (props.postType === 'post_templates' && metaField?.name === 'page_options') {
                 return true;
             }
             return false;
@@ -39,6 +47,9 @@ const SidebarMetaBoxLoader = (props) => {
             case 'post':
                 return <PostOptionsMetaBox {...props} config={metaFieldConfig} />;
             case 'page':
+            case 'item_view_templates':
+            case 'post_templates':
+            case 'category_templates':
                 return <PageOptionsMetaBox {...props} config={metaFieldConfig} />;
             case 'ft_single_comparison':
                 return <SingleItemOptionsMetaBox {...props} config={metaFieldConfig} />;

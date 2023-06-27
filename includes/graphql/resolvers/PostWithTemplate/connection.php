@@ -20,7 +20,7 @@ function register_post_with_template_connection() {
         ],
         'resolve' => function( $id, $args, $context, $info ) {
             $postsClass = new Tru_Fetcher_Posts();
-            $postTemplate = $postsClass->getPostTemplateByPostName($args["where"]["name"]);
+            $postTemplate = $postsClass->getPostTemplateByPost($args["where"]["name"]);
             if (is_wp_error($postTemplate)) {
                 throw new UserError( __( $postTemplate->get_error_message(), 'wp-graphql' ) );
             }

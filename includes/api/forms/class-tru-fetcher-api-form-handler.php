@@ -2,7 +2,6 @@
 namespace TruFetcher\Includes\Api\Forms;
 
 use Tru_Fetcher_Api_Providers_Hubspot;
-use TruFetcher\Includes\Api\Controllers\Tru_Fetcher_Api_Controller_Base;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Forms_Response;
 use TruFetcher\Includes\Database\Tru_Fetcher_Database;
 use WP_REST_Request;
@@ -28,10 +27,12 @@ use WP_User;
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
+class Tru_Fetcher_Api_Form_Handler
 {
 
     const GROUP_KEY_APPENDIX = "_group";
+
+    private \WP_User $user;
 
     private Tru_Fetcher_Api_Forms_Response $apiFormsResponse;
 
@@ -465,6 +466,33 @@ class Tru_Fetcher_Api_Form_Handler extends Tru_Fetcher_Api_Controller_Base
     private function sendResponse(Tru_Fetcher_Api_Forms_Response $apiFormsResponse)
     {
         return rest_ensure_response($apiFormsResponse);
+    }
+
+    protected function showError( $code, $message ) {
+        return new \WP_Error( $code,
+            esc_html__( $message, 'my-text-domain' ),
+            array( 'status' => 404 ) );
+    }
+
+
+    protected function isNotEmpty($item) {
+        return (isset($item) && $item !== "");
+    }
+
+    /**
+     * @return \WP_User
+     */
+    public function getUser(): \WP_User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param \WP_User $user
+     */
+    public function setUser(\WP_User $user): void
+    {
+        $this->user = $user;
     }
 
 }

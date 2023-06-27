@@ -4,6 +4,7 @@ namespace TruFetcher\Includes\Admin\Meta;
 
 use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Filter_Lists;
 use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Item_List;
+use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Base;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Post_Options;
 use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Single_Item;
@@ -34,7 +35,7 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
 {
     use Tru_Fetcher_Traits_Errors;
 
-    private string $metaBoxIdPrefix = 'trf_mb';
+    private string $metaBoxIdPrefix = 'tf_mb';
     public static array $fieldGroups = [
         Tru_Fetcher_Meta_Fields_Page_Options::class,
         Tru_Fetcher_Meta_Fields_Post_Options::class,
@@ -217,30 +218,26 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
         }
     }
 
-    public static function getMetaFields(string $fieldGroup)
+    public function getMetaFields(Tru_Fetcher_Meta_Fields_Base $fieldGroupClass)
     {
-        $name = $fieldGroup::NAME;
-        return array_map(function ($field) use ($name) {
+        return array_map(function ($field) use ($fieldGroupClass) {
+            $id = $fieldGroupClass::buildGutenbergMetaFieldId($field);
             return [
                 'post_type' => $field['post_type'],
-                'meta_key' => sprintf(
-                    '%s_%s_%s',
-                    TRU_FETCHER_PLUGIN_NAME_ACRONYM,
-                    $name,
-                    $field['meta_key']
-                ),
+                'meta_key' => $id,
                 'args' => $field['args'],
             ];
-        }, $fieldGroup::FIELDS);
+        }, $fieldGroupClass->getFields());
     }
 
-    public static function getMetaFieldConfig()
+    public function getMetaFieldConfig()
     {
         $data = [];
         foreach (self::$fieldGroups as $fieldGroup) {
+            $fieldGroupClass = new $fieldGroup();
             $data[] = [
-                'name' => $fieldGroup::NAME,
-                'fields' => self::getMetaFields($fieldGroup),
+                'name' => $fieldGroupClass->getName(),
+                'fields' => $this->getMetaFields($fieldGroupClass),
             ];
         }
         return $data;
@@ -248,9 +245,22 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
 
     function registerPostMetaFields()
     {
-        foreach (self::getMetaFieldConfig() as $fieldGroup) {
+        foreach ($this->getMetaFieldConfig() as $fieldGroup) {
             $fields = $fieldGroup['fields'];
             foreach ($fields as $field) {
+                if (!isset($field['post_type'])) {
+                    continue;
+                }
+                if (is_array($field['post_type'])) {
+                    foreach ($field['post_type'] as $postType) {
+                        register_post_meta(
+                            $postType,
+                            $field['meta_key'],
+                            $field['args']
+                        );
+                    }
+                    continue;
+                }
                 register_post_meta(
                     $field['post_type'],
                     $field['meta_key'],

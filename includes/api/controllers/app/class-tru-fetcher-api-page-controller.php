@@ -1,11 +1,13 @@
 <?php
 namespace TruFetcher\Includes\Api\Controllers\App;
 
+use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Page_Response;
 use TruFetcher\Includes\Listings\Tru_Fetcher_Listings;
 use TruFetcher\Includes\Menus\Tru_Fetcher_Menu;
 use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
 use TruFetcher\Includes\Sidebars\Tru_Fetcher_Sidebars;
+use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
 
 /**
  * Fired during plugin activation
@@ -35,10 +37,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 	private $sidebarClass;
 	private $menuClass;
     private Tru_Fetcher_Posts $postsClass;
-
 	private Tru_Fetcher_Api_Page_Response $apiPostResponse;
-	private $templatePostType = "item_view_templates";
-	private $listingsCategoriesTaxonomy = "listings_categories";
 
     public function __construct() {
         parent::__construct();
@@ -58,9 +57,9 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 	}
 
 	public function register_routes() {
-		register_rest_route( $this->publicEndpoint, '/template/item-view/(?<category_name>[\w-]+)', array(
+		register_rest_route( $this->publicEndpoint, '/template/(?<template_post_type>[\w-]+)/(?<category_name>[\w-]+)', array(
 			'methods'  => \WP_REST_Server::READABLE,
-			'callback' => [ $this, "getItemViewTemplate" ],
+			'callback' => [ $this, "getPageTemplate"],
 			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
 		) );
 		register_rest_route( $this->publicEndpoint, '/page', array(
@@ -86,6 +85,13 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 	}
 
 	public function getSidebar( $request ) {
+        $sidebarName = $request->get_param('sidebar_name');
+        if ( empty($sidebarName) ) {
+            return $this->controllerHelpers->sendErrorResponse(
+                'request_missing_parameters',
+                "Sidebar name doesn't exist in request"
+            );
+        }
 		return rest_ensure_response(
 		    $this->sidebarClass->getSidebar(
 		        (string) $request["sidebar_name"]
@@ -104,19 +110,33 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 		return rest_ensure_response( $menuArray );
 	}
 
-	public function getItemViewTemplate( $request ) {
-		$categoryName = (string) $request['category_name'];
-		if ( ! isset( $categoryName ) ) {
+	public function getPageTemplate(\WP_REST_Request $request) {
+		$templatePostType = $request->get_param('template_post_type');
+		$categoryName = $request->get_param('category_name');
+        if ( empty($templatePostType) ) {
+            return $this->showError( 'request_missing_parameters', "Template post type doesn't exist in request" );
+        }
+		if ( empty( $categoryName ) ) {
 			return $this->showError( 'request_missing_parameters', "Category doesn't exist in request" );
 		}
 
-        $getPageTemplate = $this->postsClass->getTemplate($categoryName, "listings_categories", "item_view_templates");
+        $getPageTemplate = $this->postsClass->getTemplate(
+            $categoryName,
+            Tru_Fetcher_Taxonomy::LISTINGS_CATEGORIES_TAXONOMY,
+            $templatePostType
+        );
         if (is_wp_error($getPageTemplate)) {
             return $this->showError($getPageTemplate->get_error_code(), $getPageTemplate->get_error_message());
         }
-		$this->apiPostResponse = $this->buildApiResponse( $getPageTemplate );
+
+        $pageObject = $this->buildPageObject( $getPageTemplate );
+        $this->apiPostResponse->setPage( $pageObject );
+        $this->apiPostResponse->setPageOptions( $this->getPageOptions($getPageTemplate) );
 		// Return the product as a response.
-		return rest_ensure_response( $this->apiPostResponse );
+        return $this->controllerHelpers->sendSuccessResponse(
+            'Page template fetch',
+            $this->apiPostResponse
+        );
 	}
 
 	public function getPageBySlug( $request ) {
@@ -124,62 +144,35 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 		$getPage = $this->postsClass->getPageBySlug($pageName);
 
 		if (is_wp_error($getPage)) {
-            return $this->showError($getPage->get_error_code(), $getPage->get_error_message());
+            return $this->controllerHelpers->sendErrorResponse(
+                $getPage->get_error_code(),
+                $getPage->get_error_message(),
+                $this->apiPostResponse
+            );
 		}
-        $pageData = [];
-        $pageData['isFrontPage'] = Tru_Fetcher_Posts::isHomePage($getPage->ID);
-        $pageData['status'] = $getPage->post_status;
-        $pageData['id'] = $getPage->ID;
-        $pageData['authorId'] = $getPage->post_author;
-        $pageData['title'] = $getPage->post_title;
-        $pageData['slug'] = $getPage->post_name;
-        $pageData['uri'] = $getPage->guid;
-        $pageData['content'] = apply_filters( 'the_content', $getPage->post_content);
-        $pageData['date'] = $getPage->post_date;
-        $pageData['dateGmt'] = $getPage->post_date_gmt;
-        $pageData['modified'] = $getPage->post_modified;
-        $pageData['modifiedGmt'] = $getPage->post_modified_gmt;
-        $pageData['menuOrder'] = $getPage->menu_order;
-        $pageData['page_options'] = [];
-        $pageData['page_options']['fieldGroupName'] = null;
-        $pageData['page_options']['footerScripts'] = null;
-        $pageData['page_options']['footerScriptsOverride'] = null;
-        $pageData['page_options']['headerScripts'] = null;
-        $pageData['page_options']['headerScriptsOverride'] = null;
-        $pageData['page_options']['pageType'] = null;
+        $this->apiPostResponse->setPage($getPage);
+        $this->apiPostResponse->setPageOptions( $this->getPageOptions($getPage) );
 
-        $allSettings = [];
-        $allSettings['generalSettingsTitle'] = get_bloginfo('name');
-        $allSettings['generalSettingsUrl'] = get_bloginfo('url');
-        $allSettings['home_url'] = get_option('home');
-        $allSettings['site_url'] = get_option('siteurl');
-        $allSettings['readingSettingsPostsPerPage'] = get_option('posts_per_page');
-        $allSettings['generalSettingsDescription'] = get_bloginfo('description');
-        $allSettings['generalSettingsDateFormat'] = get_option('date_format');
-        $allSettings['generalSettingsLanguage'] = get_bloginfo('language');
-        $allSettings['generalSettingsStartOfWeek'] = get_option('start_of_week');
-        $allSettings['generalSettingsTimeFormat'] = get_option('time_format');
-        $allSettings['generalSettingsTimezone'] = get_option('timezone_string');
-        $allSettings['admin_email'] = get_option('admin_email');
-        $allSettings['default_category'] = get_option('default_category');
-
-        $this->apiPostResponse->setPage($pageData);
-        $this->apiPostResponse->setAllSettings($allSettings);
-
-        return $this->controllerHelpers->sendSuccessResponse('Page fetched successfully', $this->apiPostResponse);
+        return $this->controllerHelpers->sendSuccessResponse(
+            'Page fetched successfully',
+            $this->apiPostResponse
+        );
 	}
 
-	private function buildApiResponse( $page ) {
-		//Blocks data must be set first
-		$blocksData = $this->listingsClass->buildListingsBlock( parse_blocks($page->post_content), false );
-		$pageObject = $this->buildPageObject( $page );
-		$this->apiPostResponse->setPost( $pageObject );
-		$this->apiPostResponse->setSiteConfig( $this->getSiteConfig() );
-		if ( count( $blocksData ) !== 0 ) {
-			$this->apiPostResponse->setBlocksData( $blocksData );
-		}
 
-		return $this->apiPostResponse;
+	private function getPageOptions( $page ) {
+        $options = [];
+        $pageTypeMetaField = (new Tru_Fetcher_Meta_Fields_Page_Options())->getField(
+            Tru_Fetcher_Meta_Fields_Page_Options::META_KEY_PAGE_TYPE
+        );
+        $options['pageType'] = null;
+        if (isset($pageTypeMetaField['meta_key'])) {
+            $options['pageType'] = get_post_meta($page->ID, $pageTypeMetaField['meta_key'], true);
+        }
+        if (!$options['pageType']) {
+            $options['pageType'] = 'general';
+        }
+        return $options;
 	}
 
 	private function buildPageObject( $page ) {
