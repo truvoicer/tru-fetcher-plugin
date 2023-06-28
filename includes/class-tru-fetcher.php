@@ -16,13 +16,11 @@ namespace TruFetcher\Includes;
 
 use DirectoryIterator;
 use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
-use TruFetcher\Includes\Admin\PostTypes\Tru_Fetcher_Admin_Post_Types;
 use TruFetcher\Includes\Admin\Tru_Fetcher_Admin;
 use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_Jwt;
 use TruFetcher\Includes\Api\Tru_Fetcher_Api;
 use TruFetcher\Includes\Blocks\Tru_Fetcher_Blocks;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
-use TruFetcher\Includes\TruFetcherAcf\Tru_Fetcher_Acf;
 use TruFetcher\Includes\User\Tru_Fetcher_User;
 
 /**
@@ -55,7 +53,6 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 		$this->set_locale();
 		$this->loadAdmin();
 		$this->loadApi();
-        $this->loadAcf();
 		$this->define_post_types();
 		$this->define_blocks();
 		$this->define_nav_menus();
@@ -110,10 +107,6 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 	    return $selectList;
 	}
 
-	public static function getTruFetcherSettings() {
-		return \get_fields_clone( "option" );
-	}
-
     public static function isNotEmpty(string $string = null) {
         if (isset( $string ) && $string !== "") {
             return true;
@@ -121,20 +114,10 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
         return false;
     }
 
-	private function load_graphql() {
-//		$truFetcherGraphql = new Tru_Fetcher_GraphQl();
-//		$truFetcherGraphql->init();
-	}
-
 	private function loadApi() {
 		$truFetcherEndpoints = new Tru_Fetcher_Api();
 		$truFetcherEndpoints->init();
 	}
-
-    private function loadAcf() {
-        $truFetcherAcf = new Tru_Fetcher_Acf();
-        $truFetcherAcf->acf_init();
-    }
 
     private function loadEmail() {
 //        $truFetcherEmail = new Tru_Fetcher_Email();

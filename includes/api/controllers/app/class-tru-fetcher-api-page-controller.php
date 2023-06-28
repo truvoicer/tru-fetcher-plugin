@@ -3,11 +3,13 @@ namespace TruFetcher\Includes\Api\Controllers\App;
 
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Page_Response;
+use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Sidebar_Response;
 use TruFetcher\Includes\Listings\Tru_Fetcher_Listings;
 use TruFetcher\Includes\Menus\Tru_Fetcher_Menu;
 use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
 use TruFetcher\Includes\Sidebars\Tru_Fetcher_Sidebars;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
+use TruFetcher\Includes\Tru_Fetcher_Helpers;
 
 /**
  * Fired during plugin activation
@@ -33,11 +35,12 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 
     protected ?string $namespace = "/pages";
 
-	private $listingsClass;
-	private $sidebarClass;
-	private $menuClass;
+	private Tru_Fetcher_Listings $listingsClass;
+	private Tru_Fetcher_Sidebars $sidebarClass;
+	private Tru_Fetcher_Menu $menuClass;
     private Tru_Fetcher_Posts $postsClass;
 	private Tru_Fetcher_Api_Page_Response $apiPostResponse;
+	private Tru_Fetcher_Api_Sidebar_Response $apiSidebarResponse;
 
     public function __construct() {
         parent::__construct();
@@ -54,6 +57,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 
 	private function loadResponseObjects() {
 		$this->apiPostResponse = new Tru_Fetcher_Api_Page_Response();
+		$this->apiSidebarResponse = new Tru_Fetcher_Api_Sidebar_Response();
 	}
 
 	public function register_routes() {
@@ -89,13 +93,15 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
         if ( empty($sidebarName) ) {
             return $this->controllerHelpers->sendErrorResponse(
                 'request_missing_parameters',
-                "Sidebar name doesn't exist in request"
+                "Sidebar name doesn't exist in request",
+                $this->apiSidebarResponse
             );
         }
-		return rest_ensure_response(
-		    $this->sidebarClass->getSidebar(
-		        (string) $request["sidebar_name"]
-            )
+        $sidebar = $this->sidebarClass->getSidebar($sidebarName);
+        $this->apiSidebarResponse->setSidebar($sidebar);
+        return $this->controllerHelpers->sendSuccessResponse(
+            'Sidebar fetch',
+            $this->apiSidebarResponse
         );
 	}
 
@@ -131,7 +137,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 
         $pageObject = $this->buildPageObject( $getPageTemplate );
         $this->apiPostResponse->setPage( $pageObject );
-        $this->apiPostResponse->setPageOptions( $this->getPageOptions($getPageTemplate) );
+        $this->apiPostResponse->setPageOptions( $this->postsClass::getPageOptions($getPageTemplate) );
 		// Return the product as a response.
         return $this->controllerHelpers->sendSuccessResponse(
             'Page template fetch',
@@ -150,8 +156,9 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
                 $this->apiPostResponse
             );
 		}
+        $getPage->post_content = apply_filters( "the_content", $getPage->post_content );
         $this->apiPostResponse->setPage($getPage);
-        $this->apiPostResponse->setPageOptions( $this->getPageOptions($getPage) );
+        $this->apiPostResponse->setPageOptions( $this->postsClass::getPageOptions($getPage) );
 
         return $this->controllerHelpers->sendSuccessResponse(
             'Page fetched successfully',
@@ -160,20 +167,6 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 	}
 
 
-	private function getPageOptions( $page ) {
-        $options = [];
-        $pageTypeMetaField = (new Tru_Fetcher_Meta_Fields_Page_Options())->getField(
-            Tru_Fetcher_Meta_Fields_Page_Options::META_KEY_PAGE_TYPE
-        );
-        $options['pageType'] = null;
-        if (isset($pageTypeMetaField['meta_key'])) {
-            $options['pageType'] = get_post_meta($page->ID, $pageTypeMetaField['meta_key'], true);
-        }
-        if (!$options['pageType']) {
-            $options['pageType'] = 'general';
-        }
-        return $options;
-	}
 
 	private function buildPageObject( $page ) {
 		$page->seo_title    = $page->post_title . " - " . get_bloginfo( 'name' );

@@ -1,5 +1,5 @@
 <?php
-add_action( 'admin_init', "tru_fetcher_register_sidebars" );
+add_action( 'widgets_init', "tru_fetcher_register_sidebars" );
 function tru_fetcher_register_sidebars() {
     $leftSidebar = array(
         'name'          =>  __( 'Left Sidebar' ),
@@ -46,6 +46,7 @@ function tru_fetcher_register_sidebars() {
         'after_widget'  => "</li>\n",
         'before_title'  => '<h2 class="widgettitle">',
         'after_title'   => "</h2>\n",
+        'show_in_rest' => true,
     );
     register_sidebar( $navBar );
 

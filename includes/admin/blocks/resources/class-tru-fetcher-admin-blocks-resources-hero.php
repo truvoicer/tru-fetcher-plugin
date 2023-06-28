@@ -57,7 +57,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Hero extends Tru_Fetcher_Admin_Blocks_R
             [
                 'id' => 'hero_type',
                 'type' => 'string',
-                'default' => '',
+                'default' => 'full_hero',
             ],
             [
                 'id' => 'hero_title',

@@ -7,6 +7,7 @@ const GeneralTab = (props) => {
         setAttributes,
         className,
     } = props;
+    console.log({attributes})
     return (
         <div>
             <SelectControl

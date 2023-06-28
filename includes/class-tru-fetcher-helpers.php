@@ -214,4 +214,27 @@ class Tru_Fetcher_Helpers {
             require_once($path);
         }
     }
+
+    public static function parseArray(array $data, array $keys, string $type = 'object') {
+        return array_map(function ($item) use($keys, $type) {
+            $itemData = [];
+            switch ($type) {
+                case 'object':
+                    foreach ($keys as $key) {
+                        if (property_exists($item, $key)) {
+                            $itemData[$key] = $item->{$key};
+                        }
+                    }
+                    break;
+                case 'array':
+                    foreach ($keys as $key) {
+                        if (array_key_exists($key, $item)) {
+                            $itemData[$key] = $item[$key];
+                        }
+                    }
+                    break;
+            }
+            return $itemData;
+        }, $data);
+    }
 }

@@ -3,6 +3,7 @@ namespace TruFetcher\Includes\Menus;
 
 use stdClass;
 use TruFetcher\Includes\Listings\Tru_Fetcher_Listings;
+use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
 
 /**
  * Fired during plugin activation
@@ -74,6 +75,7 @@ class Tru_Fetcher_Menu {
 		if ($getPost->ID === (int) get_option( 'page_on_front' )) {
 			$pageUrl = str_replace(get_site_url(), "", get_page_link($getPost));
 		}
+        $pageOptions = Tru_Fetcher_Posts::getPageOptions($getPost);
 		$post = new stdClass();
 		$post->isfront = (int) get_option( 'page_on_front' );
 		$post->menu_title = $menuItem->title;
@@ -81,12 +83,12 @@ class Tru_Fetcher_Menu {
 		$post->post_name = $getPost->post_name;
 		$post->post_content = $getPost->post_content;
 		$post->post_url = $pageUrl;
-		$post->post_type = get_field("page_type", $getPost->ID);
-		$getBlocksData = $this->listingsClass->buildListingsBlock( parse_blocks($getPost->post_content), false );
-		if (isset($getBlocksData["tru_fetcher_user_area"])) {
-			$post->blocks_data = new stdClass();
-			$post->blocks_data->tru_fetcher_user_area = $getBlocksData["tru_fetcher_user_area"];
-		}
+		$post->post_type = $pageOptions['pageType'];
+//		$getBlocksData = $this->listingsClass->buildListingsBlock( parse_blocks($getPost->post_content), false );
+//		if (isset($getBlocksData["tru_fetcher_user_area"])) {
+//			$post->blocks_data = new stdClass();
+//			$post->blocks_data->tru_fetcher_user_area = $getBlocksData["tru_fetcher_user_area"];
+//		}
 		unset($post->post_content);
 		return $post;
 	}
