@@ -47,6 +47,14 @@ const SearchTab = (props) => {
                 />
                 {attributes?.initial_load === 'search' && (
                     <>
+                        <TextControl
+                            label="Initial Search Term"
+                            placeholder="Initial Search Term"
+                            value={attributes?.initial_search_term}
+                            onChange={(value) => {
+                                setAttributes({initial_search_term: value})
+                            }}
+                        />
                         <h5>Search Params</h5>
                         {attributes.initial_load_search_params.map((param, index) => {
                             return (
@@ -89,7 +97,7 @@ const SearchTab = (props) => {
                             variant="primary"
                             onClick={(e) => {
                                 e.preventDefault()
-                                addParam({attr: 'initial_load_search_params}', attributes, setAttributes})
+                                addParam({attr: 'initial_load_search_params', attributes, setAttributes})
                             }}
                         >
                             Add New

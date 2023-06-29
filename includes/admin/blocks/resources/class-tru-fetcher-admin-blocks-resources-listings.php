@@ -51,10 +51,12 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
             [
                 'id' => 'source',
                 'type' => 'string',
+                'default' => 'api',
             ],
             [
                 'id' => 'listing_block_type',
                 'type' => 'string',
+                'default' => 'search',
             ],
             [
                 'id' => 'listings_category',
@@ -64,7 +66,6 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
             [
                 'id' => 'api_listings_category',
                 'type' => 'string',
-                'default' => '',
             ],
             [
                 'id' => 'select_providers',
@@ -105,6 +106,10 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'id' => 'initial_load',
                 'type' => 'string',
                 'default' => 'search',
+            ],
+            [
+                'id' => 'initial_search_term',
+                'type' => 'string',
             ],
             [
                 'id' => 'initial_load_search_params',

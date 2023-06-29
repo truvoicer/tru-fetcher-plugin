@@ -30,9 +30,14 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
 {
     public array $config;
     public function renderBlock( $blockAttributes, $content ) {
-//        var_dump($blockAttributes);
         $config = $this->getConfig();
         $id = $config['id'];
+        $attributes = $config['attributes'];
+        $attributeDefaults = [];
+        foreach ($attributes as $attribute) {
+            $attributeDefaults[$attribute['id']] = $this->getAttributeDefaultValue($attribute);
+        }
+        $blockAttributes = array_merge($attributeDefaults, $blockAttributes);
         $props = [
             'id' => $id,
             'data' => json_encode($blockAttributes),
@@ -44,6 +49,22 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         return "<div {$propsString}>&nbsp;</div>";
     }
 
+    public function getAttributeDefaultValue(array $attribute) {
+        $defaultValue = null;
+        if (isset($attribute['default'])) {
+            $defaultValue = $attribute['default'];
+        }
+        $type = null;
+        if (isset($attribute['type']) ) {
+            $type = $attribute['type'];
+        }
+        return match ($type) {
+            'integer' => ($defaultValue)? (int)$defaultValue : null,
+            'boolean' => (is_bool($defaultValue))? $defaultValue : null,
+            'array' => ($defaultValue)?: [],
+            default => $defaultValue,
+        };
+    }
     protected function mergeConfigs(array $blockResources)
     {
         foreach ($blockResources as $blockResource) {
