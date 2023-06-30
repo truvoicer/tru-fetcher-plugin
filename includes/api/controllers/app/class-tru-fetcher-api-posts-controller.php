@@ -50,9 +50,14 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
 
     public function register_routes()
     {
-        register_rest_route($this->publicEndpoint, '/(?<post_slug>[\w-]+)', array(
+        register_rest_route($this->publicEndpoint, '/post/(?<post_slug>[\w-]+)', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "postWithTemplateRequestHandler"],
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
+        ));
+        register_rest_route($this->publicEndpoint, '/(?<post_id>[\d-]+)', array(
+            'methods' => \WP_REST_Server::CREATABLE,
+            'callback' => [$this, "singlePost"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
         register_rest_route($this->publicEndpoint, '/list/request', array(
@@ -77,6 +82,27 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
         ));
     }
 
+    public function singlePost(\WP_REST_Request $request)
+    {
+        $postId = $request->get_param("post_id");
+        $postType = $request->get_param("post_type");
+
+        $postsClass = new Tru_Fetcher_Posts();
+        $post = $postsClass->getPostByPostType($postId, $postType);
+        if (is_wp_error($post)) {
+            return $this->controllerHelpers->sendErrorResponse(
+                'post_fetch_error',
+                "Post fetch error",
+                $this->apiPostResponse
+            );
+        }
+        $pageObject = Tru_Fetcher_Posts::buildPostObject($post);
+        $this->apiPostResponse->setPost($pageObject);
+        return $this->sendResponse(
+            "Post fetch successful",
+            $this->apiPostResponse
+        );
+    }
     public function postWithTemplateRequestHandler(\WP_REST_Request $request)
     {
         $postSlug = $request->get_param("post_slug");

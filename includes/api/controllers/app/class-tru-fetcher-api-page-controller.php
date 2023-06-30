@@ -135,7 +135,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
             return $this->showError($getPageTemplate->get_error_code(), $getPageTemplate->get_error_message());
         }
 
-        $pageObject = $this->buildPageObject( $getPageTemplate );
+        $pageObject = $this->postsClass::buildPostObject($getPageTemplate);
         $this->apiPostResponse->setPage( $pageObject );
         $this->apiPostResponse->setPageOptions( $this->postsClass::getPageOptions($getPageTemplate) );
 		// Return the product as a response.
@@ -156,23 +156,14 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
                 $this->apiPostResponse
             );
 		}
-        $getPage->post_content = apply_filters( "the_content", $getPage->post_content );
-        $this->apiPostResponse->setPage($getPage);
-        $this->apiPostResponse->setPageOptions( $this->postsClass::getPageOptions($getPage) );
+        $pageObject = $this->postsClass::buildPostObject($getPage);
+        $this->apiPostResponse->setPage($pageObject);
+        $this->apiPostResponse->setPageOptions( $this->postsClass::getPageOptions($pageObject) );
 
         return $this->controllerHelpers->sendSuccessResponse(
             'Page fetched successfully',
             $this->apiPostResponse
         );
-	}
-
-
-
-	private function buildPageObject( $page ) {
-		$page->seo_title    = $page->post_title . " - " . get_bloginfo( 'name' );
-		$page->post_content = apply_filters( "the_content", $page->post_content );
-
-		return $page;
 	}
 
 	private function getSiteConfig() {

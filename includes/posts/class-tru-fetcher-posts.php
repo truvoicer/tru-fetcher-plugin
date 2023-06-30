@@ -29,12 +29,33 @@ use WP_Query;
 class Tru_Fetcher_Posts {
 
 	public function __construct() {
-		$this->loadDependencies();
 	}
 
-	private function loadDependencies() {
 
-	}
+    public static function buildPostObject( WP_Post $post ) {
+        $post->seo_title    = $post->post_title . " - " . get_bloginfo( 'name' );
+        $post->post_content = apply_filters( "the_content", $post->post_content );
+
+        return $post;
+    }
+    public function getPostByPostType( int $postId, string $postType ) {
+        $args            = [
+            'post_type'   => $postType,
+            'numberposts' => 1,
+            'p' => $postId
+        ];
+        $getPageTemplate = get_posts( $args );
+        if (count($getPageTemplate) ===  0) {
+            return new WP_Error(
+                'post_not_found',
+                sprintf(
+                    "Post not found for: id [%d], Post Type [%s].",
+                    $postId, $postType
+                )
+            );
+        }
+        return $getPageTemplate[0];
+    }
     public function getTemplate( $categoryName, $taxonomyName, $postType ) {
         $category = get_term_by( "slug", $categoryName, $taxonomyName );
         if ( ! $category ) {

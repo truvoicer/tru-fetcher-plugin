@@ -20,6 +20,7 @@ import UserProfileBlockEdit from "./wp/blocks/widgets/user-profile/UserProfileBl
 import SidebarWidgetBlockEdit from "./wp/blocks/widgets/groups/SidebarWidgetBlockEdit";
 import ContentWidgetBlockEdit from "./wp/blocks/widgets/groups/ContentWidgetBlockEdit";
 import TabsBlockEdit from "./wp/blocks/tabs-block/TabsBlockEdit";
+import ItemViewBlockEdit from "./wp/blocks/item-view/ItemViewBlockEdit";
 
 console.log(tru_fetcher_react)
 if (!getPlugin('trf-fetcher-plugin')) {
@@ -95,6 +96,9 @@ if (
                 break;
             case "tabs_block":
                 blockComponent = TabsBlockEdit;
+                break;
+            case "item_view_block":
+                blockComponent = ItemViewBlockEdit;
                 break;
             // case "sidebar_widgets_block":
             //     blockComponent = SidebarWidgetBlockEdit;
