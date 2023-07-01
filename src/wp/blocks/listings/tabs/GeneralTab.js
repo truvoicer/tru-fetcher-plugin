@@ -1,5 +1,6 @@
 import React from 'react';
 import {TabPanel, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import {getListingsCategoryTermsSelectOptions} from "../../../helpers/wp-helpers";
 
 const GeneralTab = (props) => {
     const {
@@ -7,7 +8,6 @@ const GeneralTab = (props) => {
         setAttributes,
         className,
     } = props;
-    console.log({attributes})
     return (
         <div>
             <SelectControl
@@ -30,6 +30,23 @@ const GeneralTab = (props) => {
                         label: 'Wordpress',
                         value: 'wordpress'
                     },
+                ]}
+            />
+            <SelectControl
+                label="Listings Category"
+                onChange={(value) => {
+                    setAttributes({listings_category: value});
+                }}
+                value={attributes?.listings_category}
+                options={[
+                    ...[
+                        {
+                            disabled: true,
+                            label: 'Select an Option',
+                            value: ''
+                        },
+                    ],
+                    ...getListingsCategoryTermsSelectOptions()
                 ]}
             />
         </div>

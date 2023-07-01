@@ -2,7 +2,12 @@ import React from 'react';
 import {TabPanel, Panel, PanelBody, PanelRow} from "@wordpress/components";
 import {InnerBlocks, useBlockProps} from '@wordpress/block-editor';
 
-import tabConfig from "./tab-config";
+import GeneralTab from "./tabs/GeneralTab";
+import DisplayTab from "./tabs/DisplayTab";
+import ApiTab from "./tabs/ApiTab";
+import WordpressDataTab from "./tabs/WordpressDataTab";
+import SearchTab from "./tabs/SearchTab";
+import CustomItemsTab from "./tabs/CustomItemsTab";
 
 const ListingsBlockEdit = (props) => {
 
@@ -12,6 +17,47 @@ const ListingsBlockEdit = (props) => {
         }
         let TabComponent = tab.component;
         return <TabComponent {...props} />;
+    }
+
+    function getTabConfig() {
+        let tabConfig = [
+
+            {
+                name: 'general',
+                title: 'General',
+                component: GeneralTab
+            },
+            {
+                name: 'display',
+                title: 'Display',
+                component: DisplayTab
+            },
+        ];
+        if (props.attributes?.source === 'api') {
+            tabConfig.push({
+                name: 'api_settings',
+                title: 'Api Settings',
+                component: ApiTab
+            });
+        }
+        if (props.attributes?.source === 'wordpress') {
+            tabConfig.push({
+                name: 'wordpress_settings',
+                title: 'Wordpress Settings',
+                component: WordpressDataTab
+            });
+        }
+        tabConfig.push({
+            name: 'search',
+            title: 'Search',
+            component: SearchTab
+        });
+        tabConfig.push({
+            name: 'custom_items',
+            title: 'Custom Items',
+            component: CustomItemsTab
+        });
+        return tabConfig;
     }
 
     return (
@@ -25,7 +71,7 @@ const ListingsBlockEdit = (props) => {
                             // setTabName(tabName);
                         }}
                         tabs={
-                            tabConfig.map((tab) => {
+                            getTabConfig().map((tab) => {
                                 return {
                                     name: tab.name,
                                     title: tab.title,
@@ -35,7 +81,7 @@ const ListingsBlockEdit = (props) => {
                         {(tab) => {
                             return (
                                 <>
-                                    {tabConfig.map((item) => {
+                                    {getTabConfig().map((item) => {
                                         if (item.name === tab.name) {
                                             return getTabComponent(item);
                                         }
