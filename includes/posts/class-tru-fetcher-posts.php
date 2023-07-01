@@ -2,6 +2,7 @@
 namespace TruFetcher\Includes\Posts;
 
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
 use WP_Error;
 use WP_Post;
 use WP_Query;
@@ -28,14 +29,17 @@ use WP_Query;
  */
 class Tru_Fetcher_Posts {
 
+    private Tru_Fetcher_Post_Types $postTypes;
+
 	public function __construct() {
 	}
 
 
     public static function buildPostObject( WP_Post $post ) {
+        $postTypes = new Tru_Fetcher_Post_Types();
         $post->seo_title    = $post->post_title . " - " . get_bloginfo( 'name' );
         $post->post_content = apply_filters( "the_content", $post->post_content );
-
+        $post = $postTypes->buildPostTypeData( $post );
         return $post;
     }
     public function getPostByPostType( int $postId, string $postType ) {
@@ -189,6 +193,21 @@ class Tru_Fetcher_Posts {
         return $getPost[0];
     }
 
+    public function getPostById($postName) {
+        $getPost = get_posts([
+            'numberposts'      => 1,
+            'post_type'        => 'post',
+            "p" => $postName
+        ]);
+        if (count($getPost) === 0) {
+            return new WP_Error(
+                'post_not_found',
+                sprintf("Post (%s) not found.", $postName)
+            );
+        }
+        return $getPost[0];
+    }
+
     private function getCategoryPosts(WP_Post $post) {
         $category = get_field("post_template_category", $post->ID);
 
@@ -232,4 +251,5 @@ class Tru_Fetcher_Posts {
         }
         return $options;
     }
+
 }

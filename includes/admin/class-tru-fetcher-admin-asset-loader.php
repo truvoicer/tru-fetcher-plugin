@@ -5,9 +5,12 @@ namespace TruFetcher\Includes\Admin;
 use Exception;
 use TruFetcher\Includes\Admin\Blocks\Tru_Fetcher_Admin_Blocks;
 use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
-use TruFetcher\Includes\Admin\Resources\Tru_Fetcher_Admin_Resources_Post_Types;
 use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_Jwt;
 use TruFetcher\Includes\Api\Tru_Fetcher_Api_Request;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Category_Tpl;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_View_Tpl;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Post_Tpl;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 
 /**
@@ -109,9 +112,9 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         switch ($currentScreen->id) {
             case 'post':
             case 'page':
-            case Tru_Fetcher_Admin_Resources_Post_Types::FETCHER_POST_TEMPLATES_PT:
-            case Tru_Fetcher_Admin_Resources_Post_Types::FETCHER_ITEM_VIEW_TEMPLATES_PT:
-            case Tru_Fetcher_Admin_Resources_Post_Types::FETCHER_CATEGORY_TEMPLATES_PT:
+            case Tru_Fetcher_Post_Types_Trf_Post_Tpl::NAME:
+            case Tru_Fetcher_Post_Types_Trf_Item_View_Tpl::NAME:
+            case Tru_Fetcher_Post_Types_Trf_Category_Tpl::NAME:
                 $this->loadGutenbergAssets();
                 return;
             default:

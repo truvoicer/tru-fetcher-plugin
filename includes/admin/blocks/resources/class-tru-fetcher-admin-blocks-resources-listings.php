@@ -2,10 +2,9 @@
 
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
-use TruFetcher\Includes\Admin\PostTypes\Tru_Fetcher_Admin_Post_Types;
-use TruFetcher\Includes\Admin\Resources\Tru_Fetcher_Admin_Resources_Post_Types;
-use TruFetcher\Includes\Admin\Resources\Tru_Fetcher_Admin_Resources_Taxonomies;
-use TruFetcher\Includes\Tru_Fetcher_Base;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_List;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Single_Item;
+use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Trf_Listings_Category;
 
 /**
  * Fired during plugin activation
@@ -38,14 +37,14 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
         'title' => self::BLOCK_TITLE,
         'post_types' => [
             [
-                'name' => Tru_Fetcher_Admin_Resources_Post_Types::FETCHER_ITEMS_LIST_PT
+                'name' => Tru_Fetcher_Post_Types_Trf_Item_List::NAME
             ],
             [
-                'name' => Tru_Fetcher_Admin_Resources_Post_Types::FETCHER_SINGLE_ITEM_PT
+                'name' => Tru_Fetcher_Post_Types_Trf_Single_Item::NAME
             ],
         ],
         'taxonomies' => [
-            ['name' => Tru_Fetcher_Admin_Resources_Taxonomies::LISTINGS_CATEGORIES_TAXONOMY],
+            ['name' => Tru_Fetcher_Taxonomy_Trf_Listings_Category::NAME],
         ],
         'attributes' => [
             [

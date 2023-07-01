@@ -2,10 +2,6 @@
 
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
-use TruFetcher\Includes\Admin\Resources\Tru_Fetcher_Admin_Resources_Post_Types;
-use TruFetcher\Includes\Admin\Resources\Tru_Fetcher_Admin_Resources_Taxonomies;
-use TruFetcher\Includes\Tru_Fetcher_Base;
-
 /**
  * Fired during plugin activation
  *
@@ -40,7 +36,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         $blockAttributes = array_merge($attributeDefaults, $blockAttributes);
         $props = [
             'id' => $id,
-            'data' => json_encode($blockAttributes),
+            'data' => htmlspecialchars(json_encode($blockAttributes)),
         ];
         $propsString = '';
         foreach ($props as $key => $value) {

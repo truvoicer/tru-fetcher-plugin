@@ -1,12 +1,12 @@
 
 export function findSingleItemListsPosts() {
-    return tru_fetcher_react.post_types.find(postType => postType?.name === 'fetcher_items_lists');
+    return tru_fetcher_react.post_types.find(postType => postType?.name === 'trf_item_list');
 }
 export function findSingleItemPosts() {
-    return tru_fetcher_react.post_types.find(postType => postType?.name === 'fetcher_single_item');
+    return tru_fetcher_react.post_types.find(postType => postType?.name === 'trf_single_item');
 }
 export function findListingsCategoryTerms() {
-    return tru_fetcher_react.taxonomies.find(taxonomy => taxonomy?.name === 'listings_categories');
+    return tru_fetcher_react.taxonomies.find(taxonomy => taxonomy?.name === 'trf_listings_category');
 }
 export function findPostTypeData(postType) {
     if (!Array.isArray(tru_fetcher_react?.post_types)) {

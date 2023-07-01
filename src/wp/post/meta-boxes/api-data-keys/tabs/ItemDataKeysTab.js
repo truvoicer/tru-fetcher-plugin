@@ -44,6 +44,10 @@ const ItemDataKeysTab = ({session}) => {
         })
     }
 
+    function getValueTypeSelectValue(value) {
+        return getValueTypeOptions().find((item) => item.value === value);
+    }
+
     function getDataKeysOptions() {
         const dataKeys = postMetaBoxContext.formData.data_keys;
         const usedKeys = dataKeys.map((item) => item.data_item_key);
@@ -56,6 +60,17 @@ const ItemDataKeysTab = ({session}) => {
                 value: item.key_value,
             }
         })
+    }
+
+    function getDataKeysSelectValue(value) {
+        const findItem = dataKeysOptions.find((item) => item?.key_value === value);
+        if (!findItem) {
+            return null;
+        }
+        return {
+            label: findItem.key_value,
+            value: findItem.key_value,
+        }
     }
 
     function fieldChangeHandler({value, index}) {
@@ -72,22 +87,26 @@ const ItemDataKeysTab = ({session}) => {
                 <Card style={{width: 300}}>
                     <div>
                         <Form.Item label="Data Item Key">
-                            <Select
-                                options={getDataKeysOptions({index})}
-                                onChange={(e, data) => {
-                                    updateDataKey({
-                                        index,
-                                        value: data.value,
-                                        key: 'data_item_key',
-                                    })
-                                }}
-                            />
+                            {Array.isArray(dataKeysOptions) && dataKeysOptions.length && (
+                                <Select
+                                    options={getDataKeysOptions({index})}
+                                    value={getDataKeysSelectValue(item?.data_item_key)}
+                                    onChange={(e, data) => {
+                                        updateDataKey({
+                                            index,
+                                            value: data.value,
+                                            key: 'data_item_key',
+                                        })
+                                    }}
+                                />
+                            )}
                         </Form.Item>
                     </div>
                     <div>
                         <Form.Item label="Value Type">
                             <Select
                                 options={getValueTypeOptions()}
+                                value={getValueTypeSelectValue(item?.value_type)}
                                 onChange={(e, data) => {
                                     updateDataKey({
                                         index,
@@ -122,14 +141,14 @@ const ItemDataKeysTab = ({session}) => {
     }
 
     async function dataKeysRequest() {
-        if (!isNotEmpty(selectedService)) {
+        if (!isNotEmpty(postMetaBoxContext.formData?.service)) {
             return;
         }
         const results = await fetchRequest({
             config: fetcherApiConfig,
             endpoint: fetcherApiConfig.endpoints.serviceResponseKeyList,
             params: {
-                service_id: selectedService,
+                service_id: postMetaBoxContext.formData?.service,
             }
         });
         if (Array.isArray(results?.data?.data)) {
@@ -146,26 +165,32 @@ const ItemDataKeysTab = ({session}) => {
         })
     }
 
+    function getServicesSelectValue() {
+        return getServicesOptions().find((item) => parseInt(item.value) === parseInt(postMetaBoxContext.formData?.service));
+    }
+
     useEffect(() => {
         serviceListRequest();
     }, []);
     useEffect(() => {
         dataKeysRequest();
-    }, [selectedService]);
-    // console.log({session})
+    }, [postMetaBoxContext.formData?.service]);
+
     return (
         <>
             <Row>
                 <Col>
                     <Form.Item label="Service">
-                        <Select
-                            style={{minWidth: 180}}
-                            options={getServicesOptions()}
-                            value={selectedService}
-                            onChange={(e, data) => {
-                                setSelectedService(data.value);
-                            }}
-                        />
+                        {Array.isArray(services) && services.length && (
+                            <Select
+                                style={{minWidth: 180}}
+                                options={getServicesOptions()}
+                                value={getServicesSelectValue()}
+                                onChange={(e, data) => {
+                                    postMetaBoxContext.updateFormData('service', data.value);
+                                }}
+                            />
+                        )}
                     </Form.Item>
                 </Col>
             </Row>
@@ -180,7 +205,7 @@ const ItemDataKeysTab = ({session}) => {
             </Row>
             <Row>
                 <Col>
-                    {isNotEmpty(selectedService) && (
+                    {isNotEmpty(postMetaBoxContext.formData?.service) && (
                         <Button
                             type={'primary'}
                             onClick={(e) => {

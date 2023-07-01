@@ -109,7 +109,7 @@ const ItemListMetaBoxList = ({session}) => {
             config: config,
             endpoint: config.endpoints.posts,
             params: {
-                post_type: 'fetcher_single_item',
+                post_type: 'trf_single_item',
             }
         });
         console.log({results})

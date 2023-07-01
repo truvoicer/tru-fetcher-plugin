@@ -22,16 +22,16 @@ const SidebarMetaBoxLoader = (props) => {
             if (props.postType === 'page' && metaField?.name === 'page_options') {
                 return true;
             }
-            if (props.postType === 'ft_single_comparison' && metaField?.name === 'page_options') {
+            if (props.postType === 'trf_single_item' && metaField?.name === 'page_options') {
                 return true;
             }
-            if (props.postType === 'category_templates' && metaField?.name === 'page_options') {
+            if (props.postType === 'trf_category_tpl' && metaField?.name === 'page_options') {
                 return true;
             }
-            if (props.postType === 'item_view_templates' && metaField?.name === 'page_options') {
+            if (props.postType === 'trf_item_view_tpl' && metaField?.name === 'page_options') {
                 return true;
             }
-            if (props.postType === 'post_templates' && metaField?.name === 'page_options') {
+            if (props.postType === 'trf_post_tpl' && metaField?.name === 'page_options') {
                 return true;
             }
             return false;
@@ -47,11 +47,11 @@ const SidebarMetaBoxLoader = (props) => {
             case 'post':
                 return <PostOptionsMetaBox {...props} config={metaFieldConfig} />;
             case 'page':
-            case 'item_view_templates':
-            case 'post_templates':
-            case 'category_templates':
+            case 'trf_item_view_tpl':
+            case 'trf_post_tpl':
+            case 'trf_category_tpl':
                 return <PageOptionsMetaBox {...props} config={metaFieldConfig} />;
-            case 'ft_single_comparison':
+            case 'trf_single_item':
                 return <SingleItemOptionsMetaBox {...props} config={metaFieldConfig} />;
             default:
                 return null;

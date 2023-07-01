@@ -1,15 +1,5 @@
 <?php
-namespace TruFetcher\Includes\Admin\Resources;
-
-/**
- * Fired during plugin activation
- *
- * @link       https://truvoicer.co.uk
- * @since      1.0.0
- *
- * @package    Tru_Fetcher
- * @subpackage Tru_Fetcher/includes
- */
+namespace TruFetcher\Includes\Taxonomy;
 
 /**
  * Fired during plugin activation.
@@ -21,6 +11,9 @@ namespace TruFetcher\Includes\Admin\Resources;
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Admin_Resources {
+class Tru_Fetcher_Taxonomy_Category extends Tru_Fetcher_Taxonomy
+{
+    public const NAME = 'category';
+    protected string $name = self::NAME;
 
 }

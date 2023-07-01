@@ -1,6 +1,10 @@
 import React from 'react';
 import {TabPanel, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
-import {findSingleItemPostsSelectOptions, getListingsCategoryTermsSelectOptions} from "../../../helpers/wp-helpers";
+import {
+    findPostTypeSelectOptions,
+    findSingleItemPostsSelectOptions,
+    getListingsCategoryTermsSelectOptions
+} from "../../../helpers/wp-helpers";
 
 const WordpressDataTab = (props) => {
     const {
@@ -12,23 +16,6 @@ const WordpressDataTab = (props) => {
 
     return (
         <div>
-            <SelectControl
-                label="Listings Category"
-                onChange={(value) => {
-                    setAttributes({listings_category: value});
-                }}
-                value={attributes?.listings_category}
-                options={[
-                    ...[
-                        {
-                            disabled: true,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                    ],
-                    ...getListingsCategoryTermsSelectOptions()
-                ]}
-            />
             <SelectControl
                 label="Item List"
                 onChange={(value) => {
@@ -43,7 +30,7 @@ const WordpressDataTab = (props) => {
                         value: ''
                     },
                 ],
-                    ...findSingleItemPostsSelectOptions()
+                    ...findPostTypeSelectOptions('trf_item_list')
             ]}
             />
         </div>

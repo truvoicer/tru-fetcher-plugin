@@ -87,14 +87,14 @@ class Tru_Fetcher_Admin_Menu {
         }
     }
     public function addResources($menuData) {
-        switch ($menuData[Tru_Fetcher_Admin_Menu_Constants::$typeKey]) {
-            case self::TYPE_WP_MENU_POST_TYPE:
-                $this->addPostTypePage($menuData);
-                break;
-            case self::TYPE_WP_MENU_TAXONOMY:
-                $this->addWpTaxonomyMenuPage($menuData);
-                break;
-        }
+//        switch ($menuData[Tru_Fetcher_Admin_Menu_Constants::$typeKey]) {
+//            case self::TYPE_WP_MENU_POST_TYPE:
+//                $this->addPostTypePage($menuData);
+//                break;
+//            case self::TYPE_WP_MENU_TAXONOMY:
+//                $this->addWpTaxonomyMenuPage($menuData);
+//                break;
+//        }
         if (
             array_key_exists(Tru_Fetcher_Admin_Menu_Constants::$submenusKey, $menuData) &&
             is_array($menuData[Tru_Fetcher_Admin_Menu_Constants::$submenusKey])

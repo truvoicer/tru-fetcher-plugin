@@ -26,10 +26,10 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Admin_Meta_Box_Single_Item extends Tru_Fetcher_Admin_Meta_Box_Base
+class Tru_Fetcher_Admin_Meta_Box_Api_Data_Keys extends Tru_Fetcher_Admin_Meta_Box_Base
 {
-    public const NAME = 'single_item';
-    public const TITLE = 'Single Item';
+    public const NAME = 'api_data_keys';
+    public const TITLE = 'Api Data Keys';
 
     public const CONFIG = [
         'id' => self::NAME,
@@ -39,48 +39,12 @@ class Tru_Fetcher_Admin_Meta_Box_Single_Item extends Tru_Fetcher_Admin_Meta_Box_
         ],
         'fields' => [
             [
-                'id' => 'type',
-                'type' => 'text',
-            ],
-            [
                 'id' => 'service',
                 'type' => 'integer',
             ],
             [
                 'id' => 'data_keys',
                 'type' => 'array',
-            ],
-            [
-                'id' => 'item_image',
-                'type' => 'text'
-            ],
-            [
-                'id' => 'item_header',
-                'type' => 'text'
-            ],
-            [
-                'id' => 'item_text',
-                'type' => 'text'
-            ],
-            [
-                'id' => 'item_rating',
-                'type' => 'number'
-            ],
-            [
-                'id' => 'item_link_text',
-                'type' => 'text'
-            ],
-            [
-                'id' => 'item_link',
-                'type' => 'text'
-            ],
-            [
-                'id' => 'item_badge_text',
-                'type' => 'text'
-            ],
-            [
-                'id' => 'item_badge_link',
-                'type' => 'text'
             ],
         ]
     ];

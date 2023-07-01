@@ -73,7 +73,7 @@ const GeneralTab = (props) => {
                                 value: ''
                             },
                         ],
-                        ...findPostTypeSelectOptions('fetcher_items_lists')
+                        ...findPostTypeSelectOptions('trf_item_list')
                     ]}
                 />
             )}

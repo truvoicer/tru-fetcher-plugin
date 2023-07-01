@@ -9,6 +9,8 @@ use TruFetcher\Includes\Menus\Tru_Fetcher_Menu;
 use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
 use TruFetcher\Includes\Sidebars\Tru_Fetcher_Sidebars;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
+use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Category;
+use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Trf_Listings_Category;
 use TruFetcher\Includes\Tru_Fetcher_Helpers;
 
 /**
@@ -128,7 +130,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 
         $getPageTemplate = $this->postsClass->getTemplate(
             $categoryName,
-            Tru_Fetcher_Taxonomy::LISTINGS_CATEGORIES_TAXONOMY,
+            Tru_Fetcher_Taxonomy_Trf_Listings_Category::NAME,
             $templatePostType
         );
         if (is_wp_error($getPageTemplate)) {

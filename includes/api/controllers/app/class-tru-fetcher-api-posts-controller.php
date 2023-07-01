@@ -55,9 +55,14 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
             'callback' => [$this, "postWithTemplateRequestHandler"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
-        register_rest_route($this->publicEndpoint, '/(?<post_id>[\d-]+)', array(
-            'methods' => \WP_REST_Server::CREATABLE,
+        register_rest_route($this->publicEndpoint, '/post/(?<post_id>[\d]+)', array(
+            'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "singlePost"],
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
+        ));
+        register_rest_route($this->publicEndpoint, '/post/(?<post_id>[\d]+)/type/(?<post_type>[\w-]+)', array(
+            'methods' => \WP_REST_Server::READABLE,
+            'callback' => [$this, "singlePostType"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
         register_rest_route($this->publicEndpoint, '/list/request', array(
@@ -82,13 +87,39 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
         ));
     }
 
-    public function singlePost(\WP_REST_Request $request)
+    public function singlePostType(\WP_REST_Request $request)
     {
         $postId = $request->get_param("post_id");
         $postType = $request->get_param("post_type");
-
+        if (empty($postType)) {
+            return $this->controllerHelpers->sendErrorResponse(
+                'post_type_fetch_error',
+                "Post Type not specified",
+                $this->apiPostResponse
+            );
+        }
         $postsClass = new Tru_Fetcher_Posts();
         $post = $postsClass->getPostByPostType($postId, $postType);
+        if (is_wp_error($post)) {
+            return $this->controllerHelpers->sendErrorResponse(
+                'post_fetch_error',
+                "Post fetch error",
+                $this->apiPostResponse
+            );
+        }
+        $pageObject = Tru_Fetcher_Posts::buildPostObject($post);
+        $this->apiPostResponse->setPost($pageObject);
+        return $this->controllerHelpers->sendSuccessResponse(
+            'Post type fetch',
+            $this->apiPostResponse
+        );
+    }
+
+    public function singlePost(\WP_REST_Request $request)
+    {
+        $postId = $request->get_param("post_id");
+        $postsClass = new Tru_Fetcher_Posts();
+        $post = $postsClass->getPostById($postId);
         if (is_wp_error($post)) {
             return $this->controllerHelpers->sendErrorResponse(
                 'post_fetch_error',

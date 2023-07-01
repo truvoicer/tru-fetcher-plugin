@@ -37,7 +37,7 @@ const SearchTab = (props) => {
                                 value: ''
                             },
                         ],
-                            ...findPostTypeSelectOptions('filter_lists')
+                            ...findPostTypeSelectOptions('trf_filter_list')
                     ]}
                     />
                     <TextControl
@@ -94,7 +94,7 @@ const SearchTab = (props) => {
                                     value: ''
                                 },
                             ],
-                            ...findPostTypeSelectOptions('filter_lists')
+                            ...findPostTypeSelectOptions('trf_filter_list')
                         ]}
                     />
                 </div>

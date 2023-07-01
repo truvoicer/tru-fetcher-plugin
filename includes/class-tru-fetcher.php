@@ -15,13 +15,16 @@ namespace TruFetcher\Includes;
  */
 
 use DirectoryIterator;
-use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
 use TruFetcher\Includes\Admin\Tru_Fetcher_Admin;
-use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_Jwt;
 use TruFetcher\Includes\Api\Tru_Fetcher_Api;
 use TruFetcher\Includes\Blocks\Tru_Fetcher_Blocks;
-use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
-use TruFetcher\Includes\User\Tru_Fetcher_User;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Category_Tpl;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Filter_List;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_List;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_View_Tpl;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Post_Tpl;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Single_Item;
+use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Trf_Listings_Category;
 
 /**
  * The core plugin class.
@@ -53,7 +56,8 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 		$this->set_locale();
 		$this->loadAdmin();
 		$this->loadApi();
-		$this->define_post_types();
+		$this->registerTaxonomies();
+		$this->registerPostTypes();
 		$this->define_blocks();
 		$this->define_nav_menus();
 		$this->define_sidebars();
@@ -124,8 +128,16 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 //	    $truFetcherEmail->init();
     }
 
-	private function define_post_types() {
-        $this->directoryIncludes( 'includes/post-types', 'register-post-type.php' );
+	private function registerPostTypes() {
+        (new Tru_Fetcher_Post_Types_Trf_Post_Tpl())->init();
+        (new Tru_Fetcher_Post_Types_Trf_Single_Item())->init();
+        (new Tru_Fetcher_Post_Types_Trf_Filter_List())->init();
+        (new Tru_Fetcher_Post_Types_Trf_Item_List())->init();
+        (new Tru_Fetcher_Post_Types_Trf_Category_Tpl())->init();
+        (new Tru_Fetcher_Post_Types_Trf_Item_View_Tpl())->init();
+	}
+	private function registerTaxonomies() {
+        (new Tru_Fetcher_Taxonomy_Trf_Listings_Category())->init();
 	}
 
 	private function define_blocks() {

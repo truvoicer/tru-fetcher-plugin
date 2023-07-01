@@ -2,7 +2,8 @@
 
 namespace TruFetcher\Includes\Admin\Meta\Box;
 
-use TruFetcher\Includes\Admin\Resources\Tru_Fetcher_Admin_Resources_Post_Types;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_List;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 
 /**
@@ -25,13 +26,16 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Admin_Meta_Box_Item_List extends Tru_Fetcher_Base
+class Tru_Fetcher_Admin_Meta_Box_Item_List extends Tru_Fetcher_Admin_Meta_Box_Base
 {
+    public const NAME = 'item_list';
+    public const TITLE = 'Item List';
+
     public const CONFIG = [
-        'id' => 'item_list',
-        'title' => 'Item List',
+        'id' => self::NAME,
+        'title' => self::TITLE,
         'post_types' => [
-            ['name' => Tru_Fetcher_Admin_Resources_Post_Types::FETCHER_ITEMS_LIST_PT],
+            ['name' => Tru_Fetcher_Post_Types_Trf_Item_List::NAME],
         ],
         'fields' => [
             [
@@ -40,4 +44,5 @@ class Tru_Fetcher_Admin_Meta_Box_Item_List extends Tru_Fetcher_Base
             ],
         ]
     ];
+    protected array $config = self::CONFIG;
 }
