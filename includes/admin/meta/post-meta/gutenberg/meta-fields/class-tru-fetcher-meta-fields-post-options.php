@@ -2,6 +2,8 @@
 
 namespace TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields;
 
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Post;
+
 /**
  * Fired during plugin activation
  *
@@ -29,7 +31,9 @@ class Tru_Fetcher_Meta_Fields_Post_Options extends Tru_Fetcher_Meta_Fields_Base
     protected string $name = 'post_options';
     protected array $fields = [
         [
-            'post_type' => ['post'],
+            'post_type' => [
+                Tru_Fetcher_Post_Types_Post::NAME
+            ],
             'meta_key' => self::META_KEY_POST_TEMPLATE_CATEGORY,
             'args' => [
                 'show_in_rest' => true,

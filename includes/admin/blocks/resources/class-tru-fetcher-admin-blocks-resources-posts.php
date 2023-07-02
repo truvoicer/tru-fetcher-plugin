@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Category;
 
 /**
@@ -34,7 +35,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Posts extends Tru_Fetcher_Admin_Blocks_
         'id' => self::BLOCK_ID,
         'name' => self::BLOCK_NAME,
         'title' => self::BLOCK_TITLE,
-        'post_types' => [],
+        'post_types' => [
+            ['name' => Tru_Fetcher_Post_Types_Page::NAME],
+        ],
         'taxonomies' => [
             ['name' => Tru_Fetcher_Taxonomy_Category::NAME]
         ],

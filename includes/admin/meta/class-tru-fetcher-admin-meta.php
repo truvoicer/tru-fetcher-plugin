@@ -150,15 +150,15 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
 
     public function getMetaboxClasses(?array $postTypes = []) {
         $data = [];
-        foreach (self::META_BOXES as $metaBoxClass) {
-            $config = $metaBoxClass::CONFIG;
-            if (count($postTypes) && !count(array_intersect($postTypes, array_map(function ($postType) {
-                    return $postType['name'];
-                }, $config['post_types'])))) {
-                continue;
-            }
-            $data[] = $metaBoxClass;
-        }
+//        foreach (self::META_BOXES as $metaBoxClass) {
+//            $config = $metaBoxClass::CONFIG;
+//            if (count($postTypes) && !count(array_intersect($postTypes, array_map(function ($postType) {
+//                    return $postType['name'];
+//                }, $config['post_types'])))) {
+//                continue;
+//            }
+//            $data[] = $metaBoxClass;
+//        }
         return $data;
     }
     public function getMetaboxConfig(?array $postTypes = []) {

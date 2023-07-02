@@ -2,6 +2,8 @@
 
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
+
 /**
  * Fired during plugin activation
  *
@@ -31,7 +33,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_User_Account extends Tru_Fetcher_Admin_
         'id' => self::BLOCK_ID,
         'name' => self::BLOCK_NAME,
         'title' => self::BLOCK_TITLE,
-        'post_types' => [],
+        'post_types' => [
+            ['name' => Tru_Fetcher_Post_Types_Page::NAME],
+        ],
         'taxonomies' => [],
         'attributes' => [
             [

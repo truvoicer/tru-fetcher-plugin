@@ -2,6 +2,8 @@
 
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
+
 /**
  * Fired during plugin activation
  *
@@ -36,7 +38,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Form_Progress_Widget extends Tru_Fetche
 //            Tru_Fetcher_Admin_Blocks_Resources_Sidebar_Widgets::BLOCK_NAME,
 //            Tru_Fetcher_Admin_Blocks_Resources_Content_Widgets::BLOCK_NAME,
 //        ],
-        'post_types' => [],
+        'post_types' => [
+            ['name' => Tru_Fetcher_Post_Types_Page::NAME],
+        ],
         'taxonomies' => [],
         'attributes' => [
             [

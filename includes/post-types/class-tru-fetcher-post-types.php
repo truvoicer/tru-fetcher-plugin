@@ -31,6 +31,8 @@ class Tru_Fetcher_Post_Types {
         Tru_Fetcher_Post_Types_Trf_Item_List::class,
         Tru_Fetcher_Post_Types_Trf_Category_Tpl::class,
         Tru_Fetcher_Post_Types_Trf_Item_View_Tpl::class,
+        Tru_Fetcher_Post_Types_Post::class,
+        Tru_Fetcher_Post_Types_Page::class,
     ];
 
     public function buildPostTypeData(\WP_Post $post) {

@@ -2,6 +2,11 @@
 
 namespace TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields;
 
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Category_Tpl;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_View_Tpl;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Post_Tpl;
+
 /**
  * Fired during plugin activation
  *
@@ -33,7 +38,12 @@ class Tru_Fetcher_Meta_Fields_Page_Options extends Tru_Fetcher_Meta_Fields_Base
     protected string $name = 'page_options';
     protected array $fields = [
         [
-            'post_type' => ['page', 'item_view_templates', 'post_templates', 'category_templates'],
+            'post_type' => [
+                Tru_Fetcher_Post_Types_Page::NAME,
+                Tru_Fetcher_Post_Types_Trf_Item_View_Tpl::NAME,
+                Tru_Fetcher_Post_Types_Trf_Post_Tpl::NAME,
+                Tru_Fetcher_Post_Types_Trf_Category_Tpl::NAME
+            ],
             'meta_key' => self::META_KEY_PAGE_TYPE,
             'args' => [
                 'show_in_rest' => true,
@@ -42,7 +52,12 @@ class Tru_Fetcher_Meta_Fields_Page_Options extends Tru_Fetcher_Meta_Fields_Base
             ]
         ],
         [
-            'post_type' => ['page', 'item_view_templates', 'post_templates', 'category_templates'],
+            'post_type' => [
+                Tru_Fetcher_Post_Types_Page::NAME,
+                Tru_Fetcher_Post_Types_Trf_Item_View_Tpl::NAME,
+                Tru_Fetcher_Post_Types_Trf_Post_Tpl::NAME,
+                Tru_Fetcher_Post_Types_Trf_Category_Tpl::NAME
+            ],
             'meta_key' => self::META_KEY_HEADER_OVERRIDE,
             'args' => [
                 'show_in_rest' => true,
@@ -51,7 +66,12 @@ class Tru_Fetcher_Meta_Fields_Page_Options extends Tru_Fetcher_Meta_Fields_Base
             ]
         ],
         [
-            'post_type' => ['page', 'item_view_templates', 'post_templates', 'category_templates'],
+            'post_type' => [
+                Tru_Fetcher_Post_Types_Page::NAME,
+                Tru_Fetcher_Post_Types_Trf_Item_View_Tpl::NAME,
+                Tru_Fetcher_Post_Types_Trf_Post_Tpl::NAME,
+                Tru_Fetcher_Post_Types_Trf_Category_Tpl::NAME
+            ],
             'meta_key' => self::META_KEY_HEADER_SCRIPTS,
             'args' => [
                 'show_in_rest' => true,
@@ -60,7 +80,12 @@ class Tru_Fetcher_Meta_Fields_Page_Options extends Tru_Fetcher_Meta_Fields_Base
             ]
         ],
         [
-            'post_type' => ['page', 'item_view_templates', 'post_templates', 'category_templates'],
+            'post_type' => [
+                Tru_Fetcher_Post_Types_Page::NAME,
+                Tru_Fetcher_Post_Types_Trf_Item_View_Tpl::NAME,
+                Tru_Fetcher_Post_Types_Trf_Post_Tpl::NAME,
+                Tru_Fetcher_Post_Types_Trf_Category_Tpl::NAME
+            ],
             'meta_key' => self::META_KEY_FOOTER_OVERRIDE,
             'args' => [
                 'show_in_rest' => true,
@@ -69,7 +94,12 @@ class Tru_Fetcher_Meta_Fields_Page_Options extends Tru_Fetcher_Meta_Fields_Base
             ]
         ],
         [
-            'post_type' => ['page', 'item_view_templates', 'post_templates', 'category_templates'],
+            'post_type' => [
+                Tru_Fetcher_Post_Types_Page::NAME,
+                Tru_Fetcher_Post_Types_Trf_Item_View_Tpl::NAME,
+                Tru_Fetcher_Post_Types_Trf_Post_Tpl::NAME,
+                Tru_Fetcher_Post_Types_Trf_Category_Tpl::NAME
+            ],
             'meta_key' => self::META_KEY_FOOTER_SCRIPTS,
             'args' => [
                 'show_in_rest' => true,

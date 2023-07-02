@@ -1,4 +1,5 @@
 <?php
+
 namespace TruFetcher\Includes\Admin\Blocks;
 
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Carousel;
@@ -47,7 +48,7 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
 
     private string $blockAssetsPrefix = TRU_FETCHER_PLUGIN_DIR . "src/wp/blocks";
 
-    private array $blocks = [
+    public const BLOCKS = [
         Tru_Fetcher_Admin_Blocks_Resources_Listings::class,
         Tru_Fetcher_Admin_Blocks_Resources_Hero::class,
         Tru_Fetcher_Admin_Blocks_Resources_User_Account::class,
@@ -78,7 +79,7 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
 
     public function registerBlocks()
     {
-        foreach ($this->blocks as $block) {
+        foreach (self::BLOCKS as $block) {
             $blockClass = new $block();
             $config = $blockClass->getConfig();
             $id = $config['id'];
@@ -111,9 +112,10 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         }
     }
 
-    public function getBlocks() {
+    public function getBlocks()
+    {
         $data = [];
-        foreach ($this->blocks as $block) {
+        foreach (self::BLOCKS as $block) {
             $blockClass = new $block();
             $config = $blockClass->getConfig();
             if (isset($config['children'])) {
@@ -126,18 +128,26 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
                     $config['attributes'][] = [
                         'id' => $child::BLOCK_ID,
                         'type' => 'object',
-//                        'default' => [],
                     ];
                 }
             }
+//            if (isset($config['attributes'])) {
+//                foreach ($config['attributes'] as $index => $attribute) {
+//                    if (isset($attribute['default'])) {
+//                        continue;
+//                    }
+//                    $config['attributes'][$index]['default'] = $blockClass->getAttributeDefaultValue($attribute, true);
+//                }
+//            }
             $data[] = $config;
         }
         return $data;
     }
 
-    public function getBlocksPostTypes() {
+    public function getBlocksPostTypes()
+    {
         $postTypes = [];
-        foreach ($this->blocks as $block) {
+        foreach (self::BLOCKS as $block) {
             $blockClass = new $block();
             $config = $blockClass->getConfig();
             foreach ($config['post_types'] as $postType) {
@@ -147,9 +157,11 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         }
         return $postTypes;
     }
-    public function getBlocksTaxonomies() {
+
+    public function getBlocksTaxonomies()
+    {
         $taxonomies = [];
-        foreach ($this->blocks as $block) {
+        foreach (self::BLOCKS as $block) {
             $blockClass = new $block();
             $config = $blockClass->getConfig();
             foreach ($config['taxonomies'] as $taxonomy) {

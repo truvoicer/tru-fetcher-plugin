@@ -3,6 +3,7 @@
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_List;
 
 /**
@@ -38,7 +39,8 @@ class Tru_Fetcher_Admin_Blocks_Resources_Carousel extends Tru_Fetcher_Admin_Bloc
             Tru_Fetcher_Admin_Blocks_Resources_Opt_In::BLOCK_NAME,
         ],
         'post_types' => [
-            ['name' => Tru_Fetcher_Post_Types_Trf_Item_List::NAME]
+            ['name' => Tru_Fetcher_Post_Types_Trf_Item_List::NAME],
+            ['name' => Tru_Fetcher_Post_Types_Page::NAME],
         ],
         'taxonomies' => [],
         'attributes' => [

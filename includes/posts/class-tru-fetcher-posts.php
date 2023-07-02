@@ -38,8 +38,8 @@ class Tru_Fetcher_Posts {
     public static function buildPostObject( WP_Post $post ) {
         $postTypes = new Tru_Fetcher_Post_Types();
         $post->seo_title    = $post->post_title . " - " . get_bloginfo( 'name' );
-        $post->post_content = apply_filters( "the_content", $post->post_content );
         $post = $postTypes->buildPostTypeData( $post );
+        $post->post_content = apply_filters( "the_content", $post->post_content );
         return $post;
     }
     public function getPostByPostType( int $postId, string $postType ) {

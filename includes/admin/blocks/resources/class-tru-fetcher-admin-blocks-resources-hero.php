@@ -3,6 +3,7 @@
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Filter_List;
 
 /**
@@ -35,7 +36,8 @@ class Tru_Fetcher_Admin_Blocks_Resources_Hero extends Tru_Fetcher_Admin_Blocks_R
         'name' => self::BLOCK_NAME,
         'title' => self::BLOCK_TITLE,
         'post_types' => [
-            ['name' => Tru_Fetcher_Post_Types_Trf_Filter_List::NAME]
+            ['name' => Tru_Fetcher_Post_Types_Trf_Filter_List::NAME],
+            ['name' => Tru_Fetcher_Post_Types_Page::NAME],
         ],
         'taxonomies' => [],
         'attributes' => [

@@ -45,7 +45,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         return "<div {$propsString}>&nbsp;</div>";
     }
 
-    public function getAttributeDefaultValue(array $attribute) {
+    public function getAttributeDefaultValue(array $attribute, ?bool $backend = false) {
         $defaultValue = null;
         if (isset($attribute['default'])) {
             $defaultValue = $attribute['default'];
@@ -54,12 +54,28 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         if (isset($attribute['type']) ) {
             $type = $attribute['type'];
         }
-        return match ($type) {
-            'integer' => ($defaultValue)? (int)$defaultValue : null,
-            'boolean' => (is_bool($defaultValue))? $defaultValue : null,
-            'array' => ($defaultValue)?: [],
-            default => $defaultValue,
-        };
+        switch ($type) {
+            case 'integer':
+                if (!$defaultValue && $backend) {
+                    return '';
+                }
+                else if (!$defaultValue && !$backend) {
+                    return null;
+                }
+                return (int)$defaultValue;
+            case 'boolean':
+                return (is_bool($defaultValue))? $defaultValue : null;
+            case 'array':
+                return ($defaultValue)?: [];
+            default:
+                if (!$defaultValue && $backend) {
+                    return '';
+                }
+                else if (!$defaultValue && !$backend) {
+                    return null;
+                }
+                return $defaultValue;
+        }
     }
     protected function mergeConfigs(array $blockResources)
     {
@@ -82,6 +98,19 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
             ];
         }
     }
+
+    public function getBlockDataFromPost(\WP_Post $post) {
+        $blockData = parse_blocks($post->post_content);
+        $findBlockDataIndex = array_search($this->config['name'], array_column($blockData, 'blockName'));
+        if ($findBlockDataIndex === false) {
+            return null;
+        }
+        return $blockData[$findBlockDataIndex];
+    }
+    public function buildPostBlockData(\WP_Post $post) {
+        return $post;
+    }
+
     /**
      * @return array
      */
