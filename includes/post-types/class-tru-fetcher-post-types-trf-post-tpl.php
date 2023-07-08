@@ -27,11 +27,9 @@ use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Category;
 class Tru_Fetcher_Post_Types_Trf_Post_Tpl extends Tru_Fetcher_Post_Types_Base
 {
     public const NAME = 'trf_post_tpl';
+    public const ID_IDENTIFIER = 'post_template_id';
+    protected string $idIdentifier = self::ID_IDENTIFIER;
     protected string $name = self::NAME;
-
-    public function __construct()
-    {
-    }
 
     public function init()
     {

@@ -11,9 +11,11 @@ namespace TruFetcher\Includes\Taxonomy;
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Taxonomy_Category extends Tru_Fetcher_Taxonomy
+class Tru_Fetcher_Taxonomy_Category extends Tru_Fetcher_Taxonomy_Base
 {
     public const NAME = 'category';
+    public const ID_IDENTIFIER = 'category_id';
     protected string $name = self::NAME;
+    protected string $idIdentifier = self::ID_IDENTIFIER;
 
 }

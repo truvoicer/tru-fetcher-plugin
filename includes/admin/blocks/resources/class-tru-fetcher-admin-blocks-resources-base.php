@@ -2,6 +2,8 @@
 
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
+
 /**
  * Fired during plugin activation
  *
@@ -108,6 +110,25 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         return $blockData[$findBlockDataIndex];
     }
     public function buildPostBlockData(\WP_Post $post) {
+        $blockData = $this->getBlockDataFromPost($post);
+        if (empty($blockData)) {
+            return $post;
+        }
+        if (!isset($blockData['attrs'])) {
+            return $post;
+        }
+        $postTypes = new Tru_Fetcher_Post_Types();
+        foreach ($postTypes->getPostTypes() as $postTypeClass) {
+            $postType = new $postTypeClass();
+            $postTypeIdIdentifier = $postType->getIdIdentifier();
+            if (empty($postTypeIdIdentifier)) {
+                continue;
+            }
+            if (!isset($blockData['attrs'][$postTypeIdIdentifier])) {
+                continue;
+            }
+            $blockData['attrs'][$postTypeIdIdentifier] = $postType->getPostData($blockData['attrs'][$postTypeIdIdentifier]);
+        }
         return $post;
     }
 

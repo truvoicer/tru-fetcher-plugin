@@ -1,8 +1,7 @@
 import React from 'react';
 import {TabPanel, Panel, PanelBody, RangeControl, SelectControl, ToggleControl} from "@wordpress/components";
 import {
-    findSingleItemListsPostsSelectOptions,
-    getListingsCategoryTermsSelectOptions
+    findPostTypeSelectOptions
 } from "../../../helpers/wp-helpers";
 
 const CustomItemsTab = (props) => {
@@ -36,7 +35,7 @@ const CustomItemsTab = (props) => {
                                         value: ''
                                     },
                                 ],
-                                ...findSingleItemListsPostsSelectOptions()
+                                ...findPostTypeSelectOptions('trf_item_list')
                             ]}
                         />
                     )}
@@ -65,7 +64,7 @@ const CustomItemsTab = (props) => {
                                         value: ''
                                     },
                                 ],
-                                ...findSingleItemListsPostsSelectOptions()
+                                ...findPostTypeSelectOptions('trf_item_list')
                             ]}
                         />
                     )}
@@ -110,7 +109,7 @@ const CustomItemsTab = (props) => {
                                             value: ''
                                         },
                                     ],
-                                    ...findSingleItemListsPostsSelectOptions()
+                                    ...findPostTypeSelectOptions('trf_item_list')
                                 ]}
                             />
                         </>

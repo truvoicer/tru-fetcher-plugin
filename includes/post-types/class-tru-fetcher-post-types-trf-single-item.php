@@ -27,8 +27,9 @@ use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Trf_Listings_Category;
 class Tru_Fetcher_Post_Types_Trf_Single_Item extends Tru_Fetcher_Post_Types_Base
 {
     public const NAME = 'trf_single_item';
+    public const ID_IDENTIFIER = 'single_item_id';
+    protected string $idIdentifier = self::ID_IDENTIFIER;
     protected string $name = self::NAME;
-
     public function init()
     {
         $this->registerPostType(

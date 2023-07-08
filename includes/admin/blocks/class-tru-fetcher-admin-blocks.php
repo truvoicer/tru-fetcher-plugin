@@ -146,11 +146,21 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
 
     public function getBlocksPostTypes()
     {
+        $postTypeManager = new Tru_Fetcher_Post_Types();
         $postTypes = [];
         foreach (self::BLOCKS as $block) {
             $blockClass = new $block();
             $config = $blockClass->getConfig();
             foreach ($config['post_types'] as $postType) {
+                if (in_array($postType['name'], array_column($postTypes, 'name'))) {
+                    continue;
+                }
+                $postTypeClass = $postTypeManager->findPostTypeByName($postType['name']);
+                if (!$postTypeClass) {
+                    continue;
+                }
+                $postTypeInstance = new $postTypeClass();
+                $postType['id_identifier'] = $postTypeInstance->getIdIdentifier();
                 $postType['posts'] = Tru_Fetcher_Post_Types_Base::getPostTypeData($postType['name']);
                 $postTypes[] = $postType;
             }
@@ -160,12 +170,22 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
 
     public function getBlocksTaxonomies()
     {
+        $taxonomyManager = new Tru_Fetcher_Taxonomy();
         $taxonomies = [];
         foreach (self::BLOCKS as $block) {
             $blockClass = new $block();
             $config = $blockClass->getConfig();
             foreach ($config['taxonomies'] as $taxonomy) {
-                $taxonomy['terms'] = (new Tru_Fetcher_Taxonomy())->getTerms($taxonomy['name']);
+                if (in_array($taxonomy['name'], array_column($taxonomy, 'name'))) {
+                    continue;
+                }
+                $taxonomyClass = $taxonomyManager->findTaxonomyClassByName($taxonomy['name']);
+                if (!$taxonomyClass) {
+                    continue;
+                }
+                $taxonomyInstance = new $taxonomyClass();
+                $taxonomy['id_identifier'] = $taxonomyInstance->getIdIdentifier();
+                $taxonomy['terms'] = $taxonomyManager->getTerms($taxonomy['name']);
                 $taxonomies[] = $taxonomy;
             }
         }

@@ -1,6 +1,6 @@
 import React from 'react';
 import {TabPanel, Panel, RangeControl, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
-import {findTaxonomySelectOptions} from "../../../helpers/wp-helpers";
+import {findTaxonomyIdIdentifier, findTaxonomySelectOptions} from "../../../helpers/wp-helpers";
 
 const GeneralTab = (props) => {
     const {
@@ -10,6 +10,7 @@ const GeneralTab = (props) => {
         apiConfig
     } = props;
 
+    const categoryId = findTaxonomyIdIdentifier('category')
     return (
         <div>
             <TextControl
@@ -67,11 +68,10 @@ const GeneralTab = (props) => {
             <SelectControl
                 label="Categories"
                 onChange={(value) => {
-                    console.log({value})
-                    setAttributes({categories: value});
+                    setAttributes({[categoryId]: value});
                 }}
                 multiple={true}
-                value={attributes?.categories}
+                value={attributes?.[categoryId]}
                 options={[
                     ...[
                         {

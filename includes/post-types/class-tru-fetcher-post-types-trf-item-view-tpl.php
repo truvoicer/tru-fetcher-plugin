@@ -27,6 +27,8 @@ use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Trf_Listings_Category;
 class Tru_Fetcher_Post_Types_Trf_Item_View_Tpl extends Tru_Fetcher_Post_Types_Base
 {
     public const NAME = 'trf_item_view_tpl';
+    public const ID_IDENTIFIER = 'item_view_template_id';
+    protected string $idIdentifier = self::ID_IDENTIFIER;
     protected string $name = self::NAME;
 
     public function init()

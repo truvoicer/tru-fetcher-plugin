@@ -76,7 +76,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Hero extends Tru_Fetcher_Admin_Blocks_R
                 'default' => false,
             ],
             [
-                'id' => 'hero_search__categories',
+                'id' => Tru_Fetcher_Post_Types_Trf_Filter_List::ID_IDENTIFIER,
                 'type' => 'integer',
             ],
             [

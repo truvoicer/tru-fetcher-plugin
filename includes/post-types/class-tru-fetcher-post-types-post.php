@@ -25,6 +25,8 @@ namespace TruFetcher\Includes\PostTypes;
 class Tru_Fetcher_Post_Types_Post extends Tru_Fetcher_Post_Types_Base
 {
     public const NAME = 'post';
+    public const ID_IDENTIFIER = 'post_id';
+    protected string $idIdentifier = self::ID_IDENTIFIER;
     protected string $name = self::NAME;
 
 }

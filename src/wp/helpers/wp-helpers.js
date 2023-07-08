@@ -1,13 +1,4 @@
 
-export function findSingleItemListsPosts() {
-    return tru_fetcher_react.post_types.find(postType => postType?.name === 'trf_item_list');
-}
-export function findSingleItemPosts() {
-    return tru_fetcher_react.post_types.find(postType => postType?.name === 'trf_single_item');
-}
-export function findListingsCategoryTerms() {
-    return tru_fetcher_react.taxonomies.find(taxonomy => taxonomy?.name === 'trf_listings_category');
-}
 export function findPostTypeData(postType) {
     if (!Array.isArray(tru_fetcher_react?.post_types)) {
         return null;
@@ -47,43 +38,26 @@ export function findTaxonomySelectOptions(taxonomy) {
         }
     })
 }
-export function getListingsCategoryTermsSelectOptions() {
-    let listingsCategoryTerms = findListingsCategoryTerms();
-    if (!listingsCategoryTerms) {
-        return [];
+export function findPostTypeIdIdentifier(postType) {
+    const findPostType = findPostTypeData(postType)
+    if (!findPostType) {
+        return false;
     }
-    return listingsCategoryTerms.terms.map(term => {
-        return {
-            label: term.name,
-            value: term.term_id
-        }
-    })
-}
-export function findSingleItemPostsSelectOptions() {
-    let singleItemPosts = findSingleItemPosts();
-    if (!singleItemPosts) {
-        return [];
+    if (findPostType?.id_identifier) {
+        return findPostType.id_identifier;
     }
-    return singleItemPosts.posts.map(post => {
-        return {
-            label: post.post_title,
-            value: post.ID
-        }
-    })
+    return false;
 }
-export function findSingleItemListsPostsSelectOptions() {
-    let singleItemListsPosts = findSingleItemListsPosts();
-    if (!singleItemListsPosts) {
-        return [];
+export function findTaxonomyIdIdentifier(taxonomy) {
+    const taxonomies = findTaxonomyData(taxonomy)
+    if (!taxonomies) {
+        return false;
     }
-    return singleItemListsPosts.posts.map(post => {
-        return {
-            label: post.post_title,
-            value: post.ID
-        }
-    })
+    if (taxonomies?.id_identifier) {
+        return taxonomies.id_identifier;
+    }
+    return false;
 }
-
 
 export function addParam({attr, attributes, setAttributes}) {
     let cloneAtts = {...attributes};

@@ -1,6 +1,6 @@
 import React from 'react';
 import {TabPanel, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
-import {getListingsCategoryTermsSelectOptions} from "../../../helpers/wp-helpers";
+import {findTaxonomyIdIdentifier, findTaxonomySelectOptions} from "../../../helpers/wp-helpers";
 
 const GeneralTab = (props) => {
     const {
@@ -8,6 +8,7 @@ const GeneralTab = (props) => {
         setAttributes,
         className,
     } = props;
+    const listingsCategoryId = findTaxonomyIdIdentifier('trf_listings_category')
     return (
         <div>
             <SelectControl
@@ -35,9 +36,9 @@ const GeneralTab = (props) => {
             <SelectControl
                 label="Listings Category"
                 onChange={(value) => {
-                    setAttributes({listings_category: value});
+                    setAttributes({[listingsCategoryId]: value});
                 }}
-                value={attributes?.listings_category}
+                value={attributes?.[listingsCategoryId]}
                 options={[
                     ...[
                         {
@@ -46,7 +47,7 @@ const GeneralTab = (props) => {
                             value: ''
                         },
                     ],
-                    ...getListingsCategoryTermsSelectOptions()
+                    ...findTaxonomySelectOptions('trf_listings_category')
                 ]}
             />
         </div>

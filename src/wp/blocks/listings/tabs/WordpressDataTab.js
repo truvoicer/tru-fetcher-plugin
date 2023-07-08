@@ -1,9 +1,8 @@
 import React from 'react';
 import {TabPanel, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
 import {
-    findPostTypeSelectOptions,
-    findSingleItemPostsSelectOptions,
-    getListingsCategoryTermsSelectOptions
+    findPostTypeIdIdentifier,
+    findPostTypeSelectOptions, findTaxonomyIdIdentifier,
 } from "../../../helpers/wp-helpers";
 
 const WordpressDataTab = (props) => {
@@ -14,14 +13,15 @@ const WordpressDataTab = (props) => {
         config
     } = props;
 
+    const itemListId = findPostTypeIdIdentifier('trf_item_list')
     return (
         <div>
             <SelectControl
                 label="Item List"
                 onChange={(value) => {
-                    setAttributes({item_list: value});
+                    setAttributes({[itemListId]: value});
                 }}
-                value={attributes?.item_list}
+                value={attributes?.[itemListId]}
                 options={[
                     ...[
                     {

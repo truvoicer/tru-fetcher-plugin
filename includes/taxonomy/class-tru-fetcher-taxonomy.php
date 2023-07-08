@@ -25,24 +25,16 @@ use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Taxonomy {
+class Tru_Fetcher_Taxonomy
+{
 
-    public const LISTINGS_CATEGORIES_TAXONOMY = 'listings_categories';
     use Tru_Fetcher_DB_Traits_WP_Site, Tru_Fetcher_Traits_Errors;
+
     public const ERROR_PREFIX = TRU_FETCHER_ERROR_PREFIX . '_taxonomy';
 
-    protected string $name;
-    private string $menuName;
-    private string $menuAdminBar;
-
-    protected array $argDefaults = [
-        'hierarchical'               => false,
-        'public'                     => true,
-        'show_ui'                    => true,
-        'show_admin_column'          => true,
-        'show_in_nav_menus'          => true,
-        'show_tagcloud'              => true,
-        'show_in_rest'               => true,
+    private array $taxonomies = [
+        Tru_Fetcher_Taxonomy_Category::class,
+        Tru_Fetcher_Taxonomy_Trf_Listings_Category::class
     ];
 
     public function __construct()
@@ -50,56 +42,14 @@ class Tru_Fetcher_Taxonomy {
         require_once ABSPATH . 'wp-admin/includes' . '/taxonomy.php';
     }
 
-    protected function registerTaxonomy(string $name, string $singularName, array $objectTypes = [], ?array $args = []): void
+
+    public function getCategories()
     {
-        $args = $this->getArgs($name, $singularName, $args);
-
-        add_action( 'init', function () use ($name, $args, $objectTypes) {
-            register_taxonomy( $this->name, $objectTypes, $args );
-        }, 0 );
-
-    }
-    protected function getArgs(string $name, string $singularName, ?array $args = []): array
-    {
-        $labels = $this->getLabels($name, $singularName);
-        $args = array_merge($this->argDefaults, $args);
-        $args['label'] = $labels['name'];
-        $args['labels'] = $labels;
-        return $args;
-    }
-
-    protected function getLabels(string $name, string $singularName): array
-    {
-        $labels = [
-            'name'                  => _x( $name, $name, 'text_domain' ),
-            'singular_name'         => _x( $singularName, $singularName, 'text_domain' ),
-        ];
-        $menuName = $name;
-        $menuAdminBar = $name;
-        if (!empty($this->menuName)) {
-            $menuName = $this->menuName;
-        }
-        if (!empty($this->menuAdminBar)) {
-            $menuAdminBar = $this->menuAdminBar;
-        }
-        $labels['menu_name'] = __( $menuName, 'text_domain' );
-        $labels['name_admin_bar'] = __( $menuAdminBar, 'text_domain' );
-        return $labels;
-    }
-
-    public static function getPostTypeData(string $postType)
-    {
-        return get_posts([
-            'post_type' => $postType,
-            'posts_per_page' => -1,
-            'post_status' => 'any',
-        ]);
-    }
-
-    public function getCategories() {
         return get_categories();
     }
-    public function getTerms($taxonomy) {
+
+    public function getTerms($taxonomy)
+    {
         $getTerms = get_terms([
             'taxonomy' => $taxonomy,
             "hide_empty" => false
@@ -111,7 +61,8 @@ class Tru_Fetcher_Taxonomy {
         return $getTerms;
     }
 
-    public function doesTermExistsInArray(array $data, \WP_Term $WP_Term) {
+    public function doesTermExistsInArray(array $data, \WP_Term $WP_Term)
+    {
         foreach ($data as $item) {
             if (!$item instanceof \WP_Term) {
                 return new \WP_Error(
@@ -132,7 +83,8 @@ class Tru_Fetcher_Taxonomy {
         return $request->get_param('terms');
     }
 
-    public function buildTermItem(array $term) {
+    public function buildTermItem(array $term)
+    {
         if (!isset($term['name']) || $term['name'] === '') {
             return new \WP_Error(
                 self::ERROR_PREFIX . '_term_name_invalid',
@@ -154,7 +106,8 @@ class Tru_Fetcher_Taxonomy {
         return $term;
     }
 
-    public function getTermId(array $term) {
+    public function getTermId(array $term)
+    {
         if (!isset($term['term_id']) || $term['term_id'] === '') {
             return new \WP_Error(
                 self::ERROR_PREFIX . '_term_name_invalid',
@@ -164,7 +117,9 @@ class Tru_Fetcher_Taxonomy {
         }
         return $term['term_id'];
     }
-    public function fetchTerm($termId, $taxonomy) {
+
+    public function fetchTerm($termId, $taxonomy)
+    {
         $term = get_term($termId, $taxonomy);
         if (!$term) {
             return new \WP_Error(
@@ -180,7 +135,9 @@ class Tru_Fetcher_Taxonomy {
         }
         return $term;
     }
-    public function saveTerms(array $terms, string $taxonomy) {
+
+    public function saveTerms(array $terms, string $taxonomy)
+    {
         $errors = [];
         foreach ($terms as $term) {
             if (!isset($term['state']) || $term['state'] === '') {
@@ -212,7 +169,8 @@ class Tru_Fetcher_Taxonomy {
         return count($errors) === 0;
     }
 
-    public function createTermFromRequest(\WP_REST_Request $request) {
+    public function createTermFromRequest(\WP_REST_Request $request)
+    {
         $term = [
             'name' => $request->get_param('name'),
             'slug' => $request->get_param('slug'),
@@ -222,7 +180,9 @@ class Tru_Fetcher_Taxonomy {
             $term
         );
     }
-    public function createTerm($taxonomy, $term) {
+
+    public function createTerm($taxonomy, $term)
+    {
         $buildTerm = $this->buildTermItem($term);
         if (is_wp_error($buildTerm)) {
             $this->addError($buildTerm);
@@ -236,13 +196,16 @@ class Tru_Fetcher_Taxonomy {
         return true;
     }
 
-    public function updateTermFromRequest(\WP_REST_Request $request) {
+    public function updateTermFromRequest(\WP_REST_Request $request)
+    {
         return $this->updateTerm(
             $request->get_param('taxonomy'),
             $request->get_params()
         );
     }
-    public function updateTerm($taxonomy, $term) {
+
+    public function updateTerm($taxonomy, $term)
+    {
         $buildTerm = $this->buildTermItem($term);
         if (is_wp_error($buildTerm)) {
             $this->addError($buildTerm);
@@ -266,7 +229,8 @@ class Tru_Fetcher_Taxonomy {
         return true;
     }
 
-    public function deleteTermBatch($taxonomy, $terms) {
+    public function deleteTermBatch($taxonomy, $terms)
+    {
         $errors = [];
         foreach ($terms as $term) {
             if (!$this->deleteTerm($taxonomy, $term)) {
@@ -275,7 +239,9 @@ class Tru_Fetcher_Taxonomy {
         }
         return count($errors) === 0;
     }
-    public function deleteTerm($taxonomy, $term) {
+
+    public function deleteTerm($taxonomy, $term)
+    {
         $termId = $this->getTermId($term);
         if (is_wp_error($termId)) {
             $this->addError($termId);
@@ -295,19 +261,21 @@ class Tru_Fetcher_Taxonomy {
     }
 
     /**
-     * @param string $menuName
+     * @return array
      */
-    public function setMenuName(string $menuName): void
+    public function getTaxonomies(): array
     {
-        $this->menuName = $menuName;
+        return $this->taxonomies;
     }
 
-    /**
-     * @param string $menuAdminBar
-     */
-    public function setMenuAdminBar(string $menuAdminBar): void
+    public function findTaxonomyClassByName(string $name)
     {
-        $this->menuAdminBar = $menuAdminBar;
+        foreach ($this->getTaxonomies() as $taxonomy) {
+            $taxonomyName = (new $taxonomy())->getName();
+            if ($taxonomyName === $name) {
+                return $taxonomy;
+            }
+        }
+        return null;
     }
-
 }

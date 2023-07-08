@@ -57,4 +57,14 @@ class Tru_Fetcher_Post_Types {
     {
         return $this->postTypes;
     }
+
+    public function findPostTypeByName(string $name) {
+        foreach ($this->getPostTypes() as $postType) {
+            $postTypeName = (new $postType())->getName();
+            if ($postTypeName === $name) {
+                return $postType;
+            }
+        }
+        return null;
+    }
 }

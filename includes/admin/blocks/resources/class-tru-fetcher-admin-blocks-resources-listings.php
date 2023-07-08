@@ -61,7 +61,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'default' => 'search',
             ],
             [
-                'id' => 'listings_category',
+                'id' => Tru_Fetcher_Taxonomy_Trf_Listings_Category::ID_IDENTIFIER,
                 'type' => 'string',
                 'default' => '',
             ],
@@ -132,7 +132,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'type' => 'integer',
             ],
             [
-                'id' => 'item_list',
+                'id' => Tru_Fetcher_Post_Types_Trf_Item_List::ID_IDENTIFIER,
                 'type' => 'string',
                 'default' => ''
             ],
@@ -199,7 +199,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
             return $post;
         }
 
-        $postTypes = new Tru_Fetcher_Post_Types();
+        $postTypes = new Tru_Fetcher_Post_Types_Trf_Item_List();
         $args            = [
             'post_type'   => Tru_Fetcher_Post_Types_Trf_Item_List::NAME,
             'numberposts' => 1,
@@ -207,8 +207,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
         ];
         $getItemListPosts = get_posts( $args );
         $itemListPost = $getItemListPosts[0];
-        var_dump($post->post_type);
-        $itemListPost = $postTypes->buildPostTypeData($itemListPost);
+        $itemListPost = $postTypes->renderPost($itemListPost);
         var_dump($itemListPost);
         return $post;
     }

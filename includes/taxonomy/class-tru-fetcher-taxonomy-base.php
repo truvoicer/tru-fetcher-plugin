@@ -1,9 +1,8 @@
 <?php
+namespace TruFetcher\Includes\Taxonomy;
 
-namespace TruFetcher\Includes\PostTypes;
-
-use TruFetcher\Includes\Admin\Blocks\Tru_Fetcher_Admin_Blocks;
-use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
+use TruFetcher\Includes\DB\Traits\WP\Tru_Fetcher_DB_Traits_WP_Site;
+use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
 
 /**
  * Fired during plugin activation
@@ -25,40 +24,34 @@ use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Post_Types_Base {
-    protected Tru_Fetcher_Admin_Meta $meta;
+class Tru_Fetcher_Taxonomy_Base {
 
     protected string $name;
     private string $menuName;
     private string $menuAdminBar;
 
     protected string $idIdentifier;
+    protected array $argDefaults = [
+        'hierarchical'               => false,
+        'public'                     => true,
+        'show_ui'                    => true,
+        'show_admin_column'          => true,
+        'show_in_nav_menus'          => true,
+        'show_tagcloud'              => true,
+        'show_in_rest'               => true,
+    ];
 
     public function __construct()
     {
-        $this->meta = new Tru_Fetcher_Admin_Meta();
+        require_once ABSPATH . 'wp-admin/includes' . '/taxonomy.php';
     }
 
-    protected array $argDefaults = [
-        'public'                => true,
-        'show_ui'               => true,
-        'show_in_menu'          => false,
-        'show_in_admin_bar'     => true,
-        'show_in_nav_menus'     => true,
-        'show_in_rest'          => true,
-        'can_export'            => true,
-        'has_archive'           => true,
-        'exclude_from_search'   => false,
-        'publicly_queryable'    => true,
-        'hierarchical' => true,
-    ];
-
-    protected function registerPostType(string $name, string $singularName, ?array $args = []): void
+    protected function registerTaxonomy(string $name, string $singularName, array $objectTypes = [], ?array $args = []): void
     {
         $args = $this->getArgs($name, $singularName, $args);
 
-        add_action( 'init', function () use ($name, $args) {
-            register_post_type( $this->name, $args );
+        add_action( 'init', function () use ($name, $args, $objectTypes) {
+            register_taxonomy( $this->name, $objectTypes, $args );
         }, 0 );
 
     }
@@ -89,6 +82,7 @@ class Tru_Fetcher_Post_Types_Base {
         $labels['name_admin_bar'] = __( $menuAdminBar, 'text_domain' );
         return $labels;
     }
+
     public static function getPostTypeData(string $postType)
     {
         return get_posts([
@@ -98,21 +92,6 @@ class Tru_Fetcher_Post_Types_Base {
         ]);
     }
 
-    public function renderPost(\WP_Post $post) {
-//        var_dump($this->meta);
-        $metaBoxClasses = $this->meta->getMetaboxClasses([$this->name]);
-        var_dump($metaBoxClasses);
-        foreach ($metaBoxClasses as $metaBoxClass) {
-            $metaBox = new $metaBoxClass();
-            $post->{$metaBoxClass::NAME} = $metaBox->buildMetaBoxFieldData($post);
-        }
-        foreach (Tru_Fetcher_Admin_Blocks::BLOCKS as $blocksClass) {
-            $blocksClassInstance = new $blocksClass();
-            $post = $blocksClassInstance->buildPostBlockData($post);
-        }
-
-        return $post;
-    }
     /**
      * @param string $menuName
      */
@@ -132,17 +111,16 @@ class Tru_Fetcher_Post_Types_Base {
     /**
      * @return string
      */
-    public function getIdIdentifier(): string
-    {
-        return $this->idIdentifier;
-    }
-
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
+    /**
+     * @return string
+     */
+    public function getIdIdentifier(): string
+    {
+        return $this->idIdentifier;
+    }
 }

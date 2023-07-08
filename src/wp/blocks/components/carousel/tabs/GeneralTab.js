@@ -1,6 +1,6 @@
 import React from 'react';
 import {TabPanel, Panel, Button, TextControl, SelectControl, RangeControl} from "@wordpress/components";
-import {findPostTypeSelectOptions, findSingleItemListsPostsSelectOptions} from "../../../../helpers/wp-helpers";
+import {findPostTypeIdIdentifier, findPostTypeSelectOptions} from "../../../../helpers/wp-helpers";
 
 const GeneralTab = (props) => {
     const {
@@ -34,6 +34,7 @@ const GeneralTab = (props) => {
         onChange({key, value: cloneRequestParams});
     }
 
+    const itemListId = findPostTypeIdIdentifier('trf_item_list')
     return (
         <div>
             <SelectControl
@@ -62,9 +63,9 @@ const GeneralTab = (props) => {
                 <SelectControl
                     label="Item List"
                     onChange={(value) => {
-                        onChange({key: 'item_list', value});
+                        onChange({key: itemListId, value});
                     }}
-                    value={data?.item_list}
+                    value={data?.[itemListId]}
                     options={[
                         ...[
                             {

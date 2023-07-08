@@ -25,11 +25,10 @@ namespace TruFetcher\Includes\PostTypes;
 class Tru_Fetcher_Post_Types_Trf_Filter_List extends Tru_Fetcher_Post_Types_Base
 {
     public const NAME = 'trf_filter_list';
+    public const ID_IDENTIFIER = 'filter_list_id';
+    protected string $idIdentifier = self::ID_IDENTIFIER;
     protected string $name = self::NAME;
 
-    public function __construct()
-    {
-    }
 
     public function init()
     {

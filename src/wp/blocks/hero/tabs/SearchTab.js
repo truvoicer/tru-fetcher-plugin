@@ -2,7 +2,7 @@ import React from 'react';
 import {TabPanel, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
 import {fetchRequest} from "../../../../library/api/middleware";
 import fetcherApiConfig from "../../../../library/api/fetcher-api/fetcherApiConfig";
-import {findPostTypeSelectOptions} from "../../../helpers/wp-helpers";
+import {findPostTypeIdIdentifier, findPostTypeSelectOptions} from "../../../helpers/wp-helpers";
 
 const SearchTab = (props) => {
     const {
@@ -12,6 +12,8 @@ const SearchTab = (props) => {
         apiConfig
     } = props;
 
+
+    const filterListId = findPostTypeIdIdentifier('trf_filter_list')
     return (
         <div>
             <ToggleControl
@@ -26,9 +28,9 @@ const SearchTab = (props) => {
                     <SelectControl
                         label="Categories"
                         onChange={(value) => {
-                            setAttributes({hero_search__categories: value});
+                            setAttributes({[filterListId]: value});
                         }}
-                        value={attributes?.hero_search__categories}
+                        value={attributes?.[filterListId]}
                         options={[
                             ...[
                             {

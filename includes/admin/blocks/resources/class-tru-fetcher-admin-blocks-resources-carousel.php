@@ -50,7 +50,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Carousel extends Tru_Fetcher_Admin_Bloc
                 'default' => 'items',
             ],
             [
-                'id' => 'item_list',
+                'id' => Tru_Fetcher_Post_Types_Trf_Item_List::ID_IDENTIFIER,
                 'type' => 'integer',
             ],
             [

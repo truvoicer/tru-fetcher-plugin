@@ -22,10 +22,12 @@ namespace TruFetcher\Includes\Taxonomy;
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Taxonomy_Trf_Listings_Category extends Tru_Fetcher_Taxonomy
+class Tru_Fetcher_Taxonomy_Trf_Listings_Category extends Tru_Fetcher_Taxonomy_Base
 {
     public const NAME = 'trf_listings_category';
+    public const ID_IDENTIFIER = 'listings_category_id';
     protected string $name = self::NAME;
+    protected string $idIdentifier = self::ID_IDENTIFIER;
 
     public function init()
     {

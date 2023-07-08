@@ -66,7 +66,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Posts extends Tru_Fetcher_Admin_Blocks_
                 'default' => true,
             ],
             [
-                'id' => 'categories',
+                'id' => Tru_Fetcher_Taxonomy_Category::ID_IDENTIFIER,
                 'type' => 'array',
                 'default' => [],
             ],
