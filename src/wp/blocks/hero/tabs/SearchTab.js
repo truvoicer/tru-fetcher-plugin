@@ -28,9 +28,9 @@ const SearchTab = (props) => {
                     <SelectControl
                         label="Categories"
                         onChange={(value) => {
-                            setAttributes({[filterListId]: value});
+                            setAttributes({[`${filterListId}__hero_search__categories`]: value});
                         }}
-                        value={attributes?.[filterListId]}
+                        value={attributes?.[`${filterListId}__hero_search__categories`]}
                         options={[
                             ...[
                             {
@@ -85,9 +85,9 @@ const SearchTab = (props) => {
                     <SelectControl
                         label="Featured Categories"
                         onChange={(value) => {
-                            setAttributes({hero_search__featured_categories: value});
+                            setAttributes({[`${filterListId}__hero_search__featured_categories`]: value});
                         }}
-                        value={attributes?.hero_search__featured_categories}
+                        value={attributes?.[`${filterListId}__hero_search__featured_categories`]}
                         options={[
                             ...[
                                 {

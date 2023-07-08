@@ -3,6 +3,8 @@
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_List;
+use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
 
 /**
  * Fired during plugin activation
@@ -35,7 +37,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         foreach ($attributes as $attribute) {
             $attributeDefaults[$attribute['id']] = $this->getAttributeDefaultValue($attribute);
         }
-        $blockAttributes = array_merge($attributeDefaults, $blockAttributes);
+        $blockAttributes = array_merge($attributeDefaults, $this->buildBlockAttributes($blockAttributes));
         $props = [
             'id' => $id,
             'data' => htmlspecialchars(json_encode($blockAttributes)),
@@ -109,27 +111,67 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         }
         return $blockData[$findBlockDataIndex];
     }
-    public function buildPostBlockData(\WP_Post $post) {
-        $blockData = $this->getBlockDataFromPost($post);
-        if (empty($blockData)) {
-            return $post;
+
+    private function findAttributeKeysByString(string $string, array $attributes) {
+        $keys = [];
+        foreach ($attributes as $key => $attribute) {
+            if ($key === $string) {
+                $keys[] = $key;
+            } elseif (str_starts_with($key, "{$string}__")) {
+                $keys[] = $key;
+            }
         }
-        if (!isset($blockData['attrs'])) {
-            return $post;
-        }
+        return $keys;
+    }
+    public function buildBlockAttributes(array $attributes) {
         $postTypes = new Tru_Fetcher_Post_Types();
+        $taxonomyManager = new Tru_Fetcher_Taxonomy();
         foreach ($postTypes->getPostTypes() as $postTypeClass) {
             $postType = new $postTypeClass();
             $postTypeIdIdentifier = $postType->getIdIdentifier();
             if (empty($postTypeIdIdentifier)) {
                 continue;
             }
-            if (!isset($blockData['attrs'][$postTypeIdIdentifier])) {
+            $findAttributeKeys = $this->findAttributeKeysByString($postTypeIdIdentifier, $attributes);
+            if (!count($findAttributeKeys)) {
                 continue;
             }
-            $blockData['attrs'][$postTypeIdIdentifier] = $postType->getPostData($blockData['attrs'][$postTypeIdIdentifier]);
+            foreach ($findAttributeKeys as $findAttributeKey) {
+                $postTypeId = $attributes[$findAttributeKey];
+                $args            = [
+                    'post_type'   => $postType->getName(),
+                    'numberposts' => -1,
+                    'p' => (int)$postTypeId,
+                ];
+                $getItemListPosts = get_posts( $args );
+                $attributes[$findAttributeKey] = array_map(function(\WP_Post $itemListPost) use($postTypes) {
+                    return $postTypes->buildPostTypeData($itemListPost);
+                }, $getItemListPosts);
+            }
         }
-        return $post;
+        foreach ($taxonomyManager->getTaxonomies() as $taxonomyClass) {
+            $taxonomy = new $taxonomyClass();
+            $taxonomyIdIdentifier = $taxonomy->getIdIdentifier();
+            if (empty($taxonomyIdIdentifier)) {
+                continue;
+            }
+
+            $findAttributeKeys = $this->findAttributeKeysByString($taxonomyIdIdentifier, $attributes);
+            if (!count($findAttributeKeys)) {
+                continue;
+            }
+            foreach ($findAttributeKeys as $findAttributeKey) {
+                $termId = $attributes[$findAttributeKey];
+                if (!is_array($termId)) {
+                    $termId = [$termId];
+                }
+                $attributes[$findAttributeKey] = get_terms([
+                    'taxonomy' => $taxonomy->getName(),
+                    'include' => $termId,
+                ]);
+            }
+        }
+        return $attributes;
     }
 
     /**

@@ -76,8 +76,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Hero extends Tru_Fetcher_Admin_Blocks_R
                 'default' => false,
             ],
             [
-                'id' => Tru_Fetcher_Post_Types_Trf_Filter_List::ID_IDENTIFIER,
-                'type' => 'integer',
+                'id' => Tru_Fetcher_Post_Types_Trf_Filter_List::ID_IDENTIFIER . '__hero_search__categories',
+                'type' => 'string',
+                'default' => '',
             ],
             [
                 'id' => 'hero_search__categories_placeholder',
@@ -100,8 +101,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Hero extends Tru_Fetcher_Admin_Blocks_R
                 'type' => 'string',
             ],
             [
-                'id' => 'hero_search__featured_categories',
-                'type' => 'integer',
+                'id' => Tru_Fetcher_Post_Types_Trf_Filter_List::ID_IDENTIFIER . '__hero_search__featured_categories',
+                'type' => 'string',
+                'default' => '',
             ],
             [
                 'id' => 'hero_extra_data',

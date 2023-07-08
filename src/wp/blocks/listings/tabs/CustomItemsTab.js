@@ -1,6 +1,7 @@
 import React from 'react';
 import {TabPanel, Panel, PanelBody, RangeControl, SelectControl, ToggleControl} from "@wordpress/components";
 import {
+    findPostTypeIdIdentifier,
     findPostTypeSelectOptions
 } from "../../../helpers/wp-helpers";
 
@@ -10,6 +11,7 @@ const CustomItemsTab = (props) => {
         setAttributes,
         className,
     } = props;
+    const itemListId = findPostTypeIdIdentifier('trf_item_list')
     return (
         <>
             <div>
@@ -24,9 +26,9 @@ const CustomItemsTab = (props) => {
                         <SelectControl
                             label="Listings Category"
                             onChange={(value) => {
-                                setAttributes({list_start_items: value});
+                                setAttributes({[`${itemListId}__list_start_items`]: value});
                             }}
-                            value={attributes?.list_start_items}
+                            value={attributes?.[`${itemListId}__list_start_items`]}
                             options={[
                                 ...[
                                     {
@@ -53,9 +55,9 @@ const CustomItemsTab = (props) => {
                         <SelectControl
                             label="Listings Category"
                             onChange={(value) => {
-                                setAttributes({list_end_items: value});
+                                setAttributes({[`${itemListId}__list_end_items`]: value});
                             }}
-                            value={attributes?.list_end_items}
+                            value={attributes?.[`${itemListId}__list_end_items`]}
                             options={[
                                 ...[
                                     {
@@ -98,9 +100,9 @@ const CustomItemsTab = (props) => {
                             <SelectControl
                                 label="Listings Category"
                                 onChange={(value) => {
-                                    setAttributes({custom_position_items: value});
+                                    setAttributes({[`${itemListId}__custom_position_items`]: value});
                                 }}
-                                value={attributes?.custom_position_items}
+                                value={attributes?.[`${itemListId}__custom_position_items`]}
                                 options={[
                                     ...[
                                         {

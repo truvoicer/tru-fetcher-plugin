@@ -142,8 +142,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'default' => false,
             ],
             [
-                'id' => 'list_start_items',
-                'type' => 'integer',
+                'id' =>  Tru_Fetcher_Post_Types_Trf_Item_List::ID_IDENTIFIER . '__list_start_items',
+                'type' => 'string',
+                'default' => '',
             ],
             [
                 'id' => 'list_end',
@@ -151,8 +152,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'default' => false,
             ],
             [
-                'id' => 'list_end_items',
-                'type' => 'integer',
+                'id' => Tru_Fetcher_Post_Types_Trf_Item_List::ID_IDENTIFIER . '__list_end_items',
+                'type' => 'string',
+                'default' => '',
             ],
             [
                 'id' => 'custom_position',
@@ -160,8 +162,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'default' => false,
             ],
             [
-                'id' => 'custom_position_items',
-                'type' => 'integer',
+                'id' => Tru_Fetcher_Post_Types_Trf_Item_List::ID_IDENTIFIER . '__custom_position_items',
+                'type' => 'string',
+                'default' => '',
             ],
             [
                 'id' => 'custom_position_insert_index',
@@ -174,44 +177,4 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
         ]
     ];
 
-    public function buildPostBlockData(\WP_Post $post) {
-        $blockData = $this->getBlockDataFromPost($post);
-        if (empty($blockData)) {
-            return $post;
-        }
-        if (!isset($blockData['attrs'])) {
-            return $post;
-        }
-        $attributes = $blockData['attrs'];
-        if (!isset($attributes['source'])) {
-            return $post;
-        }
-        switch ($attributes['source']) {
-            case 'wordpress':
-                $post = $this->buildWordpressBlockData($attributes, $post);
-                break;
-        }
-        return $post;
-    }
-
-    private function buildWordpressBlockData(array $attributes, \WP_Post $post) {
-        if (!isset($attributes['item_list'])) {
-            return $post;
-        }
-
-        $postTypes = new Tru_Fetcher_Post_Types_Trf_Item_List();
-        $args            = [
-            'post_type'   => Tru_Fetcher_Post_Types_Trf_Item_List::NAME,
-            'numberposts' => 1,
-            'p' => (int)$attributes['item_list'],
-        ];
-        $getItemListPosts = get_posts( $args );
-        $itemListPost = $getItemListPosts[0];
-        $itemListPost = $postTypes->renderPost($itemListPost);
-        var_dump($itemListPost);
-        return $post;
-    }
-    private function buildApiBlockData(\WP_Post $post) {
-        return $post;
-    }
 }

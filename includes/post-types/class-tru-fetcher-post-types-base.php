@@ -101,14 +101,9 @@ class Tru_Fetcher_Post_Types_Base {
     public function renderPost(\WP_Post $post) {
 //        var_dump($this->meta);
         $metaBoxClasses = $this->meta->getMetaboxClasses([$this->name]);
-        var_dump($metaBoxClasses);
         foreach ($metaBoxClasses as $metaBoxClass) {
             $metaBox = new $metaBoxClass();
             $post->{$metaBoxClass::NAME} = $metaBox->buildMetaBoxFieldData($post);
-        }
-        foreach (Tru_Fetcher_Admin_Blocks::BLOCKS as $blocksClass) {
-            $blocksClassInstance = new $blocksClass();
-            $post = $blocksClassInstance->buildPostBlockData($post);
         }
 
         return $post;

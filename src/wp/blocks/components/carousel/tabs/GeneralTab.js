@@ -65,7 +65,7 @@ const GeneralTab = (props) => {
                     onChange={(value) => {
                         onChange({key: itemListId, value});
                     }}
-                    value={data?.[itemListId]}
+                    value={data?.item_list}
                     options={[
                         ...[
                             {
