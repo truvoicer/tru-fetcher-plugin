@@ -35,6 +35,7 @@ class Tru_Fetcher_Meta_Fields_Post_Options extends Tru_Fetcher_Meta_Fields_Base
                 Tru_Fetcher_Post_Types_Post::NAME
             ],
             'meta_key' => self::META_KEY_POST_TEMPLATE_CATEGORY,
+            'default' => false,
             'args' => [
                 'show_in_rest' => true,
                 'single' => true,

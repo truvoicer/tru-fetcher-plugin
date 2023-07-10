@@ -3,6 +3,7 @@
 namespace TruFetcher\Includes\PostTypes;
 
 use TruFetcher\Includes\Admin\Blocks\Tru_Fetcher_Admin_Blocks;
+use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields;
 use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
 
 /**
@@ -99,11 +100,16 @@ class Tru_Fetcher_Post_Types_Base {
     }
 
     public function renderPost(\WP_Post $post) {
-//        var_dump($this->meta);
         $metaBoxClasses = $this->meta->getMetaboxClasses([$this->name]);
         foreach ($metaBoxClasses as $metaBoxClass) {
             $metaBox = new $metaBoxClass();
-            $post->{$metaBoxClass::NAME} = $metaBox->buildMetaBoxFieldData($post);
+            $post = $metaBox->renderPost($post);
+        }
+
+        $metaFieldClasses = Tru_Fetcher_Meta_Fields::META_FIELDS;
+        foreach ($metaFieldClasses as $metaFieldClass) {
+            $metaField = new $metaFieldClass();
+            $post = $metaField->renderPost($post);
         }
 
         return $post;

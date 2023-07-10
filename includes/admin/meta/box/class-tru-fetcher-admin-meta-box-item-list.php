@@ -28,21 +28,30 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
  */
 class Tru_Fetcher_Admin_Meta_Box_Item_List extends Tru_Fetcher_Admin_Meta_Box_Base
 {
-    public const NAME = 'item_list';
-    public const TITLE = 'Item List';
+    protected string $id = 'item_list';
+    protected string $title = 'Item Lists';
 
-    public const CONFIG = [
-        'id' => self::NAME,
-        'title' => self::TITLE,
-        'post_types' => [
-            ['name' => Tru_Fetcher_Post_Types_Trf_Item_List::NAME],
-        ],
-        'fields' => [
-            [
-                'id' => 'item_list',
-                'type' => 'array',
+    protected array $config = [];
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->config = [
+            'id' => $this->id,
+            'title' => $this->title,
+            'post_types' => [
+                ['name' => Tru_Fetcher_Post_Types_Trf_Item_List::NAME],
             ],
-        ]
-    ];
-    protected array $config = self::CONFIG;
+            'fields' => [
+                [
+                    'id' => 'item_list',
+                    'type' => 'array',
+                ],
+            ]
+        ];
+    }
+    public function renderPost(\WP_Post $post) {
+        $post = parent::renderPost($post);
+        return $this->buildPostApiKeys($post);
+    }
 }

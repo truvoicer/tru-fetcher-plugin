@@ -31,7 +31,7 @@ const ApiTab = (props) => {
         return fetcherProviders.map((provider) => {
             return {
                 label: provider.provider_label,
-                value: provider.id
+                value: provider.provider_name
             }
         })
     }

@@ -103,7 +103,8 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
     public function metaBoxSaveHandler($post_id)
     {
         foreach (self::META_BOXES as $metaBoxClass) {
-            $config = $metaBoxClass::CONFIG;
+            $metaBoxInstance = new $metaBoxClass();
+            $config = $metaBoxInstance->getConfig();
             $fields = $config['fields'];
             foreach ($fields as $field) {
                 $fieldId = Tru_Fetcher_Admin_Meta_Box_Base::buildMetaBoxFieldId($field);
@@ -134,8 +135,9 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
     public function addEditorMetaBoxes()
     {
         foreach (self::META_BOXES as $metaBoxClass) {
-            $config = $metaBoxClass::CONFIG;
-            $id = Tru_Fetcher_Admin_Meta_Box_Base::buildMetaBoxId($metaBoxClass);
+            $metaBoxInstance = new $metaBoxClass();
+            $config = $metaBoxInstance->getConfig();
+            $id = $metaBoxInstance->buildMetaBoxId();
             $title = $config['title'];
             foreach ($config['post_types'] as $postType) {
                 add_meta_box(
@@ -151,7 +153,8 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
     public function getMetaboxClasses(?array $postTypes = []) {
         $data = [];
         foreach (self::META_BOXES as $metaBoxClass) {
-            $config = $metaBoxClass::CONFIG;
+            $metaBoxInstance = new $metaBoxClass();
+            $config = $metaBoxInstance->getConfig();
             if (count($postTypes) && !count(array_intersect($postTypes, array_map(function ($postType) {
                     return $postType['name'];
                 }, $config['post_types'])))) {
@@ -164,7 +167,8 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
     public function getMetaboxConfig(?array $postTypes = []) {
         $data = [];
         foreach (self::META_BOXES as $metaBoxClass) {
-            $config = $metaBoxClass::CONFIG;
+            $metaBoxInstance = new $metaBoxClass();
+            $config = $metaBoxInstance->getConfig();
             if (count($postTypes) && !count(array_intersect($postTypes, array_map(function ($postType) {
                     return $postType['name'];
                 }, $config['post_types'])))) {
@@ -182,7 +186,8 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
     public function getMetaboxPostTypes() {
         $postTypes = [];
         foreach (self::META_BOXES as $metaBoxClass) {
-            $config = $metaBoxClass::CONFIG;
+            $metaBoxInstance = new $metaBoxClass();
+            $config = $metaBoxInstance->getConfig();
             foreach ($config['post_types'] as $postType) {
                 $postTypes[] = $postType['name'];
             }
@@ -202,8 +207,9 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
     public function renderMetaBox($post)
     {
         foreach (self::META_BOXES as $metaBoxClass) {
-            $config = $metaBoxClass::CONFIG;
-            $id = Tru_Fetcher_Admin_Meta_Box_Base::buildMetaBoxId($metaBoxClass);
+            $metaBoxInstance = new $metaBoxClass();
+            $config = $metaBoxInstance->getConfig();
+            $id = $metaBoxInstance->buildMetaBoxId();
             $fields = $config['fields'];
             foreach ($fields as $field) {
                 $fieldId = Tru_Fetcher_Admin_Meta_Box_Base::buildMetaBoxFieldId($field);

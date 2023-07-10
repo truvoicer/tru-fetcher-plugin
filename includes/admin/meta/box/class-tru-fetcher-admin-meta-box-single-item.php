@@ -28,74 +28,71 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
  */
 class Tru_Fetcher_Admin_Meta_Box_Single_Item extends Tru_Fetcher_Admin_Meta_Box_Base
 {
-    public const NAME = 'single_item';
-    public const TITLE = 'Single Item';
+    protected string $id = 'single_item';
+    protected string $title = 'Single Item';
 
-    public const CONFIG = [
-        'id' => self::NAME,
-        'title' => self::TITLE,
-        'post_types' => [
-            ['name' => Tru_Fetcher_Post_Types_Trf_Single_Item::NAME],
-        ],
-        'fields' => [
-            [
-                'id' => 'type',
-                'type' => 'text',
-            ],
-            [
-                'id' => 'service',
-                'type' => 'integer',
-            ],
-            [
-                'id' => 'data_keys',
-                'type' => 'array',
-            ],
-            [
-                'id' => 'item_image',
-                'type' => 'text'
-            ],
-            [
-                'id' => 'item_header',
-                'type' => 'text'
-            ],
-            [
-                'id' => 'item_text',
-                'type' => 'text'
-            ],
-            [
-                'id' => 'item_rating',
-                'type' => 'number'
-            ],
-            [
-                'id' => 'item_link_text',
-                'type' => 'text'
-            ],
-            [
-                'id' => 'item_link',
-                'type' => 'text'
-            ],
-            [
-                'id' => 'item_badge_text',
-                'type' => 'text'
-            ],
-            [
-                'id' => 'item_badge_link',
-                'type' => 'text'
-            ],
-        ]
-    ];
-    protected array $config = self::CONFIG;
+    protected array $config = [];
 
-    public function buildMetaBoxFieldData(\WP_Post $post) {
-        $buildFields = parent::buildMetaBoxFieldData($post);
-        if (empty($buildFields['data_keys']) || !is_array($buildFields['data_keys'])) {
-            return $buildFields;
-        }
-        $dataKeys = [];
-        foreach ($buildFields['data_keys'] as $dataKey) {
-            $dataKeys[$dataKey->data_item_key] = $dataKey->data_item_value;
-        }
-        $buildFields['data_keys'] = $dataKeys;
-        return $buildFields;
+    public function __construct()
+    {
+        parent::__construct();
+        $this->config =  [
+            'id' => $this->id,
+            'title' => $this->title,
+            'post_types' => [
+                ['name' => Tru_Fetcher_Post_Types_Trf_Single_Item::NAME],
+            ],
+            'fields' => [
+                [
+                    'id' => 'type',
+                    'type' => 'text',
+                ],
+                [
+                    'id' => 'service',
+                    'type' => 'integer',
+                ],
+                [
+                    'id' => 'data_keys',
+                    'type' => 'array',
+                ],
+                [
+                    'id' => 'item_image',
+                    'type' => 'text'
+                ],
+                [
+                    'id' => 'item_header',
+                    'type' => 'text'
+                ],
+                [
+                    'id' => 'item_text',
+                    'type' => 'text'
+                ],
+                [
+                    'id' => 'item_rating',
+                    'type' => 'number'
+                ],
+                [
+                    'id' => 'item_link_text',
+                    'type' => 'text'
+                ],
+                [
+                    'id' => 'item_link',
+                    'type' => 'text'
+                ],
+                [
+                    'id' => 'item_badge_text',
+                    'type' => 'text'
+                ],
+                [
+                    'id' => 'item_badge_link',
+                    'type' => 'text'
+                ],
+            ]
+        ];
+    }
+
+    public function renderPost(\WP_Post $post) {
+        $post = parent::renderPost($post);
+        return $this->buildPostApiKeys($post);
     }
 }

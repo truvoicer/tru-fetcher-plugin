@@ -47,6 +47,23 @@ class Tru_Fetcher_Meta_Fields_Base
         return null;
     }
 
+    public function renderPost(\WP_Post $post ) {
+        $post->{$this->name} = [];
+        foreach ($this->fields as $field) {
+            $metaKey = $field['meta_key'];
+            $single = false;
+            if (isset($field['args']['single'])) {
+                $single = (bool)$field['args']['single'];
+            }
+            $metaValue = get_post_meta($post->ID, $metaKey, $single);
+            if (empty($metaValue) && isset($field['default'])) {
+                $metaValue = $field['default'];
+            }
+            $post->{$this->name}[$metaKey] = $metaValue;
+
+        }
+        return $post;
+    }
     /**
      * @return string
      */

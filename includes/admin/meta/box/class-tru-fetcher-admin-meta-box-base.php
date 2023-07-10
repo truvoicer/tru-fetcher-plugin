@@ -26,11 +26,16 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Admin_Meta_Box_Base extends Tru_Fetcher_Base
+class Tru_Fetcher_Admin_Meta_Box_Base
 {
     public const META_BOX_ID_PREFIX = 'trf_mb';
-
+    protected string $id;
+    protected string $title;
     protected array $config;
+
+    public function __construct()
+    {
+    }
 
     public function getFields() {
         if (empty($this->config)) {
@@ -47,21 +52,21 @@ class Tru_Fetcher_Admin_Meta_Box_Base extends Tru_Fetcher_Base
             return $field;
         }, $this->config['fields']);
     }
-    public function buildMetaBoxFieldData(\WP_Post $post) {
+    public function renderPost(\WP_Post $post) {
         $configFields = $this->getFields();
         if (!$configFields) {
             return false;
         }
-        $fields = [];
+        $post->{$this->id} = [];
         foreach ($configFields as $field) {
-            $fields[$field['id']] = get_post_meta($post->ID, $field['field_name'], true);
+            $post->{$this->id}[$field['id']] = get_post_meta($post->ID, $field['field_name'], true);
         }
-        return $fields;
+        return $post;
     }
 
-    public static function buildMetaBoxId($metaBoxClass)
+    public function buildMetaBoxId()
     {
-        $config = $metaBoxClass::CONFIG;
+        $config = $this->getConfig();
         $metaBoxIdPrefix = self::META_BOX_ID_PREFIX;
         return "{$metaBoxIdPrefix}_{$config['id']}";
     }
@@ -71,4 +76,43 @@ class Tru_Fetcher_Admin_Meta_Box_Base extends Tru_Fetcher_Base
         $metaBoxIdPrefix = self::META_BOX_ID_PREFIX;
         return "{$metaBoxIdPrefix}_post_meta_{$field['id']}";
     }
+
+    public function buildPostApiKeys(\WP_Post $post) {
+        if (empty($post->{$this->id}['data_keys']) || !is_array($post->{$this->id}['data_keys'])) {
+            return $post;
+        }
+
+        $dataKeys = [];
+        foreach ($post->{$this->id}['data_keys'] as $dataKey) {
+            $dataKeys[$dataKey->data_item_key] = $dataKey->data_item_value;
+        }
+        $post->{$this->id}['data_keys'] = $dataKeys;
+        return $post;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig(): array
+    {
+        return $this->config;
+    }
+
+
 }

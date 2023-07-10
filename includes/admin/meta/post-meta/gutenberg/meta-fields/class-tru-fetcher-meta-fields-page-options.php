@@ -45,6 +45,7 @@ class Tru_Fetcher_Meta_Fields_Page_Options extends Tru_Fetcher_Meta_Fields_Base
                 Tru_Fetcher_Post_Types_Trf_Category_Tpl::NAME
             ],
             'meta_key' => self::META_KEY_PAGE_TYPE,
+            'default' => 'general',
             'args' => [
                 'show_in_rest' => true,
                 'single' => true,
@@ -59,6 +60,7 @@ class Tru_Fetcher_Meta_Fields_Page_Options extends Tru_Fetcher_Meta_Fields_Base
                 Tru_Fetcher_Post_Types_Trf_Category_Tpl::NAME
             ],
             'meta_key' => self::META_KEY_HEADER_OVERRIDE,
+            'default' => false,
             'args' => [
                 'show_in_rest' => true,
                 'single' => true,
@@ -73,6 +75,7 @@ class Tru_Fetcher_Meta_Fields_Page_Options extends Tru_Fetcher_Meta_Fields_Base
                 Tru_Fetcher_Post_Types_Trf_Category_Tpl::NAME
             ],
             'meta_key' => self::META_KEY_HEADER_SCRIPTS,
+            'default' => false,
             'args' => [
                 'show_in_rest' => true,
                 'single' => true,
@@ -87,6 +90,7 @@ class Tru_Fetcher_Meta_Fields_Page_Options extends Tru_Fetcher_Meta_Fields_Base
                 Tru_Fetcher_Post_Types_Trf_Category_Tpl::NAME
             ],
             'meta_key' => self::META_KEY_FOOTER_OVERRIDE,
+            'default' => false,
             'args' => [
                 'show_in_rest' => true,
                 'single' => true,
@@ -101,6 +105,7 @@ class Tru_Fetcher_Meta_Fields_Page_Options extends Tru_Fetcher_Meta_Fields_Base
                 Tru_Fetcher_Post_Types_Trf_Category_Tpl::NAME
             ],
             'meta_key' => self::META_KEY_FOOTER_SCRIPTS,
+            'default' => false,
             'args' => [
                 'show_in_rest' => true,
                 'single' => true,
