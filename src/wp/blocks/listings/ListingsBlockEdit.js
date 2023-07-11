@@ -8,6 +8,7 @@ import ApiTab from "./tabs/ApiTab";
 import WordpressDataTab from "./tabs/WordpressDataTab";
 import SearchTab from "./tabs/SearchTab";
 import CustomItemsTab from "./tabs/CustomItemsTab";
+import FiltersTab from "./tabs/FiltersTab";
 
 const ListingsBlockEdit = (props) => {
 
@@ -31,6 +32,11 @@ const ListingsBlockEdit = (props) => {
                 name: 'display',
                 title: 'Display',
                 component: DisplayTab
+            },
+            {
+                name: 'filters',
+                title: 'Filters',
+                component: FiltersTab
             },
         ];
         if (props.attributes?.source === 'api') {

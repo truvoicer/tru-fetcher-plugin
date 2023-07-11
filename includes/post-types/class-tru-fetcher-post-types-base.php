@@ -34,6 +34,7 @@ class Tru_Fetcher_Post_Types_Base {
     private string $menuAdminBar;
 
     protected string $idIdentifier;
+    protected string $apiIdIdentifier;
 
     public function __construct()
     {
@@ -141,9 +142,25 @@ class Tru_Fetcher_Post_Types_Base {
     /**
      * @return string
      */
+    public function getApiIdIdentifier(): string
+    {
+        return $this->apiIdIdentifier;
+    }
+
+    /**
+     * @return string
+     */
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getConfig()
+    {
+        return [
+            'name' => $this->name,
+            'idIdentifier' => $this->idIdentifier,
+        ];
     }
 
 }

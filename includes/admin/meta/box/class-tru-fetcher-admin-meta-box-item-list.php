@@ -4,6 +4,7 @@ namespace TruFetcher\Includes\Admin\Meta\Box;
 
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_List;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Single_Item;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 
 /**
@@ -41,6 +42,7 @@ class Tru_Fetcher_Admin_Meta_Box_Item_List extends Tru_Fetcher_Admin_Meta_Box_Ba
             'title' => $this->title,
             'post_types' => [
                 ['name' => Tru_Fetcher_Post_Types_Trf_Item_List::NAME],
+                ['name' => Tru_Fetcher_Post_Types_Trf_Single_Item::NAME],
             ],
             'fields' => [
                 [
@@ -52,6 +54,36 @@ class Tru_Fetcher_Admin_Meta_Box_Item_List extends Tru_Fetcher_Admin_Meta_Box_Ba
     }
     public function renderPost(\WP_Post $post) {
         $post = parent::renderPost($post);
-        return $this->buildPostApiKeys($post);
+        if (empty($post->{$this->id}['item_list'])) {
+            return $post;
+        }
+        if (!is_array($post->{$this->id}['item_list'])) {
+            return $post;
+        }
+        $singleItemPostType = new Tru_Fetcher_Post_Types_Trf_Single_Item();
+        $post->{$this->id}['item_list'] = array_map(function ($item) use($singleItemPostType) {
+            $postTypeIdIdentifier = $singleItemPostType->getIdIdentifier();
+            if (empty($postTypeIdIdentifier)) {
+                return $item;
+            }
+            if (empty($item->{$postTypeIdIdentifier})) {
+                return $item;
+            }
+            $postTypeId = $item->{$postTypeIdIdentifier};
+            $args            = [
+                'post_type'   => $singleItemPostType->getName(),
+                'numberposts' => 1,
+                'p' => (int)$postTypeId,
+            ];
+            $getItemListPosts = get_posts( $args );
+            if (!count($getItemListPosts)) {
+                return $item;
+            }
+            $item->{$postTypeIdIdentifier} = $singleItemPostType->renderPost(
+                $getItemListPosts[array_key_first($getItemListPosts)]
+            );
+            return $item;
+        }, $post->{$this->id}['item_list']);
+        return $post;
     }
 }

@@ -28,6 +28,8 @@ class Tru_Fetcher_Post_Types_Trf_Single_Item extends Tru_Fetcher_Post_Types_Base
 {
     public const NAME = 'trf_single_item';
     public const ID_IDENTIFIER = 'single_item_id';
+    public const API_ID_IDENTIFIER = 'single_item';
+    protected string $apiIdIdentifier = self::API_ID_IDENTIFIER;
     protected string $idIdentifier = self::ID_IDENTIFIER;
     protected string $name = self::NAME;
     public function init()

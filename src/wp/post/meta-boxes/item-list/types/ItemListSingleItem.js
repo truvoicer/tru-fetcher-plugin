@@ -1,9 +1,11 @@
 import React,{useContext} from 'react';
 import {Select} from 'antd';
 import PostMetaBoxContext from "../../../contexts/PostMetaBoxContext";
+import {findMetaBoxConfig, findMetaBoxPostType} from "../../helpers/metaboxes-helpers";
 
 const ItemListSingleItem = ({onChange = false, index}) => {
     const postMetaBoxContext = useContext(PostMetaBoxContext);
+    const singleItemPostType = findMetaBoxPostType('trf_single_item', postMetaBoxContext?.config);
     function buildSelectOptions() {
         const singleItemPosts = postMetaBoxContext?.data?.singleItemPosts;
         if (!Array.isArray(singleItemPosts)) {
@@ -21,9 +23,8 @@ const ItemListSingleItem = ({onChange = false, index}) => {
         if (typeof postMetaBoxContext.formData.item_list[index] === 'undefined') {
             return '';
         }
-        return postMetaBoxContext.formData.item_list[index].single_item_id;
+        return postMetaBoxContext.formData.item_list[index]?.[singleItemPostType?.idIdentifier];
     }
-
     return (
         <>
             <Select
@@ -32,8 +33,7 @@ const ItemListSingleItem = ({onChange = false, index}) => {
                 value={getSelectValue()}
                 onChange={(e, data) => {
                     if (typeof onChange === 'function') {
-                        console.log({data})
-                        onChange({value: data.value, item: {name: 'single_item_id'}})
+                        onChange({value: data.value, item: {name: singleItemPostType?.idIdentifier}})
                     }
                 }}
             />

@@ -10,6 +10,7 @@ use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Met
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Post_Options;
 use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Single_Item;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
 use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 
@@ -165,6 +166,7 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
         return $data;
     }
     public function getMetaboxConfig(?array $postTypes = []) {
+        $postTypesManager = new Tru_Fetcher_Post_Types();
         $data = [];
         foreach (self::META_BOXES as $metaBoxClass) {
             $metaBoxInstance = new $metaBoxClass();
@@ -174,6 +176,11 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
                 }, $config['post_types'])))) {
                 continue;
             }
+            $config['post_types'] = array_map(function (array $postType) use($postTypesManager) {
+                $postTypeClass = $postTypesManager->findPostTypeByName($postType['name']);
+                $postTypeInstance = new $postTypeClass();
+                return $postTypeInstance->getConfig();
+            }, $config['post_types']);
             $config['fields'] = array_map(function ($field) {
                 $field['field_name'] = Tru_Fetcher_Admin_Meta_Box_Base::buildMetaBoxFieldId($field);
                 return $field;

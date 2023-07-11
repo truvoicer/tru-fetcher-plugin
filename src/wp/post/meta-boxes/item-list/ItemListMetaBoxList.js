@@ -7,7 +7,7 @@ import {connect} from "react-redux";
 import Auth from "../../../../components/auth/Auth";
 import CustomItemFormFields from "../../components/item/CustomItemFormFields";
 import ItemListSingleItem from "./types/ItemListSingleItem";
-import {updateInitialValues, updateMetaHiddenFields} from "../helpers/metaboxes-helpers";
+import {findMetaBoxConfig, updateInitialValues, updateMetaHiddenFields} from "../helpers/metaboxes-helpers";
 import {fetchRequest} from "../../../../library/api/state-middleware";
 import config from "../../../../library/api/wp/config";
 
@@ -26,6 +26,7 @@ const ItemListMetaBoxList = ({session}) => {
     const [modalComponent, setModalComponent] = useState(null);
     const [modalHeader, setModalHeader] = useState(null);
     const [metaBoxContext, setMetaBoxContext] = useState({
+        config: findMetaBoxConfig('item_list'),
         data: {
             singleItemPosts: []
         },

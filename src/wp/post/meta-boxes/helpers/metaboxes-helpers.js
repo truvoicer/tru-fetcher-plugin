@@ -57,3 +57,16 @@ export function updateMetaHiddenFields({fieldGroupId, field, metaBoxContext}) {
         hiddenField.value = data;
     }
 }
+
+export function findMetaBoxConfig(id) {
+    if (!Array.isArray(tru_fetcher_react.meta.metaBoxes)) {
+        return null;
+    }
+    return tru_fetcher_react.meta.metaBoxes.find(item => item?.id === id);
+}
+export function findMetaBoxPostType(name, config) {
+    if (!Array.isArray(config.post_types)) {
+        return null;
+    }
+    return config.post_types.find(item => item?.name === name);
+}

@@ -26,6 +26,8 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
 {
     public const NAME = 'trf_item_list';
     public const ID_IDENTIFIER = 'item_list_id';
+    public const API_ID_IDENTIFIER = 'item_list';
+    protected string $apiIdIdentifier = self::API_ID_IDENTIFIER;
     protected string $idIdentifier = self::ID_IDENTIFIER;
     protected string $name = self::NAME;
 

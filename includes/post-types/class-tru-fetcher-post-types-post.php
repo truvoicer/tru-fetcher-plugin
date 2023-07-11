@@ -26,6 +26,8 @@ class Tru_Fetcher_Post_Types_Post extends Tru_Fetcher_Post_Types_Base
 {
     public const NAME = 'post';
     public const ID_IDENTIFIER = 'post_id';
+    public const API_ID_IDENTIFIER = 'post';
+    protected string $apiIdIdentifier = self::API_ID_IDENTIFIER;
     protected string $idIdentifier = self::ID_IDENTIFIER;
     protected string $name = self::NAME;
 

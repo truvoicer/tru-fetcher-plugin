@@ -28,6 +28,8 @@ class Tru_Fetcher_Post_Types_Trf_Item_View_Tpl extends Tru_Fetcher_Post_Types_Ba
 {
     public const NAME = 'trf_item_view_tpl';
     public const ID_IDENTIFIER = 'item_view_template_id';
+    public const API_ID_IDENTIFIER = 'item_view_template';
+    protected string $apiIdIdentifier = self::API_ID_IDENTIFIER;
     protected string $idIdentifier = self::ID_IDENTIFIER;
     protected string $name = self::NAME;
 

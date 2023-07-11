@@ -28,6 +28,8 @@ class Tru_Fetcher_Post_Types_Trf_Category_Tpl extends Tru_Fetcher_Post_Types_Bas
 {
     public const NAME = 'trf_category_tpl';
     public const ID_IDENTIFIER = 'category_template_id';
+    public const API_ID_IDENTIFIER = 'category_template';
+    protected string $apiIdIdentifier = self::API_ID_IDENTIFIER;
     protected string $idIdentifier = self::ID_IDENTIFIER;
     protected string $name = self::NAME;
 

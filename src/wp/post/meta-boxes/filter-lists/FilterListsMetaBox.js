@@ -61,11 +61,11 @@ const FilterListsMetaBox = ({session}) => {
             return;
         }
         Object.keys(metaBoxContext.formData).forEach(field => {
-            updateMetaHiddenFields({field, metaBoxContext, fieldGroupId: 'trf_filter_list'});
+            updateMetaHiddenFields({field, metaBoxContext, fieldGroupId: 'filter_lists'});
         })
     }, [metaBoxContext])
     useEffect(() => {
-        updateInitialValues({fieldGroupId: 'trf_filter_list', metaBoxContext, setIsInitialized})
+        updateInitialValues({fieldGroupId: 'filter_lists', metaBoxContext, setIsInitialized})
     }, [])
 
     function getFormGroup({item, index}) {
