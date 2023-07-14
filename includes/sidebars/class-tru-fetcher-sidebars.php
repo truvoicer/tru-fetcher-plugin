@@ -25,7 +25,7 @@ use TruFetcher\Includes\Menus\Tru_Fetcher_Menu;
  */
 class Tru_Fetcher_Sidebars {
 
-    const ACF_WIDGETS = [
+    const WIDGETS = [
       "social_media_widget", "button_widget", "email_optin_widget"
     ];
 
@@ -61,7 +61,6 @@ class Tru_Fetcher_Sidebars {
 	}
 
 	public function buildSidebarArray($sidebarArray) {
-
 	    return array_map( function ( $item ) {
             $array              = [];
             $splitItem = explode("-", $item);
@@ -73,21 +72,36 @@ class Tru_Fetcher_Sidebars {
                 return false;
             }
             $widgetData                   = $widget_instances[ $instanceNumber ];
-            $array[ $widgetInstanceName ] = $widgetData;
-
-            if (in_array($widgetInstanceName, self::ACF_WIDGETS)) {
-                $array[ $widgetInstanceName ] = \get_fields_clone( 'widget_' . $item );
-            }
-            else if ( $widgetInstanceName === "nav_menu" ) {
-                if ( array_key_exists( "nav_menu", $widgetData ) ) {
+//            var_dump($widgetData);
+            switch ($widgetInstanceName) {
+                case 'nav_menu':
                     $menuObject = wp_get_nav_menu_object($widgetData['nav_menu']);
                     $array[ $widgetInstanceName ]["menu_slug"] = $menuObject->slug;
                     $array[ $widgetInstanceName ]["menu_items"] = $this->menuClass->getMenu( $menuObject );
-                }
+                    break;
+                case 'block':
+                    $blockItem = $this->buildSidebarBlockItem($widgetData['content']);
+                    $array[ $blockItem['name'] ] = $blockItem['data'];
+                    break;
+                default:
+                    $array[ $widgetInstanceName ] = $widgetData;
+                    break;
             }
 
             return $array;
 
         }, $sidebarArray );
+    }
+
+    private function buildSidebarBlockItem(string $content) {
+        $blockData = parse_blocks($content);
+        $blockName = $blockData[0]['blockName'];
+        $blockName = explode("/", $blockName); // Remove namespace
+        $blockName = $blockName[array_key_last($blockName)];
+        $blockData = $blockData[0]['attrs'];
+        return [
+            'name' => $blockName,
+            'data' => $blockData
+        ];
     }
 }

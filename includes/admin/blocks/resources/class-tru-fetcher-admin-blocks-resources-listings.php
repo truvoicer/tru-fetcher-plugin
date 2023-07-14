@@ -95,11 +95,6 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'default' => 'infinite_scroll',
             ],
             [
-                'id' => 'show_filters_toggle',
-                'type' => 'boolean',
-                'default' => true,
-            ],
-            [
                 'id' => 'search_limit',
                 'type' => 'integer',
                 'default' => 20,
@@ -175,6 +170,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'type' => 'integer',
             ],
             [
+                'id' => 'show_filters_toggle',
+                'type' => 'boolean',
+                'default' => true,
+            ],
+            [
                 'id' => 'filter_heading',
                 'type' => 'string',
             ],
@@ -186,5 +186,20 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
             ],
         ]
     ];
+
+
+    public function buildBlockAttributes(array $attributes) {
+        $attributes = parent::buildBlockAttributes($attributes);
+        if (empty($attributes['filters'])) {
+            return $attributes;
+        }
+        if (!is_array($attributes['filters'])) {
+            return $attributes;
+        }
+        $attributes['filters'] = array_map(function($filter) {
+            return parent::buildBlockAttributes($filter);
+        }, $attributes['filters']);
+        return $attributes;
+    }
 
 }

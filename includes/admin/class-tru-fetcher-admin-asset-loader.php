@@ -251,14 +251,16 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
 
         $nonce = wp_create_nonce(md5($nonceActionName));
         $encodeNonce = $authJwt->jwtEncode('nonce', $appKey, $getCurrentUser, ['nonce' => $nonce]);
-
-        $saveMeta = update_user_meta(
-            $getCurrentUser->ID,
-            'nonce_jwt',
-            $encodeNonce
-        );
-        if (!$saveMeta) {
-            throw new Exception('Error saving nonce user meta');
+        $currentJwtMetaNonce = get_user_meta($getCurrentUser->ID, 'nonce_jwt', true);
+        if ($encodeNonce !== $currentJwtMetaNonce) {
+            $saveMeta = update_user_meta(
+                $getCurrentUser->ID,
+                'nonce_jwt',
+                $encodeNonce
+            );
+            if (!$saveMeta) {
+                throw new Exception('Error saving nonce user meta');
+            }
         }
         return [
             'wp' => [

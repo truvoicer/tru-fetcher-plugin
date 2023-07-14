@@ -51,7 +51,7 @@ const SourceTab = (props) => {
                     onChange={(value) => {
                         onChange({key: filterListId, value: value});
                     }}
-                    value={data?.[filterListId]}
+                    value={data?.[filterListId] || ''}
                     options={[
                         ...[
                             {

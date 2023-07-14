@@ -62,7 +62,7 @@ const SingleFilter = (props) => {
         <div className="tf--list--item tf--list--item--no-header">
             <div className="tf--list--item--content">
                 <Panel>
-                    <PanelBody title={`Tab (${index})`} initialOpen={true}>
+                    <PanelBody title={`Filter (${index})`} initialOpen={true}>
                         <TabPanel
                             className="my-tab-panel"
                             activeClass="active-tab"

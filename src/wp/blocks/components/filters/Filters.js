@@ -19,7 +19,7 @@ const Filters = (props) => {
             label: '',
             source: '',
             api_endpoint: null,
-            [filterListId]: null,
+            [filterListId]: '',
         });
         if (typeof onChange === 'function') {
             onChange({key: 'filters', value: cloneTabs});
@@ -75,6 +75,7 @@ const Filters = (props) => {
         }
         return <SingleFilter />;
     }
+
     return (
        <div>
            {Array.isArray(data) && data.map((item, index) => {

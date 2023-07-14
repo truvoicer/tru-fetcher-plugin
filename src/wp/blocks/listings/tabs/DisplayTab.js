@@ -58,13 +58,6 @@ const DisplayTab = (props) => {
                     },
                 ]}
             />
-            <ToggleControl
-                label="Show Filters"
-                checked={attributes?.show_filters_toggle}
-                onChange={(value) => {
-                    setAttributes({show_filters_toggle: value});
-                }}
-            />
         </div>
     );
 };
