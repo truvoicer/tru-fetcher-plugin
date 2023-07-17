@@ -4,6 +4,7 @@ namespace TruFetcher\Includes\Api;
 use TruFetcher\Includes\Api\Controllers\Admin\Tru_Fetcher_Api_Admin_Posts_Controller;
 use TruFetcher\Includes\Api\Controllers\Admin\Tru_Fetcher_Api_Admin_Settings_Controller;
 use TruFetcher\Includes\Api\Controllers\Admin\Tru_Fetcher_Api_Admin_Token_Controller;
+use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Auth_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Comments_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Forms_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Page_Controller;
@@ -40,6 +41,7 @@ class Tru_Fetcher_Api {
 
 
 	public function loadPublicApiControllers() {
+        (new Tru_Fetcher_Api_Auth_Controller())->init();
         (new Tru_Fetcher_Api_Settings_Controller())->init();
         (new Tru_Fetcher_Api_Page_Controller())->init();
         (new Tru_Fetcher_Api_Posts_Controller())->init();

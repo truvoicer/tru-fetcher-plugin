@@ -83,15 +83,6 @@ class Tru_Fetcher_Taxonomy_Base {
         return $labels;
     }
 
-    public static function getPostTypeData(string $postType)
-    {
-        return get_posts([
-            'post_type' => $postType,
-            'posts_per_page' => -1,
-            'post_status' => 'any',
-        ]);
-    }
-
     /**
      * @param string $menuName
      */

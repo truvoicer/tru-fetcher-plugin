@@ -124,9 +124,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         return $keys;
     }
     public function buildBlockAttributes(array $attributes) {
-        $postTypes = new Tru_Fetcher_Post_Types();
+        $postTypesManager = new Tru_Fetcher_Post_Types();
         $taxonomyManager = new Tru_Fetcher_Taxonomy();
-        foreach ($postTypes->getPostTypes() as $postTypeClass) {
+        foreach ($postTypesManager->getPostTypes() as $postTypeClass) {
             $postType = new $postTypeClass();
             $postTypeIdIdentifier = $postType->getIdIdentifier();
             if (empty($postTypeIdIdentifier)) {
@@ -137,16 +137,27 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
                 continue;
             }
             foreach ($findAttributeKeys as $findAttributeKey) {
-                $postTypeId = $attributes[$findAttributeKey];
-                $args            = [
-                    'post_type'   => $postType->getName(),
-                    'numberposts' => -1,
-                    'p' => (int)$postTypeId,
-                ];
-                $getItemListPosts = get_posts( $args );
-                $attributes[$findAttributeKey] = array_map(function(\WP_Post $itemListPost) use($postTypes) {
-                    return $postTypes->buildPostTypeData($itemListPost);
-                }, $getItemListPosts);
+                $attrPostTypeId = $attributes[$findAttributeKey];
+
+                if (!is_array($attrPostTypeId)) {
+                    $post = $postType->getPostTypeDataById($postType->getName(), (int)$attrPostTypeId);
+                    if ($post) {
+                        $attributes[$findAttributeKey] = $postTypesManager->buildPostTypeData($post);
+                    } else {
+                        $attributes[$findAttributeKey] = null;
+                    }
+                } else {
+                    $posts = array_map(function($postTypeId) use($postTypesManager, $postType) {
+                        $post = $postType->getPostTypeDataById($postType->getName(), (int)$postTypeId);
+                        if ($post) {
+                            return $postTypesManager->buildPostTypeData($post);
+                        }
+                        return null;
+                    }, $attrPostTypeId);
+                    $attributes[$findAttributeKey] = array_filter($posts, function($post) {
+                        return $post instanceof \WP_Post;
+                    });
+                }
             }
         }
         foreach ($taxonomyManager->getTaxonomies() as $taxonomyClass) {

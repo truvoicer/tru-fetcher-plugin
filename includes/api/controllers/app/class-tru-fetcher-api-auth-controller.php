@@ -29,16 +29,13 @@ use TruFetcher\Includes\DB\Repository\Tru_Fetcher_DB_Repository_Api_Tokens;
 class Tru_Fetcher_Api_Auth_Controller extends Tru_Fetcher_Api_Controller_Base
 {
 
-    private string $publicEndpoint;
-    private string $protectedEndpoint;
+    protected ?string $namespace = "/auth";
     protected Tru_Fetcher_Api_Token_Response $tokenResponse;
     private Tru_Fetcher_DB_Repository_Api_Tokens $apiTokensRepository;
 
     public function __construct()
     {
         parent::__construct();
-        $this->publicEndpoint = $this->publicNamespace;
-        $this->protectedEndpoint = $this->protectedNamespace;
         $this->apiTokensRepository = new Tru_Fetcher_DB_Repository_Api_Tokens();
     }
 
@@ -60,22 +57,22 @@ class Tru_Fetcher_Api_Auth_Controller extends Tru_Fetcher_Api_Controller_Base
 
     public function register_routes()
     {
-        register_rest_route($this->publicEndpoint, '/auth/register', array(
+        register_rest_route($this->publicEndpoint, '/register', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "authRegister"],
             'permission_callback' => [$this->apiAuthApp, 'publicTokenRequestHandler']
         ));
-        register_rest_route($this->publicEndpoint, '/auth/login', array(
+        register_rest_route($this->publicEndpoint, '/login', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "authLogin"],
             'permission_callback' => [$this->apiAuthApp, 'publicTokenRequestHandler']
         ));
-        register_rest_route($this->publicEndpoint, '/auth/token/check', array(
+        register_rest_route($this->publicEndpoint, '/token/check', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "authTokenCheck"],
             'permission_callback' => [$this->apiAuthApp, 'publicTokenRequestHandler']
         ));
-        register_rest_route($this->protectedEndpoint, '/auth/token/check', array(
+        register_rest_route($this->protectedEndpoint, '/token/check', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "authTokenCheck"],
             'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
@@ -101,6 +98,7 @@ class Tru_Fetcher_Api_Auth_Controller extends Tru_Fetcher_Api_Controller_Base
         $this->tokenResponse->setIssuedAt(strtotime($issuedAt));
         $this->tokenResponse->setExpiresAt(strtotime($expiresAt));
 
+        $this->tokenResponse->setData($this->apiAuthApp->buildUserTokenResponseData());
         return $this->controllerHelpers->sendSuccessResponse(
             'Login success',
             $this->tokenResponse
@@ -121,7 +119,8 @@ class Tru_Fetcher_Api_Auth_Controller extends Tru_Fetcher_Api_Controller_Base
         $this->tokenResponse->setToken($handleRegister[$apiModel->getTokenColumn()]);
         $this->tokenResponse->setIssuedAt(strtotime($issuedAt));
         $this->tokenResponse->setExpiresAt(strtotime($expiresAt));
-
+//        var_dump($this->apiAuthApp->getUser());
+        $this->tokenResponse->setData($this->apiAuthApp->buildUserTokenResponseData());
         return $this->controllerHelpers->sendSuccessResponse(
             'Register success',
             $this->tokenResponse
@@ -129,8 +128,9 @@ class Tru_Fetcher_Api_Auth_Controller extends Tru_Fetcher_Api_Controller_Base
     }
 
     public function authTokenCheck(\WP_REST_Request $request) {
+        $this->tokenResponse->setData($this->apiAuthApp->buildUserTokenResponseData());
         return $this->controllerHelpers->sendSuccessResponse(
-            'Register success',
+            'Validate success',
             $this->tokenResponse
         );
     }

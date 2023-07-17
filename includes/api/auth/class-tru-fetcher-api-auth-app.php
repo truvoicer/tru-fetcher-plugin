@@ -316,7 +316,12 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
                 ));
         }
 
-        return $this->generateToken($authProvider);
+        $saveToken =  $this->generateToken($authProvider);
+        if (is_wp_error($saveToken)) {
+            return $saveToken;
+        }
+        $this->setUserToken($saveToken);
+        return $saveToken;
     }
 
     public function wordpressLoginHandler(\WP_REST_Request $request, $authProvider) {
@@ -405,5 +410,24 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
             $issuedAt,
             $expiresAt
         );
+    }
+
+    public function buildUserTokenResponseData() {
+        $user = $this->getUser();
+        $userTokenData = $this->getUserToken();
+        $responseData = [];
+        if (!empty($userTokenData['type'])) {
+            $responseData['auth_type'] = $userTokenData['type'];
+        }
+        if (!empty($userTokenData['token'])) {
+            $responseData['token'] = $userTokenData['token'];
+        }
+        $responseData['id'] = $user->ID;
+        $responseData['user_email'] = $user->user_email;
+        $responseData['display_name'] = $user->display_name;
+        $responseData['first_name'] = $user->first_name;
+        $responseData['last_name'] = $user->last_name;
+        $responseData['nickname'] = $user->nickname;
+        return $responseData;
     }
 }

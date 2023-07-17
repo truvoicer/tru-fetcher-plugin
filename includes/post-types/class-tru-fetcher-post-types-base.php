@@ -99,6 +99,19 @@ class Tru_Fetcher_Post_Types_Base {
             'post_status' => 'any',
         ]);
     }
+    public static function getPostTypeDataById(string $postType, int $id)
+    {
+        $posts = get_posts([
+            'post_type' => $postType,
+            'posts_per_page' => -1,
+            'post_status' => 'any',
+            'p' => $id,
+        ]);
+        if (empty($posts)) {
+            return null;
+        }
+        return $posts[array_key_first($posts)];
+    }
 
     public function renderPost(\WP_Post $post) {
         $metaBoxClasses = $this->meta->getMetaboxClasses([$this->name]);
