@@ -4,7 +4,10 @@ namespace TruFetcher\Includes\Api\Controllers\App;
 use TruFetcher\Includes\Api\Forms\Tru_Fetcher_Api_Form_Handler;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_User_Response;
 use TruFetcher\Includes\Database\Tru_Fetcher_Database;
+use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Saved_Items;
 use TruFetcher\Includes\Email\Tru_Fetcher_Email;
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Ratings;
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Saved_Items;
 use TruFetcher\Includes\Tru_Fetcher;
 
 /**
@@ -42,6 +45,9 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
     private Tru_Fetcher_Api_User_Response $apiUserResponse;
     private Tru_Fetcher_Email $emailManager;
 
+    private Tru_Fetcher_Api_Helpers_Saved_Items $savedItemsHelper;
+    private Tru_Fetcher_Api_Helpers_Ratings $ratingsHelper;
+
     protected ?string $namespace = "/users";
     private $options;
 
@@ -50,6 +56,8 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
         parent::__construct();
         $this->options = get_fields_clone("option");
         $this->emailManager = new Tru_Fetcher_Email();
+        $this->savedItemsHelper = new Tru_Fetcher_Api_Helpers_Saved_Items();
+        $this->ratingsHelper = new Tru_Fetcher_Api_Helpers_Ratings();
     }
 
     public function init()
@@ -454,14 +462,12 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
         if (count($idList) === 0) {
             return [];
         }
-        $dbClass = new Tru_Fetcher_Database();
-        $placeholders = "(" . $this->getStringCount($idList, "%s") . ")";
-        $where = "provider_name=%s AND category=%s AND user_id=%s AND item_id IN $placeholders";
 
-        return $dbClass->getResults(
-            Tru_Fetcher_Database::SAVED_ITEMS_TABLE_NAME,
-            $where,
-            $providerName, $category, $user_id, ...$idList
+        return $this->savedItemsHelper->getSavedItemsRepository()->fetchByItemIdBatch(
+            $this->apiAuthApp->getUser(),
+            $providerName,
+            $category,
+            $idList
         );
     }
 
@@ -480,25 +486,20 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
                 $providerName, $category, $user_id, $item
             );
             if ($getItemRating === null) {
-                $getItemRating = $dbClass->getRow(
-                    Tru_Fetcher_Database::RATINGS_TABLE_NAME,
-                    "provider_name=%s AND category=%s AND item_id=%s",
-                    $providerName, $category, $item
-                );
+                continue;
             } else {
                 $rating = $getItemRating->rating;
             }
-            if ($getItemRating !== null) {
-                $overallRating = $this->getItemOverallRating($getItemRating);
-                if ($overallRating !== null) {
-                    $getItemRating->overall_rating = $overallRating["overall_rating"];
-                    $getItemRating->total_users_rated = $overallRating["total_users_rated"];
-                }
-
-                $getItemRating->rating = $rating;
-                $getItemRating->user_id = $user_id;
-                array_push($getRatings, $getItemRating);
+            $overallRating = $this->getItemOverallRating($getItemRating);
+            if ($overallRating !== null) {
+                $getItemRating->overall_rating = $overallRating["overall_rating"];
+                $getItemRating->total_users_rated = $overallRating["total_users_rated"];
             }
+
+            $getItemRating->rating = $rating;
+            $getItemRating->user_id = $user_id;
+            array_push($getRatings, $getItemRating);
+
         }
         return $getRatings;
     }
