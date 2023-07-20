@@ -51,6 +51,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_User_Account extends Tru_Fetcher_Admin_
                 'id' => 'heading',
                 'type' => 'string',
             ],
+            [
+                'id' => 'tabs_orientation',
+                'type' => 'string',
+                'default' => 'vertical',
+            ],
         ]
     ];
 }

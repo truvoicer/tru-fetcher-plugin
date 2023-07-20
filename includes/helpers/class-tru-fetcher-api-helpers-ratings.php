@@ -33,6 +33,7 @@ use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_User;
 class Tru_Fetcher_Api_Helpers_Ratings {
 
     use Tru_Fetcher_DB_Traits_WP_Site, Tru_Fetcher_Traits_User;
+    const MAX_RATING = 5;
     public const ERROR_PREFIX = TRU_FETCHER_ERROR_PREFIX . '_settings';
 
     protected Tru_Fetcher_DB_Model_Ratings $ratingsModel;
@@ -48,9 +49,86 @@ class Tru_Fetcher_Api_Helpers_Ratings {
     }
 
 
-    public function createRating(\WP_REST_Request $request)
+    public function getRatingsData($providerName, $category, $idList, $user_id)
     {
-        return $this->ratingsRepository->insertRating($this->getUser(), $request->get_params());
+        if (count($idList) === 0) {
+            return [];
+        }
+        $getRatings = [];
+        foreach ($idList as $item) {
+            $getItemRating = $this->getRatingsRepository()->fetchRating(
+                $user_id,
+                $item,
+                $providerName,
+                $category
+            );
+            if (!$getItemRating) {
+                continue;
+            }
+
+            $overallRating = $this->getOverallRatingForItem($getItemRating);
+            if (is_array($overallRating)) {
+                $getItemRating['overall_rating'] = $overallRating["overall_rating"];
+                $getItemRating['total_users_rated'] = $overallRating["total_users_rated"];
+            }
+
+            $getRatings[] = $getItemRating;
+
+        }
+        return $getRatings;
+    }
+    public function getOverallRatingForItem(array $data)
+    {
+        $getTotal = $this->ratingsRepository->getTotalUserRating(
+            $data['item_id'],
+            $data['provider_name'],
+            $data['category']
+        );
+        if (!$getTotal || !isset($getTotal['rating']) || !isset($getTotal['total_users_rated'])) {
+            return null;
+        }
+        $maxUserRatingCount = (int)$getTotal['total_users_rated'] * self::MAX_RATING;
+        $calculateRating = ((int)$getTotal['rating'] * self::MAX_RATING) / $maxUserRatingCount;
+        $roundUpToInteger = ceil($calculateRating);
+        return [
+            "overall_rating" => $roundUpToInteger,
+            "total_users_rated" => (int)$getTotal['total_users_rated']
+        ];
+    }
+
+    public function getInsertDataFromRequest(\WP_User $user, \WP_REST_Request $request) {
+        $data = $request->get_params();
+        $insertData = [];
+        $columns = [
+            $this->ratingsModel->getItemIdColumn(),
+            $this->ratingsModel->getProviderNameColumn(),
+            $this->ratingsModel->getCategoryColumn(),
+            $this->ratingsModel->getRatingColumn(),
+        ];
+        foreach ($columns as $column) {
+            if (!isset($data[$column])) {
+                return new \WP_Error(
+                    self::ERROR_PREFIX . '_missing_' . $column,
+                    __('Missing ' . $column, 'tru-fetcher'),
+                );
+            }
+        }
+        foreach ($columns as $column) {
+            $val = $request->get_param($column);
+            if ($val) {
+                $insertData[$column] = $val;
+            }
+        }
+        $insertData[$this->ratingsModel->getUserIdColumn()] = $user->ID;
+        return $insertData;
+    }
+    public function saveRating(\WP_REST_Request $request)
+    {
+        $getInsertData = $this->getInsertDataFromRequest($this->getUser(), $request);
+        if (is_wp_error($getInsertData)) {
+            return $getInsertData;
+        }
+        return $this->ratingsRepository->saveRating($this->getUser(), $getInsertData);
     }
 
     public function updateRating(\WP_REST_Request $request)

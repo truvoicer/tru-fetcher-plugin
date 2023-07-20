@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\DB\Repository;
 
+use TruFetcher\Includes\DB\Model\Constants\Tru_Fetcher_DB_Model_Constants;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Saved_Items;
 
 /**
@@ -32,12 +33,20 @@ class Tru_Fetcher_DB_Repository_Saved_Items extends Tru_Fetcher_DB_Repository_Ba
         $this->savedItemsModel = new Tru_Fetcher_DB_Model_Saved_Items();
     }
 
+    public function fetchByItemId(\WP_User $user, int $itemId, string $providerName, string $category)
+    {
+        $this->addWhere($this->savedItemsModel->getUserIdColumn(), $user->ID);
+        $this->addWhere($this->savedItemsModel->getProviderNameColumn(), $providerName);
+        $this->addWhere($this->savedItemsModel->getCategoryColumn(), $category);
+        $this->addWhere($this->savedItemsModel->getItemIdColumn(), $itemId);
+        return $this->findOne();
+    }
     public function fetchByItemIdBatch(\WP_User $user, string $providerName, string $category, array $itemIds)
     {
         $this->addWhere($this->savedItemsModel->getUserIdColumn(), $user->ID);
         $this->addWhere($this->savedItemsModel->getProviderNameColumn(), $providerName);
         $this->addWhere($this->savedItemsModel->getCategoryColumn(), $category);
-        $this->addWhere($this->savedItemsModel->getItemIdColumn(), $itemIds, 'IN');
+        $this->addWhere($this->savedItemsModel->getItemIdColumn(), $itemIds, Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_IN);
         return $this->findMany();
     }
     public function fetchByUser(\WP_User $user)
@@ -137,6 +146,8 @@ class Tru_Fetcher_DB_Repository_Saved_Items extends Tru_Fetcher_DB_Repository_Ba
         $this->addWhere($this->savedItemsModel->getUserIdColumn(), $user->ID);
         $findSavedItem = $this->findOne();
         if ($findSavedItem) {
+            $this->addWhere($this->savedItemsModel->getIdColumn(), $id);
+            $this->addWhere($this->savedItemsModel->getUserIdColumn(), $user->ID);
             return $this->delete();
         }
         return false;

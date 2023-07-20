@@ -32,7 +32,7 @@ class Tru_Fetcher_DB_Repository_Base
 
     protected ?int $offset = null;
 
-    private array $values = [];
+    protected array $values = [];
     protected array $whereQueryConditions = [];
 
     public function __construct(Tru_Fetcher_DB_Model $model)

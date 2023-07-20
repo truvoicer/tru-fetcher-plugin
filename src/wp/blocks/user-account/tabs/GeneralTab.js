@@ -61,6 +61,28 @@ const GeneralTab = (props) => {
                     setAttributes({heading: value});
                 } }
             />
+            <SelectControl
+                label="Tabs Orientation"
+                onChange={(value) => {
+                    setAttributes({tabs_orientation: value});
+                }}
+                value={attributes?.tabs_orientation}
+                options={[
+                    {
+                        disabled: true,
+                        label: 'Select an Option',
+                        value: ''
+                    },
+                    {
+                        label: 'Vertical',
+                        value: 'vertical'
+                    },
+                    {
+                        label: 'Horizontal',
+                        value: 'horizontal'
+                    },
+                ]}
+            />
         </div>
     );
 };

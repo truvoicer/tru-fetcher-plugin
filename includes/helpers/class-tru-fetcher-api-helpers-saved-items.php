@@ -50,9 +50,50 @@ class Tru_Fetcher_Api_Helpers_Saved_Items {
     }
 
 
-    public function createSavedItem(\WP_REST_Request $request)
+    public function getInsertDataFromRequest(\WP_User $user, \WP_REST_Request $request) {
+        $data = $request->get_params();
+        $insertData = [];
+        $columns = [
+            $this->savedItemsModel->getItemIdColumn(),
+            $this->savedItemsModel->getProviderNameColumn(),
+            $this->savedItemsModel->getCategoryColumn(),
+        ];
+        foreach ($columns as $column) {
+            if (!isset($data[$column])) {
+                return new \WP_Error(
+                    self::ERROR_PREFIX . '_missing_' . $column,
+                    __('Missing ' . $column, 'tru-fetcher'),
+                );
+            }
+        }
+        foreach ($columns as $column) {
+            $val = $request->get_param($column);
+            if ($val) {
+                $insertData[$column] = $val;
+            }
+        }
+        return $insertData;
+    }
+
+    public function saveItem(\WP_REST_Request $request)
     {
-        return $this->savedItemsRepository->insertSavedItem($this->getUser(), $request->get_params());
+        $getInsertData = $this->getInsertDataFromRequest($this->getUser(), $request);
+        if (is_wp_error($getInsertData)) {
+            return $getInsertData;
+        }
+        $findSavedItem = $this->savedItemsRepository->fetchByItemId(
+            $this->getUser(),
+            $getInsertData[$this->savedItemsModel->getItemIdColumn()],
+            $getInsertData[$this->savedItemsModel->getProviderNameColumn()],
+            $getInsertData[$this->savedItemsModel->getCategoryColumn()],
+        );
+        if ($findSavedItem) {
+            return $this->savedItemsRepository->deleteSavedItemById(
+                $this->getUser(),
+                $findSavedItem[$this->savedItemsModel->getIdColumn()]
+            );
+        }
+        return $this->savedItemsRepository->insertSavedItem($this->getUser(), $getInsertData);
     }
 
     public function updateRating(\WP_REST_Request $request)

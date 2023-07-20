@@ -39,6 +39,28 @@ class Tru_Fetcher_DB_Repository_Ratings extends Tru_Fetcher_DB_Repository_Base {
         return $this->findMany();
     }
 
+    public function fetchRating(int $userId, int $itemId, string $providerName, string $category) {
+        $this->addWhere($this->ratingsModel->getItemIdColumn(), $itemId);
+        $this->addWhere($this->ratingsModel->getProviderNameColumn(), $providerName);
+        $this->addWhere($this->ratingsModel->getCategoryColumn(), $category);
+        $this->addWhere($this->ratingsModel->getUserIdColumn(), $userId);
+        return $this->findOne();
+    }
+
+    public function getTotalUserRating(int $itemId, string $providerName, string $category) {
+        $this->setSelect([
+            "SUM({$this->ratingsModel->getRatingColumn()}) AS {$this->ratingsModel->getRatingColumn()}",
+            "(SELECT count({$this->ratingsModel->getIdColumn()}) 
+            FROM {$this->ratingsModel->getTableName()}) 
+            WHERE {$this->ratingsModel->getItemIdColumn()}=%s
+            AS total_users_rated",
+        ]);
+        $this->values[] = $itemId;
+        $this->addWhere($this->ratingsModel->getItemIdColumn(), $itemId);
+        $this->addWhere($this->ratingsModel->getProviderNameColumn(), $providerName);
+        $this->addWhere($this->ratingsModel->getCategoryColumn(), $category);
+        return $this->findOne();
+    }
     public function buildInsertData(\WP_User $user, array $data) {
         $requiredCols = [
             $this->ratingsModel->getProviderNameColumn(),
@@ -57,7 +79,7 @@ class Tru_Fetcher_DB_Repository_Ratings extends Tru_Fetcher_DB_Repository_Base {
         $insertData[$this->ratingsModel->getUserIdColumn()] = $user->ID;
         return $insertData;
     }
-    public function insertRating(\WP_User $user, array $data)
+    public function saveRating(\WP_User $user, array $data)
     {
         $buildInsertData = $this->buildInsertData($user, $data);
         if (!$buildInsertData) {
@@ -70,7 +92,7 @@ class Tru_Fetcher_DB_Repository_Ratings extends Tru_Fetcher_DB_Repository_Base {
         $this->addWhere($this->ratingsModel->getItemIdColumn(), $buildInsertData[$this->ratingsModel->getItemIdColumn()]);
         $findSavedItem = $this->findOne();
         if ($findSavedItem) {
-            return false;
+            return $this->updateRating($user, $findSavedItem->id, $data);
         }
         return $this->insert($buildInsertData);
     }
