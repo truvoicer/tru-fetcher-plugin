@@ -54,27 +54,27 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 		register_rest_route( $this->publicEndpoint, '/email', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "emailFormEndpoint" ],
-			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
+			'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
 		) );
 		register_rest_route( $this->publicEndpoint, '/redirect', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "redirectFormEndpoint" ],
-			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
+			'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
 		) );
         register_rest_route( $this->protectedEndpoint, '/user/metadata/save', array(
             'methods'  => WP_REST_Server::CREATABLE,
             'callback' => [ $this, "userMetaEndpointHandler" ],
-            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
+            'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
         ) );
         register_rest_route( $this->protectedEndpoint, '/user/metadata/request', array(
             'methods'  => WP_REST_Server::CREATABLE,
             'callback' => [ $this, "userMetaDataRequest" ],
-            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
+            'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
         ) );
         register_rest_route( $this->protectedEndpoint, '/progress/request', array(
             'methods'  => WP_REST_Server::CREATABLE,
             'callback' => [ $this, "formsProgressRequest" ],
-            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
+            'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
         ) );
 	}
 
@@ -94,7 +94,12 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
             return $this->showError("user_not_exist", "Sorry, this user does not exist.");
         }
 	    $this->apiFormHandler->setUser($getUser);
-        return $this->apiFormHandler->fetchUserMetaData($request);
+        $userMetaData = $this->apiFormHandler->fetchUserMetaData($request);
+        $this->apiFormsResponse->setMetaData($userMetaData);
+        return $this->controllerHelpers->sendSuccessResponse(
+            "User meta data fetched.",
+            $this->apiFormsResponse
+        );
     }
 
     public function userMetaEndpointHandler($request) {

@@ -1,6 +1,7 @@
 <?php
 namespace TruFetcher\Includes\Api;
 
+use TruFetcher\Includes\Api\Controllers\Admin\Tru_Fetcher_Api_Admin_Form_Preset_Controller;
 use TruFetcher\Includes\Api\Controllers\Admin\Tru_Fetcher_Api_Admin_Posts_Controller;
 use TruFetcher\Includes\Api\Controllers\Admin\Tru_Fetcher_Api_Admin_Settings_Controller;
 use TruFetcher\Includes\Api\Controllers\Admin\Tru_Fetcher_Api_Admin_Token_Controller;
@@ -54,5 +55,6 @@ class Tru_Fetcher_Api {
 		(new Tru_Fetcher_Api_Admin_Token_Controller())->init();
 		(new Tru_Fetcher_Api_Admin_Posts_Controller())->init();
 		(new Tru_Fetcher_Api_Admin_Settings_Controller())->init();
+		(new Tru_Fetcher_Api_Admin_Form_Preset_Controller())->init();
 	}
 }

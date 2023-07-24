@@ -4,7 +4,6 @@ import NameValueDatatable from "../../components/tables/name-value-datatable/Nam
 
 const GeneralSettings = () => {
     const settingsContext = useContext(SettingsContext);
-    console.log(settingsContext);
     const columns = [
         {
             title: 'Name',
@@ -16,16 +15,6 @@ const GeneralSettings = () => {
             dataIndex: 'value',
             editable: true,
         },
-        // {
-        //     title: 'operation',
-        //     dataIndex: 'operation',
-        //     render: (_, record) =>
-        //         dataSource.length >= 1 ? (
-        //             <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
-        //                 <a>Delete</a>
-        //             </Popconfirm>
-        //         ) : null,
-        // },
     ];
     const groups = [
         {
@@ -47,13 +36,23 @@ const GeneralSettings = () => {
             title: 'Api Settings',
             names: [
                 {
+                    name: 'docker',
+                    label: 'Docker',
+                    type: 'checkbox'
+                },
+                {
                     name: 'api_url',
                     label: 'API URL',
                     type: 'url'
                 },
                 {
-                    name: 'api_key',
-                    label: 'API Key',
+                    name: 'docker_api_url',
+                    label: 'Docker API URL',
+                    type: 'url'
+                },
+                {
+                    name: 'api_token',
+                    label: 'API Token',
                     type: 'text'
                 },
             ]

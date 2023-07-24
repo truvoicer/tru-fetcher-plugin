@@ -9,6 +9,7 @@ export default {
         tokenRefresh: '/token/refresh',
         posts: '/posts',
         settings: '/settings',
+        formPresets: '/form/presets',
     },
     tokenResponseHandler: (results, appKey) => {
 

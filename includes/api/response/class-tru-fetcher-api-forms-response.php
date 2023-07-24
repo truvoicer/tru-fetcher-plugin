@@ -1,52 +1,24 @@
 <?php
 namespace TruFetcher\Includes\Api\Response;
 
-class Tru_Fetcher_Api_Forms_Response
+class Tru_Fetcher_Api_Forms_Response extends Tru_Fetcher_Api_Response
 {
-    public $status;
-    public $message;
-    public $data;
+   public array $metaData = [];
 
-	/**
-	 * @return mixed
-	 */
-	public function getMessage() {
-		return $this->message;
-	}
+    /**
+     * @return array
+     */
+    public function getMetaData(): array
+    {
+        return $this->metaData;
+    }
 
-	/**
-	 * @param mixed $message
-	 */
-	public function setMessage( $message ) {
-		$this->message = $message;
-	}
+    /**
+     * @param array $metaData
+     */
+    public function setMetaData(array $metaData): void
+    {
+        $this->metaData = $metaData;
+    }
 
-
-	/**
-	 * @return mixed
-	 */
-	public function getStatus() {
-		return $this->status;
-	}
-
-	/**
-	 * @param mixed $status
-	 */
-	public function setStatus( $status ) {
-		$this->status = $status;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getData() {
-		return $this->data;
-	}
-
-	/**
-	 * @param mixed $data
-	 */
-	public function setData( $data ) {
-		$this->data = $data;
-	}
 }

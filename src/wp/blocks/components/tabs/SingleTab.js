@@ -22,12 +22,16 @@ const SingleTab = (props) => {
 
     function formChangeHandler({key, value, blockId}) {
         if (blockId) {
-            let blockAttributes = data[blockId] || getBlockAttributesById(blockId);
-            if (typeof blockAttributes === 'undefined' || !blockAttributes) {
+            let blockAttributes = getBlockAttributesById(blockId);
+            let dataBlockAttributes = data[blockId];
+            if (!isObject(blockAttributes)) {
                 blockAttributes = {};
             }
+            if (!isObject(dataBlockAttributes)) {
+                dataBlockAttributes = {};
+            }
             const newAttributes = {
-                ...blockAttributes,
+                ...{...blockAttributes, ...dataBlockAttributes},
                 [key]: value
             }
             if (typeof onChange === 'function') {

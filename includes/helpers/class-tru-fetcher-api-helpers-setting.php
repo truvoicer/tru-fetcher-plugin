@@ -32,6 +32,7 @@ class Tru_Fetcher_Api_Helpers_Setting {
     use Tru_Fetcher_DB_Traits_WP_Site;
     public const ERROR_PREFIX = TRU_FETCHER_ERROR_PREFIX . '_settings';
 
+    private Tru_Fetcher_DB_Engine $db;
     protected Tru_Fetcher_DB_Model_Settings $settingsModel;
 
     private Tru_Fetcher_DB_Repository_Settings $settingsRepository;
@@ -40,6 +41,18 @@ class Tru_Fetcher_Api_Helpers_Setting {
     {
         $this->settingsModel = new Tru_Fetcher_DB_Model_Settings();
         $this->settingsRepository = new Tru_Fetcher_DB_Repository_Settings();
+        $this->db = new Tru_Fetcher_DB_Engine();
+    }
+
+    public function getSetting(string $name) {
+        $setting = $this->settingsRepository->findSettingByName($name);
+        if (!$setting) {
+            return false;
+        }
+        if (!empty($setting[$this->settingsModel->getValueColumn()])) {
+            return $setting[$this->settingsModel->getValueColumn()];
+        }
+        return false;
     }
 
     public static function getSettingsRequestData(\WP_REST_Request $request)

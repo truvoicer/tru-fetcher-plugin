@@ -87,6 +87,15 @@ class Tru_Fetcher_DB_Repository_Base
         return $results;
     }
 
+    public function deleteById(int $id) {
+        $this->addWhere($this->model->getIdColumn(), $id);
+        $findSavedItem = $this->findOne();
+        if ($findSavedItem) {
+            return $this->delete();
+        }
+        return false;
+    }
+
     public function deleteMany(array $data)
     {
         $results =  $this->deleteBatchData($data);

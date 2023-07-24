@@ -42,6 +42,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Form extends Tru_Fetcher_Admin_Blocks_R
         'taxonomies' => [],
         'attributes' => [
             [
+                'id' => 'presets',
+                'type' => 'string',
+                'default' => 'custom',
+            ],
+            [
                 'id' => 'form_type',
                 'type' => 'string',
                 'default' => 'single',
@@ -75,6 +80,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Form extends Tru_Fetcher_Admin_Blocks_R
             [
                 'id' => 'endpoint',
                 'type' => 'string',
+                'default' => 'custom',
             ],
             [
                 'id' => 'endpoint_type',

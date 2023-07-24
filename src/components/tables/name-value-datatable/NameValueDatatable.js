@@ -61,14 +61,16 @@ const NameValueDatatable = ({columns = [], dataSource = [], groups = [], onDelet
         let groupDataSource = [];
         groups.forEach((group) => {
             const groupData = group.names.map((groupNameData) => {
-                const find = cloneDataSource.find((item) => item?.name === groupNameData?.name);
-                if (find) {
-                    return find;
-                }
-                return {
+                const defaultData = {
+                    type: groupNameData?.type,
                     name: groupNameData?.name,
                     value: '',
                 }
+                const find = cloneDataSource.find((item) => item?.name === groupNameData?.name);
+                if (find) {
+                    return {...defaultData, ...find};
+                }
+                return defaultData
             });
             groupDataSource.push({
                 title: group.title,
@@ -78,9 +80,14 @@ const NameValueDatatable = ({columns = [], dataSource = [], groups = [], onDelet
         })
         let otherData = [];
         cloneDataSource.forEach((item) => {
+            const defaultData = {
+                type: item?.type,
+                name: item?.name,
+                value: '',
+            }
             const find = groupDataSource.find((data) => data?.name === item?.name);
             if (!find) {
-                otherData.push(item);
+                otherData.push({...defaultData, ...item});
             }
         });
         if (otherData.length) {

@@ -7,6 +7,7 @@ use TruFetcher\Includes\Admin\Blocks\Tru_Fetcher_Admin_Blocks;
 use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
 use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_Jwt;
 use TruFetcher\Includes\Api\Tru_Fetcher_Api_Request;
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Setting;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Category_Tpl;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_View_Tpl;
@@ -277,11 +278,12 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
      */
     public function buildTruFetcherApiLocalizedScriptData()
     {
+        $settingsHelpers = new Tru_Fetcher_Api_Helpers_Setting();
         $appKey = 'tru_fetcher_react';
         $data = [
             'tru_fetcher' => [
-                'baseUrl' => $this->getEnv('TRU_FETCHER_API_URL'),
-                'token' => $this->getEnv('TRU_FETCHER_API_TOKEN'),
+                'baseUrl' => $settingsHelpers->getSetting('api_url'),
+                'token' => $settingsHelpers->getSetting('api_token'),
                 'app_key' => $appKey,
             ]
         ];

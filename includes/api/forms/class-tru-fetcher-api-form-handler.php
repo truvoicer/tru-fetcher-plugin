@@ -279,14 +279,7 @@ class Tru_Fetcher_Api_Form_Handler
     public function fetchUserMetaData(WP_REST_Request $request)
     {
         $data = $request->get_params();
-        $userData = $this->getFormBuilderUserMetaData($data["form"]);
-
-        return $this->sendResponse(
-            $this->buildResponseObject(
-                self::STATUS_SUCCESS,
-                sprintf("User (%s) data fetched.", $this->getUser()->display_name),
-                $userData)
-        );
+        return $this->getFormBuilderUserMetaData($data["form"]);
     }
 
     private function getFormBuilderUserMetaData(array $form = [])

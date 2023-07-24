@@ -2,6 +2,7 @@
 namespace TruFetcher\Includes\Api;
 
 // exit if accessed directly
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Setting;
 use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
 use TruFetcher\Includes\Tru_Fetcher;
 use TruFetcher\Includes\Tru_Fetcher_Base;
@@ -15,6 +16,7 @@ class Tru_Fetcher_Api_Request extends Tru_Fetcher_Base
     const API_CONFIG_FILE = "fetcher-request-api-config";
     const ALLOWED_METHODS = ["GET", "POST"];
 
+    private Tru_Fetcher_Api_Helpers_Setting $settingHelper;
     private $apiConfig;
     private string $baseUrl;
 
@@ -22,7 +24,9 @@ class Tru_Fetcher_Api_Request extends Tru_Fetcher_Base
 
     public function __construct()
     {
+        parent::__construct();
         $this->loadDependencies();
+        $this->settingHelper = new Tru_Fetcher_Api_Helpers_Setting();
         $this->apiConfig = Tru_Fetcher_Base::getConfig(self::API_CONFIG_FILE);
         $this->baseUrl = $this->getBaseUrl();
     }
@@ -33,7 +37,11 @@ class Tru_Fetcher_Api_Request extends Tru_Fetcher_Base
 
     private function getBaseUrl()
     {
-        return $this->getEnv('TRU_FETCHER_API_BACK_URL');
+        $docker = $this->settingHelper->getSetting('docker');
+        if ($docker === '1' || $docker === 'true' || $docker === true) {
+            return $this->settingHelper->getSetting('docker_api_url');
+        }
+        return $this->settingHelper->getSetting('api_url');
     }
 
     private function buildApiRequestUrl(string $endpoint = null)
@@ -51,7 +59,7 @@ class Tru_Fetcher_Api_Request extends Tru_Fetcher_Base
         return [
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
-            "Authorization" => sprintf("Bearer %s", $this->getEnv('TRU_FETCHER_API_TOKEN'))
+            "Authorization" => sprintf("Bearer %s", $this->settingHelper->getSetting('api_token'))
         ];
     }
 

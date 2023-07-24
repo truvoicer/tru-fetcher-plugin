@@ -30,6 +30,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
 {
     public array $config;
     public function renderBlock( $blockAttributes, $content ) {
+//        var_dump($blockAttributes);
         $config = $this->getConfig();
         $id = $config['id'];
         $attributes = $config['attributes'];
