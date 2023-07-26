@@ -113,34 +113,30 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         }
     }
 
+    public function getSingleBlock($block)
+    {
+        $blockClass = new $block();
+        $config = $blockClass->getConfig();
+        if (isset($config['children'])) {
+            foreach ($config['children'] as $index => $child) {
+                $config['children'][$index] = [
+                    'id' => $child::BLOCK_ID,
+                    'name' => $child::BLOCK_NAME,
+                    'title' => $child::BLOCK_TITLE,
+                ];
+                $config['attributes'][] = [
+                    'id' => $child::BLOCK_ID,
+                    'type' => 'object',
+                ];
+            }
+        }
+        return $config;
+    }
     public function getBlocks()
     {
         $data = [];
         foreach (self::BLOCKS as $block) {
-            $blockClass = new $block();
-            $config = $blockClass->getConfig();
-            if (isset($config['children'])) {
-                foreach ($config['children'] as $index => $child) {
-                    $config['children'][$index] = [
-                        'id' => $child::BLOCK_ID,
-                        'name' => $child::BLOCK_NAME,
-                        'title' => $child::BLOCK_TITLE,
-                    ];
-                    $config['attributes'][] = [
-                        'id' => $child::BLOCK_ID,
-                        'type' => 'object',
-                    ];
-                }
-            }
-//            if (isset($config['attributes'])) {
-//                foreach ($config['attributes'] as $index => $attribute) {
-//                    if (isset($attribute['default'])) {
-//                        continue;
-//                    }
-//                    $config['attributes'][$index]['default'] = $blockClass->getAttributeDefaultValue($attribute, true);
-//                }
-//            }
-            $data[] = $config;
+            $data[] = $this->getSingleBlock($block);
         }
         return $data;
     }

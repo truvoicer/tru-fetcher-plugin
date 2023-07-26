@@ -1,8 +1,10 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { Form, Table, Button, Modal, Input } from 'antd';
+import {Form, Table, Button, Modal, Input} from 'antd';
 import {fetchRequest, sendRequest} from "../../library/api/state-middleware";
 import config from "../../library/api/wp/config";
 import FormComponent from "../../wp/blocks/components/form/FormComponent";
+import {isNotEmpty, isObject} from "../../library/helpers/utils-helpers";
+import {getBlockAttributesById} from "../../wp/helpers/wp-helpers";
 
 const FormPresets = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -10,40 +12,26 @@ const FormPresets = () => {
     const [modalComponent, setModalComponent] = useState(null);
     const [formPresets, setFormPresets] = useState([]);
 
-    const formChangeHandler = (data) => {
-        console.log({data});
+    const blockAttributes = getBlockAttributesById('form_block');
+    const formChangeHandler = ({key, value, record}) => {
+        const id = record?.id;
+        if (!isNotEmpty(id)) {
+            return;
+        }
+        setFormPresets((prevState) => {
+            let newState = [...prevState];
+            const index = newState.findIndex((item) => item?.id === id);
+            if (index === -1) {
+                return newState;
+            }
+            if (!isObject(newState[index]['config_data'])) {
+                newState[index]['config_data'] = {};
+            }
+            newState[index]['config_data'] = {...newState[index]['config_data'], [key]: value};
+            return newState;
+        });
     }
-    const columns = [
-        {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
-            render: (text) => <a>{text}</a>,
-        },
-        {
-            title: 'Config',
-            key: 'config',
-            render: (_, record) => (
-                <>
-                <Button
-                    onClick={() => {
-                        setModalTitle('Edit Form Preset');
-                        setModalComponent(
-                            <FormComponent
-                                data={{}}
-                                onChange={formChangeHandler}
-                            />
-                        );
-                        showModal();
-                    }}
-                    type="primary"
-                    style={{marginBottom: 16}}>
-                    Edit
-                </Button>
-                </>
-            ),
-        },
-    ];
+
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -55,6 +43,30 @@ const FormPresets = () => {
     const handleCancel = () => {
         setIsModalOpen(false);
     };
+
+    function buildDefaultFormData() {
+        const defaultFormData = {
+            presets: 'custom',
+        };
+        if (isObject(blockAttributes)) {
+            return {...blockAttributes, ...defaultFormData};
+        }
+        return false;
+    }
+
+    function buildFormData(data) {
+        const defaultFormData = buildDefaultFormData();
+        if (!defaultFormData) {
+            return false;
+        }
+        console.log({data})
+        if (!isObject(data?.config_data)) {
+            return defaultFormData
+        }
+        console.log({data})
+        return {...defaultFormData, ...data.config_data};
+    }
+
     async function fetchFormPresets() {
         const results = await fetchRequest({
             config: config,
@@ -65,6 +77,7 @@ const FormPresets = () => {
             setFormPresets(formPresets);
         }
     }
+
     async function createFormPresetRequest(data) {
         const results = await sendRequest({
             config: config,
@@ -77,9 +90,50 @@ const FormPresets = () => {
             setFormPresets(formPresets);
         }
     }
+
     useEffect(() => {
         fetchFormPresets();
     }, []);
+    const columns = [
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+            render: (text) => <a>{text}</a>,
+        },
+        {
+            title: 'Config',
+            key: 'config',
+            render: (_, record, index) => (
+                <>
+                    <Button
+                        onClick={() => {
+                            // console.log({_, a, b})
+                            const data = buildFormData(record);
+                            if (!data) {
+                                console.warn(`No data found for form preset: ${record.name}`);
+                                return;
+                            }
+                            setModalTitle('Edit Form Preset');
+                            setModalComponent(
+                                <FormComponent
+                                    data={formPresets[index]?.config_data || buildDefaultFormData()}
+                                    onChange={({key, value}) => {
+                                        formChangeHandler({key, value, record});
+                                    }}
+                                    showPresets={false}
+                                />
+                            );
+                            showModal();
+                        }}
+                        type="primary"
+                        style={{marginBottom: 16}}>
+                        Edit
+                    </Button>
+                </>
+            ),
+        },
+    ];
     console.log({formPresets});
     return (
         <>
@@ -119,7 +173,7 @@ const FormPresets = () => {
                 style={{marginBottom: 16}}>
                 Add Form Preset
             </Button>
-            <Table columns={columns} dataSource={formPresets} />
+            <Table columns={columns} dataSource={formPresets}/>
             <Modal title={modalTitle}
                    open={isModalOpen}
                    onOk={handleOk}

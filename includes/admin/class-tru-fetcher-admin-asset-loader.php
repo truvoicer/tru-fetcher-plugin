@@ -3,6 +3,7 @@
 namespace TruFetcher\Includes\Admin;
 
 use Exception;
+use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Form;
 use TruFetcher\Includes\Admin\Blocks\Tru_Fetcher_Admin_Blocks;
 use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
 use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_Jwt;
@@ -181,6 +182,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
 
     public function loadAdminReactAssets()
     {
+        $asset_file = include TRU_FETCHER_PLUGIN_DIR . "build/{$this->gutenbergReactScriptName}.asset.php";
         wp_enqueue_style(
             "{$this->plugin_name}-{$this->adminReactScriptName}",
             TRU_FETCHER_PLUGIN_URL . "build/{$this->adminReactScriptName}.css",
@@ -188,13 +190,14 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         wp_enqueue_script(
             "{$this->plugin_name}-{$this->adminReactScriptName}",
             TRU_FETCHER_PLUGIN_URL . "build/{$this->adminReactScriptName}.js",
-            array('wp-element'),
+            $asset_file['dependencies'],
             $this->version,
             true
         );
         $localizedScriptData = $this->buildDefaultLocalizedScriptData();
         $localizedScriptData['api'] = [];
         $localizedScriptData['api'] = array_merge($localizedScriptData['api'], $this->buildWordpressApiLocalizedScriptData());
+        $localizedScriptData = array_merge($localizedScriptData, $this->buildAdminReactBlocksLocalizedScriptData());
         wp_localize_script(
             "{$this->plugin_name}-{$this->adminReactScriptName}",
             str_replace('-', '_', "{$this->plugin_name}_react"),
@@ -222,6 +225,16 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
             'meta' => [
                 'metaFields' => (new Tru_Fetcher_Admin_Meta())->getMetaFieldConfig()
             ],
+        ];
+    }
+    /**
+     * @throws Exception
+     */
+    public function buildAdminReactBlocksLocalizedScriptData(): array
+    {
+        $blocks = new Tru_Fetcher_Admin_Blocks();
+        return [
+            'blocks' => [$blocks->getSingleBlock(Tru_Fetcher_Admin_Blocks_Resources_Form::class)],
         ];
     }
     /**
