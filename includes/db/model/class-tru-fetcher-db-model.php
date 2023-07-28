@@ -23,10 +23,15 @@ class Tru_Fetcher_DB_Model
 	];
 	private array $stringDataTypes = [
 		'varchar',
+		'longtext',
+		'mediumtext',
 	];
 	private array $booleanDataTypes = [
 		'tinyint',
 	];
+
+    protected array $serializedFields = [];
+
 	private static array $reservedFieldKeys = [
 		Tru_Fetcher_DB_Model_Constants::CONDITIONS_KEY,
 		Tru_Fetcher_DB_Model_Constants::DATA_KEY,
@@ -176,7 +181,7 @@ class Tru_Fetcher_DB_Model
                 continue;
 			}
 			if ($this->isDataType($this->stringDataTypes, $columnDataType)) {
-				$buildData[$key] = (string)$value;
+				$buildData[$key] = (in_array($key, $this->serializedFields)) ? unserialize(str_replace('\\', '', $value)) : (string)$value;
                 continue;
 			}
 			if (

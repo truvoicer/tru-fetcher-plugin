@@ -61,7 +61,7 @@ class Tru_Fetcher_Api_Admin_Form_Preset_Controller extends Tru_Fetcher_Api_Admin
 		register_rest_route( $this->adminNamespace, '/form/presets/(?<id>[\d]+)/update', array(
 			'methods'             => \WP_REST_Server::EDITABLE,
 			'callback'            => [ $this, "updateFormPreset" ],
-            'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],
+            'permission_callback' => [$this->apiAuth, 'allowRequest'],
 		) );
 		register_rest_route( $this->adminNamespace, '/form/presets/delete', array(
 			'methods'             => \WP_REST_Server::DELETABLE,

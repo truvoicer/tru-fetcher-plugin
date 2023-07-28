@@ -15,6 +15,9 @@ class Tru_Fetcher_DB_Model_Form_Presets extends Tru_Fetcher_DB_Model
 
     private string $nameColumn = 'name';
     private string $configDataColumn = 'config_data';
+    protected array $serializedFields = [
+        'config_data'
+    ];
 
     public function __construct()
     {

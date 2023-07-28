@@ -8,6 +8,7 @@ use TruFetcher\Includes\Admin\Blocks\Tru_Fetcher_Admin_Blocks;
 use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
 use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_Jwt;
 use TruFetcher\Includes\Api\Tru_Fetcher_Api_Request;
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Form_Presets;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Setting;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Category_Tpl;
@@ -153,6 +154,9 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function loadGutenbergAssets()
     {
         // Automatically load imported dependencies and assets version.
@@ -173,6 +177,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         $localizedScriptData['api'] = array_merge($localizedScriptData['api'], $this->buildTruFetcherApiLocalizedScriptData());
         $localizedScriptData = array_merge($localizedScriptData, $this->buildMetaFieldsLocalizedScriptData());
         $localizedScriptData = array_merge($localizedScriptData, $this->buildBlocksLocalizedScriptData());
+        $localizedScriptData = array_merge($localizedScriptData, $this->buildFormPresetsLocalizedScriptData());
         wp_localize_script(
             "{$this->plugin_name}-{$this->gutenbergReactScriptName}",
             str_replace('-', '_', "{$this->plugin_name}_react"),
@@ -225,6 +230,13 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
             'meta' => [
                 'metaFields' => (new Tru_Fetcher_Admin_Meta())->getMetaFieldConfig()
             ],
+        ];
+    }
+
+    public function buildFormPresetsLocalizedScriptData(): array
+    {
+        return [
+            'form_presets' => (new Tru_Fetcher_Api_Helpers_Form_Presets())->getFormPresetsRepository()->findFormPresets(),
         ];
     }
     /**

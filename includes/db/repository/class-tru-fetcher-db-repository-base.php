@@ -446,18 +446,16 @@ class Tru_Fetcher_DB_Repository_Base
             );
             return false;
         }
-
         $query = "UPDATE {$this->getModel()->getTableName($this->site, $this->isNetworkWide)}
                   SET {$updateSetData['set_query']}
                   WHERE {$updateSetData['where_query']};";
-        $results = $this->db->runBatchQuery($query, array_values($updateSetData['values']),
-            $this->db::DB_OPERATION_UPDATE);
+        $results = $this->db->runBatchQuery($query, array_values($updateSetData['values']));
 
         if (is_wp_error($results)) {
             $this->addError($results);
             return false;
         }
-        if (!$results) {
+        if ($results === false) {
             $this->addError(
                 new \WP_Error(
                     'tru_fetcher_db_insert_error',

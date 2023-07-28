@@ -47,7 +47,21 @@ const FormComponent = ({data, onChange, showPresets = true}) => {
         }
         return tabs;
     }
-    console.log({data});
+
+    function getPresets() {
+        const formPresets = tru_fetcher_react?.form_presets;
+        if (!Array.isArray(formPresets)) {
+            console.warn('Form presets not found')
+            return [];
+        }
+        return formPresets.map(preset => {
+            return {
+                label: preset.name,
+                value: preset.id
+            }
+        });
+    }
+
     return (
         <div className={'tr-news-app__form-block'}>
             {showPresets && (
@@ -64,10 +78,7 @@ const FormComponent = ({data, onChange, showPresets = true}) => {
                             label: 'Custom',
                             value: 'custom'
                         },
-                        {
-                            label: 'User Profile',
-                            value: 'user_profile'
-                        },
+                        ...getPresets()
                     ]}
                 />
             )}

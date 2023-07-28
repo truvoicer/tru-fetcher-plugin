@@ -633,7 +633,10 @@ class Tru_Fetcher_DB_Engine_Base
     public function findMany($query, $parameters, ?string $output = ARRAY_A)
     {
         global $wpdb;
-        return $wpdb->get_results($wpdb->prepare($query, $parameters), $output);
+        if (is_array($parameters) && count($parameters)) {
+            return $wpdb->get_results($wpdb->prepare($query, $parameters), $output);
+        }
+        return $wpdb->get_results($query, $output);
     }
 
     public function query($query, $parameters)

@@ -81,12 +81,10 @@ class Tru_Fetcher_DB_Repository_Form_Presets extends Tru_Fetcher_DB_Repository_B
     private function buildFormPresetUpdateData(int $id, array $requestData)
     {
         $data = [];
-        if (!isset($requestData[$this->model->getNameColumn()])) {
-            $this->addError(new \WP_Error('missing_name', 'Missing name'));
-            return false;
+        $data[$this->model->getIdColumn()] = $id;
+        if (!empty($requestData[$this->model->getNameColumn()])) {
+            $data[$this->model->getNameColumn()] = $requestData[$this->model->getNameColumn()];
         }
-        $data[$this->model->getNameColumn()] = $requestData[$this->model->getNameColumn()];
-
         if (empty($requestData[$this->model->getConfigDataColumn()])) {
             return $data;
         }
@@ -100,15 +98,16 @@ class Tru_Fetcher_DB_Repository_Form_Presets extends Tru_Fetcher_DB_Repository_B
         $this->setWhereQueryConditions($this->defaultWhereConditions());
         $formPreset = $this->buildFormPresetUpdateData($id, $data);
         if (!$formPreset) {
+            $this->addError(new \WP_Error('update_error', 'Update data is invalid'));
             return false;
         }
-
         $fetch = $this->findFormPresetByName($formPreset[$this->model->getNameColumn()]);
         if ($fetch && $fetch[$this->model->getIdColumn()] !== $id) {
             $this->addError(new \WP_Error('duplicate_error', 'Form preset already exists with same name'));
             return false;
         }
 
+        $this->setWhereQueryConditions($this->defaultWhereConditions());
         return $this->update($formPreset);
     }
 

@@ -70,6 +70,7 @@ class Tru_Fetcher_Api_Helpers_Form_Presets {
         $requestData = $request->get_params();
         if (empty($requestData[$this->formPresetsModel->getIdColumn()])) {
             $this->addError(new \WP_Error('missing_id', 'Missing id'));
+            return false;
         }
         if (!$this->formPresetsRepository->updateFormPreset(
             $requestData[$this->formPresetsModel->getIdColumn()],

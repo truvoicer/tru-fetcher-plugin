@@ -7,14 +7,6 @@ const FormSettingsTab = (props) => {
         onChange
     } = props;
 
-    function getPresets() {
-        return [
-            {
-                label: 'User Profile',
-                value: 'user_profile'
-            },
-        ];
-    }
 
     return (
         <div>
