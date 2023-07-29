@@ -70,6 +70,10 @@ class Tru_Fetcher_DB_Repository_Base
         $this->addWhere($this->model->getIdColumn(), $id);
         $results = $this->db->findOne($this->buildQuery(), $this->values);
         $this->cleanup();
+        if ($results) {
+            return $this->model->buildModelData($results);
+        }
+
         return $results;
     }
 
@@ -77,6 +81,9 @@ class Tru_Fetcher_DB_Repository_Base
     {
         $results =  $this->db->findOne($this->buildQuery(), $this->values);
         $this->cleanup();
+        if ($results) {
+            return $this->model->buildModelData($results);
+        }
         return $results;
     }
 
@@ -84,7 +91,10 @@ class Tru_Fetcher_DB_Repository_Base
     {
         $results =  $this->db->findMany($this->buildQuery(), $this->values);
         $this->cleanup();
-        return $results;
+        if (!count($results)) {
+            return false;
+        }
+        return $this->model->buildModelDataBatch($results);
     }
 
     public function deleteById(int $id) {

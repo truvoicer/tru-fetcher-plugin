@@ -73,4 +73,23 @@ class Tru_Fetcher_Admin_Blocks_Resources_Tabs extends Tru_Fetcher_Admin_Blocks_R
             ],
         ]
     ];
+    public function buildBlockAttributes(array $attributes)
+    {
+        $blocks = [
+            Tru_Fetcher_Admin_Blocks_Resources_Carousel::class,
+            Tru_Fetcher_Admin_Blocks_Resources_Form::class,
+        ];
+        $buildAttributes = parent::buildBlockAttributes($attributes);
+        foreach ($buildAttributes['tabs'] as $key => $tab) {
+            foreach ($blocks as $block) {
+                if (isset($tab[$block::BLOCK_ID]) && is_array($tab[$block::BLOCK_ID])) {
+                    $blockInstance = new $block();
+                    $build = $blockInstance->buildBlockAttributes($tab[$block::BLOCK_ID]);
+                    $buildAttributes['tabs'][$key][$block::BLOCK_ID] = $build;
+                }
+            }
+        }
+        return $buildAttributes;
+    }
+
 }

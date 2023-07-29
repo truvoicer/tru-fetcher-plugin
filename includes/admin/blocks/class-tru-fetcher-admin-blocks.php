@@ -50,10 +50,10 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
     private string $blockAssetsPrefix = TRU_FETCHER_PLUGIN_DIR . "src/wp/blocks";
 
     public const BLOCKS = [
+        Tru_Fetcher_Admin_Blocks_Resources_Form::class,
         Tru_Fetcher_Admin_Blocks_Resources_Listings::class,
         Tru_Fetcher_Admin_Blocks_Resources_Hero::class,
         Tru_Fetcher_Admin_Blocks_Resources_User_Account::class,
-        Tru_Fetcher_Admin_Blocks_Resources_Form::class,
         Tru_Fetcher_Admin_Blocks_Resources_Carousel::class,
         Tru_Fetcher_Admin_Blocks_Resources_Opt_In::class,
         Tru_Fetcher_Admin_Blocks_Resources_Posts::class,

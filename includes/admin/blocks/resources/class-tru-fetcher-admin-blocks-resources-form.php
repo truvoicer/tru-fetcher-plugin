@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Form_Presets;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
 
 /**
@@ -142,4 +143,21 @@ class Tru_Fetcher_Admin_Blocks_Resources_Form extends Tru_Fetcher_Admin_Blocks_R
             ],
         ]
     ];
+
+    public function buildBlockAttributes(array $attributes)
+    {
+        $buildAttributes = parent::buildBlockAttributes($attributes);
+        if (!empty($buildAttributes['presets']) && $buildAttributes['presets'] !== 'custom') {
+            $preset = (new Tru_Fetcher_Api_Helpers_Form_Presets())
+                ->getFormPresetsRepository()
+                ->findById((int)$buildAttributes['presets']);
+            if (!empty($preset['config_data'])) {
+                $buildAttributes = $preset['config_data'];
+            }
+        }
+        return $buildAttributes;
+    }
+
+
+
 }

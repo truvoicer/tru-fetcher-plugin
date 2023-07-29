@@ -33,17 +33,12 @@ class Tru_Fetcher_DB_Repository_Form_Presets extends Tru_Fetcher_DB_Repository_B
 
     public function findFormPresets()
     {
-        $results = $this->findMany();
-        return $this->model->buildModelDataBatch($results);
+        return $this->findMany();
     }
     public function findFormPresetByName(string $name)
     {
         $this->addWhere($this->model->getNameColumn(), $name);
-        $find = $this->findOne();
-        if (!$find) {
-            return false;
-        }
-        return $this->model->buildModelData($find);
+        return $this->findOne();
     }
 
     private function buildFormPresetInsertData(array $requestData)

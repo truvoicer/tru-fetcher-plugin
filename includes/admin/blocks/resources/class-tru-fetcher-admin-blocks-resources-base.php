@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
+use TruFetcher\Includes\Admin\Blocks\Tru_Fetcher_Admin_Blocks;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_List;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
@@ -30,15 +31,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
 {
     public array $config;
     public function renderBlock( $blockAttributes, $content ) {
-//        var_dump($blockAttributes);
         $config = $this->getConfig();
         $id = $config['id'];
-        $attributes = $config['attributes'];
-        $attributeDefaults = [];
-        foreach ($attributes as $attribute) {
-            $attributeDefaults[$attribute['id']] = $this->getAttributeDefaultValue($attribute);
-        }
-        $blockAttributes = array_merge($attributeDefaults, $this->buildBlockAttributes($blockAttributes));
+        $blockAttributes = $this->buildBlockAttributes($blockAttributes);
         $props = [
             'id' => $id,
             'data' => htmlspecialchars(json_encode($blockAttributes)),
@@ -113,27 +108,76 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         return $blockData[$findBlockDataIndex];
     }
 
-    private function findAttributeKeysByString(string $string, array $attributes) {
+    private function findAttributeKeysByString(string $string, array $attributes, ?bool $isIdIdentifier = false) {
         $keys = [];
         foreach ($attributes as $key => $attribute) {
             if ($key === $string) {
                 $keys[] = $key;
-            } elseif (str_starts_with($key, "{$string}__")) {
+            } elseif ($isIdIdentifier &&str_starts_with($key, "{$string}__")) {
                 $keys[] = $key;
             }
         }
         return $keys;
     }
     public function buildBlockAttributes(array $attributes) {
-        $postTypesManager = new Tru_Fetcher_Post_Types();
+        $config = $this->getConfig();
+        $configAttributes = $config['attributes'];
+        $attributeDefaults = [];
+        foreach ($configAttributes as $configAttribute) {
+            $attributeDefaults[$configAttribute['id']] = $this->getAttributeDefaultValue($configAttribute);
+        }
+       $attributes = $this->buildTaxonomyBlockAttributes($attributes);
+       $attributes = $this->buildPostTypeBlockAttributes($attributes);
+        $attributes = array_merge($attributeDefaults, $attributes);
+        return $attributes;
+    }
+    public function buildBlockAttributess(array $attributes) {
+        $config = $this->getConfig();
+        $configAttributes = $config['attributes'];
+        $attributeDefaults = [];
+        foreach ($configAttributes as $configAttribute) {
+            $attributeDefaults[$configAttribute['id']] = $this->getAttributeDefaultValue($configAttribute);
+        }
+       $attributes = $this->buildTaxonomyBlockAttributes($attributes);
+       $attributes = $this->buildPostTypeBlockAttributes($attributes);
+        return array_merge($attributeDefaults, $attributes);
+    }
+
+    public function buildTaxonomyBlockAttributes(array $attributes) {
         $taxonomyManager = new Tru_Fetcher_Taxonomy();
+        foreach ($taxonomyManager->getTaxonomies() as $taxonomyClass) {
+            $taxonomy = new $taxonomyClass();
+            $taxonomyIdIdentifier = $taxonomy->getIdIdentifier();
+            if (empty($taxonomyIdIdentifier)) {
+                continue;
+            }
+
+            $findAttributeKeys = $this->findAttributeKeysByString($taxonomyIdIdentifier, $attributes, true);
+            if (!count($findAttributeKeys)) {
+                continue;
+            }
+            foreach ($findAttributeKeys as $findAttributeKey) {
+                $termId = $attributes[$findAttributeKey];
+                if (!is_array($termId)) {
+                    $termId = [$termId];
+                }
+                $attributes[$findAttributeKey] = get_terms([
+                    'taxonomy' => $taxonomy->getName(),
+                    'include' => $termId,
+                ]);
+            }
+        }
+        return $attributes;
+    }
+    public function buildPostTypeBlockAttributes(array $attributes) {
+        $postTypesManager = new Tru_Fetcher_Post_Types();
         foreach ($postTypesManager->getPostTypes() as $postTypeClass) {
             $postType = new $postTypeClass();
             $postTypeIdIdentifier = $postType->getIdIdentifier();
             if (empty($postTypeIdIdentifier)) {
                 continue;
             }
-            $findAttributeKeys = $this->findAttributeKeysByString($postTypeIdIdentifier, $attributes);
+            $findAttributeKeys = $this->findAttributeKeysByString($postTypeIdIdentifier, $attributes, true);
             if (!count($findAttributeKeys)) {
                 continue;
             }
@@ -159,28 +203,6 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
                         return $post instanceof \WP_Post;
                     });
                 }
-            }
-        }
-        foreach ($taxonomyManager->getTaxonomies() as $taxonomyClass) {
-            $taxonomy = new $taxonomyClass();
-            $taxonomyIdIdentifier = $taxonomy->getIdIdentifier();
-            if (empty($taxonomyIdIdentifier)) {
-                continue;
-            }
-
-            $findAttributeKeys = $this->findAttributeKeysByString($taxonomyIdIdentifier, $attributes);
-            if (!count($findAttributeKeys)) {
-                continue;
-            }
-            foreach ($findAttributeKeys as $findAttributeKey) {
-                $termId = $attributes[$findAttributeKey];
-                if (!is_array($termId)) {
-                    $termId = [$termId];
-                }
-                $attributes[$findAttributeKey] = get_terms([
-                    'taxonomy' => $taxonomy->getName(),
-                    'include' => $termId,
-                ]);
             }
         }
         return $attributes;
