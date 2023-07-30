@@ -27,6 +27,7 @@ export default [
     },
     {
         id: 'tab-block',
+        block_id: 'tabs_block',
         title: 'Tabs',
         component: Tabs,
     }

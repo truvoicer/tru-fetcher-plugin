@@ -15,25 +15,9 @@ class Tru_Fetcher_DB_Data_Settings extends Tru_Fetcher_DB_Data
         $this->settingsRepository = new Tru_Fetcher_DB_Repository_Settings();
     }
 
-    private array $data = [
-      [
-          'name' => 'article_source',
-          'value' => 'posts',
-      ],
-      [
-          'name' => 'default_theme',
-          'value' => 'light',
-      ],
-      [
-          'name' => 'default_topic',
-          'value' => Tru_Fetcher_DB_Model_Topic::DEFAULT_TOPIC,
-      ],
-    ];
+    private array $data = [];
 
     public function install() {
-        return [
-            'success' => true,
-        ];
         if (!$this->doesTableExist()) {
             return [
                 'success' => false,
@@ -60,9 +44,6 @@ class Tru_Fetcher_DB_Data_Settings extends Tru_Fetcher_DB_Data
     }
 
     public function check() {
-        return [
-            'success' => true,
-        ];
         if (!$this->doesTableExist()) {
             return [
                 'success' => false,

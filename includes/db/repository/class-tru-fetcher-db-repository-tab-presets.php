@@ -3,6 +3,7 @@
 namespace TruFetcher\Includes\DB\Repository;
 
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Tab_Presets;
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Form_Presets;
 
 /**
  * Fired during plugin activation
@@ -31,14 +32,65 @@ class Tru_Fetcher_DB_Repository_Tab_Presets extends Tru_Fetcher_DB_Repository_Ba
         parent::__construct(new Tru_Fetcher_DB_Model_Tab_Presets());
     }
 
+    public function findById(int $id)
+    {
+        $tabPreset =  parent::findById($id);
+        if (!$tabPreset) {
+            return $tabPreset;
+        }
+        return $this->buildTabPresetData($tabPreset);
+    }
+
+
     public function findTabPresets()
     {
-        return $this->findMany();
+        $find = $this->findMany();
+        if (!$find) {
+            return $find;
+        }
+        return array_map(function ($tabPreset) {
+            return $this->buildTabPresetData($tabPreset);
+        }, $find);
     }
     public function findTabPresetByName(string $name)
     {
         $this->addWhere($this->model->getNameColumn(), $name);
-        return $this->findOne();
+        $tabPreset = $this->findOne();
+        if (!$tabPreset) {
+            return $tabPreset;
+        }
+        return $this->buildTabPresetData($tabPreset);
+    }
+
+    public function buildTabPresetData(array $tabPreset) {
+        if (empty($tabPreset[$this->model->getConfigDataColumn()])) {
+            return $tabPreset;
+        }
+        $configData = $tabPreset[$this->model->getConfigDataColumn()];
+        if (!is_array($configData)) {
+            return $tabPreset;
+        }
+        if (empty($configData['tabs'])) {
+            return $tabPreset;
+        }
+        if (!is_array($configData['tabs'])) {
+            return $tabPreset;
+        }
+        foreach ($configData['tabs'] as $index => $tab) {
+            if (empty($tab['form_block']) || !is_array($tab['form_block'])) {
+                continue;
+            }
+            $formBlock = $tab['form_block'];
+            if (!empty($formBlock['presets']) && $formBlock['presets'] !== 'custom') {
+                $preset = (new Tru_Fetcher_Api_Helpers_Form_Presets())
+                    ->getFormPresetsRepository()
+                    ->findById((int)$formBlock['presets']);
+                if (!empty($preset['config_data'])) {
+                    $tabPreset[$this->model->getConfigDataColumn()]['tabs'][$index]['form_block'] = $preset['config_data'];
+                }
+            }
+        }
+        return $tabPreset;
     }
 
     private function buildTabPresetInsertData(array $requestData)

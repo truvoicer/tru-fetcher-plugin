@@ -2,6 +2,8 @@
 
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Form_Presets;
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Tab_Presets;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
 
 /**
@@ -75,11 +77,20 @@ class Tru_Fetcher_Admin_Blocks_Resources_Tabs extends Tru_Fetcher_Admin_Blocks_R
     ];
     public function buildBlockAttributes(array $attributes)
     {
+        $buildAttributes = parent::buildBlockAttributes($attributes);
+        if (!empty($buildAttributes['presets']) && $buildAttributes['presets'] !== 'custom') {
+            $preset = (new Tru_Fetcher_Api_Helpers_Tab_Presets())
+                ->getTabPresetsRepository()
+                ->findById((int)$buildAttributes['presets']);
+            if (!empty($preset['config_data'])) {
+                $buildAttributes = $preset['config_data'];
+            }
+            return $buildAttributes;
+        }
         $blocks = [
             Tru_Fetcher_Admin_Blocks_Resources_Carousel::class,
             Tru_Fetcher_Admin_Blocks_Resources_Form::class,
         ];
-        $buildAttributes = parent::buildBlockAttributes($attributes);
         foreach ($buildAttributes['tabs'] as $key => $tab) {
             foreach ($blocks as $block) {
                 if (isset($tab[$block::BLOCK_ID]) && is_array($tab[$block::BLOCK_ID])) {
@@ -89,6 +100,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Tabs extends Tru_Fetcher_Admin_Blocks_R
                 }
             }
         }
+
         return $buildAttributes;
     }
 

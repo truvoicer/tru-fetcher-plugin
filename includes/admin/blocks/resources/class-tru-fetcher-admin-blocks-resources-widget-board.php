@@ -64,4 +64,31 @@ class Tru_Fetcher_Admin_Blocks_Resources_Widget_Board extends Tru_Fetcher_Admin_
             ],
         ]
     ];
+
+    public function buildBlockAttributes(array $attributes)
+    {
+        $buildAttributes = parent::buildBlockAttributes($attributes);
+        $buildAttributes = $this->buildWidgetAttributes('content_widgets', $buildAttributes);
+        $buildAttributes = $this->buildWidgetAttributes('sidebar_widgets', $buildAttributes);
+        return $buildAttributes;
+    }
+
+    private function buildWidgetAttributes(string $attributeId, array $attributes) {
+        if (empty($attributeId) || empty($attributes[$attributeId])) {
+            return $attributes;
+        }
+        $blocks = [
+            Tru_Fetcher_Admin_Blocks_Resources_Tabs::class,
+        ];
+        foreach ($attributes[$attributeId] as $key => $tab) {
+            foreach ($blocks as $block) {
+                if (isset($tab['block_id']) && $tab['block_id'] === $block::BLOCK_ID) {
+                    $blockInstance = new $block();
+                    $build = $blockInstance->buildBlockAttributes($tab);
+                    $attributes[$attributeId][$key] = $build;
+                }
+            }
+        }
+        return $attributes;
+    }
 }

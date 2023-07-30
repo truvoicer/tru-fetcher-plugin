@@ -1,7 +1,8 @@
 import Dashboard from "../../Dashboard";
 import GeneralSettings from "../../settings/pages/GeneralSettings";
-import FormPresets from "../../settings/pages/FormPresets";
-import TabPresets from "../../settings/pages/TabPresets";
+import FormPresets from "../../settings/pages/presets/FormPresets";
+import TabPresets from "../../settings/pages/presets/TabPresets";
+import Presets from "../../settings/pages/presets/Presets";
 
 export default [
     {
@@ -20,16 +21,23 @@ export default [
     },
     {
         home: false,
-        path: "/form-presets",
-        key: 'form-presets',
-        label: 'Form Presets',
-        component: FormPresets,
-    },
-    {
-        home: false,
-        path: "/tab-presets",
-        key: 'tab-presets',
-        label: 'Tab Presets',
-        component: TabPresets,
+        path: "/presets",
+        key: 'presets',
+        label: 'Presets',
+        component: Presets,
+        subRoutes: [
+            {
+                path: "/presets/form-presets",
+                key: 'form-presets',
+                label: 'Form Presets',
+                component: FormPresets,
+            },
+            {
+                path: "/presets/tab-presets",
+                key: 'tab-presets',
+                label: 'Tab Presets',
+                component: TabPresets,
+            },
+        ]
     },
 ];

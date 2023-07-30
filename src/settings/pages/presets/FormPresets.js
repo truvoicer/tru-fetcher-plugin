@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Form, Input, Modal, Table, notification} from 'antd';
-import {fetchRequest, sendRequest} from "../../library/api/state-middleware";
-import config from "../../library/api/wp/config";
-import TabComponent from "../../wp/blocks/components/tabs/Tabs";
-import {isObject} from "../../library/helpers/utils-helpers";
-import {getBlockAttributesById} from "../../wp/helpers/wp-helpers";
+import {fetchRequest, sendRequest} from "../../../library/api/state-middleware";
+import config from "../../../library/api/wp/config";
+import FormComponent from "../../../wp/blocks/components/form/FormComponent";
+import {isObject} from "../../../library/helpers/utils-helpers";
+import {getBlockAttributesById} from "../../../wp/helpers/wp-helpers";
 
-const TabPresets = () => {
+const FormPresets = () => {
     const [api, contextHolder] = notification.useNotification();
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [currentRecord, setCurrentRecord] = useState(null);
-    const [tabPresets, setTabPresets] = useState([]);
+    const [formPresets, setFormPresets] = useState([]);
     const openNotificationWithIcon = (type, title, message) => {
         api[type]({
             message: title,
@@ -19,8 +19,8 @@ const TabPresets = () => {
         });
     };
 
-    const blockAttributes = getBlockAttributesById('tabs_block');
-    const tabChangeHandler = ({key, value, record}) => {
+    const blockAttributes = getBlockAttributesById('form_block');
+    const formChangeHandler = ({key, value, record}) => {
         if (!record?.id) {
             return;
         }
@@ -41,62 +41,62 @@ const TabPresets = () => {
             console.error('Id not set in currentRecord')
             return;
         }
-        updateTabPresetRequest(currentRecord);
+        updateFormPresetRequest(currentRecord);
         // setIsModalOpen(false);
     };
 
-    function buildDefaultTabData() {
-        const defaultTabData = {
+    function buildDefaultFormData() {
+        const defaultFormData = {
             presets: 'custom',
         };
         if (isObject(blockAttributes)) {
-            return {...blockAttributes, ...defaultTabData};
+            return {...blockAttributes, ...defaultFormData};
         }
         return false;
     }
 
-    function buildTabData(data) {
-        const defaultTabData = buildDefaultTabData();
-        if (!defaultTabData) {
+    function buildFormData(data) {
+        const defaultFormData = buildDefaultFormData();
+        if (!defaultFormData) {
             return false;
         }
 
         if (!isObject(data?.config_data)) {
-            return defaultTabData
+            return defaultFormData
         }
 
-        return {...defaultTabData, ...data.config_data};
+        return {...defaultFormData, ...data.config_data};
     }
 
-    async function fetchTabPresets() {
+    async function fetchFormPresets() {
         const results = await fetchRequest({
             config: config,
-            endpoint: config.endpoints.tabPresets,
+            endpoint: config.endpoints.formPresets,
         });
-        const tabPresets = results?.data?.tabPreset;
-        if (Array.isArray(tabPresets)) {
-            setTabPresets(tabPresets);
+        const formPresets = results?.data?.formPreset;
+        if (Array.isArray(formPresets)) {
+            setFormPresets(formPresets);
         }
     }
 
-    async function createTabPresetRequest(data) {
+    async function createFormPresetRequest(data) {
         const results = await sendRequest({
             config: config,
             method: 'post',
-            endpoint: `${config.endpoints.tabPresets}/create`,
+            endpoint: `${config.endpoints.formPresets}/create`,
             data
         });
-        const tabPresets = results?.data?.tabPreset;
+        const formPresets = results?.data?.formPreset;
         if (results?.data?.status !== 'success') {
-            openNotificationWithIcon('error', 'Error', 'Failed to create tab preset');
+            openNotificationWithIcon('error', 'Error', 'Failed to create form preset');
             return;
         }
-        openNotificationWithIcon('success', 'Success', 'Tab preset created successfully');
-        if (Array.isArray(tabPresets)) {
-            setTabPresets(tabPresets);
+        openNotificationWithIcon('success', 'Success', 'Form preset created successfully');
+        if (Array.isArray(formPresets)) {
+            setFormPresets(formPresets);
         }
     }
-    async function updateTabPresetRequest(data) {
+    async function updateFormPresetRequest(data) {
         if (!data?.id) {
             console.error('Id not set in data')
             return;
@@ -105,22 +105,22 @@ const TabPresets = () => {
         const results = await sendRequest({
             config: config,
             method: 'post',
-            endpoint: `${config.endpoints.tabPresets}/${id}/update`,
+            endpoint: `${config.endpoints.formPresets}/${id}/update`,
             data
         });
-        const tabPresets = results?.data?.tabPreset;
+        const formPresets = results?.data?.formPreset;
         if (results?.data?.status !== 'success') {
-            openNotificationWithIcon('error', 'Error', 'Failed to update tab preset');
+            openNotificationWithIcon('error', 'Error', 'Failed to update form preset');
             return;
         }
-        openNotificationWithIcon('success', 'Success', 'Tab preset updated successfully');
-        if (Array.isArray(tabPresets)) {
-            setTabPresets(tabPresets);
+        openNotificationWithIcon('success', 'Success', 'Form preset updated successfully');
+        if (Array.isArray(formPresets)) {
+            setFormPresets(formPresets);
         }
     }
 
     useEffect(() => {
-        fetchTabPresets();
+        fetchFormPresets();
     }, []);
     const columns = [
         {
@@ -137,9 +137,9 @@ const TabPresets = () => {
                     <Button
                         onClick={() => {
                             // console.log({_, a, b})
-                            // const data = buildTabData(record);
+                            // const data = buildFormData(record);
                             // if (!data) {
-                            //     console.warn(`No data found for tab preset: ${record.name}`);
+                            //     console.warn(`No data found for form preset: ${record.name}`);
                             //     return;
                             // }
                             setCurrentRecord(record);
@@ -163,36 +163,38 @@ const TabPresets = () => {
                 }}
                 type="primary"
                 style={{marginBottom: 16}}>
-                Add Tab Preset
+                Add Form Preset
             </Button>
-            <Table columns={columns} dataSource={tabPresets}/>
-            <Modal title={'Edit Tab Preset'}
+            <Table columns={columns} dataSource={formPresets}/>
+            <Modal title={`Edit Form Preset: ${currentRecord?.name || ''}`}
                    open={isEditModalOpen}
                    onOk={() => {
                        if (!currentRecord?.id) {
                            console.error('Id not set in currentRecord')
                            return;
                        }
-                       updateTabPresetRequest(currentRecord);
+                       updateFormPresetRequest(currentRecord);
                    }}
                    onCancel={() => {
+                       setCurrentRecord(null);
                        setIsEditModalOpen(false);
                    }}>
-                <TabComponent
-                    data={buildTabData(currentRecord)}
+                <FormComponent
+                    data={buildFormData(currentRecord)}
                     onChange={({key, value}) => {
                         // console.log({key, value, record})
-                        tabChangeHandler({key, value, record: currentRecord});
+                        formChangeHandler({key, value, record: currentRecord});
                     }}
                     showPresets={false}
                 />
             </Modal>
-            <Modal title={'Add Tab Preset'}
+            <Modal title={'Add Form Preset'}
                    open={isAddModalOpen}
                    onOk={() => {
-                       createTabPresetRequest(values)
+                       createFormPresetRequest(values)
                    }}
                    onCancel={() => {
+                       setCurrentRecord(null);
                        setIsAddModalOpen(false);
                    }}>
                 <Form
@@ -200,7 +202,7 @@ const TabPresets = () => {
                     style={{maxWidth: 600}}
                     initialValues={{name: '', value: ''}}
                     onFinish={(values) => {
-                        createTabPresetRequest(values)
+                        createFormPresetRequest(values)
                     }}
                     onFinishFailed={errorInfo => {
                         console.log('Failed:', errorInfo);
@@ -225,4 +227,4 @@ const TabPresets = () => {
     );
 };
 
-export default TabPresets;
+export default FormPresets;

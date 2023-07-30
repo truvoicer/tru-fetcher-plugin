@@ -2,7 +2,9 @@
 
 namespace TruFetcher\Includes\DB\Engine;
 
+use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Form_Preset;
 use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Settings;
+use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Tab_Preset;
 use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Topic;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model;
 use TruFetcher\Includes\DB\Model\Constants\Tru_Fetcher_DB_Model_Constants;
@@ -923,6 +925,8 @@ class Tru_Fetcher_DB_Engine_Base
 		return [
 			new Tru_Fetcher_DB_Data_Settings(),
 			new Tru_Fetcher_DB_Data_Topic(),
+			new Tru_Fetcher_DB_Data_Tab_Preset(),
+			new Tru_Fetcher_DB_Data_Form_Preset(),
 		];
 	}
 
