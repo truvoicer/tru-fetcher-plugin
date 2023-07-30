@@ -19,6 +19,7 @@ use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Post_Meta;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Ratings;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Saved_Items;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Settings;
+use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Skill;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Tab_Presets;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Topic;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_User_Device_Access;
@@ -912,6 +913,7 @@ class Tru_Fetcher_DB_Engine_Base
             new Tru_Fetcher_DB_Model_Ratings(),
             new Tru_Fetcher_DB_Model_Form_Presets(),
             new Tru_Fetcher_DB_Model_Tab_Presets(),
+            new Tru_Fetcher_DB_Model_Skill(),
 		];
 	}
 	/**

@@ -131,17 +131,6 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         $attributes = array_merge($attributeDefaults, $attributes);
         return $attributes;
     }
-    public function buildBlockAttributess(array $attributes) {
-        $config = $this->getConfig();
-        $configAttributes = $config['attributes'];
-        $attributeDefaults = [];
-        foreach ($configAttributes as $configAttribute) {
-            $attributeDefaults[$configAttribute['id']] = $this->getAttributeDefaultValue($configAttribute);
-        }
-       $attributes = $this->buildTaxonomyBlockAttributes($attributes);
-       $attributes = $this->buildPostTypeBlockAttributes($attributes);
-        return array_merge($attributeDefaults, $attributes);
-    }
 
     public function buildTaxonomyBlockAttributes(array $attributes) {
         $taxonomyManager = new Tru_Fetcher_Taxonomy();

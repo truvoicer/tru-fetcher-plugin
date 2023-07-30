@@ -1,7 +1,7 @@
 <?php
-namespace TruFetcher\Includes\Api\Forms;
+namespace TruFetcher\Includes\Forms;
 
-use Tru_Fetcher_Api_Providers_Hubspot;
+use TruFetcher\Includes\Api\Providers\Tru_Fetcher_Api_Providers_Hubspot;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Forms_Response;
 use TruFetcher\Includes\Database\Tru_Fetcher_Database;
 use WP_REST_Request;
@@ -352,8 +352,8 @@ class Tru_Fetcher_Api_Form_Handler
     {
         return array_map(function ($item) use ($valueKey, $labelKey) {
             return [
-                "value" => $item->$valueKey,
-                "label" => $item->$labelKey
+                "value" => $item[$valueKey],
+                "label" => $item[$labelKey]
             ];
         }, $data);
     }

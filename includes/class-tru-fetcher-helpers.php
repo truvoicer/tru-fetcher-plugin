@@ -32,7 +32,7 @@ use TruFetcher\Includes\Admin\AdminMenu\Tru_Fetcher_Admin_Menu_Constants;
  */
 class Tru_Fetcher_Helpers {
     public static function toSnakeCase(string $text) {
-        return str_replace('-', '_', $text);
+        return str_replace(['-', ' ', '.'], '_', $text);
     }
     public static function dump(...$vars) {
         var_dump(...$vars);

@@ -44,17 +44,19 @@ const Tabs = (props) => {
             data: data,
             onChange: onChange
         };
-        if (data?.tabs_block_type === 'custom_tabs') {
-            componentProps = {
-                data: data?.tabs || [],
-                onChange: onChange
-            }
-        }
-        if (['request_carousel_tabs', 'request_video_tabs'].includes(data?.tabs_block_type)) {
-            componentProps = {
-                data: data?.request_options,
-                onChange: onChange
-            }
+        switch (tab.name) {
+            case 'custom_tabs':
+                componentProps = {
+                    data: data?.tabs || [],
+                    onChange: onChange
+                };
+                break;
+            case 'request_options':
+                componentProps = {
+                    data: data?.request_options,
+                    onChange: onChange
+                };
+                break;
         }
         let TabComponent = tab.component;
         return <TabComponent {...componentProps} />;
@@ -95,6 +97,25 @@ const Tabs = (props) => {
                         ]}
                     />
                 )}
+                <SelectControl
+                    label="Access Control"
+                    onChange={(value) => {
+                        if (typeof onChange === 'function') {
+                            onChange({key: 'access_control', value: value});
+                        }
+                    }}
+                    value={data?.access_control}
+                    options={[
+                        {
+                            label: 'Public',
+                            value: 'public'
+                        },
+                        {
+                            label: 'Protected',
+                            value: 'protected'
+                        },
+                    ]}
+                />
                 {data?.presets === 'custom' && (
                     <TabPanel
                         className="my-tab-panel"

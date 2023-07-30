@@ -44,7 +44,7 @@ class Tru_Fetcher_DB_Repository_Settings extends Tru_Fetcher_DB_Repository_Base 
     {
         $find = $this->db->getSingleResult(
             $this->model,
-            "{$this->model->getNameColumn()} = %s",
+            "{$this->model->getUserIdColumn()} = %s",
             [$settingName],
             ARRAY_A
         );
@@ -81,7 +81,7 @@ class Tru_Fetcher_DB_Repository_Settings extends Tru_Fetcher_DB_Repository_Base 
         if (!$settingsItem) {
             return false;
         }
-        $fetchSettings = $this->findSettingByName($settingsItem[$this->model->getNameColumn()]);
+        $fetchSettings = $this->findSettingByName($settingsItem[$this->model->getUserIdColumn()]);
         if ($fetchSettings) {
             $this->addError(new \WP_Error('duplicate_error', 'Setting already exists with same name'));
             return false;

@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
+use TruFetcher\Includes\DB\Repository\Tru_Fetcher_DB_Repository_Tab_Presets;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Form_Presets;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Tab_Presets;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
@@ -28,6 +29,8 @@ use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
  */
 class Tru_Fetcher_Admin_Blocks_Resources_Tabs extends Tru_Fetcher_Admin_Blocks_Resources_Base
 {
+    private Tru_Fetcher_DB_Repository_Tab_Presets $tabPresetsRepository;
+
     public const BLOCK_ID = 'tabs_block';
     public const BLOCK_NAME = 'tru-fetcher/tabs-block';
     public const BLOCK_TITLE = 'Tf Tabs Block';
@@ -41,6 +44,16 @@ class Tru_Fetcher_Admin_Blocks_Resources_Tabs extends Tru_Fetcher_Admin_Blocks_R
         ],
         'taxonomies' => [],
         'attributes' => [
+            [
+                'id' => 'access_control',
+                'type' => 'string',
+                'default' => 'public',
+            ],
+            [
+                'id' => 'presets',
+                'type' => 'string',
+                'default' => 'custom',
+            ],
             [
                 'id' => 'tabs_block_type',
                 'type' => 'string',
@@ -75,6 +88,12 @@ class Tru_Fetcher_Admin_Blocks_Resources_Tabs extends Tru_Fetcher_Admin_Blocks_R
             ],
         ]
     ];
+
+    public function __construct()
+    {
+        $this->tabPresetsRepository = new Tru_Fetcher_DB_Repository_Tab_Presets();
+    }
+
     public function buildBlockAttributes(array $attributes)
     {
         $buildAttributes = parent::buildBlockAttributes($attributes);
@@ -83,7 +102,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Tabs extends Tru_Fetcher_Admin_Blocks_R
                 ->getTabPresetsRepository()
                 ->findById((int)$buildAttributes['presets']);
             if (!empty($preset['config_data'])) {
-                $buildAttributes = $preset['config_data'];
+                $buildAttributes = $this->tabPresetsRepository->buildTabPresetConfigData($preset['config_data']);
             }
             return $buildAttributes;
         }

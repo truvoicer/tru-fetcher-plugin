@@ -85,7 +85,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Widget_Board extends Tru_Fetcher_Admin_
                 if (isset($tab['block_id']) && $tab['block_id'] === $block::BLOCK_ID) {
                     $blockInstance = new $block();
                     $build = $blockInstance->buildBlockAttributes($tab);
-                    $attributes[$attributeId][$key] = $build;
+                    $attributes[$attributeId][$key] = array_merge($attributes[$attributeId][$key], $build);
                 }
             }
         }

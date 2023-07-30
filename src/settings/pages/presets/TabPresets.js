@@ -35,16 +35,6 @@ const TabPresets = () => {
         });
     }
 
-
-    const handleOk = () => {
-        if (!currentRecord?.id) {
-            console.error('Id not set in currentRecord')
-            return;
-        }
-        updateTabPresetRequest(currentRecord);
-        // setIsModalOpen(false);
-    };
-
     function buildDefaultTabData() {
         const defaultTabData = {
             presets: 'custom',
@@ -72,6 +62,9 @@ const TabPresets = () => {
         const results = await fetchRequest({
             config: config,
             endpoint: config.endpoints.tabPresets,
+            params: {
+                build_config_data: true
+            }
         });
         const tabPresets = results?.data?.tabPreset;
         if (Array.isArray(tabPresets)) {

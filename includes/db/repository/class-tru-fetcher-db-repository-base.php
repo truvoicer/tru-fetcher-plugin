@@ -28,6 +28,8 @@ class Tru_Fetcher_DB_Repository_Base
 
     protected array $groupBy = [];
 
+    protected array $joins = [];
+
     protected ?int $limit = null;
 
     protected ?int $offset = null;
@@ -60,6 +62,7 @@ class Tru_Fetcher_DB_Repository_Base
         $this->orderBy = [];
         $this->orderByDir = 'desc';
         $this->groupBy = [];
+        $this->joins = [];
         $this->limit = null;
         $this->offset = null;
         $this->values = [];
@@ -161,6 +164,11 @@ class Tru_Fetcher_DB_Repository_Base
             $query .= ' *';
         }
         $query .= " FROM {$this->model->getTableName($this->site, $this->isNetworkWide)}";
+        if (count($this->joins)) {
+            foreach ($this->joins as $join) {
+                $query .= " {$join['type']} JOIN {$join['table']} ON {$join['on']}";
+            }
+        }
         if (count($this->where)) {
             $whereData = $this->buildWhereData();
             $query .= " WHERE {$whereData}";
@@ -621,6 +629,15 @@ class Tru_Fetcher_DB_Repository_Base
         ];
         return $this;
     }
+    public function addJoin(string $type, string $table, string $on): self
+    {
+        $this->joins[] = [
+            'type' => $type,
+            'table' => $table,
+            'on' => $on,
+        ];
+        return $this;
+    }
 
     /**
      * @return array
@@ -636,6 +653,22 @@ class Tru_Fetcher_DB_Repository_Base
     public function setWhereQueryConditions(array $whereQueryConditions): void
     {
         $this->whereQueryConditions = $whereQueryConditions;
+    }
+
+    /**
+     * @return array
+     */
+    public function getJoins(): array
+    {
+        return $this->joins;
+    }
+
+    /**
+     * @param array $joins
+     */
+    public function setJoins(array $joins): void
+    {
+        $this->joins = $joins;
     }
 
     protected function addWhereQueryCondition(string $field, string $compare = '=', string $dataType = Tru_Fetcher_DB_Model_Constants::DATA_TYPE_STRING): void

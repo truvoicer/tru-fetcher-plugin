@@ -71,7 +71,15 @@ class Tru_Fetcher_Api_Admin_Tab_Preset_Controller extends Tru_Fetcher_Api_Admin_
 	}
 
     public function fetchTabPresets(\WP_REST_Request $request) {
-        $this->tabPresetResponse->setTabPreset($this->tabPresetHelpers->getTabPresetsRepository()->findTabPresets());
+        $buildConfigData = $request->get_param('build_config_data');
+
+        $this->tabPresetResponse->setTabPreset(
+            $this->tabPresetHelpers
+                ->getTabPresetsRepository()
+                ->findTabPresets(
+                    (bool)$buildConfigData
+                )
+        );
         return $this->controllerHelpers->sendSuccessResponse(
             "Fetched tab presets",
             $this->tabPresetResponse

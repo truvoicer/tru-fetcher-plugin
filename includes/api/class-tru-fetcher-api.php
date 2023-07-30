@@ -9,10 +9,12 @@ use TruFetcher\Includes\Api\Controllers\Admin\Tru_Fetcher_Api_Admin_Token_Contro
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Auth_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Comments_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Forms_Controller;
+use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_General_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Page_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Posts_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Settings_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_User_Controller;
+use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_User_Profile_Controller;
 
 /**
  * Fired during plugin activation
@@ -50,6 +52,8 @@ class Tru_Fetcher_Api {
         (new Tru_Fetcher_Api_User_Controller())->init();
         (new Tru_Fetcher_Api_Comments_Controller())->init();
         (new Tru_Fetcher_Api_Forms_Controller())->init();
+        (new Tru_Fetcher_Api_General_Controller())->init();
+        (new Tru_Fetcher_Api_User_Profile_Controller())->init();
 	}
 
 	public function loadAdminApiControllers() {
