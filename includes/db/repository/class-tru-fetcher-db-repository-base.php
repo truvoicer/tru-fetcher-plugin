@@ -92,7 +92,7 @@ class Tru_Fetcher_DB_Repository_Base
         $results =  $this->db->findMany($this->buildQuery(), $this->values);
         $this->cleanup();
         if (!count($results)) {
-            return false;
+            return [];
         }
         return $this->model->buildModelDataBatch($results);
     }

@@ -132,10 +132,14 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         }
         return $config;
     }
-    public function getBlocks()
+    public function getBlocks(?array $blockClasses = null)
     {
+        $blocks = self::BLOCKS;
+        if (is_array($blockClasses)) {
+            $blocks = $blockClasses;
+        }
         $data = [];
-        foreach (self::BLOCKS as $block) {
+        foreach ($blocks as $block) {
             $data[] = $this->getSingleBlock($block);
         }
         return $data;

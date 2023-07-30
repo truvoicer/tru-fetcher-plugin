@@ -4,6 +4,7 @@ namespace TruFetcher\Includes\Api;
 use TruFetcher\Includes\Api\Controllers\Admin\Tru_Fetcher_Api_Admin_Form_Preset_Controller;
 use TruFetcher\Includes\Api\Controllers\Admin\Tru_Fetcher_Api_Admin_Posts_Controller;
 use TruFetcher\Includes\Api\Controllers\Admin\Tru_Fetcher_Api_Admin_Settings_Controller;
+use TruFetcher\Includes\Api\Controllers\Admin\Tru_Fetcher_Api_Admin_Tab_Preset_Controller;
 use TruFetcher\Includes\Api\Controllers\Admin\Tru_Fetcher_Api_Admin_Token_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Auth_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Comments_Controller;
@@ -56,5 +57,6 @@ class Tru_Fetcher_Api {
 		(new Tru_Fetcher_Api_Admin_Posts_Controller())->init();
 		(new Tru_Fetcher_Api_Admin_Settings_Controller())->init();
 		(new Tru_Fetcher_Api_Admin_Form_Preset_Controller())->init();
+		(new Tru_Fetcher_Api_Admin_Tab_Preset_Controller())->init();
 	}
 }

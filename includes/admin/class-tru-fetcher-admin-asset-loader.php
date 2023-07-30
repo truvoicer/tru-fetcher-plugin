@@ -4,12 +4,14 @@ namespace TruFetcher\Includes\Admin;
 
 use Exception;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Form;
+use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Tabs;
 use TruFetcher\Includes\Admin\Blocks\Tru_Fetcher_Admin_Blocks;
 use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
 use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_Jwt;
 use TruFetcher\Includes\Api\Tru_Fetcher_Api_Request;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Form_Presets;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Setting;
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Tab_Presets;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Category_Tpl;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_View_Tpl;
@@ -203,6 +205,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         $localizedScriptData['api'] = [];
         $localizedScriptData['api'] = array_merge($localizedScriptData['api'], $this->buildWordpressApiLocalizedScriptData());
         $localizedScriptData = array_merge($localizedScriptData, $this->buildAdminReactBlocksLocalizedScriptData());
+        $localizedScriptData = array_merge($localizedScriptData, $this->buildFormPresetsLocalizedScriptData());
         wp_localize_script(
             "{$this->plugin_name}-{$this->adminReactScriptName}",
             str_replace('-', '_', "{$this->plugin_name}_react"),
@@ -237,6 +240,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
     {
         return [
             'form_presets' => (new Tru_Fetcher_Api_Helpers_Form_Presets())->getFormPresetsRepository()->findFormPresets(),
+            'tab_presets' => (new Tru_Fetcher_Api_Helpers_Tab_Presets())->getTabPresetsRepository()->findTabPresets(),
         ];
     }
     /**
@@ -246,7 +250,10 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
     {
         $blocks = new Tru_Fetcher_Admin_Blocks();
         return [
-            'blocks' => [$blocks->getSingleBlock(Tru_Fetcher_Admin_Blocks_Resources_Form::class)],
+            'blocks' => $blocks->getBlocks([
+                Tru_Fetcher_Admin_Blocks_Resources_Form::class,
+                Tru_Fetcher_Admin_Blocks_Resources_Tabs::class,
+            ]),
         ];
     }
     /**

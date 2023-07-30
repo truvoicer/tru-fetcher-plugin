@@ -2,6 +2,7 @@ import UserStats from "../components/user-stats/UserStats";
 import UserSocial from "../components/user-social/UserSocial";
 import UserProfile from "../components/user-profile/UserProfile";
 import FormProgress from "../components/form-progress/FormProgress";
+import Tabs from "../components/tabs/Tabs";
 
 export default [
     {
@@ -23,6 +24,11 @@ export default [
         id: 'form-progress',
         title: 'Form Progress',
         component: FormProgress,
+    },
+    {
+        id: 'tab-block',
+        title: 'Tabs',
+        component: Tabs,
     }
 
 ]

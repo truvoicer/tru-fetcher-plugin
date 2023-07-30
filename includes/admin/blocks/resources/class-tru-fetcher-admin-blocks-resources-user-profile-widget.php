@@ -46,6 +46,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_User_Profile_Widget extends Tru_Fetcher
                 'id' => 'heading',
                 'type' => 'text',
             ],
+            [
+                'id' => 'view',
+                'type' => 'text',
+                'default' => 'display'
+            ],
         ]
     ];
 }

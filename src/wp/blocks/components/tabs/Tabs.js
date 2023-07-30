@@ -1,96 +1,132 @@
 import React from 'react';
-import {Button, PanelBody, TabPanel} from "@wordpress/components";
+import {Panel, PanelBody, TabPanel, SelectControl} from "@wordpress/components";
 import GeneralTab from "./tabs/GeneralTab";
-import SingleTab from "./SingleTab";
+import CustomTabs from "./CustomTabs";
+import RequestOptions from "../request-options/RequestOptions";
 
 const Tabs = (props) => {
-
     const {
         data = [],
-        onChange
+        onChange,
+        showPresets = true
     } = props;
 
-    function addTab() {
-        const cloneTabs = [...data];
-        cloneTabs.push({
-            default_active_tab: false,
-            custom_tabs_type: 'custom_carousel',
-            tab_id: '',
-            tab_heading: '',
-            carousel_block: null,
-            content_block: null,
-            form_block: null,
-        });
-        if (typeof onChange === 'function') {
-            onChange({key: 'tabs', value: cloneTabs});
+    function getTabConfig() {
+        let tabConfig = [
+            {
+                name: 'general',
+                title: 'General',
+                component: GeneralTab
+            },
+        ];
+        if (data?.tabs_block_type === 'custom_tabs') {
+            tabConfig.push({
+                name: 'custom_tabs',
+                title: 'Custom Tabs',
+                component: CustomTabs
+            });
         }
+        if (['request_carousel_tabs', 'request_video_tabs'].includes(data?.tabs_block_type)) {
+            tabConfig.push({
+                name: 'request_options',
+                title: 'Request Options',
+                component: RequestOptions
+            });
+        }
+        return tabConfig;
     }
 
-    function formChangeHandler({key, value, index}) {
-        const cloneTabs = [...data];
-        cloneTabs[index][key] = value;
-        if (typeof onChange === 'function') {
-            onChange({key: 'tabs', value: cloneTabs});
+    function getTabComponent(tab) {
+        if (!tab?.component) {
+            return null;
         }
-    }
-    function deleteTab({index}) {
-        const cloneTabs = [...data];
-        cloneTabs.splice(index, 1);
-        if (typeof onChange === 'function') {
-            onChange({key: 'tabs', value: cloneTabs});
-        }
-    }
-
-    function moveTabItem({index, item, direction}) {
-        let cloneTabs = [...data];
-        let newIndex = index + direction;
-        if (newIndex < 0) {
-            newIndex = 0;
-        }
-        if (newIndex > cloneTabs.length - 1) {
-            newIndex = cloneTabs.length - 1;
-        }
-        cloneTabs.splice(index, 1);
-        cloneTabs.splice(newIndex, 0, item);
-        if (typeof onChange === 'function') {
-            onChange({key: 'tabs', value: cloneTabs});
-        }
-    }
-    function getSingleTabComponent(item, index) {
-        SingleTab.defaultProps = {
-            index,
-            data: item,
-            moveUp: () => {
-                moveTabItem({index, item, direction: -1});
-            },
-            moveDown: () => {
-                moveTabItem({index, item, direction: 1});
-            },
-            onChange: ({key, value}) => {
-                formChangeHandler({key, value, index});
-            },
-            deleteTab: () => {
-                deleteTab({index});
+        let componentProps = {
+            data: data,
+            onChange: onChange
+        };
+        if (data?.tabs_block_type === 'custom_tabs') {
+            componentProps = {
+                data: data?.tabs || [],
+                onChange: onChange
             }
         }
-        return <SingleTab />;
+        if (['request_carousel_tabs', 'request_video_tabs'].includes(data?.tabs_block_type)) {
+            componentProps = {
+                data: data?.request_options,
+                onChange: onChange
+            }
+        }
+        let TabComponent = tab.component;
+        return <TabComponent {...componentProps} />;
     }
-    return (
-       <div>
-           {Array.isArray(data) && data.map((item, index) => {
-               return getSingleTabComponent(item, index)
-           })}
 
-           <Button
-               variant="primary"
-               onClick={(e) => {
-                   e.preventDefault()
-                   addTab();
-               }}
-           >
-               Add Tab
-           </Button>
-       </div>
+    function getPresets() {
+        const tabPresets = tru_fetcher_react?.tab_presets;
+        if (!Array.isArray(tabPresets)) {
+            console.warn('Tab presets not found')
+            return [];
+        }
+        return tabPresets.map(preset => {
+            return {
+                label: preset.name,
+                value: preset.id
+            }
+        });
+    }
+
+    return (
+        <Panel>
+            <PanelBody title="Tabs Block" initialOpen={true}>
+                {showPresets && (
+                    <SelectControl
+                        label="Presets"
+                        onChange={(value) => {
+                            if (typeof onChange === 'function') {
+                                onChange({key: 'presets', value: value});
+                            }
+                        }}
+                        value={data?.presets}
+                        options={[
+                            {
+                                label: 'Custom',
+                                value: 'custom'
+                            },
+                            ...getPresets()
+                        ]}
+                    />
+                )}
+                {data?.presets === 'custom' && (
+                    <TabPanel
+                        className="my-tab-panel"
+                        activeClass="active-tab"
+                        onSelect={(tabName) => {
+                            // setTabName(tabName);
+                        }}
+                        tabs={
+                            getTabConfig().map((tab) => {
+                                return {
+                                    name: tab.name,
+                                    title: tab.title,
+                                }
+                            })
+                        }>
+                        {(tab) => {
+                            return (
+                                <>
+                                    {getTabConfig().map((item) => {
+                                        if (item.name === tab.name) {
+                                            return getTabComponent(item);
+                                        }
+                                        return null;
+                                    })}
+                                </>
+                            )
+
+                        }}
+                    </TabPanel>
+                )}
+            </PanelBody>
+        </Panel>
     );
 };
 

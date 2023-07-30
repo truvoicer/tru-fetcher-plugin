@@ -10,6 +10,7 @@ export default {
         posts: '/posts',
         settings: '/settings',
         formPresets: '/form/presets',
+        tabPresets: '/tab/presets',
     },
     tokenResponseHandler: (results, appKey) => {
 

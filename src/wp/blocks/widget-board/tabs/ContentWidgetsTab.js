@@ -29,10 +29,14 @@ const ContentWidgetsTab = (props) => {
     }
 
     return (
-        <Widgets
-            data={attributes?.content_widgets}
-            onChange={formChangeHandler}
-        />
+        <Panel>
+            <PanelBody title={'Content Widgets'} initialOpen={true}>
+                <Widgets
+                    data={attributes?.content_widgets}
+                    onChange={formChangeHandler}
+                />
+            </PanelBody>
+        </Panel>
     );
 };
 

@@ -12,6 +12,7 @@ import {
 import widgetConfig from "../configs/widget-config";
 import {getBlockAttributesById} from "../../helpers/wp-helpers";
 import {isObjectEmpty, isObject} from "../../../library/helpers/utils-helpers";
+import Tabs from "../components/tabs/Tabs";
 
 const Widgets = (props) => {
     const {
@@ -34,7 +35,7 @@ const Widgets = (props) => {
 
     function getWidgetProps(block_id, index) {
         let dataProps = {};
-        const blockAtts =  getBlockAttributesById(block_id);
+        const blockAtts = getBlockAttributesById(block_id);
         if (isObject(blockAtts) && !isObjectEmpty(blockAtts)) {
             dataProps = {...dataProps, ...blockAtts};
         }
@@ -43,6 +44,7 @@ const Widgets = (props) => {
         }
         return dataProps;
     }
+
     function getWidgetComponent(widget, index) {
         let Component;
         let block_id;
@@ -62,6 +64,10 @@ const Widgets = (props) => {
             case 'form-progress':
                 Component = FormProgress;
                 block_id = 'form_progress_widget_block';
+                break;
+            case 'tab-block':
+                Component = Tabs;
+                block_id = 'tabs_block';
                 break;
             default:
                 return null;
@@ -128,28 +134,32 @@ const Widgets = (props) => {
             <div className={'tf--widgets--container'}>
                 {Array.isArray(data) && data.map((widget, index) => {
                     return (
-                        <div className={'tf--widgets--item'}>
-                            <div className={'tf--widgets--item--header'}>
-                                <h1>{widget?.title || ''}</h1>
-                                <div className={'tf--widgets--item--header--controls'}>
-                                    <a onClick={() => {
-                                        moveFormItem({index, widget, direction: -1})
-                                    }}>
-                                        <Icon icon={chevronUp}/>
-                                    </a>
-                                    <a onClick={() => {
-                                        moveFormItem({index, widget, direction: 1})
-                                    }}>
-                                        <Icon icon={chevronDown}/>
-                                    </a>
-                                    <a onClick={() => {
-                                        deleteWidget({index})
-                                    }}>
-                                        <Icon icon={trash}/>
-                                    </a>
-                                </div>
+                        <div className="tf--list--item tf--list--item--no-header">
+                            <div className="tf--list--item--content">
+                                <Panel>
+                                    <PanelBody title={widget?.title || ''} initialOpen={true}>
+                                        {getWidgetComponent(widget, index)}
+                                    </PanelBody>
+                                </Panel>
                             </div>
-                            {getWidgetComponent(widget, index)}
+                            <div className={'tf--list--item--actions'}>
+                                <a onClick={() => {
+                                    moveFormItem({index, widget, direction: -1})
+                                }}>
+                                    <Icon icon={chevronUp}/>
+                                </a>
+                                <a onClick={() => {
+                                    moveFormItem({index, widget, direction: 1})
+                                }}>
+                                    <Icon icon={chevronDown}/>
+                                </a>
+                                <a onClick={(e) => {
+                                    e.preventDefault()
+                                    deleteWidget({index})
+                                }}>
+                                    <Icon icon={trash}/>
+                                </a>
+                            </div>
                         </div>
                     );
                 })}

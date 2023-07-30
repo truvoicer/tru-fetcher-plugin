@@ -29,10 +29,14 @@ const SidebarWidgetsTab = (props) => {
     }
 
     return (
-        <Widgets
-            data={attributes?.sidebar_widgets}
-            onChange={formChangeHandler}
-        />
+        <Panel>
+            <PanelBody title={'Sidebar Widgets'} initialOpen={true}>
+                <Widgets
+                    data={attributes?.sidebar_widgets}
+                    onChange={formChangeHandler}
+                />
+            </PanelBody>
+        </Panel>
     );
 };
 

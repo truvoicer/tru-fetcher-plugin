@@ -18,6 +18,23 @@ const GeneralTab = (props) => {
                     onChange({key: 'heading', value: value});
                 }}
             />
+            <SelectControl
+                label="View"
+                onChange={(value) => {
+                    onChange({key: 'view', value: value});
+                }}
+                value={data?.view}
+                options={[
+                    {
+                        label: 'Display',
+                        value: 'display'
+                    },
+                    {
+                        label: 'Edit',
+                        value: 'edit'
+                    },
+                ]}
+            />
         </div>
     );
 };

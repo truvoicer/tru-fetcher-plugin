@@ -2,11 +2,11 @@ import React from 'react';
 import {Panel, PanelBody, TabPanel} from "@wordpress/components";
 import {Icon, chevronDown, chevronUp, trash} from "@wordpress/icons";
 import GeneralTab from "./tabs/GeneralTab";
-import Carousel from "../carousel/Carousel";
-import TextContent from "../text-content/TextContent";
-import FormComponent from "../form/FormComponent";
-import {getBlockAttributesById} from "../../../helpers/wp-helpers";
-import {isObject, isObjectEmpty} from "../../../../library/helpers/utils-helpers";
+import Carousel from "../../carousel/Carousel";
+import TextContent from "../../text-content/TextContent";
+import FormComponent from "../../form/FormComponent";
+import {getBlockAttributesById} from "../../../../helpers/wp-helpers";
+import {isObject, isObjectEmpty} from "../../../../../library/helpers/utils-helpers";
 
 const SingleTab = (props) => {
 

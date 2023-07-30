@@ -1,28 +1,19 @@
 import React from 'react';
-import {TabPanel, Panel, Button, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import {TabPanel, Panel, RangeControl, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
 
 const GeneralTab = (props) => {
-
     const {
-        data,
+        data = [],
         onChange
     } = props;
-
     return (
         <div>
-            <ToggleControl
-                label="List Start"
-                checked={data?.default_active_tab}
-                onChange={(value) => {
-                    onChange({key: 'default_active_tab', value: value});
-                }}
-            />
             <SelectControl
-                label="Custom Tabs Type"
+                label="Tabs Block Type"
                 onChange={(value) => {
-                    onChange({key: 'custom_tabs_type', value: value});
+                    onChange({key: 'tabs_block_type', value: value});
                 }}
-                value={data?.custom_tabs_type}
+                value={data?.tabs_block_type}
                 options={[
                     {
                         disabled: true,
@@ -30,35 +21,66 @@ const GeneralTab = (props) => {
                         value: ''
                     },
                     {
-                        label: 'Custom Carousel',
-                        value: 'custom_carousel'
+                        label: 'Request Carousel Tabs',
+                        value: 'request_carousel_tabs'
                     },
                     {
-                        label: 'Custom Content',
-                        value: 'custom_content'
+                        label: 'Request Video Tabs',
+                        value: 'request_video_tabs'
                     },
                     {
-                        label: 'Form',
-                        value: 'form'
+                        label: 'Custom Tabs',
+                        value: 'custom_tabs'
+                    },
+                ]}
+            />
+            <SelectControl
+                label="Tabs Orientation"
+                onChange={(value) => {
+                    onChange({key: 'tabs_orientation', value: value});
+                }}
+                value={data?.tabs_orientation}
+                options={[
+                    {
+                        disabled: true,
+                        label: 'Select an Option',
+                        value: ''
+                    },
+                    {
+                        label: 'Vertical',
+                        value: 'vertical'
+                    },
+                    {
+                        label: 'Horizontal',
+                        value: 'horizontal'
                     },
                 ]}
             />
             <TextControl
-                label="Tab ID"
-                placeholder="Tab ID"
-                value={data?.tab_id}
+                label="Heading"
+                placeholder="Heading"
+                value={data?.heading}
                 onChange={(value) => {
-                    onChange({key: 'tab_id', value: value});
+                    onChange({key: 'heading', value: value});
                 }}
             />
             <TextControl
-                label="Heading"
-                placeholder="Heading"
-                value={data?.tab_heading}
+                label="Sub Heading"
+                placeholder="Sub Heading"
+                value={data?.sub_heading}
                 onChange={(value) => {
-                    onChange({key: 'tab_heading', value: value});
+                    onChange({key: 'sub_heading', value: value});
                 }}
             />
+            <TextControl
+                label="CTA"
+                placeholder="CTA"
+                value={data?.cta}
+                onChange={(value) => {
+                    onChange({key: 'cta', value: value});
+                }}
+            />
+
         </div>
     );
 };

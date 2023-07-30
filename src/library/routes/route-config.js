@@ -1,6 +1,7 @@
 import Dashboard from "../../Dashboard";
 import GeneralSettings from "../../settings/pages/GeneralSettings";
 import FormPresets from "../../settings/pages/FormPresets";
+import TabPresets from "../../settings/pages/TabPresets";
 
 export default [
     {
@@ -23,5 +24,12 @@ export default [
         key: 'form-presets',
         label: 'Form Presets',
         component: FormPresets,
+    },
+    {
+        home: false,
+        path: "/tab-presets",
+        key: 'tab-presets',
+        label: 'Tab Presets',
+        component: TabPresets,
     },
 ];
