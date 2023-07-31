@@ -34,11 +34,10 @@ class Tru_Fetcher_Api_General_Controller extends Tru_Fetcher_Api_Controller_Base
     private Tru_Fetcher_Api_Form_Handler $apiFormHandler;
     private Tru_Fetcher_DB_Repository_Skill $skillsRepository;
 
-    protected ?string $namespace = "/general";
-
     public function __construct()
     {
         parent::__construct();
+        $this->apiConfigEndpoints->endpointsInit('/general');
     }
 
     public function init()
@@ -51,7 +50,7 @@ class Tru_Fetcher_Api_General_Controller extends Tru_Fetcher_Api_Controller_Base
 
     public function register_routes()
     {
-        register_rest_route($this->publicEndpoint, '/skills', array(
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/skills', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "skillsSelectData"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']

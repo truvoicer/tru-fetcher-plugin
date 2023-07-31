@@ -33,11 +33,10 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
     private Tru_Fetcher_Email $emailManager;
     private Tru_Fetcher_Api_Form_Handler $apiFormHandler;
 
-    protected ?string $namespace = "/forms";
-
 	public function __construct() {
         parent::__construct();
         $this->emailManager = new Tru_Fetcher_Email();
+        $this->apiConfigEndpoints->endpointsInit('/forms');
 	}
 
 	public function init() {
@@ -51,27 +50,27 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 	}
 
 	public function register_routes() {
-		register_rest_route( $this->publicEndpoint, '/email', array(
+		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/email', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "emailFormEndpoint" ],
 			'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
 		) );
-		register_rest_route( $this->publicEndpoint, '/redirect', array(
+		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/redirect', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "redirectFormEndpoint" ],
 			'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
 		) );
-        register_rest_route( $this->protectedEndpoint, '/user/metadata/save', array(
+        register_rest_route( $this->apiConfigEndpoints->protectedEndpoint, '/user/metadata/save', array(
             'methods'  => WP_REST_Server::CREATABLE,
             'callback' => [ $this, "userMetaEndpointHandler" ],
             'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
         ) );
-        register_rest_route( $this->protectedEndpoint, '/user/metadata/request', array(
+        register_rest_route( $this->apiConfigEndpoints->protectedEndpoint, '/user/metadata/request', array(
             'methods'  => WP_REST_Server::CREATABLE,
             'callback' => [ $this, "userMetaDataRequest" ],
             'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
         ) );
-        register_rest_route( $this->protectedEndpoint, '/progress/request', array(
+        register_rest_route( $this->apiConfigEndpoints->protectedEndpoint, '/progress/request', array(
             'methods'  => WP_REST_Server::CREATABLE,
             'callback' => [ $this, "formsProgressRequest" ],
             'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']

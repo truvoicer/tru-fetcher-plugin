@@ -41,7 +41,7 @@ class Tru_Fetcher_Api_Admin_Auth_Controller extends Tru_Fetcher_Api_Admin_Base_C
 
     public function register_routes()
     {
-        register_rest_route($this->adminNamespace, '/auth/roles', array(
+        register_rest_route($this->apiConfigEndpoints->adminNamespace, '/auth/roles', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "fetchRoles"],
             'permission_callback' => [$this->apiAuth, 'allowRequest']

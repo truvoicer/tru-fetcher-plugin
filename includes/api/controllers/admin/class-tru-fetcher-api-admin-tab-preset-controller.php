@@ -43,27 +43,27 @@ class Tru_Fetcher_Api_Admin_Tab_Preset_Controller extends Tru_Fetcher_Api_Admin_
 	}
 
 	public function register_routes() {
-        register_rest_route( $this->adminNamespace, '/tab/presets', array(
+        register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/tab/presets', array(
             'methods'             => \WP_REST_Server::READABLE,
             'callback'            => [ $this, "fetchTabPresets" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],
         ) );
-        register_rest_route( $this->adminNamespace, '/tab/presets/(?<name>[\w_]+)', array(
+        register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/tab/presets/(?<name>[\w_]+)', array(
             'methods'             => \WP_REST_Server::READABLE,
             'callback'            => [ $this, "fetchSingleTabPreset" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],
         ) );
-		register_rest_route( $this->adminNamespace, '/tab/presets/create', array(
+		register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/tab/presets/create', array(
 			'methods'             => \WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "createTabPreset" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],
 		) );
-		register_rest_route( $this->adminNamespace, '/tab/presets/(?<id>[\d]+)/update', array(
+		register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/tab/presets/(?<id>[\d]+)/update', array(
 			'methods'             => \WP_REST_Server::EDITABLE,
 			'callback'            => [ $this, "updateTabPreset" ],
             'permission_callback' => [$this->apiAuth, 'allowRequest'],
 		) );
-		register_rest_route( $this->adminNamespace, '/tab/presets/delete', array(
+		register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/tab/presets/delete', array(
 			'methods'             => \WP_REST_Server::DELETABLE,
 			'callback'            => [ $this, "deleteTabPreset" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],

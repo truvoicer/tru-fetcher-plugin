@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\DB\Repository;
 
+use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Form;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Tab_Presets;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Form_Presets;
 
@@ -86,6 +87,9 @@ class Tru_Fetcher_DB_Repository_Tab_Presets extends Tru_Fetcher_DB_Repository_Ba
                     $configData['tabs'][$index]['form_block'] = $preset['config_data'];
                 }
             }
+            $configData['tabs'][$index]['form_block'] = Tru_Fetcher_Admin_Blocks_Resources_Form::buildEndpoint(
+                $configData['tabs'][$index]['form_block']
+            );
         }
         return $configData;
     }
@@ -101,6 +105,7 @@ class Tru_Fetcher_DB_Repository_Tab_Presets extends Tru_Fetcher_DB_Repository_Ba
         if (empty($configData['tabs'])) {
             return $tabPreset;
         }
+        $tabPreset[$this->model->getConfigDataColumn()] = $this->buildTabPresetConfigData($configData);
         return $tabPreset;
     }
 

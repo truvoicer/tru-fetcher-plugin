@@ -48,27 +48,27 @@ class Tru_Fetcher_Api_Admin_Taxonomy_Controller extends Tru_Fetcher_Api_Admin_Ba
 	}
 
 	public function register_routes() {
-		register_rest_route( $this->adminNamespace, '/taxonomy/(?<taxonomy>[\w-]+)/terms', array(
+		register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/taxonomy/(?<taxonomy>[\w-]+)/terms', array(
 			'methods'             => \WP_REST_Server::READABLE,
 			'callback'            => [ $this, "getTerms" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],
 		) );
-		register_rest_route( $this->adminNamespace, '/taxonomy/(?<taxonomy>[\w-]+)/term/create', array(
+		register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/taxonomy/(?<taxonomy>[\w-]+)/term/create', array(
 			'methods'             => \WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "createTerm" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],
 		) );
-		register_rest_route( $this->adminNamespace, '/taxonomy/(?<taxonomy>[\w-]+)/term/update', array(
+		register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/taxonomy/(?<taxonomy>[\w-]+)/term/update', array(
 			'methods'             => \WP_REST_Server::EDITABLE,
 			'callback'            => [ $this, "updateTerm" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],
 		) );
-		register_rest_route( $this->adminNamespace, '/taxonomy/(?<taxonomy>[\w-]+)/terms/save', array(
+		register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/taxonomy/(?<taxonomy>[\w-]+)/terms/save', array(
 			'methods'             => \WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "saveTerms" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],
 		) );
-		register_rest_route( $this->adminNamespace, '/taxonomy/(?<taxonomy>[\w-]+)/term/delete', array(
+		register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/taxonomy/(?<taxonomy>[\w-]+)/term/delete', array(
 			'methods'             => \WP_REST_Server::DELETABLE,
 			'callback'            => [ $this, "deleteTerm" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],

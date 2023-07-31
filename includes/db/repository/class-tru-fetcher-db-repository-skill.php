@@ -40,17 +40,17 @@ class Tru_Fetcher_DB_Repository_Skill extends Tru_Fetcher_DB_Repository_Base {
 
     public function findSkillByName(string $name)
     {
-        $this->addWhere($this->model->getUserIdColumn(), $name);
+        $this->addWhere($this->model->getNameColumn(), $name);
         return $this->findOne();
     }
 
     public function findSkillByNameOrLabel(?string $name = null, ?string $label = null)
     {
         if ($name) {
-            $this->addWhere($this->model->getUserIdColumn(), $name);
+            $this->addWhere($this->model->getNameColumn(), $name);
         }
         if ($label) {
-            $this->addWhere($this->model->getSkillIdColumn(), $label);
+            $this->addWhere($this->model->getLabelColumn(), $label);
         }
         return $this->findOne();
     }
@@ -59,23 +59,23 @@ class Tru_Fetcher_DB_Repository_Skill extends Tru_Fetcher_DB_Repository_Base {
     {
         $data = [];
         if (
-            !empty($requestData[$this->model->getUserIdColumn()]) &&
-            !empty($requestData[$this->model->getSkillIdColumn()])
+            !empty($requestData[$this->model->getNameColumn()]) &&
+            !empty($requestData[$this->model->getLabelColumn()])
         ) {
-            $name = $requestData[$this->model->getUserIdColumn()];
-            $label = $requestData[$this->model->getSkillIdColumn()];
-        } elseif (!empty($data[$this->model->getSkillIdColumn()])) {
-            $name = Tru_Fetcher_Helpers::toSnakeCase($data[$this->model->getSkillIdColumn()]);
-            $label = $requestData[$this->model->getSkillIdColumn()];
-        } elseif (!empty($data[$this->model->getUserIdColumn()])) {
-            $label = $requestData[$this->model->getUserIdColumn()];
-            $name = $requestData[$this->model->getUserIdColumn()];
+            $name = $requestData[$this->model->getNameColumn()];
+            $label = $requestData[$this->model->getLabelColumn()];
+        } elseif (!empty($data[$this->model->getLabelColumn()])) {
+            $name = Tru_Fetcher_Helpers::toSnakeCase($data[$this->model->getLabelColumn()]);
+            $label = $requestData[$this->model->getLabelColumn()];
+        } elseif (!empty($data[$this->model->getNameColumn()])) {
+            $label = $requestData[$this->model->getNameColumn()];
+            $name = $requestData[$this->model->getNameColumn()];
         } else {
             $this->addError(new \WP_Error('missing_name', 'Missing name'));
             return false;
         }
-        $data[$this->model->getUserIdColumn()] = $name;
-        $data[$this->model->getSkillIdColumn()] = $label;
+        $data[$this->model->getNameColumn()] = $name;
+        $data[$this->model->getLabelColumn()] = $label;
         return $data;
     }
 
@@ -85,7 +85,7 @@ class Tru_Fetcher_DB_Repository_Skill extends Tru_Fetcher_DB_Repository_Base {
         if (!$skills) {
             return false;
         }
-        $fetch = $this->findSkillByName($skills[$this->model->getUserIdColumn()]);
+        $fetch = $this->findSkillByName($skills[$this->model->getNameColumn()]);
         if ($fetch) {
             $this->addError(new \WP_Error('duplicate_error', 'Skill already exists with same name'));
             return false;
@@ -110,7 +110,7 @@ class Tru_Fetcher_DB_Repository_Skill extends Tru_Fetcher_DB_Repository_Base {
             $this->addError(new \WP_Error('update_error', 'Update data is invalid'));
             return false;
         }
-        $fetch = $this->findSkillByName($skills[$this->model->getUserIdColumn()]);
+        $fetch = $this->findSkillByName($skills[$this->model->getNameColumn()]);
         if ($fetch && $fetch[$this->model->getIdColumn()] !== $id) {
             $this->addError(new \WP_Error('duplicate_error', 'Skill already exists with same name'));
             return false;

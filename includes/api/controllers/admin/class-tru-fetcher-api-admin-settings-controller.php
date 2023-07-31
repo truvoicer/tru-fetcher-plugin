@@ -48,27 +48,27 @@ class Tru_Fetcher_Api_Admin_Settings_Controller extends Tru_Fetcher_Api_Admin_Ba
 	}
 
 	public function register_routes() {
-        register_rest_route( $this->adminNamespace, '/settings', array(
+        register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/settings', array(
             'methods'             => \WP_REST_Server::READABLE,
             'callback'            => [ $this, "fetchSettings" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],
         ) );
-        register_rest_route( $this->adminNamespace, '/settings/(?<name>[\w_]+)', array(
+        register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/settings/(?<name>[\w_]+)', array(
             'methods'             => \WP_REST_Server::READABLE,
             'callback'            => [ $this, "fetchSingleSetting" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],
         ) );
-		register_rest_route( $this->adminNamespace, '/settings/create', array(
+		register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/settings/create', array(
 			'methods'             => \WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "createSetting" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],
 		) );
-		register_rest_route( $this->adminNamespace, '/settings/(?<id>[\d]+)/update', array(
+		register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/settings/(?<id>[\d]+)/update', array(
 			'methods'             => \WP_REST_Server::EDITABLE,
 			'callback'            => [ $this, "updateSetting" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],
 		) );
-		register_rest_route( $this->adminNamespace, '/settings/delete', array(
+		register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/settings/delete', array(
 			'methods'             => \WP_REST_Server::DELETABLE,
 			'callback'            => [ $this, "deleteSetting" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],

@@ -34,9 +34,6 @@ use TruFetcher\Includes\Tru_Fetcher_Helpers;
  * @author     Michael <michael@local.com>
  */
 class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
-
-    protected ?string $namespace = "/pages";
-
 	private Tru_Fetcher_Listings $listingsClass;
 	private Tru_Fetcher_Sidebars $sidebarClass;
 	private Tru_Fetcher_Menu $menuClass;
@@ -46,6 +43,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 
     public function __construct() {
         parent::__construct();
+        $this->apiConfigEndpoints->endpointsInit('/pages');
     }
 
 	public function init() {
@@ -63,27 +61,27 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 	}
 
 	public function register_routes() {
-		register_rest_route( $this->publicEndpoint, '/template/(?<template_post_type>[\w-]+)/(?<category_name>[\w-]+)', array(
+		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/template/(?<template_post_type>[\w-]+)/(?<category_name>[\w-]+)', array(
 			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getPageTemplate"],
 			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
 		) );
-		register_rest_route( $this->publicEndpoint, '/page', array(
+		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/page', array(
 			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getPageBySlug" ],
 			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
 		) );
-		register_rest_route( $this->publicEndpoint, '/menu/(?<menu_name>[\w-]+)', array(
+		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/menu/(?<menu_name>[\w-]+)', array(
 			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getMenuByName" ],
 			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
 		) );
-		register_rest_route( $this->publicEndpoint, '/sidebar/(?<sidebar_name>[\w-]+)', array(
+		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/sidebar/(?<sidebar_name>[\w-]+)', array(
 			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getSidebar" ],
 			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
 		) );
-		register_rest_route( $this->publicEndpoint, '/site/config', array(
+		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/site/config', array(
 			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getSiteConfig" ],
 			'permission_callback' => [$this->apiAuthApp, 'allowRequest']

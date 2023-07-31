@@ -34,8 +34,6 @@ class Tru_Fetcher_Api_User_Profile_Controller extends Tru_Fetcher_Api_Controller
     private Tru_Fetcher_DB_Repository_Skill $skillsRepository;
     private Tru_Fetcher_DB_Repository_User_Skill $userSkillsRepository;
 
-    protected ?string $namespace = "/user/profile";
-
     const REQUEST_FORM_ARRAY_FIELDS = [
         "form_experiences", "form_education"
     ];
@@ -59,6 +57,7 @@ class Tru_Fetcher_Api_User_Profile_Controller extends Tru_Fetcher_Api_Controller
         $this->skillsRepository = new Tru_Fetcher_DB_Repository_Skill();
         $this->userSkillsRepository = new Tru_Fetcher_DB_Repository_User_Skill();
         $this->apiFormHandler = new Tru_Fetcher_Api_Form_Handler();
+        $this->apiConfigEndpoints->endpointsInit('/user/profile');
     }
 
     public function init()
@@ -68,7 +67,7 @@ class Tru_Fetcher_Api_User_Profile_Controller extends Tru_Fetcher_Api_Controller
 
     public function register_routes()
     {
-        register_rest_route($this->protectedEndpoint, '/update', array(
+        register_rest_route($this->apiConfigEndpoints->protectedEndpoint, '/update', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "updateUserProfile"],
             'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']

@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\Api\Controllers\App;
 
+use TruFetcher\Includes\Api\Config\Tru_Fetcher_Api_Config_Endpoints;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Controller;
 use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_App;
 
@@ -28,24 +29,18 @@ use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_App;
 class Tru_Fetcher_Api_Controller_Base {
     const STATUS_SUCCESS = "success";
 
-    protected string $publicNamespace = "tru-fetcher-api/public";
-    protected string $protectedNamespace = "tru-fetcher-api/protected";
-    protected ?string $namespace = null;
-    protected string $publicEndpoint;
-    protected string $protectedEndpoint;
-
     private \WP_User $user;
 
     protected Tru_Fetcher_Api_Helpers_Controller $controllerHelpers;
 
     protected Tru_Fetcher_Api_Auth_App $apiAuthApp;
+    protected Tru_Fetcher_Api_Config_Endpoints $apiConfigEndpoints;
 
     public function __construct()
     {
-        $this->publicEndpoint = $this->publicNamespace . $this->namespace;
-        $this->protectedEndpoint = $this->protectedNamespace . $this->namespace;
         $this->controllerHelpers = new Tru_Fetcher_Api_Helpers_Controller();
         $this->apiAuthApp = new Tru_Fetcher_Api_Auth_App();
+        $this->apiConfigEndpoints = new Tru_Fetcher_Api_Config_Endpoints();
     }
 
     protected function showError( $code, $message ) {

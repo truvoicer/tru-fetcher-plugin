@@ -30,12 +30,11 @@ use TruFetcher\Includes\Sidebars\Tru_Fetcher_Sidebars;
  */
 class Tru_Fetcher_Api_Settings_Controller extends Tru_Fetcher_Api_Controller_Base {
 
-    protected ?string $namespace = "/settings";
-
 	private Tru_Fetcher_Api_Settings_Response $apiSettingsResponse;
 
     public function __construct() {
         parent::__construct();
+        $this->apiConfigEndpoints->endpointsInit('/settings');
     }
 
 	public function init() {
@@ -45,7 +44,7 @@ class Tru_Fetcher_Api_Settings_Controller extends Tru_Fetcher_Api_Controller_Bas
 
 
 	public function register_routes() {
-		register_rest_route( $this->publicNamespace, $this->namespace, array(
+		register_rest_route( $this->apiConfigEndpoints->publicNamespace, $this->apiConfigEndpoints->namespace, array(
 			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getSiteSettings"],
 			'permission_callback' => [$this->apiAuthApp, 'allowRequest']

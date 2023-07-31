@@ -28,8 +28,6 @@ use TruFetcher\Includes\DB\Repository\Tru_Fetcher_DB_Repository_Api_Tokens;
  */
 class Tru_Fetcher_Api_Auth_Controller extends Tru_Fetcher_Api_Controller_Base
 {
-
-    protected ?string $namespace = "/auth";
     protected Tru_Fetcher_Api_Token_Response $tokenResponse;
     private Tru_Fetcher_DB_Repository_Api_Tokens $apiTokensRepository;
 
@@ -37,6 +35,7 @@ class Tru_Fetcher_Api_Auth_Controller extends Tru_Fetcher_Api_Controller_Base
     {
         parent::__construct();
         $this->apiTokensRepository = new Tru_Fetcher_DB_Repository_Api_Tokens();
+        $this->apiConfigEndpoints->endpointsInit('/auth');
     }
 
     public function init()
@@ -57,22 +56,22 @@ class Tru_Fetcher_Api_Auth_Controller extends Tru_Fetcher_Api_Controller_Base
 
     public function register_routes()
     {
-        register_rest_route($this->publicEndpoint, '/register', array(
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/register', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "authRegister"],
             'permission_callback' => [$this->apiAuthApp, 'publicTokenRequestHandler']
         ));
-        register_rest_route($this->publicEndpoint, '/login', array(
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/login', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "authLogin"],
             'permission_callback' => [$this->apiAuthApp, 'publicTokenRequestHandler']
         ));
-        register_rest_route($this->publicEndpoint, '/token/check', array(
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/token/check', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "authTokenCheck"],
             'permission_callback' => [$this->apiAuthApp, 'publicTokenRequestHandler']
         ));
-        register_rest_route($this->protectedEndpoint, '/token/check', array(
+        register_rest_route($this->apiConfigEndpoints->protectedEndpoint, '/token/check', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "authTokenCheck"],
             'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']

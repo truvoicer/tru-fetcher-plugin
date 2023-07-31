@@ -36,7 +36,7 @@ class Tru_Fetcher_Api_Admin_Posts_Controller extends Tru_Fetcher_Api_Admin_Base_
     public function __construct()
     {
         parent::__construct();
-        $this->protectedEndpoint = $this->adminNamespace . $this->namespace;
+        $this->protectedEndpoint = $this->apiConfigEndpoints->adminNamespace . $this->namespace;
     }
 
     public function init()
@@ -53,7 +53,7 @@ class Tru_Fetcher_Api_Admin_Posts_Controller extends Tru_Fetcher_Api_Admin_Base_
 
     public function register_routes()
     {
-        register_rest_route($this->adminNamespace, '/posts', array(
+        register_rest_route($this->apiConfigEndpoints->adminNamespace, '/posts', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "postsHandler"],
             'permission_callback' => [$this->apiAuth, "tokenRequestHandler"]

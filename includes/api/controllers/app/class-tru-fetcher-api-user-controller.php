@@ -49,8 +49,6 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
     private Tru_Fetcher_Api_Helpers_Saved_Items $savedItemsHelper;
     private Tru_Fetcher_Api_Helpers_Ratings $ratingsHelper;
 
-    protected ?string $namespace = "/users";
-
     public function __construct()
     {
         parent::__construct();
@@ -58,6 +56,7 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
         $this->savedItemsHelper = new Tru_Fetcher_Api_Helpers_Saved_Items();
         $this->ratingsHelper = new Tru_Fetcher_Api_Helpers_Ratings();
         $this->apiItemsResponse = new Tru_Fetcher_Api_Items_Response();
+        $this->apiConfigEndpoints->endpointsInit('/users');
     }
 
     public function init()
@@ -73,47 +72,47 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
 
     public function register_routes()
     {
-        register_rest_route($this->publicEndpoint, '/create', array(
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/create', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "createUser"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
-        register_rest_route($this->protectedEndpoint, '/account/data/request', array(
+        register_rest_route($this->apiConfigEndpoints->protectedEndpoint, '/account/data/request', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "userDataRequest"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
-        register_rest_route($this->protectedEndpoint, '/update', array(
+        register_rest_route($this->apiConfigEndpoints->protectedEndpoint, '/update', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "updateUser"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
-        register_rest_route($this->publicEndpoint, '/password-reset', array(
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/password-reset', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "passwordReset"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
-        register_rest_route($this->publicEndpoint, '/password-reset/validate', array(
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/password-reset/validate', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "passwordResetValidate"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
-        register_rest_route($this->protectedEndpoint, '/item/save', array(
+        register_rest_route($this->apiConfigEndpoints->protectedEndpoint, '/item/save', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "saveItem"],
             'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
         ));
-        register_rest_route($this->protectedEndpoint, '/item/rating/save', array(
+        register_rest_route($this->apiConfigEndpoints->protectedEndpoint, '/item/rating/save', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "saveItemRating"],
             'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
         ));
-        register_rest_route($this->protectedEndpoint, '/item/list', array(
+        register_rest_route($this->apiConfigEndpoints->protectedEndpoint, '/item/list', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "getItemListData"],
             'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
         ));
-        register_rest_route($this->protectedEndpoint, '/item/list-by-user', array(
+        register_rest_route($this->apiConfigEndpoints->protectedEndpoint, '/item/list-by-user', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "getItemListDataByUser"],
             'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']

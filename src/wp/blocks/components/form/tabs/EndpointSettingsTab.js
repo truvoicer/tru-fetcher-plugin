@@ -80,6 +80,13 @@ const EndpointSettingsTab = (props) => {
                     onChange({key: 'redirect', value: value});
                 }}
             />
+            <ToggleControl
+                label="Fetch User Data?"
+                checked={data?.fetch_user_data}
+                onChange={(value) => {
+                    onChange({key: 'fetch_user_data', value: value});
+                }}
+            />
             {data?.endpoint === 'custom' && (
                 <TextControl
                     label="Custom Endpoint"

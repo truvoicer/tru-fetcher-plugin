@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
+use TruFetcher\Includes\Api\Config\Tru_Fetcher_Api_Config_Endpoints;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Form_Presets;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
 
@@ -27,6 +28,7 @@ use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
  */
 class Tru_Fetcher_Admin_Blocks_Resources_Form extends Tru_Fetcher_Admin_Blocks_Resources_Base
 {
+
     public const BLOCK_ID = 'form_block';
     public const BLOCK_NAME = 'tru-fetcher/form-block';
     public const BLOCK_TITLE = 'Tf Form Block';
@@ -86,6 +88,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Form extends Tru_Fetcher_Admin_Blocks_R
             [
                 'id' => 'endpoint_type',
                 'type' => 'string',
+            ],
+            [
+                'id' => 'fetch_user_data',
+                'type' => 'boolean',
+                'default' => false,
             ],
             [
                 'id' => 'custom_endpoint',
@@ -155,9 +162,38 @@ class Tru_Fetcher_Admin_Blocks_Resources_Form extends Tru_Fetcher_Admin_Blocks_R
                 $buildAttributes = $preset['config_data'];
             }
         }
+        $buildAttributes = self::buildEndpoint($buildAttributes);
         return $buildAttributes;
     }
-
+    public static function buildEndpoint(array $buildAttributes) {
+        if (empty($buildAttributes['endpoint'])) {
+            return $buildAttributes;
+        }
+        $endpoint = $buildAttributes['endpoint'];
+        switch ($endpoint) {
+            case 'email':
+                $configEndpoint = Tru_Fetcher_Api_Config_Endpoints::ENDPOINT_EMAIL;
+                break;
+            case 'user_meta':
+                $configEndpoint = Tru_Fetcher_Api_Config_Endpoints::ENDPOINT_USER_META;
+                break;
+            case 'account_details':
+                $configEndpoint = Tru_Fetcher_Api_Config_Endpoints::ENDPOINT_USER_UPDATE;
+                break;
+            case 'user_profile':
+                $configEndpoint = Tru_Fetcher_Api_Config_Endpoints::ENDPOINT_USER_PROFILE;
+                break;
+            case 'redirect':
+                $configEndpoint = Tru_Fetcher_Api_Config_Endpoints::ENDPOINT_REDIRECT;
+                break;
+            default:
+                return $buildAttributes;
+        }
+        $buildAttributes['endpoint_url'] = (new Tru_Fetcher_Api_Config_Endpoints())->buildEndpoint(
+            $configEndpoint
+        );
+        return $buildAttributes;
+    }
 
 
 }

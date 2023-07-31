@@ -55,37 +55,37 @@ class Tru_Fetcher_Api_Admin_Token_Controller extends Tru_Fetcher_Api_Admin_Base_
 
     public function register_routes()
     {
-        register_rest_route($this->adminNamespace, '/token/check', array(
+        register_rest_route($this->apiConfigEndpoints->adminNamespace, '/token/check', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "tokenCheckHandler"],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler']
         ));
-        register_rest_route($this->adminNamespace, '/token/refresh', array(
+        register_rest_route($this->apiConfigEndpoints->adminNamespace, '/token/refresh', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "tokenRefreshHandler"],
             'permission_callback' => [$this->apiAuth, 'nonceRequestHandler']
         ));
-        register_rest_route($this->adminNamespace, '/token/generate', array(
+        register_rest_route($this->apiConfigEndpoints->adminNamespace, '/token/generate', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "tokenGenerateHandler"],
             'permission_callback' => [$this->apiAuth, 'nonceRequestHandler']
         ));
-        register_rest_route( $this->adminNamespace, '/tokens', array(
+        register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/tokens', array(
             'methods'             => \WP_REST_Server::READABLE,
             'callback'            => [ $this, "fetchTokens" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],
         ) );
-        register_rest_route( $this->adminNamespace, '/token/create', array(
+        register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/token/create', array(
             'methods'             => \WP_REST_Server::CREATABLE,
             'callback'            => [ $this, "createToken" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],
         ) );
-        register_rest_route( $this->adminNamespace, '/token/(?<id>[\d]+)/update', array(
+        register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/token/(?<id>[\d]+)/update', array(
             'methods'             => \WP_REST_Server::EDITABLE,
             'callback'            => [ $this, "updateToken" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],
         ) );
-        register_rest_route( $this->adminNamespace, '/token/delete', array(
+        register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/token/delete', array(
             'methods'             => \WP_REST_Server::DELETABLE,
             'callback'            => [ $this, "deleteToken" ],
             'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],

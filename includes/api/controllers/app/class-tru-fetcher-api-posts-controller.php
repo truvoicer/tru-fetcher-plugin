@@ -26,14 +26,12 @@ use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
  */
 class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
 {
-
-    protected ?string $namespace = "/posts";
-
     private Tru_Fetcher_Api_Post_Response $apiPostResponse;
 
     public function __construct()
     {
         parent::__construct();
+        $this->apiConfigEndpoints->endpointsInit('/posts');
     }
 
     public function init()
@@ -50,37 +48,37 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
 
     public function register_routes()
     {
-        register_rest_route($this->publicEndpoint, '/post/(?<post_slug>[\w-]+)', array(
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/post/(?<post_slug>[\w-]+)', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "postWithTemplateRequestHandler"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
-        register_rest_route($this->publicEndpoint, '/post/(?<post_id>[\d]+)', array(
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/post/(?<post_id>[\d]+)', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "singlePost"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
-        register_rest_route($this->publicEndpoint, '/post/(?<post_id>[\d]+)/type/(?<post_type>[\w-]+)', array(
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/post/(?<post_id>[\d]+)/type/(?<post_type>[\w-]+)', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "singlePostType"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
-        register_rest_route($this->publicEndpoint, '/list/request', array(
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/list/request', array(
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [$this, "postListRequestHandler"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
-        register_rest_route($this->publicEndpoint, '/list/recent', array(
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/list/recent', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "postListRecentRequestHandler"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
-        register_rest_route($this->publicEndpoint, '/category/list', array(
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/category/list', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "categoryListRequestHandler"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
-        register_rest_route($this->publicEndpoint, '/category/list', array(
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/category/list', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "categoryListRequestHandler"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']

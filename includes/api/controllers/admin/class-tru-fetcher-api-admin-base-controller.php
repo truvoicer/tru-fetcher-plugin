@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\Api\Controllers\Admin;
 
+use TruFetcher\Includes\Api\Config\Tru_Fetcher_Api_Config_Endpoints;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Controller;
 use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_Admin;
 
@@ -27,15 +28,16 @@ use TruFetcher\Includes\Api\Auth\Tru_Fetcher_Api_Auth_Admin;
  */
 class Tru_Fetcher_Api_Admin_Base_Controller {
 
-    protected string $adminNamespace = "tru-fetcher-api/admin";
     protected Tru_Fetcher_Api_Auth_Admin $apiAuth;
 
     protected Tru_Fetcher_Api_Helpers_Controller $controllerHelpers;
+    protected Tru_Fetcher_Api_Config_Endpoints $apiConfigEndpoints;
 
     public function __construct()
     {
         $this->controllerHelpers = new Tru_Fetcher_Api_Helpers_Controller();
         $this->apiAuth = new Tru_Fetcher_Api_Auth_Admin();
+        $this->apiConfigEndpoints = new Tru_Fetcher_Api_Config_Endpoints();
     }
 
 }
