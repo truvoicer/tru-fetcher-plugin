@@ -28,10 +28,13 @@ class Tru_Fetcher_DB_Model_Constants
 	public const WHERE_GROUP_CONDITION_DEFAULT = 'OR';
 	public const WHERE_COLUMN_CONDITION_KEY = 'where_column_condition';
 	public const WHERE_COMPARE_KEY = 'where_compare';
+    public const DEFAULT_WHERE_COMPARE = '=';
+    public const WHERE_COMPARE_EQUALS = self::DEFAULT_WHERE_COMPARE;
 	public const WHERE_COMPARE_IN = 'in';
 	public const LOGICAL_OPERATOR_KEY = 'logical_operator';
 	public const DEFAULT_WHERE_LOGICAL_OPERATOR = 'AND';
-	public const DEFAULT_WHERE_COMPARE = '=';
+	public const WHERE_LOGICAL_OPERATOR_AND = self::DEFAULT_WHERE_LOGICAL_OPERATOR;
+	public const WHERE_LOGICAL_OPERATOR_OR = self::DEFAULT_WHERE_LOGICAL_OPERATOR;
 	public const CONDITIONS_KEY = 'conditions';
 	public const DATA_KEY = 'data';
 	public const FOREIGN_KEYS_FIELD = 'foreign_keys';

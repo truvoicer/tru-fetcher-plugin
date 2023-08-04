@@ -322,9 +322,9 @@ const FormRowsTab = (props) => {
                                                         }}
                                                     />
                                                 )}
-                                                {['select_data_source', 'checkbox', 'radio'].includes(formItem?.form_control) && (
+                                                {['select', 'checkbox', 'radio'].includes(formItem?.form_control) && (
                                                     <div>
-                                                        <h5>Options</h5>
+                                                        <h5>Select Options</h5>
                                                         {formItem.options.map((option, index) => {
                                                             return (
                                                                 <div style={{display: 'flex'}}>

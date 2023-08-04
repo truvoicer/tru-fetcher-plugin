@@ -4,6 +4,7 @@ namespace TruFetcher\Includes\Forms;
 use TruFetcher\Includes\Api\Providers\Tru_Fetcher_Api_Providers_Hubspot;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Forms_Response;
 use TruFetcher\Includes\Database\Tru_Fetcher_Database;
+use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
 use WP_REST_Request;
 use WP_User;
 
@@ -29,6 +30,7 @@ use WP_User;
  */
 class Tru_Fetcher_Api_Form_Handler
 {
+    use Tru_Fetcher_Traits_Errors;
 
     const GROUP_KEY_APPENDIX = "_group";
 
@@ -409,21 +411,34 @@ class Tru_Fetcher_Api_Form_Handler
         foreach ($filesArray as $key => $file) {
             $mediaUpload = media_handle_upload($key, 0);
             if (is_wp_error($mediaUpload)) {
-                array_push($errors, $mediaUpload);
+                $this->addError($mediaUpload);
+                $errors[] = true;
                 continue;
             }
-            update_user_meta(
+            $metaKey = "{$key}_attachment_id";
+            $updateMeta = update_user_meta(
                 $user->ID,
-                "{$key}_attachment_id",
+                $metaKey,
                 $mediaUpload,
             );
-            array_push($attachments, [
+            if (!$updateMeta) {
+                $this->addError(
+                    new \WP_Error(
+                        "user_meta_update_error",
+                        "Error updating user profile | {$metaKey}",
+                        ["value" => $mediaUpload]
+                    )
+                );
+                $errors[] = true;
+                continue;
+            }
+            $attachments[] = [
                 "attachment_id" => $mediaUpload,
                 "file_name" => $key
-            ]);
+            ];
         }
         return [
-            "errors" => $errors,
+            "hasErrors" => (count($errors) > 0),
             "attachments" => $attachments
         ];
     }
@@ -438,13 +453,17 @@ class Tru_Fetcher_Api_Form_Handler
                 $value
             );
             if (!$updateUserMeta) {
-                array_push($errors, $key);
+                $this->addError(
+                    new \WP_Error(
+                        "user_meta_update_error",
+                        "Error updating user profile | {$key}",
+                        ["value" => $value]
+                    )
+                );
+                $errors[] = $key;
             }
         }
-        if (count($errors) > 0) {
-            return $errors;
-        }
-        return true;
+        return count($errors) === 0;
     }
 
     private function buildResponseObject($status, $message, $data)

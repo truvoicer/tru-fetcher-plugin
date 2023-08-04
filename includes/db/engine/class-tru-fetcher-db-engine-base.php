@@ -23,6 +23,7 @@ use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Skill;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Tab_Presets;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Topic;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_User_Device_Access;
+use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_User_Skill;
 use TruFetcher\Includes\DB\Traits\WP\Tru_Fetcher_DB_Traits_WP_Site;
 
 class Tru_Fetcher_DB_Engine_Base
@@ -914,6 +915,7 @@ class Tru_Fetcher_DB_Engine_Base
             new Tru_Fetcher_DB_Model_Form_Presets(),
             new Tru_Fetcher_DB_Model_Tab_Presets(),
             new Tru_Fetcher_DB_Model_Skill(),
+            new Tru_Fetcher_DB_Model_User_Skill(),
 		];
 	}
 	/**

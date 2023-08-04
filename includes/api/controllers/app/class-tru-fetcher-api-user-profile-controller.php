@@ -5,6 +5,7 @@ use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_User_Profile_Response;
 use TruFetcher\Includes\DB\Repository\Tru_Fetcher_DB_Repository_Skill;
 use TruFetcher\Includes\DB\Repository\Tru_Fetcher_DB_Repository_User_Skill;
 use TruFetcher\Includes\Forms\Tru_Fetcher_Api_Form_Handler;
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Skill;
 
 /**
  * Fired during plugin activation
@@ -33,9 +34,10 @@ class Tru_Fetcher_Api_User_Profile_Controller extends Tru_Fetcher_Api_Controller
     private Tru_Fetcher_Api_Form_Handler $apiFormHandler;
     private Tru_Fetcher_DB_Repository_Skill $skillsRepository;
     private Tru_Fetcher_DB_Repository_User_Skill $userSkillsRepository;
+    private Tru_Fetcher_Api_Helpers_Skill $skillHelpers;
 
     const REQUEST_FORM_ARRAY_FIELDS = [
-        "form_experiences", "form_education"
+        "experiences", "education"
     ];
 
     const REQUEST_LIST_FIELDS = [
@@ -56,6 +58,7 @@ class Tru_Fetcher_Api_User_Profile_Controller extends Tru_Fetcher_Api_Controller
         $this->apiUserProfileResponse = new Tru_Fetcher_Api_User_Profile_Response();
         $this->skillsRepository = new Tru_Fetcher_DB_Repository_Skill();
         $this->userSkillsRepository = new Tru_Fetcher_DB_Repository_User_Skill();
+        $this->skillHelpers = new Tru_Fetcher_Api_Helpers_Skill();
         $this->apiFormHandler = new Tru_Fetcher_Api_Form_Handler();
         $this->apiConfigEndpoints->endpointsInit('/user/profile');
     }
@@ -90,44 +93,33 @@ class Tru_Fetcher_Api_User_Profile_Controller extends Tru_Fetcher_Api_Controller
         $this->saveUserProfileArrayFields($getUser, $data);
 
         if (array_key_exists("skills", $data)) {
-            $this->saveUserProfileSkills($getUser, $data["skills"]);
+            $updateSkillBatch = $this->skillHelpers->updateUserProfileSkillsBatch($getUser, $data["skills"]);
         }
 
-        $fileErrors= [];
         if (count($request->get_file_params()) > 0) {
             $saveFiles = $this->apiFormHandler->saveUserProfileFileUploads($getUser, $request->get_file_params());
-            if (count($saveFiles["errors"]) > 0) {
-                $fileErrors[] = array_map(function ($error) {
-                    return $error->get_error_message();
-                }, $saveFiles["errors"]);
-            }
         }
 
-        $this->apiUserProfileResponse->setData(["errors" => $fileErrors]);
+        if ($this->skillHelpers->hasErrors()) {
+            $this->apiUserProfileResponse->setErrors(
+                array_merge(
+                    $this->apiUserProfileResponse->getErrors(),
+                    $this->skillHelpers->getErrors()
+                )
+            );
+        }
+        if (!count($this->apiFormHandler->getErrors())) {
+            $this->apiUserProfileResponse->setErrors(
+                array_merge(
+                    $this->apiUserProfileResponse->getErrors(),
+                    $this->apiFormHandler->getErrors()
+                )
+            );
+        }
         return $this->controllerHelpers->sendSuccessResponse(
             sprintf("User (%s) updated.", $getUser->display_name),
             $this->apiUserProfileResponse
         );
-    }
-
-    private function saveUserProfileSkills(\WP_User $user, array $skillsArray = [])
-    {
-        $this->userSkillsRepository->deleteUserSkillByUser($user);
-        foreach ($skillsArray as $skill) {
-            $getSkill = $this->skillsRepository->findSkillByNameOrLabel(
-                strtolower(str_replace(" ", "_", $skill["value"])),
-                $skill["label"]
-            );
-            if ($getSkill === null) {
-                $this->skillsRepository->insertSkills(
-                    [
-                        'name' => strtolower(str_replace(" ", "_", $skill["label"])),
-                    'label' => $skill["label"]
-                    ]
-                );
-            }
-            $this->userSkillsRepository->insertUserSkills($user, $getSkill->id);
-        }
     }
 
     private function saveUserProfileArrayFields(\WP_User $user, array $data = [])

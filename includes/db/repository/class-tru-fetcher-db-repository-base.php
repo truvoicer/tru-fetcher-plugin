@@ -130,7 +130,7 @@ class Tru_Fetcher_DB_Repository_Base
                         $whereData['column'],
                         $whereData['compare'],
                         implode(',', array_map(function ($value) use ($whereData) {
-                            return $this->model->getDbPlaceholderByColumn($whereData['column']);
+                            return $this->getDbPlaceholder($whereData);
                         }, $whereData['value'])
                     ));
                     foreach ($whereData['value'] as $value) {
@@ -142,7 +142,7 @@ class Tru_Fetcher_DB_Repository_Base
                         '(%s %s %s)',
                         $whereData['column'],
                         $whereData['compare'],
-                        $this->model->getDbPlaceholderByColumn($whereData['column'])
+                        $this->getDbPlaceholder($whereData)
                     );
                     if ($whereData['column'] === 'NULL') {
                         $this->values[] = 'NULL';
@@ -155,6 +155,12 @@ class Tru_Fetcher_DB_Repository_Base
         return $query;
     }
 
+    private function getDbPlaceholder(array $whereData) {
+        if (!empty($whereData['model']) && $whereData['model'] instanceof Tru_Fetcher_DB_Model) {
+            return $whereData['model']->getDbPlaceholderByColumn($whereData['column']);
+        }
+        return $this->model->getDbPlaceholderByColumn($whereData['column']);
+    }
     protected function buildQuery()
     {
         $query = 'SELECT';
@@ -166,7 +172,7 @@ class Tru_Fetcher_DB_Repository_Base
         $query .= " FROM {$this->model->getTableName($this->site, $this->isNetworkWide)}";
         if (count($this->joins)) {
             foreach ($this->joins as $join) {
-                $query .= " {$join['type']} JOIN {$join['table']} ON {$join['on']}";
+                $query .= " {$join['type']} {$join['table']} ON {$join['on']}";
             }
         }
         if (count($this->where)) {
@@ -619,11 +625,12 @@ class Tru_Fetcher_DB_Repository_Base
         return $this;
     }
 
-    public function addWhere(string $column, $value, string $compare = '=', string $operator = 'AND'): self
+    public function addWhere(string $column, $value, string $compare = '=', string $operator = 'AND', ?Tru_Fetcher_DB_Model $model = null): self
     {
         $this->where[] = [
             'column' => $column,
             'value' => $value,
+            'model' => $model,
             'compare' => $compare,
             'operator' => $operator,
         ];

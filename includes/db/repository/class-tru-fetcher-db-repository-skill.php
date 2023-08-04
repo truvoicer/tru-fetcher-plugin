@@ -44,6 +44,7 @@ class Tru_Fetcher_DB_Repository_Skill extends Tru_Fetcher_DB_Repository_Base {
         return $this->findOne();
     }
 
+
     public function findSkillByNameOrLabel(?string $name = null, ?string $label = null)
     {
         if ($name) {

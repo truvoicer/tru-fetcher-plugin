@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\DB\Repository;
 
+use TruFetcher\Includes\DB\Model\Constants\Tru_Fetcher_DB_Model_Constants;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Skill;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_User_Skill;
 
@@ -50,6 +51,35 @@ class Tru_Fetcher_DB_Repository_User_Skill extends Tru_Fetcher_DB_Repository_Bas
         );
         $this->addWhere($this->model->getUserIdColumn(), $user->ID);
         return $this->findMany();
+    }
+
+    public function findUserSkillByLabel(\WP_User $user, string $label)
+    {
+        $name = strtolower(str_replace(" ", "_", $label));
+        $this->addJoin(
+            'left join',
+            $this->skillModel->getTableName(),
+            "{$this->skillModel->getTableName()}.{$this->skillModel->getIdColumn()} = {$this->userSkillModel->getTableName()}.{$this->userSkillModel->getSkillIdColumn()}"
+        );
+        $this->addWhere(
+            "{$this->skillModel->getFullColumnName($this->skillModel->getLabelColumn())}",
+            $label,
+            Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_EQUALS,
+            Tru_Fetcher_DB_Model_Constants::WHERE_LOGICAL_OPERATOR_AND,
+            $this->skillModel
+        );
+        $this->addWhere(
+            "{$this->skillModel->getFullColumnName($this->skillModel->getNameColumn())}",
+            $name,
+            Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_EQUALS,
+            Tru_Fetcher_DB_Model_Constants::WHERE_LOGICAL_OPERATOR_AND,
+            $this->skillModel
+        );
+        $this->addWhere(
+            $this->userSkillModel->getFullColumnName($this->userSkillModel->getUserIdColumn()),
+            $user->ID
+        );
+        return $this->findOne();
     }
     public function findUserSkill(\WP_User $user, int $userSkillId)
     {

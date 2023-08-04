@@ -102,6 +102,9 @@ class Tru_Fetcher_DB_Model
 	 */
 	public function getDbPlaceholderByColumn(string $column): string
 	{
+        if (str_contains($column, '.')) {
+            $column = explode('.', $column)[1];
+        }
         $columns = $this->getColumns();
         if (!$columns) {
             return false;
@@ -643,6 +646,11 @@ class Tru_Fetcher_DB_Model
                 break;
         }
         return $data;
+    }
+
+    public function getFullColumnName(string $column)
+    {
+        return "{$this->getTableName()}.{$column}";
     }
 
 }

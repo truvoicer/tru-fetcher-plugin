@@ -40,6 +40,7 @@ class Tru_Fetcher_Forms_Helpers
     public function filterUserMetaSelectData($field, \WP_User $user) {
         switch ($field["name"]) {
             case "skills":
+            case "skill":
                 return $this->apiFormHandler->buildSelectList(
                     "name",
                     "label",

@@ -18,6 +18,7 @@ use DirectoryIterator;
 use TruFetcher\Includes\Admin\Tru_Fetcher_Admin;
 use TruFetcher\Includes\Api\Tru_Fetcher_Api;
 use TruFetcher\Includes\Blocks\Tru_Fetcher_Blocks;
+use TruFetcher\Includes\Forms\Tru_Fetcher_Forms_Helpers;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Category_Tpl;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Filter_List;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_List;
@@ -55,6 +56,7 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
         parent::__construct();
 		$this->set_locale();
 		$this->loadAdmin();
+
 		$this->loadApi();
 		$this->registerTaxonomies();
 		$this->registerPostTypes();
@@ -119,6 +121,8 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
     }
 
 	private function loadApi() {
+        $formHelpers = new Tru_Fetcher_Forms_Helpers();
+        $formHelpers->init();
 		$truFetcherEndpoints = new Tru_Fetcher_Api();
 		$truFetcherEndpoints->init();
 	}
