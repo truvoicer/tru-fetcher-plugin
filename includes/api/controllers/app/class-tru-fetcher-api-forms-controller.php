@@ -1,9 +1,11 @@
 <?php
 namespace TruFetcher\Includes\Api\Controllers\App;
 
+use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Form_Progress_Response;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Forms_Response;
 use TruFetcher\Includes\Email\Tru_Fetcher_Email;
 use TruFetcher\Includes\Forms\Tru_Fetcher_Api_Form_Handler;
+use TruFetcher\Includes\Forms\Tru_Fetcher_Forms_Progress;
 use WP_REST_Request;
 use WP_REST_Server;
 
@@ -30,24 +32,25 @@ use WP_REST_Server;
 class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 
     private Tru_Fetcher_Api_Forms_Response $apiFormsResponse;
+    private Tru_Fetcher_Api_Form_Progress_Response $apiFormProgressResponse;
     private Tru_Fetcher_Email $emailManager;
     private Tru_Fetcher_Api_Form_Handler $apiFormHandler;
+    private Tru_Fetcher_Forms_Progress $formsProgress;
 
 	public function __construct() {
         parent::__construct();
-        $this->emailManager = new Tru_Fetcher_Email();
         $this->apiConfigEndpoints->endpointsInit('/forms');
+        $this->emailManager = new Tru_Fetcher_Email();
+        $this->apiFormsResponse = new Tru_Fetcher_Api_Forms_Response();
+        $this->apiFormHandler = new Tru_Fetcher_Api_Form_Handler();
+        $this->apiFormProgressResponse = new Tru_Fetcher_Api_Form_Progress_Response();
+        $this->formsProgress = new Tru_Fetcher_Forms_Progress();
 	}
 
 	public function init() {
-		$this->loadResponseObjects();
 		add_action( 'rest_api_init', [ $this, "register_routes" ] );
 	}
 
-	private function loadResponseObjects() {
-        $this->apiFormsResponse = new Tru_Fetcher_Api_Forms_Response();
-        $this->apiFormHandler = new Tru_Fetcher_Api_Form_Handler();
-	}
 
 	public function register_routes() {
 		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/email', array(
@@ -83,8 +86,14 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
         if (!$getUser) {
             return $this->showError("user_not_exist", "Sorry, this user does not exist.");
         }
-        $this->apiFormHandler->setUser($getUser);
-        return $this->apiFormHandler->getFormsProgressData($request);
+        $this->formsProgress->setUser($getUser);
+        $this->formsProgress->getFormsProgressData($request);
+        $this->apiFormProgressResponse->setGroups($this->formsProgress->getGroups());
+        $this->apiFormProgressResponse->setOverallProgressPercentage($this->formsProgress->getOverallProgressPercentage());
+        return $this->controllerHelpers->sendSuccessResponse(
+            "User progress data fetched.",
+            $this->apiFormProgressResponse
+        );
     }
 
     public function userMetaDataRequest($request) {

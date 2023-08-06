@@ -4,6 +4,7 @@ namespace TruFetcher\Includes\Api\Controllers\Admin;
 use TruFetcher\Includes\Api\Pagination\Tru_Fetcher_Api_Pagination;
 use TruFetcher\Includes\Api\Response\Admin\Tru_Fetcher_Api_Admin_Posts_Response;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Post_Response;
+use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
 
 /**
  * Fired during plugin activation
@@ -93,7 +94,7 @@ class Tru_Fetcher_Api_Admin_Posts_Controller extends Tru_Fetcher_Api_Admin_Base_
 
         $this->apiPostResponse->setPosts($this->buildPostsArray($postQuery->posts));
         $this->apiPostResponse->setPagination(
-            (new Tru_Fetcher_Api_Pagination())->getPagination($postQuery, $allPostsQuery, $offset, $postsPerPage)
+            Tru_Fetcher_Posts::getPostPagination($postQuery, $allPostsQuery, $offset, $postsPerPage)
         );
         return $this->controllerHelpers->sendSuccessResponse(
           'Posts fetched successfully',

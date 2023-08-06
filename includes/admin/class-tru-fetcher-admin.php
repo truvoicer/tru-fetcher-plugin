@@ -37,7 +37,8 @@ class Tru_Fetcher_Admin extends Tru_Fetcher_Base {
         parent::__construct();
 	}
 
-    public function init() {
+    public function init(): void
+    {
         $this->loadAdminMenu();
         $this->defineAdminHooks();
         $this->addUserActions();

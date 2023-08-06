@@ -9,9 +9,18 @@ switch ($data['notice']) {
         $linkClass = 'tru_fetcher_db_req_data_install';
         break;
 }
+function getModels(array $requiredData) {
+    $models = [];
+    foreach ($requiredData as $item) {
+        if (!in_array($item['model'], $models)) {
+            $models[] = $item['model'];
+        }
+    }
+    return $models;
+}
 ?>
-<div class="notice notice-error is-dismissible tr-news-app-admin-messages">
-    <div class="tr-news-app--messages--display">
+<div class="notice notice-error is-dismissible tru-fetcher-admin-messages">
+    <div class="tru-fetcher--messages--display">
         <p><?php _e('Tr News App Database health check Failed. ', 'sample-text-domain'); ?></p>
         <p><?php _e('Database health check errors. ', 'sample-text-domain'); ?></p>
         <ul>
@@ -29,7 +38,7 @@ switch ($data['notice']) {
                 </li>
             <?php endforeach; ?>
         </ul>
-        <a href="" class="<?php echo $linkClass; ?>">
+        <a href="" class="<?php echo $linkClass; ?>" data-models="<?php echo implode(',', getModels($data['required_data'])); ?>">
             <?php _e('Click here install required data', 'sample-text-domain'); ?>
         </a>
     </div>

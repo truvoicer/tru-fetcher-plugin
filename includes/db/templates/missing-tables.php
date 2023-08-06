@@ -9,8 +9,8 @@
             break;
     }
 ?>
-<div class="notice notice-error is-dismissible tr-news-app-admin-messages">
-    <div class="tr-news-app--messages--display">
+<div class="notice notice-error is-dismissible tru-fetcher-admin-messages">
+    <div class="tru-fetcher--messages--display">
         <p><?php _e('Tr News App Error. ', 'sample-text-domain'); ?></p>
         <p><?php _e('The following database tables are missing. ', 'sample-text-domain'); ?></p>
         <ul>

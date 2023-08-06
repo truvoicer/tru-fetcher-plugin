@@ -44,12 +44,32 @@ class Tru_Fetcher_DB_Repository_User_Skill extends Tru_Fetcher_DB_Repository_Bas
 
     public function findUserSkillsByUser(\WP_User $user)
     {
+        $this->setSelect([
+            "{$this->userSkillModel->getTableName()}.*",
+            "{$this->skillModel->getTableName()}.{$this->skillModel->getIdColumn()} as skill_id",
+            "{$this->skillModel->getTableName()}.{$this->skillModel->getNameColumn()}",
+            "{$this->skillModel->getTableName()}.{$this->skillModel->getLabelColumn()}",
+        ]);
         $this->addJoin(
             'left join',
             $this->skillModel->getTableName(),
             "{$this->skillModel->getTableName()}.{$this->skillModel->getIdColumn()} = {$this->userSkillModel->getTableName()}.{$this->userSkillModel->getSkillIdColumn()}"
         );
         $this->addWhere($this->model->getUserIdColumn(), $user->ID);
+        return $this->findMany();
+    }
+
+    public function findInverseUserSkills(\WP_User $user, array $userSkillIds = [])
+    {
+        $this->addWhere(
+            "{$this->userSkillModel->getIdColumn()}",
+            $userSkillIds,
+            Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_NOT_IN,
+        );
+        $this->addWhere(
+            "{$this->userSkillModel->getUserIdColumn()}",
+            $user->ID,
+        );
         return $this->findMany();
     }
 
@@ -81,8 +101,21 @@ class Tru_Fetcher_DB_Repository_User_Skill extends Tru_Fetcher_DB_Repository_Bas
         );
         return $this->findOne();
     }
-    public function findUserSkill(\WP_User $user, int $userSkillId)
+    public function findUserSkill(\WP_User $user, int $userSkillId, ?bool $joinSkill = false)
     {
+        if ($joinSkill) {
+            $this->setSelect([
+                "{$this->userSkillModel->getTableName()}.*",
+                "{$this->skillModel->getTableName()}.{$this->skillModel->getIdColumn()} as skill_id",
+                "{$this->skillModel->getTableName()}.{$this->skillModel->getNameColumn()}",
+                "{$this->skillModel->getTableName()}.{$this->skillModel->getLabelColumn()}",
+            ]);
+            $this->addJoin(
+                'left join',
+                $this->skillModel->getTableName(),
+                "{$this->skillModel->getTableName()}.{$this->skillModel->getIdColumn()} = {$this->userSkillModel->getTableName()}.{$this->userSkillModel->getSkillIdColumn()}"
+            );
+        }
         $this->addWhere($this->model->getUserIdColumn(), $user->ID);
         $this->addWhere($this->model->getSkillIdColumn(), $userSkillId);
         return $this->findOne();

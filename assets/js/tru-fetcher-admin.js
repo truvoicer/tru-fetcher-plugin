@@ -47,31 +47,36 @@ function processResponseDataItem(results) {
 // tru_fetcher_db_update_columns
 $(document).on('click', '.tru_fetcher_database_install', function (e) {
     e.preventDefault();
-    handleDatabaseActions('tru_fetcher_database_install_action', this)
+    handleDatabaseActions('tru_fetcher_database_install_action', {}, this)
 })
 $(document).on('click', '.tru_fetcher_database_network_install', function (e) {
     e.preventDefault();
-    handleDatabaseActions('tru_fetcher_database_network_install_action', this)
+    handleDatabaseActions('tru_fetcher_database_network_install_action', {}, this)
 })
 $(document).on('click', '.tru_fetcher_db_req_data_install', function (e) {
     e.preventDefault();
-    handleDatabaseActions('tru_fetcher_db_req_data_install', this)
+    const dataModelsAttr = $(this).attr('data-models');
+    let data = {};
+    if (typeof dataModelsAttr !== 'undefined' && dataModelsAttr) {
+        data.models = dataModelsAttr.split(',')
+    }
+    handleDatabaseActions('tru_fetcher_db_req_data_install', data, this)
 })
 $(document).on('click', '.tru_fetcher_db_update_columns', function (e) {
     e.preventDefault();
-    handleDatabaseActions('tru_fetcher_db_update_columns', this)
+    handleDatabaseActions('tru_fetcher_db_update_columns', {}, this)
 })
 $(document).on('click', '.tru_fetcher_db_network_update_columns', function (e) {
     e.preventDefault();
-    handleDatabaseActions('tru_fetcher_db_network_update_columns', this)
+    handleDatabaseActions('tru_fetcher_db_network_update_columns', {}, this)
 })
 $(document).on('click', '.tru_fetcher_db_network_req_data_install', function (e) {
     e.preventDefault();
-    handleDatabaseActions('tru_fetcher_db_network_req_data_install', this)
+    handleDatabaseActions('tru_fetcher_db_network_req_data_install', {}, this)
 })
 
-function handleDatabaseActions(action, e) {
-    const findAlert = $(e).closest('.tr-news-app-admin-messages');
+function handleDatabaseActions(action, extraData = {}, e) {
+    const findAlert = $(e).closest('.tru-fetcher-admin-messages');
     $(e).html('Installing...');
     const data = {
         action: action
@@ -79,7 +84,7 @@ function handleDatabaseActions(action, e) {
     $.ajax({
         url: ajaxurl,
         method: "POST",
-        data
+        data: {...data, ...extraData}
     })
         .fail(function (data, textStatus, errorThrown) {
             adminNoticeToggle('error', findAlert)
@@ -106,15 +111,10 @@ function handleDatabaseActions(action, e) {
                 console.error('data format error')
                 return;
             }
-            switch (responseCode) {
-                case 'tru_fetcher_db_install_error':
-                case 'tru_fetcher_db_req_data_install_error':
-                    break;
-                case 'tru_fetcher_db_install_success':
-                case 'tru_fetcher_db_req_data_install_success':
-                    status = 'success';
-                    break;
+            if (responseCode.includes('_success')) {
+                status = 'success';
             }
+            adminNoticeToggle(status, findAlert)
             let resultKeys = Object.keys(results);
             let resultHtml = '';
             for (let a = 0; a < resultKeys.length ; a++) {
@@ -127,7 +127,7 @@ function handleDatabaseActions(action, e) {
                 resultHtml += processResponseDataItem(results[resultKey]);
             }
             if (findAlert) {
-                const alertMessageDisplay = $(findAlert).find('.tr-news-app--messages--display');
+                const alertMessageDisplay = $(findAlert).find('.tru-fetcher--messages--display');
                 $(alertMessageDisplay).html('');
                 if (responseMessage) {
                     $(alertMessageDisplay).append(`<p>${responseMessage}</p>`);

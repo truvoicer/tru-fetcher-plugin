@@ -134,150 +134,6 @@ class Tru_Fetcher_Api_Form_Handler
         return $filteredData;
     }
 
-    public function getFormsProgressData(WP_REST_Request $request)
-    {
-        if (!isset($request["form_field_groups"])) {
-            return $this->showError("invalid_request", "(form_field_groups) fields does not exist in request");
-        }
-        $progressFieldGroups = apply_filters("tfr_form_progress_field_groups", $request["form_field_groups"], $this->getUser());
-
-        $buildFieldsGroupArray = $this->buildFieldsGroupArray($request["form_field_groups"], $progressFieldGroups);
-
-        $buildFormsProgressData = $this->buildFormsProgressData($buildFieldsGroupArray);
-
-        $getOverallProgressPercent = $this->calculateOverallProgressPercent($buildFormsProgressData);
-
-        return $this->sendResponse(
-            $this->buildResponseObject(
-                self::STATUS_SUCCESS,
-                "Forms progress fetch successful.",
-                [
-                    "groups" => $buildFormsProgressData,
-                    "overall_progress_percentage" => round($getOverallProgressPercent)
-                ])
-        );
-    }
-
-    private function buildFormsProgressData(array $fieldGroups)
-    {
-        return array_map(function ($group) {
-            $emptyFields = $this->buildEmptyFieldsArray($group["fields"]);
-            $group["empty_fields"] = $emptyFields;
-            $group["fields_complete_percent"] = $this->calculateCompletedFieldsPercent(
-                count($group["empty_fields"]),
-                count($group["fields"])
-            );
-            $group["fields_incomplete_percent"] = $this->calculateIncompleteFieldsPercent(
-                count($group["empty_fields"]),
-                count($group["fields"])
-            );
-            $group["group_complete_percent"] = $this->calculateGroupCompletePercent(
-                count($group["empty_fields"]),
-                count($group["fields"]),
-                $group["percentage"]
-            );
-            $group["group_incomplete_percent"] = $this->calculateGroupIncompletePercent(
-                count($group["empty_fields"]),
-                count($group["fields"]),
-                $group["percentage"]
-            );
-            unset($group["fields"]);
-            return $group;
-        }, $fieldGroups);
-    }
-
-    private function calculateOverallProgressPercent(array $data)
-    {
-        $totalSetPercentage = [];
-        $totalCompletedPercentage = [];
-        foreach ($data as $group) {
-            array_push($totalSetPercentage, $group["percentage"]);
-            array_push($totalCompletedPercentage, $group["group_complete_percent"]);
-        }
-        return (array_sum($totalCompletedPercentage) / array_sum($totalSetPercentage)) * 100;
-    }
-
-    private function calculateGroupCompletePercent(int $emptyCount, int $totalFields, int $groupSetPercent)
-    {
-        $completed = $this->calculateCompletedFieldsPercent($emptyCount, $totalFields);
-        return ($completed / 100) * $groupSetPercent;
-    }
-
-    private function calculateGroupIncompletePercent(int $emptyCount, int $totalFields, int $groupSetPercent)
-    {
-        $completed = $this->calculateIncompleteFieldsPercent($emptyCount, $totalFields);
-        return ($completed / 100) * $groupSetPercent;
-    }
-
-    private function calculateCompletedFieldsPercent(int $emptyCount, int $totalFields)
-    {
-        $completed = ($totalFields - $emptyCount) / $totalFields;
-        return $completed * 100;
-    }
-
-    private function calculateIncompleteFieldsPercent(int $emptyCount, int $totalFields)
-    {
-        $incomplete = $emptyCount / $totalFields;
-        return $incomplete * 100;
-    }
-
-    private function buildEmptyFieldsArray(array $fields)
-    {
-        $emptyFields = [];
-        foreach ($fields as $field) {
-            if (!is_array($field)) {
-                continue;
-            }
-            $checkExists = $this->checkFieldUserDataExists($field["name"], $field["type"]);
-            if (!$checkExists) {
-                array_push($emptyFields, $field);
-            }
-
-        }
-        return $emptyFields;
-    }
-
-    private function checkFieldUserDataExists(string $name, string $type = null)
-    {
-        switch ($type) {
-            case "file":
-                $getFieldMeta = get_user_meta($this->getUser()->ID, "{$name}_attachment_id", true);
-                if (isset($getFieldMeta) && $getFieldMeta !== null & $getFieldMeta !== "") {
-                    return true;
-                }
-                break;
-            case "data_source":
-                $getData = apply_filters("tfr_data_source_data", ["name" => $name], $this->getUser());
-                if (is_array($getData) && count($getData) > 0) {
-                    return true;
-                } elseif (is_object($getData)) {
-                    return true;
-                }
-                break;
-            default:
-                $getFieldMeta = get_user_meta($this->getUser()->ID, $name, true);
-                if (isset($getFieldMeta) && $getFieldMeta !== "") {
-                    return true;
-                }
-                break;
-        }
-        return false;
-    }
-
-    public function buildFieldsGroupArray(array $formFieldGroups, array $progressFieldGroups)
-    {
-        return array_map(function ($group) use ($progressFieldGroups) {
-            $groupName = $group["name"] . self::GROUP_KEY_APPENDIX;
-            if (array_key_exists($groupName, $progressFieldGroups)) {
-                $group["fields"] = $progressFieldGroups[$groupName];
-            }
-            if (isset($group["percentage"])) {
-                $group["percentage"] = (int)$group["percentage"];
-            }
-            return $group;
-        }, $formFieldGroups);
-    }
-
     public function fetchUserMetaData(WP_REST_Request $request)
     {
         $data = $request->get_params();
@@ -350,12 +206,14 @@ class Tru_Fetcher_Api_Form_Handler
         }
     }
 
-    public function buildSelectList($valueKey, $labelKey, $data)
+    public function buildSelectList($entity, $idKey, $valueKey, $labelKey, $data)
     {
-        return array_map(function ($item) use ($valueKey, $labelKey) {
+        return array_map(function ($item) use ($entity, $idKey, $valueKey, $labelKey) {
             return [
+                "entity" => $entity,
                 "value" => $item[$valueKey],
-                "label" => $item[$labelKey]
+                "label" => $item[$labelKey],
+                "id" => $item[$idKey]
             ];
         }, $data);
     }
@@ -466,19 +324,6 @@ class Tru_Fetcher_Api_Form_Handler
         return count($errors) === 0;
     }
 
-    private function buildResponseObject($status, $message, $data)
-    {
-        $this->apiFormsResponse->setStatus($status);
-        $this->apiFormsResponse->setMessage($message);
-        $this->apiFormsResponse->setData($data);
-
-        return $this->apiFormsResponse;
-    }
-
-    private function sendResponse(Tru_Fetcher_Api_Forms_Response $apiFormsResponse)
-    {
-        return rest_ensure_response($apiFormsResponse);
-    }
 
     protected function showError( $code, $message ) {
         return new \WP_Error( $code,
@@ -486,10 +331,6 @@ class Tru_Fetcher_Api_Form_Handler
             array( 'status' => 404 ) );
     }
 
-
-    protected function isNotEmpty($item) {
-        return (isset($item) && $item !== "");
-    }
 
     /**
      * @return \WP_User

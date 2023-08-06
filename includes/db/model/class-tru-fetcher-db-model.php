@@ -10,6 +10,9 @@ use TruFetcher\Includes\Tru_Fetcher_Helpers;
 class Tru_Fetcher_DB_Model
 {
 
+    public const DATE_UPDATED_COLUMN = 'date_updated';
+    public const DATE_CREATED_COLUMN = 'date_created';
+    public const DEFAULT_SORT_ORDER = Tru_Fetcher_DB_Model_Constants::SORT_ORDER_DESC;
 	protected $tablePrefix;
 	protected $charsetCollate;
 
@@ -31,6 +34,7 @@ class Tru_Fetcher_DB_Model
 	];
 
     protected array $serializedFields = [];
+    protected array $requiredFields = [];
 
 	private static array $reservedFieldKeys = [
 		Tru_Fetcher_DB_Model_Constants::CONDITIONS_KEY,
@@ -45,12 +49,15 @@ class Tru_Fetcher_DB_Model
 
 	protected int $id;
 	protected string $idColumn = 'id';
-	protected string $dateUpdatedColumn = 'date_updated';
-	protected string $dateCreatedColumn = 'date_created';
+	protected string $dateUpdatedColumn = self::DATE_UPDATED_COLUMN;
+	protected string $dateCreatedColumn = self::DATE_CREATED_COLUMN;
 
     private string $dateInsertCond = "datetime DEFAULT '0000-00-00 00:00:00' NOT NULL";
 
     protected bool $dateInserts = true;
+
+    protected ?string $orderDir = null;
+    protected ?array $orderBy = [];
 
 
 	public function __construct()
@@ -279,6 +286,7 @@ class Tru_Fetcher_DB_Model
 		);
 	}
 
+
 	public static function getForeignKeyValues(Tru_Fetcher_DB_Model $model, $key)
 	{
 		return array_map(function ($item) use ($key) {
@@ -418,18 +426,6 @@ class Tru_Fetcher_DB_Model
 			}
 		}
 		return true;
-	}
-
-	public function getRelationsColumnNamePrefix()
-	{
-		$tableName = $this->getTableName();
-		if (!$tableName) {
-			return false;
-		}
-		return sprintf(
-			Tru_Fetcher_DB_Model_Constants::REL_COLUMN_NAME_PREFIX,
-			$tableName
-		);
 	}
 
 	public function getAlias()
@@ -651,6 +647,54 @@ class Tru_Fetcher_DB_Model
     public function getFullColumnName(string $column)
     {
         return "{$this->getTableName()}.{$column}";
+    }
+
+    /**
+     * @return array
+     */
+    public function getRequiredFields(): array
+    {
+        return $this->requiredFields;
+    }
+
+    /**
+     * @param array $requiredFields
+     */
+    public function setRequiredFields(array $requiredFields): void
+    {
+        $this->requiredFields = $requiredFields;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getOrderDir(): ?string
+    {
+        return $this->orderDir;
+    }
+
+    /**
+     * @param string|null $orderDir
+     */
+    public function setOrderDir(?string $orderDir): void
+    {
+        $this->orderDir = $orderDir;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getOrderBy(): ?array
+    {
+        return $this->orderBy;
+    }
+
+    /**
+     * @param array|null $orderBy
+     */
+    public function setOrderBy(?array $orderBy = null): void
+    {
+        $this->orderBy = $orderBy;
     }
 
 }

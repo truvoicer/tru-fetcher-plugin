@@ -2,8 +2,6 @@
 
 namespace TruFetcher\Includes\Api\Pagination;
 
-use TrNewsApp\Includes\Api\Pagination\Tr_News_App_Api_Pagination_Posts;
-
 class Tru_Fetcher_Api_Pagination
 {
     public ?int $maxPages = null;
@@ -60,14 +58,6 @@ class Tru_Fetcher_Api_Pagination
         $this->offset = $offset;
     }
 
-//    /**
-//     * @return array
-//     */
-//    public function getStats(): array
-//    {
-//        return $this->stats;
-//    }
-
     /**
      * @return int|null
      */
@@ -89,7 +79,7 @@ class Tru_Fetcher_Api_Pagination
      */
     public function getCurrentPerPage(): ?int
     {
-        return count($this->posts);
+        return $this->currentPerPage;
     }
 
     /**
@@ -98,31 +88,5 @@ class Tru_Fetcher_Api_Pagination
     public function setCurrentPerPage(?int $currentPerPage): void
     {
         $this->currentPerPage = $currentPerPage;
-    }
-
-//    /**
-//     * @param array $stats
-//     */
-//    public function setStats(): void
-//    {
-//        $this->stats['offset'] = $this->getOffset();
-//        $this->stats['perPage'] = $this->getPerPage();
-//        $this->stats['currentPerPage'] = $this->getCurrentPerPage();
-//        $this->stats['maxPages'] = $this->getMaxPages();
-//        $this->stats['total'] = $this->getTotal();
-//    }
-
-    public function getPagination(\WP_Query $postsQuery, \WP_Query $totalPostsQuery, int $offset, int $perPage) {
-        $total = $totalPostsQuery->post_count;
-        $offset = $offset + $perPage + 1;
-        if ($offset > $total) {
-            $offset = $total;
-        }
-        $this->setMaxPages($postsQuery->max_num_pages);
-        $this->setOffset($offset);
-        $this->setPerPage($perPage);
-        $this->setTotal($total);
-        $this->setCurrentPerPage(count($postsQuery->get_posts()));
-        return $this;
     }
 }

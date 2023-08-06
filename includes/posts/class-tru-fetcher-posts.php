@@ -2,6 +2,7 @@
 namespace TruFetcher\Includes\Posts;
 
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
+use TruFetcher\Includes\Api\Pagination\Tru_Fetcher_Api_Pagination;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
 use WP_Error;
 use WP_Post;
@@ -252,4 +253,18 @@ class Tru_Fetcher_Posts {
         return $options;
     }
 
+    public static function getPostPagination(\WP_Query $postsQuery, \WP_Query $totalPostsQuery, int $offset, int $perPage) {
+        $pagination = new Tru_Fetcher_Api_Pagination();
+        $total = $totalPostsQuery->post_count;
+        $offset = $offset + $perPage + 1;
+        if ($offset > $total) {
+            $offset = $total;
+        }
+        $pagination->setMaxPages($postsQuery->max_num_pages);
+        $pagination->setOffset($offset);
+        $pagination->setPerPage($perPage);
+        $pagination->setTotal($total);
+        $pagination->setCurrentPerPage(count($postsQuery->get_posts()));
+        return $pagination;
+    }
 }

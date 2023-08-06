@@ -194,15 +194,7 @@ class Tru_Fetcher_Health_Check
             wp_send_json_error($installTableResponseData);
             wp_die();
         }
-
-        $installDataResponseData = $this->installInitialModelData();
-        if (!isset($installDataResponseData['success']) || !$installDataResponseData['success']) {
-            error_log(2 . json_encode($installTableResponseData));
-            wp_send_json_error($installDataResponseData);
-            wp_die();
-        }
-        $installDataResponseData['message'] = 'Successfully installed tables and required data';
-        wp_send_json_success($installDataResponseData);
+        wp_send_json_success($installTableResponseData);
     }
 
     public function databaseNetworkRequiredDataInstallAction()
@@ -212,7 +204,11 @@ class Tru_Fetcher_Health_Check
     }
     public function databaseRequiredDataInstallAction()
     {
-        $installRequiredTableData = $this->dbEngine->buildInitialModelData();
+        $models = null;
+        if (!empty($_POST['models']) && is_array($_POST['models']) && count($_POST['models'])) {
+            $models = $_POST['models'];
+        }
+        $installRequiredTableData = $this->dbEngine->buildInitialModelData($models);
         $responseData = $this->buildInstallResponseData(
             $installRequiredTableData,
             'tr_news_app_db_req_data_install',

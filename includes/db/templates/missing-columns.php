@@ -19,8 +19,8 @@ switch ($data['notice']) {
         break;
 }
 ?>
-<div class="notice notice-error is-dismissible tr-news-app-admin-messages">
-    <div class="tr-news-app--messages--display">
+<div class="notice notice-error is-dismissible tru-fetcher-admin-messages">
+    <div class="tru-fetcher--messages--display">
         <p><?php _e('Tr News App Database health check Failed. ', 'sample-text-domain'); ?></p>
         <p><?php _e('Database health check table update errors. ', 'sample-text-domain'); ?></p>
         <ul>

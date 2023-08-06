@@ -460,7 +460,7 @@ const FormRowsTab = (props) => {
                                                 )}
 
 
-                                                {['image_upload'].includes(formItem?.form_control) && (
+                                                {['image_upload', 'file_upload'].includes(formItem?.form_control) && (
                                                     <div>
                                                         <h5>Allowed File Types</h5>
                                                         {formItem.allowed_file_types.map((fileType, index) => {

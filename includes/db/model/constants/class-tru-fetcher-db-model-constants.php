@@ -31,6 +31,8 @@ class Tru_Fetcher_DB_Model_Constants
     public const DEFAULT_WHERE_COMPARE = '=';
     public const WHERE_COMPARE_EQUALS = self::DEFAULT_WHERE_COMPARE;
 	public const WHERE_COMPARE_IN = 'in';
+
+	public const WHERE_COMPARE_NOT_IN = 'not in';
 	public const LOGICAL_OPERATOR_KEY = 'logical_operator';
 	public const DEFAULT_WHERE_LOGICAL_OPERATOR = 'AND';
 	public const WHERE_LOGICAL_OPERATOR_AND = self::DEFAULT_WHERE_LOGICAL_OPERATOR;
@@ -40,5 +42,6 @@ class Tru_Fetcher_DB_Model_Constants
 	public const FOREIGN_KEYS_FIELD = 'foreign_keys';
 	public const PRIMARY_KEY_FIELD = 'primary_key';
 
-	public const REL_COLUMN_NAME_PREFIX = '%s__';
+	public const SORT_ORDER_ASC = 'asc';
+	public const SORT_ORDER_DESC = 'desc';
 }

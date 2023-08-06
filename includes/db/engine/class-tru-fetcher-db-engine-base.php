@@ -2,7 +2,9 @@
 
 namespace TruFetcher\Includes\DB\Engine;
 
+use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data;
 use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Form_Preset;
+use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Locale;
 use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Settings;
 use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Tab_Preset;
 use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Topic;
@@ -15,6 +17,7 @@ use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Device;
 
 
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Form_Presets;
+use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Locale;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Post_Meta;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Ratings;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Saved_Items;
@@ -248,10 +251,15 @@ class Tru_Fetcher_DB_Engine_Base
     }
 
 
-	public function installRequiredModelData(): array
+	public function installRequiredModelData(?array $tables = null): array
     {
         $results = [];
-        foreach (Tru_Fetcher_DB_Engine_Base::getInitialTableData() as $dataClass) {
+        if (!$tables || !is_array($tables)) {
+            $dataClasses = Tru_Fetcher_DB_Engine_Base::getInitialTableData();
+        } else {
+            $dataClasses = self::getDataClassesByTableNames($tables);
+        }
+        foreach ($dataClasses as $dataClass) {
             $dataClass->setSite($this->site);
             $dataClass->setIsNetworkWide($this->isNetworkWide);
             $dataClass->setIsMultiSite($this->isMultiSite);
@@ -262,7 +270,7 @@ class Tru_Fetcher_DB_Engine_Base
         }
         return $results;
     }
-	public function buildInitialModelData()
+	public function buildInitialModelData(?array $tables = null)
 	{
 		global $wpdb;
 		$wpdb->hide_errors();
@@ -272,14 +280,14 @@ class Tru_Fetcher_DB_Engine_Base
             if ($this->isNetworkWide && $this->isMultiSite) {
                 foreach (get_sites() as $site) {
                     $this->setSite($site);
-                    $results = array_merge($results, $this->installRequiredModelData());
+                    $results = array_merge($results, $this->installRequiredModelData($tables));
                 }
             } elseif (!$this->isNetworkWide && $this->isMultiSite) {
                 $this->setSite(get_site());
-                $results = array_merge($results, $this->installRequiredModelData());
+                $results = array_merge($results, $this->installRequiredModelData($tables));
             } else {
                 $this->setSite(null);
-                $results = array_merge($results, $this->installRequiredModelData());
+                $results = array_merge($results, $this->installRequiredModelData($tables));
             }
 		} catch (\Exception $e) {
 			$results[] = [
@@ -916,8 +924,42 @@ class Tru_Fetcher_DB_Engine_Base
             new Tru_Fetcher_DB_Model_Tab_Presets(),
             new Tru_Fetcher_DB_Model_Skill(),
             new Tru_Fetcher_DB_Model_User_Skill(),
+            new Tru_Fetcher_DB_Model_Locale(),
 		];
 	}
+
+
+    public static function findModelByTableName(string $tableName) {
+        foreach (self::getTables() as $model) {
+            if ($model->getTableName() === $tableName) {
+                return $model;
+            }
+        }
+        return false;
+    }
+
+    public static function getDataClassesByTableNames(array $tableNames = []) {
+        $models = array_map(function ($tableName) {
+            return self::findModelByTableName($tableName);
+        }, $tableNames);
+
+        $filterModels = array_filter($models, function ($model) {
+            return $model instanceof Tru_Fetcher_DB_Model;
+        }, ARRAY_FILTER_USE_BOTH);
+
+        $dataClasses = array_map(function ($model) {
+            foreach (Tru_Fetcher_DB_Engine_Base::getInitialTableData() as $dataClass) {
+                if ($dataClass->getModel()::class === $model::class) {
+                    return $dataClass;
+                }
+            }
+            return false;
+        }, $filterModels);
+
+        return array_filter($dataClasses, function ($model) {
+            return $model instanceof Tru_Fetcher_DB_Data;
+        }, ARRAY_FILTER_USE_BOTH);
+    }
 	/**
 	 *
 	 * /**
@@ -931,6 +973,7 @@ class Tru_Fetcher_DB_Engine_Base
 			new Tru_Fetcher_DB_Data_Topic(),
 			new Tru_Fetcher_DB_Data_Tab_Preset(),
 			new Tru_Fetcher_DB_Data_Form_Preset(),
+			new Tru_Fetcher_DB_Data_Locale(),
 		];
 	}
 

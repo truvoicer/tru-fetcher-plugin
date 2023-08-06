@@ -56,7 +56,8 @@ class Tru_Fetcher_DB_Repository_Base
         ];
     }
 
-    private function cleanup() {
+    private function cleanup()
+    {
         $this->select = [];
         $this->where = [];
         $this->orderBy = [];
@@ -68,6 +69,7 @@ class Tru_Fetcher_DB_Repository_Base
         $this->values = [];
         $this->whereQueryConditions = [];
     }
+
     public function findById(int $id)
     {
         $this->addWhere($this->model->getIdColumn(), $id);
@@ -82,7 +84,7 @@ class Tru_Fetcher_DB_Repository_Base
 
     public function findOne()
     {
-        $results =  $this->db->findOne($this->buildQuery(), $this->values);
+        $results = $this->db->findOne($this->buildQuery(), $this->values);
         $this->cleanup();
         if ($results) {
             return $this->model->buildModelData($results);
@@ -92,7 +94,7 @@ class Tru_Fetcher_DB_Repository_Base
 
     public function findMany()
     {
-        $results =  $this->db->findMany($this->buildQuery(), $this->values);
+        $results = $this->db->findMany($this->buildQuery(), $this->values);
         $this->cleanup();
         if (!count($results)) {
             return [];
@@ -100,18 +102,44 @@ class Tru_Fetcher_DB_Repository_Base
         return $this->model->buildModelDataBatch($results);
     }
 
-    public function deleteById(int $id) {
+    public function deleteById(int $id)
+    {
         $this->addWhere($this->model->getIdColumn(), $id);
         $findSavedItem = $this->findOne();
-        if ($findSavedItem) {
-            return $this->delete();
+        if (!$findSavedItem) {
+            $this->addError(
+                new \WP_Error(
+                    'tru_fetcher_db_delete_error',
+                    "{$this->model->getAlias()}: item id ({$id}) to delete not found",
+                    [
+                        'id' => $id,
+                        'table' => $this->model->getTableName(),
+                    ]
+                )
+            );
+            return false;
         }
-        return false;
+
+        $this->addWhere($this->model->getIdColumn(), $id);
+        if (!$this->delete()) {
+            $this->addError(
+                new \WP_Error(
+                    'tru_fetcher_db_delete_error',
+                    "{$this->model->getAlias()}: item id ({$id}) failed to delete",
+                    [
+                        'id' => $id,
+                        'table' => $this->model->getTableName(),
+                    ]
+                )
+            );
+            return false;
+        }
+        return true;
     }
 
     public function deleteMany(array $data)
     {
-        $results =  $this->deleteBatchData($data);
+        $results = $this->deleteBatchData($data);
         $this->cleanup();
         return $results;
     }
@@ -130,9 +158,9 @@ class Tru_Fetcher_DB_Repository_Base
                         $whereData['column'],
                         $whereData['compare'],
                         implode(',', array_map(function ($value) use ($whereData) {
-                            return $this->getDbPlaceholder($whereData);
-                        }, $whereData['value'])
-                    ));
+                                return $this->getDbPlaceholder($whereData);
+                            }, $whereData['value'])
+                        ));
                     foreach ($whereData['value'] as $value) {
                         $this->values[] = $value;
                     }
@@ -155,15 +183,17 @@ class Tru_Fetcher_DB_Repository_Base
         return $query;
     }
 
-    private function getDbPlaceholder(array $whereData) {
+    private function getDbPlaceholder(array $whereData)
+    {
         if (!empty($whereData['model']) && $whereData['model'] instanceof Tru_Fetcher_DB_Model) {
             return $whereData['model']->getDbPlaceholderByColumn($whereData['column']);
         }
         return $this->model->getDbPlaceholderByColumn($whereData['column']);
     }
+
     protected function buildQuery()
     {
-        $query = 'SELECT';
+        $query = 'SELECT ';
         if (count($this->select)) {
             $query .= implode(', ', $this->select);
         } else {
@@ -182,10 +212,27 @@ class Tru_Fetcher_DB_Repository_Base
         if (count($this->groupBy)) {
             $query .= " GROUP BY " . implode(', ', $this->groupBy);
         }
+
+        $orderBy = null;
+        $orderDir = null;
+        $modelOrderBy = $this->model->getOrderBy();
+        $modelOrderDir = $this->model->getOrderDir();
         if (count($this->orderBy)) {
-            $query .= " ORDER BY " . implode(', ', $this->orderBy);
+            $orderBy = implode(', ', $this->orderBy);
             if ($this->orderByDir) {
-                $query .= " {$this->orderByDir}";
+                $orderDir .= $this->orderByDir;
+            }
+        } elseif (!empty($modelOrderBy) && is_array($modelOrderBy) && count($modelOrderBy)) {
+            $orderBy = implode(', ', $modelOrderBy);
+            if (!empty($modelOrderDir) && is_string($modelOrderDir)) {
+                $orderDir .= $modelOrderDir;
+            }
+        }
+
+        if ($orderBy) {
+            $query .= " ORDER BY {$orderBy}";
+            if ($orderDir) {
+                $query .= " {$orderDir}";
             }
         }
         if ($this->limit) {
@@ -199,7 +246,9 @@ class Tru_Fetcher_DB_Repository_Base
 
     public function delete()
     {
-        return $this->db->query($this->buildDeleteQuery(), $this->values);
+        $delete = $this->db->query($this->buildDeleteQuery(), $this->values);
+        $this->cleanup();
+        return $delete;
     }
 
     public function buildDeleteQuery()
@@ -636,6 +685,7 @@ class Tru_Fetcher_DB_Repository_Base
         ];
         return $this;
     }
+
     public function addJoin(string $type, string $table, string $on): self
     {
         $this->joins[] = [

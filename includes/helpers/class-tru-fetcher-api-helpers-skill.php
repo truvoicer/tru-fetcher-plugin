@@ -152,15 +152,81 @@ class Tru_Fetcher_Api_Helpers_Skill {
 
     public function updateUserProfileSkillsBatch(\WP_User $user, array $skillsArray = [])
     {
+        $userSkills = array_filter($skillsArray, function ($skill) {
+            return !empty($skill['entity']) && $skill['entity'] === $this->userSkillModel->getAlias();
+        });
+        $existingSkills = array_filter($skillsArray, function ($skill) {
+            return !empty($skill['entity']) && $skill['entity'] === $this->skillModel->getAlias();
+        });
+        $newSkills = array_filter($skillsArray, function ($skill) {
+            return empty($skill['entity']);
+        });
+
+        $updateUserSkills = $this->updateUserSkillBatch($user, $userSkills);
+        $updateSkills = $this->updateSkillBatch($user, $existingSkills);
+        $updateNewSkills = $this->updateNewSkillBatch($user, $newSkills);
+        $this->mergeErrors([
+            $this->skillRepository,
+            $this->userSkillRepository
+        ]);
+        return $updateUserSkills && $updateSkills && $updateNewSkills;
+    }
+
+
+    public function updateUserSkillBatch(\WP_User $user, array $userSkills = []) {
         $errors = [];
-        foreach ($skillsArray as $skill) {
-            $findUserSkill = $this->findUserSkillByLabel($user, $skill["label"]);
-            if ($findUserSkill) {
-                if (!$this->deleteUserSkill($findUserSkill)) {
+        foreach ($userSkills as $skill) {
+            if (
+                !empty($skill['remove']) &&
+                !empty($skill['id'])
+            ) {
+                if (!$this->userSkillRepository->deleteById((int)$skill['id'])) {
+                    $this->addError(
+                        new \WP_Error(
+                            self::ERROR_PREFIX . '_update_user_profile_skills_batch',
+                            'Failed to delete user skill',
+                            [
+                                'skillId' => $skill['id'],
+                            ]
+                        )
+                    );
                     $errors[] = true;
-                    continue;
                 }
             }
+        }
+        return count($errors) === 0;
+    }
+    public function updateSkillBatch(\WP_User $user, array $skills = []) {
+        $errors = [];
+        foreach ($skills as $skill) {
+            if (empty($skill['id'])) {
+                continue;
+            }
+            $getSkill = $this->skillRepository->findById((int)$skill['id']);
+            if (!$getSkill) {
+                $this->addError(
+                    new \WP_Error(
+                        self::ERROR_PREFIX . '_update_user_profile_skills_batch',
+                        "Failed to find skill id ({$skill['id']})",
+                        [
+                            'skillId' => $skill['id'],
+                        ]
+                    )
+                );
+                $errors[] = true;
+                continue;
+            }
+            $saveSkill = $this->createUserSkill($user, $getSkill[$this->skillModel->getIdColumn()]);
+            if (!$saveSkill) {
+                $errors[] = true;
+            }
+        }
+        return count($errors) === 0;
+
+    }
+    public function updateNewSkillBatch(\WP_User $user, array $skills = []) {
+        $errors = [];
+        foreach ($skills as $skill) {
             $getSkill = $this->skillRepository->findSkillByNameOrLabel(
                 strtolower(str_replace(" ", "_", $skill["value"])),
                 $skill["label"]
@@ -180,6 +246,7 @@ class Tru_Fetcher_Api_Helpers_Skill {
             }
         }
         return count($errors) === 0;
+
     }
     /**
      * @return Tru_Fetcher_DB_Engine

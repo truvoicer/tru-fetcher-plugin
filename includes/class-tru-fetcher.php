@@ -43,15 +43,16 @@ use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Trf_Listings_Category;
  */
 class Tru_Fetcher extends Tru_Fetcher_Base {
 
-	/**
-	 * Define the core functionality of the plugin.
-	 *
-	 * Set the plugin name and the plugin version that can be used throughout the plugin.
-	 * Load the dependencies, define the locale, and set the hooks for the admin area and
-	 * the public-facing side of the site.
-	 *
-	 * @since    1.0.0
-	 */
+    /**
+     * Define the core functionality of the plugin.
+     *
+     * Set the plugin name and the plugin version that can be used throughout the plugin.
+     * Load the dependencies, define the locale, and set the hooks for the admin area and
+     * the public-facing side of the site.
+     *
+     * @throws \Exception
+     * @since    1.0.0
+     */
 	public function __construct() {
         parent::__construct();
 		$this->set_locale();
@@ -96,21 +97,6 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 			$frontendUrl = $options["frontend_url"];
 		}
 		return $frontendUrl;
-	}
-
-	public static function getCountriesListArray() {
-        return include plugin_dir_path( dirname( __FILE__ ) ) . 'config/country-list.php';
-    }
-
-	public static function getCountriesSelectArray() {
-	    $selectList = [];
-	    foreach (self::getCountriesListArray() as $code => $country) {
-	        array_push($selectList, [
-	           "value" =>  $code,
-                "label" => $country
-            ]);
-        }
-	    return $selectList;
 	}
 
     public static function isNotEmpty(string $string = null) {

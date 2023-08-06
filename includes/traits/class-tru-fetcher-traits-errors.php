@@ -28,4 +28,12 @@ trait Tru_Fetcher_Traits_Errors
     public function clearErrors() {
         $this->setErrors([]);
     }
+
+    public function mergeErrors(array $classes = []) {
+        foreach ($classes as $class) {
+            if (is_object($class) && method_exists($class, 'getErrors')) {
+                $this->errors = array_merge($this->errors, $class->getErrors());
+            }
+        }
+    }
 }
