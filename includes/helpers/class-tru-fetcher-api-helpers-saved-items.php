@@ -84,7 +84,7 @@ class Tru_Fetcher_Api_Helpers_Saved_Items {
         $findSavedItem = $this->savedItemsRepository->fetchByItemId(
             $this->getUser(),
             $getInsertData[$this->savedItemsModel->getItemIdColumn()],
-            $getInsertData[$this->savedItemsModel->getProviderNameColumn()],
+            [$getInsertData[$this->savedItemsModel->getProviderNameColumn()]],
             $getInsertData[$this->savedItemsModel->getCategoryColumn()],
         );
         if ($findSavedItem) {
