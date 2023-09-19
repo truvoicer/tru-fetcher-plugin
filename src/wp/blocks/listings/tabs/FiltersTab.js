@@ -22,6 +22,23 @@ const FiltersTab = (props) => {
                     setAttributes({show_filters_toggle: value});
                 }}
             />
+            <SelectControl
+                label="Filters Position"
+                onChange={(value) => {
+                    setAttributes({filters_position: value});
+                }}
+                value={attributes?.filters_position}
+                options={[
+                    {
+                        label: 'Left',
+                        value: 'left'
+                    },
+                    {
+                        label: 'Right',
+                        value: 'right'
+                    },
+                ]}
+            />
             {attributes?.show_filters_toggle &&
                 <>
                     <TextControl

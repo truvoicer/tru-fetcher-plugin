@@ -175,6 +175,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'default' => true,
             ],
             [
+                'id' => 'filters_position',
+                'type' => 'string',
+                'default' => 'left',
+            ],
+            [
                 'id' => 'filter_heading',
                 'type' => 'string',
             ],

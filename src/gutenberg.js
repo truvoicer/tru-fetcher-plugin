@@ -21,6 +21,7 @@ import SidebarWidgetBlockEdit from "./wp/blocks/widgets/groups/SidebarWidgetBloc
 import ContentWidgetBlockEdit from "./wp/blocks/widgets/groups/ContentWidgetBlockEdit";
 import TabsBlockEdit from "./wp/blocks/tabs-block/TabsBlockEdit";
 import ItemViewBlockEdit from "./wp/blocks/item-view/ItemViewBlockEdit";
+import SearchBlockEdit from "./wp/blocks/search/SearchBlockEdit";
 
 console.log(tru_fetcher_react)
 if (!getPlugin('trf-fetcher-plugin')) {
@@ -99,6 +100,9 @@ if (
                 break;
             case "item_view_block":
                 blockComponent = ItemViewBlockEdit;
+                break;
+            case "search_block":
+                blockComponent = SearchBlockEdit;
                 break;
             // case "sidebar_widgets_block":
             //     blockComponent = SidebarWidgetBlockEdit;

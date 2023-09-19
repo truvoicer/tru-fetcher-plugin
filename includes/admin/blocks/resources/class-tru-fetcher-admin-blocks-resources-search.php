@@ -26,62 +26,55 @@ use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Filter_List;
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Admin_Blocks_Resources_Hero extends Tru_Fetcher_Admin_Blocks_Resources_Base
+class Tru_Fetcher_Admin_Blocks_Resources_Search extends Tru_Fetcher_Admin_Blocks_Resources_Base
 {
-    public const BLOCK_ID = 'hero_block';
-    public const BLOCK_NAME = 'tru-fetcher/hero-block';
-    public const BLOCK_TITLE = 'Tf Hero Block';
+    public const BLOCK_ID = 'search_block';
+    public const BLOCK_NAME = 'tru-fetcher/search-block';
+    public const BLOCK_TITLE = 'Tf Search Block';
     public array $config = [
         'id' => self::BLOCK_ID,
         'name' => self::BLOCK_NAME,
         'title' => self::BLOCK_TITLE,
         'post_types' => [
             ['name' => Tru_Fetcher_Post_Types_Trf_Filter_List::NAME],
-            ['name' => Tru_Fetcher_Post_Types_Page::NAME],
         ],
         'taxonomies' => [],
         'attributes' => [
             [
-                'id' => 'hero_background_image',
-                'type' => 'string',
+                'id' => 'search',
+                'type' => 'boolean',
+                'default' => false,
             ],
             [
-                'id' => 'hero_background_image_2',
-                'type' => 'string',
-                'default' => 'search',
-            ],
-            [
-                'id' => 'hero_background_image_3',
+                'id' => Tru_Fetcher_Post_Types_Trf_Filter_List::ID_IDENTIFIER . '__search__categories',
                 'type' => 'string',
                 'default' => '',
             ],
             [
-                'id' => 'hero_type',
+                'id' => 'search__categories_placeholder',
                 'type' => 'string',
-                'default' => 'full_hero',
             ],
             [
-                'id' => 'hero_title',
+                'id' => 'search__search_placeholder',
+                'type' => 'string',
+            ],
+            [
+                'id' => 'search__location_placeholder',
+                'type' => 'string',
+            ],
+            [
+                'id' => 'search__search_button_label',
+                'type' => 'string',
+            ],
+            [
+                'id' => 'search__featured_categories_label',
+                'type' => 'string',
+            ],
+            [
+                'id' => Tru_Fetcher_Post_Types_Trf_Filter_List::ID_IDENTIFIER . '__search__featured_categories',
                 'type' => 'string',
                 'default' => '',
-            ],
-            [
-                'id' => 'hero_text',
-                'type' => 'string',
-                'default' => '',
-            ],
-            [
-                'id' => 'hero_extra_data',
-                'type' => 'array',
-                'default' => [],
             ],
         ]
     ];
-
-    public function __construct()
-    {
-        $this->mergeConfigs([
-            Tru_Fetcher_Admin_Blocks_Resources_Search::class,
-        ]);
-    }
 }
