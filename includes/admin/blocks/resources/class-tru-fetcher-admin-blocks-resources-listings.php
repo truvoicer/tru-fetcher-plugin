@@ -51,6 +51,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
         ],
         'attributes' => [
             [
+                'id' => 'listing_block_id',
+                'type' => 'string',
+                'default' => '',
+            ],
+            [
                 'id' => 'source',
                 'type' => 'string',
                 'default' => 'api',

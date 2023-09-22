@@ -1,6 +1,9 @@
 import React from 'react';
-import {TabPanel, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import {SelectControl, TextControl} from "@wordpress/components";
 import {findTaxonomyIdIdentifier, findTaxonomySelectOptions} from "../../../helpers/wp-helpers";
+import {useSelect} from '@wordpress/data';
+import {isNotEmpty} from "../../../../library/helpers/utils-helpers";
+
 
 const GeneralTab = (props) => {
     const {
@@ -8,9 +11,60 @@ const GeneralTab = (props) => {
         setAttributes,
         className,
     } = props;
+    const {blocks} = useSelect(
+        ( select ) => {
+            const blockEditor = select( 'core/block-editor' );
+            return {
+                blocks: blockEditor.getBlocks()
+            }
+        }
+    );
+
+    function getBlockIdPrefix() {
+        const splitListingBlockId = props?.name?.split('_');
+        return splitListingBlockId[0]
+    }
+
+    function getMaxListingBlockId() {
+        const listingBlocks = blocks.filter(block => block?.name === props?.name)
+            .map((block, index) => {
+                const listingBlockId = block?.attributes?.listing_block_id;
+                const splitListingBlockId = listingBlockId?.split('_');
+                return parseInt(splitListingBlockId[splitListingBlockId.length - 1])
+            })
+        const maxListingBlockId = Math.max(...listingBlocks)
+        return maxListingBlockId
+    }
+
+    function findListingBlockId(index) {
+        const listingBlocks = blocks.filter(block => block?.name === props?.name);
+        return listingBlocks.find(block => block?.attributes?.listing_block_id === `${getBlockIdPrefix()}_${index}`);
+    }
+    function buildListingBlockId() {
+        const blockId = attributes?.listing_block_id
+        if (isNotEmpty(blockId)) {
+            return blockId;
+        }
+        const splitName = props?.name?.split('/');
+        let listingBlockId = splitName[splitName.length - 1];
+        const maxListingBlockId = getMaxListingBlockId();
+
+
+        console.log({listingBlocks})
+        return ''
+    }
+    console.log({props})
     const listingsCategoryId = findTaxonomyIdIdentifier('trf_listings_category')
     return (
         <div>
+            <TextControl
+                label="Listings Block Id"
+                placeholder="Listings Block Id"
+                value={buildListingBlockId()}
+                onChange={(value) => {
+                    setAttributes({listing_block_id: value})
+                }}
+            />
             <SelectControl
                 label="Listing Data Source"
                 onChange={(value) => {
