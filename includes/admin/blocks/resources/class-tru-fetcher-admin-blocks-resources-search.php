@@ -75,6 +75,15 @@ class Tru_Fetcher_Admin_Blocks_Resources_Search extends Tru_Fetcher_Admin_Blocks
                 'type' => 'string',
                 'default' => '',
             ],
+            [
+                'id' => 'listing_relation',
+                'type' => 'boolean',
+                'default' => false,
+            ],
+            [
+                'id' => 'listing_block_id',
+                'type' => 'string',
+            ],
         ]
     ];
 }

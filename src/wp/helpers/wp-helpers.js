@@ -1,3 +1,4 @@
+import {GutenbergBlockHelpers} from "./gutenberg/gutenberg-block-helpers";
 
 export function findPostTypeData(postType) {
     if (!Array.isArray(tru_fetcher_react?.post_types)) {
@@ -115,7 +116,7 @@ export function getChildBlockParams({blockEditorStore, select, clientId, callbac
     };
 }
 export function getBlockAttributesById(blockId) {
-    const findBlock = tru_fetcher_react.blocks.find(block => block?.id === blockId);
+    const findBlock = GutenbergBlockHelpers.findBlockById(blockId);
     if (!findBlock) {
         return false;
     }
