@@ -30,6 +30,19 @@ const PageOptionsMetaBox = ({config, postType, metaFields, setMetaFields}) => {
                 />
             </PanelRow>
             <PanelRow>
+                <SelectControl
+                    label={__("Page Template")}
+                    value={metaFields.trf_mg_post_meta_page_options_page_template}
+                    options={[
+                        {value: 'full-width', label: 'Full Width'},
+                        {value: 'left-sidebar', label: 'Left Sidebar'},
+                        {value: 'right-sidebar', label: 'Right Sidebar'},
+                    ]}
+                    onChange={(value) => setMetaFields({trf_mg_post_meta_page_options_page_template: value})}
+                    __nextHasNoMarginBottom
+                />
+            </PanelRow>
+            <PanelRow>
                 <TabPanel
                     className="my-tab-panel"
                     activeClass="active-tab"

@@ -9,6 +9,7 @@ import WordpressDataTab from "./tabs/WordpressDataTab";
 import SearchTab from "./tabs/SearchTab";
 import CustomItemsTab from "./tabs/CustomItemsTab";
 import FiltersTab from "./tabs/FiltersTab";
+import SidebarTab from "./tabs/SidebarTab";
 
 const ListingsBlockEdit = (props) => {
 
@@ -32,6 +33,11 @@ const ListingsBlockEdit = (props) => {
                 name: 'display',
                 title: 'Display',
                 component: DisplayTab
+            },
+            {
+                name: 'sidebar',
+                title: 'Sidebar',
+                component: SidebarTab
             },
             {
                 name: 'filters',

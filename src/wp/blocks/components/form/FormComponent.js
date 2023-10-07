@@ -5,6 +5,7 @@ import EndpointSettingsTab from "./tabs/EndpointSettingsTab";
 import FormLayoutTab from "./tabs/FormLayoutTab";
 import FormRowsTab from "./tabs/FormRowsTab";
 import EndpointProvidersTab from "./tabs/EndpointProvidersTab";
+import Grid from "../wp/Grid";
 
 const FormComponent = ({data, onChange, showPresets = true}) => {
 
@@ -65,22 +66,24 @@ const FormComponent = ({data, onChange, showPresets = true}) => {
     return (
         <div className={'tr-news-app__form-block'}>
             {showPresets && (
-                <SelectControl
-                    label="Presets"
-                    onChange={(value) => {
-                        if (typeof onChange === 'function') {
-                            onChange({key: 'presets', value: value});
-                        }
-                    }}
-                    value={data?.presets}
-                    options={[
-                        {
-                            label: 'Custom',
-                            value: 'custom'
-                        },
-                        ...getPresets()
-                    ]}
-                />
+                <Grid columns={2}>
+                    <SelectControl
+                        label="Presets"
+                        onChange={(value) => {
+                            if (typeof onChange === 'function') {
+                                onChange({key: 'presets', value: value});
+                            }
+                        }}
+                        value={data?.presets}
+                        options={[
+                            {
+                                label: 'Custom',
+                                value: 'custom'
+                            },
+                            ...getPresets()
+                        ]}
+                    />
+                </Grid>
             )}
             {data?.presets === 'custom' && (
                 <TabPanel

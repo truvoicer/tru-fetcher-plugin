@@ -1,11 +1,9 @@
 import React from 'react';
-import {TabPanel, Panel, RangeControl, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
-import {findTaxonomySelectOptions} from "../../../helpers/wp-helpers";
+import {TextControl, SelectControl, ToggleControl} from "@wordpress/components";
 import Filters from "../../components/filters/Filters";
 
 const FiltersTab = (props) => {
     const {attributes, setAttributes} = props;
-
     function formChangeHandler({key, value}) {
         setAttributes({
             ...attributes,

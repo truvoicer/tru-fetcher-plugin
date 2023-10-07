@@ -17,6 +17,11 @@ export default [
         component: DisplayTab
     },
     {
+        name: 'sidebar',
+        title: 'Sidebar',
+        component: DisplayTab
+    },
+    {
         name: 'api_settings',
         title: 'Api Settings',
         component: ApiTab

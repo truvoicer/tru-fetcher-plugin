@@ -85,6 +85,21 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'default' => [],
             ],
             [
+                'id' => 'show_listings_sidebar',
+                'type' => 'boolean',
+                'default' => false,
+            ],
+            [
+                'id' => 'show_sidebar_widgets_in_listings_sidebar',
+                'type' => 'boolean',
+                'default' => false,
+            ],
+            [
+                'id' => 'select_sidebar',
+                'type' => 'array',
+                'default' => [],
+            ],
+            [
                 'id' => 'heading',
                 'type' => 'string',
                 'default' => '',
