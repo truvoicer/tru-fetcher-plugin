@@ -1,5 +1,0 @@
-suites:
-    main:
-        namespace: HubSpot
-        psr4_prefix: HubSpot
-        spec_path: tests

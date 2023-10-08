@@ -1,7 +1,7 @@
 {
     "require": {
         "guzzlehttp/guzzle": "^7.0",
-        "hubspot/api-client": "^2.5",
+        "hubspot/api-client": "^10.1",
         "kreait/firebase-php": "^6.9.1",
         "nesbot/carbon": "^2.62",
         "vlucas/phpdotenv": "^5.5"

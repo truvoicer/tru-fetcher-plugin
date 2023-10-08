@@ -29,6 +29,7 @@ class Tru_Fetcher_Meta_Fields_Post_Options extends Tru_Fetcher_Meta_Fields_Base
     public const META_KEY_POST_TEMPLATE_CATEGORY = 'post_options_post_template_category';
 
     protected string $name = 'post_options';
+    protected string $postType = Tru_Fetcher_Post_Types_Post::NAME;
     protected array $fields = [
         [
             'post_type' => [

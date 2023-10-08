@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Input, DatePicker, Button, Switch, ColorPicker  } from 'antd';
+import MediaInput from "../../../../components/media/MediaInput";
 const { TextArea } = Input;
 export const FIELDS = {
     TEXT: 'text',
@@ -72,8 +73,18 @@ export function getTrueFalseField({changeHandler, label, value}) {
     );
 }
 
-export function getImageField({changeHandler, label}) {
-    return null;
+export function getImageField({changeHandler, label, value}) {
+    return <MediaInput
+        heading={'Image Selector'}
+        addImageText={'Add Image'}
+        selectedImageUrl={value}
+        onChange={(value) => {
+            changeHandler( value )
+        }}
+        onDelete={(value) => {
+            changeHandler( null )
+        }}
+    />
 }
 
 export function getImageListField({changeHandler, label}) {

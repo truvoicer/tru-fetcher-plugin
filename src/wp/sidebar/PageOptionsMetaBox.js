@@ -7,7 +7,6 @@ import {useState} from '@wordpress/element';
 
 const POST_TYPES = ['item_view_templates', 'page'];
 const PageOptionsMetaBox = ({config, postType, metaFields, setMetaFields}) => {
-
     return (
         <PluginDocumentSettingPanel
             title={__('Page Options')}
@@ -17,7 +16,7 @@ const PageOptionsMetaBox = ({config, postType, metaFields, setMetaFields}) => {
             <PanelRow>
                 <SelectControl
                     label={__("Page Type")}
-                    value={metaFields.trf_mg_post_meta_page_options_page_type}
+                    value={metaFields.trf_gut_pmf_page_options_page_type}
                     options={[
                         {value: 'general', label: 'General Page'},
                         {value: 'login', label: 'Login Page'},
@@ -25,20 +24,20 @@ const PageOptionsMetaBox = ({config, postType, metaFields, setMetaFields}) => {
                         {value: 'logout', label: 'Logout Page'},
                         {value: 'user_account', label: 'User Account Page'},
                     ]}
-                    onChange={(value) => setMetaFields({trf_mg_post_meta_page_options_page_type: value})}
+                    onChange={(value) => setMetaFields({trf_gut_pmf_page_options_page_type: value})}
                     __nextHasNoMarginBottom
                 />
             </PanelRow>
             <PanelRow>
                 <SelectControl
                     label={__("Page Template")}
-                    value={metaFields.trf_mg_post_meta_page_options_page_template}
+                    value={metaFields.trf_gut_pmf_page_options_page_template}
                     options={[
                         {value: 'full-width', label: 'Full Width'},
                         {value: 'left-sidebar', label: 'Left Sidebar'},
                         {value: 'right-sidebar', label: 'Right Sidebar'},
                     ]}
-                    onChange={(value) => setMetaFields({trf_mg_post_meta_page_options_page_template: value})}
+                    onChange={(value) => setMetaFields({trf_gut_pmf_page_options_page_template: value})}
                     __nextHasNoMarginBottom
                 />
             </PanelRow>
@@ -65,33 +64,33 @@ const PageOptionsMetaBox = ({config, postType, metaFields, setMetaFields}) => {
                                         <PanelRow>
                                             <ToggleControl
                                                 label="Header Scripts Override"
-                                                checked={metaFields.trf_mg_post_meta_page_options_header_override}
+                                                checked={metaFields.trf_gut_pmf_page_options_header_override}
                                                 onChange={() => {
-                                                    setMetaFields({trf_mg_post_meta_page_options_header_override: !metaFields.trf_mg_post_meta_page_options_header_override})
+                                                    setMetaFields({trf_gut_pmf_page_options_header_override: !metaFields.trf_gut_pmf_page_options_header_override})
                                                 }}
                                             />
                                         </PanelRow>
                                         <PanelRow>
                                             <TextareaControl
                                                 label="Header Scripts"
-                                                value={metaFields.trf_mg_post_meta_page_options_header_scripts}
-                                                onChange={(value) => setMetaFields({trf_mg_post_meta_page_options_header_scripts: !metaFields.trf_mg_post_meta_page_options_header_scripts})}
+                                                value={metaFields.trf_gut_pmf_page_options_header_scripts}
+                                                onChange={(value) => setMetaFields({trf_gut_pmf_page_options_header_scripts: value})}
                                             />
                                         </PanelRow>
                                         <PanelRow>
                                             <ToggleControl
                                                 label="Footer Scripts Override"
-                                                checked={metaFields.trf_mg_post_meta_page_options_footer_override}
+                                                checked={metaFields.trf_gut_pmf_page_options_footer_override}
                                                 onChange={() => {
-                                                    setMetaFields({trf_mg_post_meta_page_options_footer_override: !metaFields.trf_mg_post_meta_page_options_footer_override})
+                                                    setMetaFields({trf_gut_pmf_page_options_footer_override: !metaFields.trf_gut_pmf_page_options_footer_override})
                                                 }}
                                             />
                                         </PanelRow>
                                         <PanelRow>
                                             <TextareaControl
                                                 label="Footer Scripts"
-                                                value={metaFields.trf_mg_post_meta_page_options_footer_scripts}
-                                                onChange={(value) => setMetaFields({trf_mg_post_meta_page_options_footer_scripts: !metaFields.trf_mg_post_meta_page_options_footer_scripts})}
+                                                value={metaFields.trf_gut_pmf_page_options_footer_scripts}
+                                                onChange={(value) => setMetaFields({trf_gut_pmf_page_options_footer_scripts: value})}
                                             />
                                         </PanelRow>
                                     </>

@@ -25,12 +25,13 @@ namespace TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields;
 class Tru_Fetcher_Meta_Fields_Base
 {
     protected string $name;
+    protected string $postType;
     protected array $fields = [];
-    private static string $gutenbergMetaIdPrefix = 'tf_mg';
+    private static string $gutenbergMetaIdPrefix = 'trf_gut_pmf';
 
     public static function buildGutenbergMetaFieldId(array $field)
     {
-        return sprintf("%s_post_meta_%s",
+        return sprintf("%s_%s",
             self::$gutenbergMetaIdPrefix,
             $field['meta_key']
         );
@@ -50,7 +51,7 @@ class Tru_Fetcher_Meta_Fields_Base
     public function renderPost(\WP_Post $post ) {
         $post->{$this->name} = [];
         foreach ($this->fields as $field) {
-            $metaKey = $field['meta_key'];
+            $metaKey = self::buildGutenbergMetaFieldId($field);
             $single = false;
             if (isset($field['args']['single'])) {
                 $single = (bool)$field['args']['single'];
@@ -63,6 +64,23 @@ class Tru_Fetcher_Meta_Fields_Base
 
         }
         return $post;
+    }
+    public function buildPostMetaFieldsData(\WP_Post $post ) {
+        $options = [];
+        foreach ($this->fields as $field) {
+            $metaKey = self::buildGutenbergMetaFieldId($field);
+            $single = false;
+            if (isset($field['args']['single'])) {
+                $single = (bool)$field['args']['single'];
+            }
+            $metaValue = get_post_meta($post->ID, $metaKey, $single);
+            if (empty($metaValue) && isset($field['default'])) {
+                $metaValue = $field['default'];
+            }
+            $options[$metaKey] = $metaValue;
+
+        }
+        return $options;
     }
     /**
      * @return string
@@ -78,6 +96,11 @@ class Tru_Fetcher_Meta_Fields_Base
     public function getFields(): array
     {
         return $this->fields;
+    }
+
+    public function getPostType(): string
+    {
+        return $this->postType;
     }
 
 }

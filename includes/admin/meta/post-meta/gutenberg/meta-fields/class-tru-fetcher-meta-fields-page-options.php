@@ -37,6 +37,7 @@ class Tru_Fetcher_Meta_Fields_Page_Options extends Tru_Fetcher_Meta_Fields_Base
     public const META_KEY_FOOTER_SCRIPTS = 'page_options_footer_scripts';
 
     protected string $name = 'page_options';
+    protected string $postType = Tru_Fetcher_Post_Types_Page::NAME;
     protected array $fields = [
         [
             'post_type' => [

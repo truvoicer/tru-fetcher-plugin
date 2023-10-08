@@ -144,7 +144,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Form extends Tru_Fetcher_Admin_Blocks_R
                 'default' => [],
             ],
             [
-                'id' => 'endpoint_providers',
+                'id' => 'external_providers',
                 'type' => 'array',
                 'default' => [],
             ],

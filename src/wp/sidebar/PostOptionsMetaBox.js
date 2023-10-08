@@ -25,10 +25,10 @@ const PostOptionsMetaBox = ({config, post, categories,  postType, metaFields, se
             <PanelRow>
                 <SelectControl
                     label={__("Post Template Category")}
-                    value={metaFields.trf_post_options_post_options_post_template_category}
+                    value={metaFields.trf_gut_pmf_post_options_post_template_category}
                     options={buildOptions()}
                     onChange={(value) => {
-                        setMetaFields({trf_post_options_post_options_post_template_category: parseInt(value)})
+                        setMetaFields({trf_gut_pmf_post_options_post_template_category: parseInt(value)})
                     }}
                     __nextHasNoMarginBottom
                 />

@@ -75,7 +75,7 @@ class Tru_Fetcher_Menu {
 		if ($getPost->ID === (int) get_option( 'page_on_front' )) {
 			$pageUrl = str_replace(get_site_url(), "", get_page_link($getPost));
 		}
-        $pageOptions = Tru_Fetcher_Posts::getPageOptions($getPost);
+        $pageOptions = Tru_Fetcher_Posts::getPostMetaFields($getPost);
 		$post = new stdClass();
 		$post->isfront = (int) get_option( 'page_on_front' );
 		$post->menu_title = $menuItem->title;

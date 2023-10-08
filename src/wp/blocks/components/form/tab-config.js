@@ -2,7 +2,7 @@ import FormSettingsTab from "./tabs/FormSettingsTab";
 import EndpointSettingsTab from "./tabs/EndpointSettingsTab";
 import FormLayoutTab from "./tabs/FormLayoutTab";
 import FormRowsTab from "./tabs/FormRowsTab";
-import EndpointProvidersTab from "./tabs/EndpointProvidersTab";
+import ExternalProvidersTab from "./tabs/ExternalProvidersTab";
 export default [
     {
         name: 'form_settings',
@@ -27,6 +27,6 @@ export default [
     {
         name: 'endpoint_providers',
         title: 'Endpoint Providers',
-        component: EndpointProvidersTab
+        component: ExternalProvidersTab
     },
 ]

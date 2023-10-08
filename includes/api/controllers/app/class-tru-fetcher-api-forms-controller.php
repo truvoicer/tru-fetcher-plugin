@@ -58,9 +58,14 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 			'callback'            => [ $this, "emailFormEndpoint" ],
 			'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
 		) );
+		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/external-providers', array(
+			'methods'             => WP_REST_Server::CREATABLE,
+			'callback'            => [ $this, "providerAction" ],
+			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
+		) );
 		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/redirect', array(
 			'methods'             => WP_REST_Server::CREATABLE,
-			'callback'            => [ $this, "redirectFormEndpoint" ],
+			'callback'            => [ $this, "providerAction"],
 			'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
 		) );
         register_rest_route( $this->apiConfigEndpoints->protectedEndpoint, '/user/metadata/save', array(
@@ -151,7 +156,7 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
         }
     }
 
-	public function redirectFormEndpoint( WP_REST_Request $request ) {
+	public function providerAction(WP_REST_Request $request ) {
         $this->apiFormHandler->processEndpointProvidersByRequest($request);
         return $this->sendResponse(
             "The form has been successfully submitted.",

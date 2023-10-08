@@ -137,7 +137,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 
         $pageObject = $this->postsClass::buildPostObject($getPageTemplate);
         $this->apiPostResponse->setPage( $pageObject );
-        $this->apiPostResponse->setPageOptions( $this->postsClass::getPageOptions($getPageTemplate) );
+        $this->apiPostResponse->setPageOptions( $this->postsClass::getPostMetaFields($getPageTemplate) );
 		// Return the product as a response.
         return $this->controllerHelpers->sendSuccessResponse(
             'Page template fetch',
@@ -158,8 +158,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 		}
         $pageObject = $this->postsClass::buildPostObject($getPage);
         $this->apiPostResponse->setPage($pageObject);
-        $this->apiPostResponse->setPageOptions( $this->postsClass::getPageOptions($pageObject) );
-
+        $this->apiPostResponse->setPageOptions( $this->postsClass::getPostMetaFields($pageObject) );
         return $this->controllerHelpers->sendSuccessResponse(
             'Page fetched successfully',
             $this->apiPostResponse

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c2196023eff56537d672cbf3dc11ff97",
+    "content-hash": "5a35228e86fcf6741c00de19856ff4a9",
     "packages": [
         {
             "name": "beste/clock",
@@ -912,29 +912,30 @@
         },
         {
             "name": "hubspot/api-client",
-            "version": "2.8.1",
+            "version": "10.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/HubSpot/hubspot-api-php.git",
-                "reference": "6f8f06a04db34985b8a4294ac947879bb4ba8043"
+                "reference": "529f3cf153fd272e8b4745e8569f41a2fe813a75"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/HubSpot/hubspot-api-php/zipball/6f8f06a04db34985b8a4294ac947879bb4ba8043",
-                "reference": "6f8f06a04db34985b8a4294ac947879bb4ba8043",
+                "url": "https://api.github.com/repos/HubSpot/hubspot-api-php/zipball/529f3cf153fd272e8b4745e8569f41a2fe813a75",
+                "reference": "529f3cf153fd272e8b4745e8569f41a2fe813a75",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "ext-json": "*",
                 "ext-mbstring": "*",
-                "guzzlehttp/guzzle": "^6.2 | ^7.0",
-                "php": ">=7.2"
+                "guzzlehttp/guzzle": "^7.3",
+                "guzzlehttp/psr7": "^1.7 || ^2.0",
+                "php": ">=7.3"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "~2.12",
-                "phpspec/phpspec": "^6.1",
-                "phpunit/phpunit": "^8.5"
+                "friendsofphp/php-cs-fixer": "^3.4",
+                "phpspec/phpspec": "^7.1",
+                "phpunit/phpunit": "^9.5"
             },
             "type": "library",
             "autoload": {
@@ -946,7 +947,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "proprietary"
+                "Apache-2.0"
             ],
             "authors": [
                 {
@@ -965,9 +966,9 @@
             ],
             "support": {
                 "issues": "https://github.com/HubSpot/hubspot-api-php/issues",
-                "source": "https://github.com/HubSpot/hubspot-api-php/tree/2.8.1"
+                "source": "https://github.com/HubSpot/hubspot-api-php/tree/10.1.0"
             },
-            "time": "2021-02-17T14:57:13+00:00"
+            "time": "2023-07-27T14:11:22+00:00"
         },
         {
             "name": "kreait/firebase-php",
@@ -2970,5 +2971,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

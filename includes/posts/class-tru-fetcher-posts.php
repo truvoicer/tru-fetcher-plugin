@@ -1,9 +1,12 @@
 <?php
 namespace TruFetcher\Includes\Posts;
 
+use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields;
+use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Base;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
 use TruFetcher\Includes\Api\Pagination\Tru_Fetcher_Api_Pagination;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
 use WP_Error;
 use WP_Post;
 use WP_Query;
@@ -238,19 +241,20 @@ class Tru_Fetcher_Posts {
         return $getCategoryPosts->posts;
     }
 
-    public static function getPageOptions( $page ) {
-        $options = [];
-        $pageTypeMetaField = (new Tru_Fetcher_Meta_Fields_Page_Options())->getField(
-            Tru_Fetcher_Meta_Fields_Page_Options::META_KEY_PAGE_TYPE
-        );
-        $options['pageType'] = null;
-        if (isset($pageTypeMetaField['meta_key'])) {
-            $options['pageType'] = get_post_meta($page->ID, $pageTypeMetaField['meta_key'], true);
+    public static function getPostMetaFields(WP_Post $page) {
+        $data = [];
+        foreach (Tru_Fetcher_Meta_Fields::META_FIELDS as $metaFieldClass) {
+            $metaField = new $metaFieldClass();
+            $postType = $metaField->getPostType();
+            if($page->post_type !== $postType) {
+                continue;
+            }
+            $data = array_merge(
+                $data,
+                $metaField->buildPostMetaFieldsData($page)
+            );
         }
-        if (!$options['pageType']) {
-            $options['pageType'] = 'general';
-        }
-        return $options;
+        return $data;
     }
 
     public static function getPostPagination(\WP_Query $postsQuery, \WP_Query $totalPostsQuery, int $offset, int $perPage) {

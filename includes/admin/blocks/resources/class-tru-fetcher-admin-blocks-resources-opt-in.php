@@ -71,4 +71,15 @@ class Tru_Fetcher_Admin_Blocks_Resources_Opt_In extends Tru_Fetcher_Admin_Blocks
             Tru_Fetcher_Admin_Blocks_Resources_Carousel::class,
         ]);
     }
+    public function buildBlockAttributes(array $attributes) {
+        $attributes = parent::buildBlockAttributes($attributes);
+        if (empty($attributes['carousel_block'])) {
+            return $attributes;
+        }
+        if (!is_array($attributes['carousel_block'])) {
+            return $attributes;
+        }
+        $attributes['carousel_block'] = parent::buildBlockAttributes($attributes['carousel_block']);
+        return $attributes;
+    }
 }

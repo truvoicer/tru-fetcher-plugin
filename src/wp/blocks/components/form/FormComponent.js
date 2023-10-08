@@ -4,11 +4,10 @@ import FormSettingsTab from "./tabs/FormSettingsTab";
 import EndpointSettingsTab from "./tabs/EndpointSettingsTab";
 import FormLayoutTab from "./tabs/FormLayoutTab";
 import FormRowsTab from "./tabs/FormRowsTab";
-import EndpointProvidersTab from "./tabs/EndpointProvidersTab";
+import ExternalProvidersTab from "./tabs/ExternalProvidersTab";
 import Grid from "../wp/Grid";
 
 const FormComponent = ({data, onChange, showPresets = true}) => {
-
     function getTabComponent(tab) {
         if (!tab?.component) {
             return null;
@@ -26,11 +25,6 @@ const FormComponent = ({data, onChange, showPresets = true}) => {
         });
         if (data?.presets === 'custom') {
             tabs.push({
-                name: 'endpoint_settings',
-                title: 'Endpoint Settings',
-                component: EndpointSettingsTab
-            });
-            tabs.push({
                 name: 'form_layout',
                 title: 'Form Layout',
                 component: FormLayoutTab
@@ -41,10 +35,17 @@ const FormComponent = ({data, onChange, showPresets = true}) => {
                 component: FormRowsTab
             });
             tabs.push({
-                name: 'endpoint_providers',
-                title: 'Endpoint Providers',
-                component: EndpointProvidersTab
+                name: 'endpoint_settings',
+                title: 'Endpoint Settings',
+                component: EndpointSettingsTab
             });
+            if (data?.endpoint === 'external_provider') {
+                tabs.push({
+                    name: 'external_providers',
+                    title: 'External Providers',
+                    component: ExternalProvidersTab
+                });
+            }
         }
         return tabs;
     }

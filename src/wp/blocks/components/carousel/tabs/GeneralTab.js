@@ -45,21 +45,36 @@ const GeneralTab = (props) => {
                 value={data?.carousel_content}
                 options={[
                     {
-                        disabled: true,
                         label: 'Select an Option',
                         value: ''
                     },
                     {
-                        label: 'Items',
-                        value: 'items'
+                        label: 'Full Width Testimonials',
+                        value: 'full_width_testimonials'
                     },
                     {
-                        label: 'Request',
-                        value: 'request'
+                        label: 'Speech Bubble Testimonials',
+                        value: 'speech_bubble_testimonials'
+                    },
+                    {
+                        label: 'Cards',
+                        value: 'cards'
+                    },
+                    {
+                        label: 'Custom Items',
+                        value: 'custom_items'
+                    },
+                    {
+                        label: 'Api Request',
+                        value: 'api_request'
                     },
                 ]}
             />
-            {data?.carousel_content === 'items' && (
+            {[
+                'full_width_testimonials',
+                'speech_bubble_testimonials',
+                'custom_items'
+            ].includes(data?.carousel_content) && (
                 <SelectControl
                     label="Item List"
                     onChange={(value) => {
@@ -69,7 +84,6 @@ const GeneralTab = (props) => {
                     options={[
                         ...[
                             {
-                                disabled: true,
                                 label: 'Select an Option',
                                 value: ''
                             },

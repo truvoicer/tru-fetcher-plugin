@@ -11,6 +11,7 @@ namespace TruFetcher\Includes\Api\Providers;
  */
 
 use TruFetcher\Includes\Tru_Fetcher_Base;
+use \HubsSpot\Factory;
 
 /**
  * Fired during plugin activation.
@@ -31,13 +32,14 @@ class Tru_Fetcher_Api_Providers_Hubspot extends Tru_Fetcher_Base
 
     public function __construct()
     {
+        parent::__construct();
         $this->hubspotConfig = $this->getHubspotConfig();
         $this->initialiseApiClient();
     }
 
     private function initialiseApiClient()
     {
-        $this->hubspotApiClient = \HubSpot\Factory::createWithApiKey($this->hubspotConfig->api_key);
+        $this->hubspotApiClient = \HubSpot\Factory::createWithAccessToken($this->hubspotConfig->api_key);
     }
 
     private function getHubspotConfig() {

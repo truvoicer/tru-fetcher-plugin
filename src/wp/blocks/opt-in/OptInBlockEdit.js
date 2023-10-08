@@ -51,7 +51,7 @@ const OptInBlockEdit = (props) => {
         ];
         if (attributes?.optin_type === 'form') {
             FormComponent.defaultProps = {
-                data: attributes?.form_block || getBlockAttributesById('form_block'),
+                data:  {...getBlockAttributesById('form_block'), ...attributes?.form_block},
                 onChange: ({key, value}) => {
                     formChangeHandler({key, value, blockId: 'form_block'});
                 }
@@ -64,7 +64,7 @@ const OptInBlockEdit = (props) => {
         }
         if (attributes?.show_carousel) {
             Carousel.defaultProps = {
-                data: attributes?.carousel_block || getBlockAttributesById('carousel_block'),
+                data: {...getBlockAttributesById('carousel_block'), ...attributes?.carousel_block},
                 onChange: ({key, value}) => {
                     formChangeHandler({key, value, blockId: 'carousel_block'});
                 }

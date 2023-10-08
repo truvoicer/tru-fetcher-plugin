@@ -42,8 +42,8 @@ const EndpointSettingsTab = (props) => {
                             value: 'account_details'
                         },
                         {
-                            label: 'Redirect',
-                            value: 'redirect'
+                            label: 'External provider',
+                            value: 'external_provider'
                         },
                         {
                             label: 'Custom',
@@ -61,7 +61,6 @@ const EndpointSettingsTab = (props) => {
                     value={data?.endpoint_type}
                     options={[
                         {
-                            disabled: true,
                             label: 'Select an Option',
                             value: ''
                         },
@@ -84,6 +83,20 @@ const EndpointSettingsTab = (props) => {
                         onChange({key: 'redirect', value: value});
                     }}
                 />
+                {data?.redirect && (
+                    <TextControl
+                        label="Redirect URL"
+                        placeholder="Redirect URL"
+                        value={data?.redirect_url}
+                        onChange={(value) => {
+                            if (typeof onChange === 'function') {
+                                onChange({key: 'redirect_url', value: value});
+                            }
+                        }}
+                    />
+                )}
+            </Grid>
+            <Grid columns={2}>
                 <ToggleControl
                     label="Fetch User Data?"
                     checked={data?.fetch_user_data}

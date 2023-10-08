@@ -60,7 +60,7 @@ class Tru_Fetcher_Api_Form_Handler
     }
     public function processEndpointProvidersByRequest(WP_REST_Request $request) {
         $formData = $request->get_params();
-        $endpointProviders = $formData["endpoint_providers"];
+        $endpointProviders = $formData["external_providers"];
         $processEndpointProviders = [];
         if (is_array($endpointProviders) && count($endpointProviders) > 0) {
             $processEndpointProviders = $this->formEndpointProvidersHandler($endpointProviders, $formData);
