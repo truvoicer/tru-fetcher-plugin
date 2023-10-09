@@ -1,8 +1,10 @@
 <?php
 namespace TruFetcher\Includes\Api\Controllers\App;
 
+use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Post_List_Response;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Post_Response;
 use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
+use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
 
 /**
  * Fired during plugin activation
@@ -26,7 +28,9 @@ use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
  */
 class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
 {
+    private Tru_Fetcher_Posts $postHelpers;
     private Tru_Fetcher_Api_Post_Response $apiPostResponse;
+    private Tru_Fetcher_Api_Post_List_Response $postListResponse;
 
     public function __construct()
     {
@@ -44,6 +48,8 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
     private function loadResponseObjects()
     {
         $this->apiPostResponse = new Tru_Fetcher_Api_Post_Response();
+        $this->postListResponse = new Tru_Fetcher_Api_Post_List_Response();
+        $this->postHelpers = new Tru_Fetcher_Posts();
     }
 
     public function register_routes()
@@ -235,6 +241,7 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
                 $categories = 0;
             }
         }
+        $offset = $this->postHelpers->calculateOffset($pageNumber, $postsPerPage);
         $args = [
             'cat' => $showAllCategories ? 0 : $categories,
             'orderby' => 'date',
@@ -245,58 +252,24 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
 
         $offsetArgs = [
             'posts_per_page' => $postsPerPage,
-            'offset' => $this->calculateOffset($pageNumber, $postsPerPage),
+            'offset' => $offset,
         ];
 
         $allPostsQuery = new \WP_Query($args);
         $postQuery = new \WP_Query(array_merge($args, $offsetArgs));
-        $buildPostsArray = $this->buildPostsArray($postQuery->posts);
-        return $this->sendResponse(
-            "Post list request success",
-            [
-                "posts" => $buildPostsArray,
-                "controls" => [
-                    "current_page" => $pageNumber,
-                    "total_posts" => $allPostsQuery->post_count,
-                    "total_pages" => round($allPostsQuery->post_count / $postsPerPage),
-                ]
-            ]
+
+        $pagination = Tru_Fetcher_Posts::getPostPagination(
+            $postQuery,
+            $allPostsQuery,
+            $offset,
+            $postsPerPage
         );
-    }
-
-    private function buildPostsArray($posts)
-    {
-        return array_map(function ($post) {
-            return [
-                "id" => $post->ID,
-                "post_name" => $post->post_name,
-                "post_title" => $post->post_title,
-                "post_excerpt" => $post->post_excerpt,
-                "post_modified" => $post->post_modified,
-                "featured_image" => get_the_post_thumbnail_url($post),
-                "post_category" => $this->buildTermsArray(get_the_category($post->ID)),
-                "post_template_category" => get_field("post_template_category", $post->ID)
-            ];
-        }, $posts);
-    }
-
-    private function buildTermsArray($terms)
-    {
-        return array_map(function ($term) {
-            return [
-                "id" => $term->term_id,
-                "name" => $term->name,
-                "slug" => $term->slug
-            ];
-        }, $terms);
-    }
-
-    private function calculateOffset($pageNumber, $postsPerPage)
-    {
-        if ((int)$pageNumber === 1) {
-            return 0;
-        }
-        return (int)$pageNumber * (int)$postsPerPage;
+        $this->postListResponse->setPagination($pagination);
+        $this->postListResponse->setPostList($this->postHelpers->buildPostsArray($postQuery->posts));
+        return $this->controllerHelpers->sendSuccessResponse(
+            "Post list request success",
+            $this->postListResponse
+        );
     }
 
     private function sendResponse($message, $data)
