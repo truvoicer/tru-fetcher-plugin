@@ -61,6 +61,17 @@ class Tru_Fetcher_Taxonomy
         return $getTerms;
     }
 
+    public static function getPostCategories($post, ?array $fields = [])
+    {
+        return array_map(function (\WP_Term $term) use($fields) {
+            if (count($fields) > 0) {
+                return (object) array_intersect_key((array) $term, array_flip($fields));
+            }
+            return $term;
+        }, get_the_category($post->ID));
+    }
+
+
     public function doesTermExistsInArray(array $data, \WP_Term $WP_Term)
     {
         foreach ($data as $item) {

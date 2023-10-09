@@ -1,7 +1,6 @@
 <?php
 
 namespace TruFetcher\Includes\Admin\AdminMenu;
-require_once('/var/www/html/wp-content/plugins/advanced-custom-fields-pro/pro/options-page.php');
 use TruFetcher\Includes\Tru_Fetcher_Helpers;
 
 /**
@@ -48,7 +47,6 @@ class Tru_Fetcher_Admin_Menu {
     public function addAcfOptionPages() {
         $menus = $this->menuConfig->getMenusAcfOptionsData();
         foreach ($menus as $menu) {
-            $this->addWpAcfOptionsPage($menu);
         }
     }
 
@@ -177,11 +175,7 @@ class Tru_Fetcher_Admin_Menu {
 
     public function addWpAcfOptionsPage($adminMenu) {
         if( function_exists('acf_add_options_page') ) {
-            acf_add_options_page(array(
-                Tru_Fetcher_Admin_Menu_Constants::$pageTitleKey 	=> $adminMenu[Tru_Fetcher_Admin_Menu_Constants::$pageTitleKey],
-                Tru_Fetcher_Admin_Menu_Constants::$menuTitleKey	=> $adminMenu[Tru_Fetcher_Admin_Menu_Constants::$menuTitleKey],
-                Tru_Fetcher_Admin_Menu_Constants::$parentSlugKey	=> $adminMenu[Tru_Fetcher_Admin_Menu_Constants::$parentSlugKey],
-            ));
+
         }
     }
 
