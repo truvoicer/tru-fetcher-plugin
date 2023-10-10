@@ -66,7 +66,7 @@ const GeneralTab = (props) => {
                 }}
             />
             <SelectControl
-                label="Categories"
+                label="Post Categories To Display"
                 onChange={(value) => {
                     setAttributes({[categoryId]: value});
                 }}

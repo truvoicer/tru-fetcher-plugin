@@ -5,6 +5,7 @@ namespace TruFetcher\Includes\PostTypes;
 use TruFetcher\Includes\Admin\Blocks\Tru_Fetcher_Admin_Blocks;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields;
 use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
+use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
 
 /**
  * Fired during plugin activation
@@ -125,7 +126,7 @@ class Tru_Fetcher_Post_Types_Base {
             $metaField = new $metaFieldClass();
             $post = $metaField->renderPost($post);
         }
-
+        $post->categories = Tru_Fetcher_Taxonomy::getPostCategories($post, ["term_id", "name", "slug"]);
         return $post;
     }
     /**

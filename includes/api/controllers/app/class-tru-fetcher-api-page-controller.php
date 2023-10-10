@@ -61,7 +61,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 	}
 
 	public function register_routes() {
-		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/template/(?<template_post_type>[\w-]+)/(?<category_name>[\w-]+)', array(
+		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/template/(?<template_post_type>[\w-]+)/(?<taxonomy>[\w-]+)/(?<category_name>[\w-]+)', array(
 			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getPageTemplate"],
 			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
@@ -119,16 +119,20 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 	public function getPageTemplate(\WP_REST_Request $request) {
 		$templatePostType = $request->get_param('template_post_type');
 		$categoryName = $request->get_param('category_name');
+		$taxonomy = $request->get_param('taxonomy');
         if ( empty($templatePostType) ) {
             return $this->showError( 'request_missing_parameters', "Template post type doesn't exist in request" );
         }
 		if ( empty( $categoryName ) ) {
 			return $this->showError( 'request_missing_parameters', "Category doesn't exist in request" );
 		}
+		if ( empty( $taxonomy ) ) {
+			return $this->showError( 'request_missing_parameters', "Taxonomy doesn't exist in request" );
+		}
 
         $getPageTemplate = $this->postsClass->getTemplate(
             $categoryName,
-            Tru_Fetcher_Taxonomy_Trf_Listings_Category::NAME,
+            $taxonomy,
             $templatePostType
         );
         if (is_wp_error($getPageTemplate)) {
