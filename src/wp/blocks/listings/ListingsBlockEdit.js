@@ -22,41 +22,39 @@ const ListingsBlockEdit = (props) => {
     }
 
     function getTabConfig() {
-        let tabConfig = [
-
-            {
-                name: 'general',
-                title: 'General',
-                component: GeneralTab
-            },
-            {
-                name: 'display',
-                title: 'Display',
-                component: DisplayTab
-            },
-            {
-                name: 'sidebar',
-                title: 'Sidebar',
-                component: SidebarTab
-            },
-            {
-                name: 'filters',
-                title: 'Filters',
-                component: FiltersTab
-            },
-        ];
-        if (props.attributes?.source === 'api') {
-            tabConfig.push({
-                name: 'api_settings',
-                title: 'Api Settings',
-                component: ApiTab
-            });
-        }
+        let tabConfig = [];
+        tabConfig.push({
+            name: 'general',
+            title: 'General',
+            component: GeneralTab
+        });
         if (props.attributes?.source === 'wordpress') {
             tabConfig.push({
                 name: 'wordpress_settings',
                 title: 'Wordpress Settings',
                 component: WordpressDataTab
+            });
+        }
+        tabConfig.push({
+            name: 'display',
+            title: 'Display',
+            component: DisplayTab
+        });
+        tabConfig.push({
+            name: 'sidebar',
+            title: 'Sidebar',
+            component: SidebarTab
+        });
+        tabConfig.push({
+            name: 'filters',
+            title: 'Filters',
+            component: FiltersTab
+        });
+        if (props.attributes?.source === 'api') {
+            tabConfig.push({
+                name: 'api_settings',
+                title: 'Api Settings',
+                component: ApiTab
             });
         }
         tabConfig.push({

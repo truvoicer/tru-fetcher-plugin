@@ -1,6 +1,7 @@
 import React from 'react';
 import {Panel, PanelBody, TabPanel} from "@wordpress/components";
 import GeneralTab from "./tabs/GeneralTab";
+import {InnerBlocks, useBlockProps} from '@wordpress/block-editor';
 
 const PostsBlockEdit = (props) => {
     const {attributes, setAttributes} = props;
@@ -29,6 +30,7 @@ const PostsBlockEdit = (props) => {
         return <TabComponent {...props} />;
     }
     return (
+        <div {...useBlockProps()}>
         <Panel>
             <PanelBody title="Posts Block" initialOpen={true}>
                 <TabPanel
@@ -61,6 +63,7 @@ const PostsBlockEdit = (props) => {
                 </TabPanel>
             </PanelBody>
         </Panel>
+        </div>
     );
 };
 

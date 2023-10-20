@@ -2,10 +2,10 @@
 
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
-use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_List;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Single_Item;
+use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Category;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Trf_Listings_Category;
 
 /**
@@ -150,6 +150,24 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'id' => Tru_Fetcher_Post_Types_Trf_Item_List::ID_IDENTIFIER,
                 'type' => 'string',
                 'default' => ''
+            ],
+            [
+                'id' => 'wordpress_data_source',
+                'type' => 'string',
+            ],
+            [
+                'id' => 'posts_per_page',
+                'type' => 'integer',
+            ],
+            [
+                'id' => 'show_all_categories',
+                'type' => 'boolean',
+                'default' => true,
+            ],
+            [
+                'id' => Tru_Fetcher_Taxonomy_Category::ID_IDENTIFIER,
+                'type' => 'array',
+                'default' => [],
             ],
             [
                 'id' => 'list_start',

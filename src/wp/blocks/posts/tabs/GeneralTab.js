@@ -13,36 +13,6 @@ const GeneralTab = (props) => {
     const categoryId = findTaxonomyIdIdentifier('category')
     return (
         <div>
-            <TextControl
-                label="Heading"
-                placeholder="Heading"
-                value={attributes?.heading}
-                onChange={(value) => {
-                    setAttributes({heading: value});
-                }}
-            />
-            <SelectControl
-                label="Load More Type"
-                onChange={(value) => {
-                    setAttributes({load_more_type: value});
-                }}
-                value={attributes?.load_more_type}
-                options={[
-                    {
-                        disabled: true,
-                        label: 'Select an Option',
-                        value: ''
-                    },
-                    {
-                        label: 'Pagination',
-                        value: 'pagination'
-                    },
-                    {
-                        label: 'Infinite Scroll',
-                        value: 'infinite_scroll'
-                    },
-                ]}
-            />
             <RangeControl
                 label="Posts Per Page"
                 initialPosition={50}
@@ -56,13 +26,6 @@ const GeneralTab = (props) => {
                 checked={attributes?.show_all_categories}
                 onChange={(value) => {
                     setAttributes({show_all_categories: value});
-                }}
-            />
-            <ToggleControl
-                label="Show Sidebar?"
-                checked={attributes?.show_sidebar}
-                onChange={(value) => {
-                    setAttributes({show_sidebar: value});
                 }}
             />
             <SelectControl

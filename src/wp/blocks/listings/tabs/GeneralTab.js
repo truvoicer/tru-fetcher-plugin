@@ -4,6 +4,7 @@ import {findTaxonomyIdIdentifier, findTaxonomySelectOptions} from "../../../help
 import {useSelect} from '@wordpress/data';
 import {isNotEmpty} from "../../../../library/helpers/utils-helpers";
 import {GutenbergBlockIdHelpers} from "../../../helpers/gutenberg/gutenberg-block-id-helpers";
+import Grid from "../../components/wp/Grid";
 
 
 const GeneralTab = (props) => {
@@ -31,53 +32,59 @@ const GeneralTab = (props) => {
     const listingsCategoryId = findTaxonomyIdIdentifier('trf_listings_category')
     return (
         <div>
-            <TextControl
-                label="Listings Block Id"
-                placeholder="Listings Block Id"
-                value={attributes?.listing_block_id}
-                onChange={(value) => {
-                    setAttributes({listing_block_id: value})
-                }}
-            />
-            <SelectControl
-                label="Listing Data Source"
-                onChange={(value) => {
-                    setAttributes({source: value});
-                }}
-                value={attributes?.source}
-                options={[
-                    {
-                        disabled: true,
-                        label: 'Select an Option',
-                        value: ''
-                    },
-                    {
-                        label: 'Api',
-                        value: 'api'
-                    },
-                    {
-                        label: 'Wordpress',
-                        value: 'wordpress'
-                    },
-                ]}
-            />
-            <SelectControl
-                label="Listings Category"
-                onChange={(value) => {
-                    setAttributes({[listingsCategoryId]: value});
-                }}
-                value={attributes?.[listingsCategoryId]}
-                options={[
-                    ...[
+            <Grid columns={2}>
+                <SelectControl
+                    label="Listing Data Source"
+                    onChange={(value) => {
+                        setAttributes({source: value});
+                    }}
+                    value={attributes?.source}
+                    options={[
                         {
                             disabled: true,
                             label: 'Select an Option',
                             value: ''
                         },
-                    ],
-                    ...findTaxonomySelectOptions('trf_listings_category')
-                ]}
-            />
+                        {
+                            label: 'Api',
+                            value: 'api'
+                        },
+                        {
+                            label: 'Wordpress',
+                            value: 'wordpress'
+                        },
+                    ]}
+                />
+            </Grid>
+            <Grid columns={2}>
+                <TextControl
+                    label="Listings Block Id"
+                    placeholder="Listings Block Id"
+                    value={attributes?.listing_block_id}
+                    onChange={(value) => {
+                        setAttributes({listing_block_id: value})
+                    }}
+                />
+                {attributes?.source === 'api' &&
+                    <SelectControl
+                        label="Listings Category"
+                        onChange={(value) => {
+                            setAttributes({[listingsCategoryId]: value});
+                        }}
+                        value={attributes?.[listingsCategoryId]}
+                        options={[
+                            ...[
+                                {
+                                    disabled: true,
+                                    label: 'Select an Option',
+                                    value: ''
+                                },
+                            ],
+                            ...findTaxonomySelectOptions('trf_listings_category')
+                        ]}
+                    />
+                }
+            </Grid>
         </div>
     );
 };

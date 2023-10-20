@@ -56,11 +56,6 @@ class Tru_Fetcher_Admin_Blocks_Resources_Posts extends Tru_Fetcher_Admin_Blocks_
                 'type' => 'integer',
             ],
             [
-                'id' => 'show_sidebar',
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            [
                 'id' => 'show_all_categories',
                 'type' => 'boolean',
                 'default' => true,

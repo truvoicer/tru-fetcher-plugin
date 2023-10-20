@@ -76,7 +76,7 @@ export class GutenbergBlockIdHelpers extends GutenbergBase {
     }
 
     buildBlockId(blockId) {
-        this.blocks = parent.filterBlocksByBlockName(this.blockName, this.blocks)
+        this.blocks = GutenbergBase.filterBlocksByBlockName(this.blockName, this.blocks)
         if (isNotEmpty(blockId)) {
             return blockId;
         }
