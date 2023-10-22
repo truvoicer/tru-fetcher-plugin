@@ -9,7 +9,7 @@ use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resource
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Item_View;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Listings;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Opt_In;
-use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Posts;
+use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Post;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Search;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Tabs;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_User_Account;
@@ -56,7 +56,7 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         Tru_Fetcher_Admin_Blocks_Resources_User_Account::class,
         Tru_Fetcher_Admin_Blocks_Resources_Carousel::class,
         Tru_Fetcher_Admin_Blocks_Resources_Opt_In::class,
-        Tru_Fetcher_Admin_Blocks_Resources_Posts::class,
+        Tru_Fetcher_Admin_Blocks_Resources_Post::class,
         Tru_Fetcher_Admin_Blocks_Resources_Form_Progress_Widget::class,
         Tru_Fetcher_Admin_Blocks_Resources_User_Stats_Widget::class,
         Tru_Fetcher_Admin_Blocks_Resources_User_Profile_Widget::class,
@@ -153,6 +153,9 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         foreach (self::BLOCKS as $block) {
             $blockClass = new $block();
             $config = $blockClass->getConfig();
+            if (empty($config['post_types']) || !is_array($config['post_types'])) {
+                continue;
+            }
             foreach ($config['post_types'] as $postType) {
                 if (in_array($postType['name'], array_column($postTypes, 'name'))) {
                     continue;
@@ -177,6 +180,9 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         foreach (self::BLOCKS as $block) {
             $blockClass = new $block();
             $config = $blockClass->getConfig();
+            if (empty($config['taxonomies']) || !is_array($config['taxonomies'])) {
+                continue;
+            }
             foreach ($config['taxonomies'] as $taxonomy) {
                 if (in_array($taxonomy['name'], array_column($taxonomy, 'name'))) {
                     continue;

@@ -8,13 +8,25 @@ const POST_TYPES = ['post'];
 const PostOptionsMetaBox = ({config, post, categories,  postType, metaFields, setMetaFields}) => {
     if (!POST_TYPES.includes(postType)) return null;
     function buildOptions() {
-        if (!categories) return [];
-        return categories.map((category) => {
-            return {
-                value: category.id,
-                label: category.name,
+        let options = [
+            {
+                label: __('Select a category'),
+                value: false,
             }
-        })
+        ];
+        if (!categories) {
+            return options;
+        }
+        options = [
+            ...options,
+            ...categories.map((category) => {
+                return {
+                    value: category.id,
+                    label: category.name,
+                }
+            })
+        ]
+        return options;
     }
     return (
         <PluginDocumentSettingPanel

@@ -47,6 +47,14 @@ class Tru_Fetcher_Meta_Fields_Base
         }
         return null;
     }
+    public function getMetaKey(string $meta_key): string|null
+    {
+        $field = $this->getField($meta_key);
+        if (!empty($field['meta_key'])) {
+            return $field['meta_key'];
+        }
+        return null;
+    }
 
     public function renderPost(\WP_Post $post ) {
         $post->{$this->name} = [];

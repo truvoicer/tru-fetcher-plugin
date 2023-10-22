@@ -3,7 +3,7 @@ import {Panel, PanelBody, TabPanel} from "@wordpress/components";
 import GeneralTab from "./tabs/GeneralTab";
 import {InnerBlocks, useBlockProps} from '@wordpress/block-editor';
 
-const PostsBlockEdit = (props) => {
+const PostBlockEdit = (props) => {
     const {attributes, setAttributes} = props;
     function formChangeHandler({key, value}) {
         setAttributes({
@@ -67,4 +67,4 @@ const PostsBlockEdit = (props) => {
     );
 };
 
-export default PostsBlockEdit;
+export default PostBlockEdit;

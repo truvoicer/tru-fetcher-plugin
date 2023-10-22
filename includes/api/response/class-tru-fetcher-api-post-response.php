@@ -5,7 +5,8 @@ class Tru_Fetcher_Api_Post_Response extends Tru_Fetcher_Api_Response
 {
 
     public ?\WP_Post $post;
-    public ?\WP_Post $postTemplate;
+    public ?\WP_Post $template;
+    public ?array $navigation;
 
     /**
      * @return \WP_Post|null
@@ -26,17 +27,27 @@ class Tru_Fetcher_Api_Post_Response extends Tru_Fetcher_Api_Response
     /**
      * @return \WP_Post|null
      */
-    public function getPostTemplate(): ?\WP_Post
+    public function getTemplate(): ?\WP_Post
     {
-        return $this->postTemplate;
+        return $this->template;
     }
 
     /**
-     * @param \WP_Post|null $postTemplate
+     * @param \WP_Post|null $template
      */
-    public function setPostTemplate(?\WP_Post $postTemplate): void
+    public function setTemplate(?\WP_Post $template): void
     {
-        $this->postTemplate = $postTemplate;
+        $this->template = $template;
+    }
+
+    public function getNavigation(): ?array
+    {
+        return $this->navigation;
+    }
+
+    public function setNavigation(?array $navigation): void
+    {
+        $this->navigation = $navigation;
     }
 
 }

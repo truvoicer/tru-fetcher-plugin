@@ -11,7 +11,7 @@ import UserAccountBlockEdit from "./wp/blocks/user-account/UserAccountBlockEdit"
 import FormBlockEdit from "./wp/blocks/form/FormBlockEdit";
 import CarouselBlockEdit from "./wp/blocks/carousel/CarouselBlockEdit";
 import OptInBlockEdit from "./wp/blocks/opt-in/OptInBlockEdit";
-import PostsBlockEdit from "./wp/blocks/posts/PostsBlockEdit";
+import PostBlockEdit from "./wp/blocks/post/PostBlockEdit";
 import FormProgressBlockEdit from "./wp/blocks/form-progress/FormProgressBlockEdit";
 import WidgetBoardBlockEdit from "./wp/blocks/widget-board/WidgetBoardBlockEdit";
 import UserStatsBlockEdit from "./wp/blocks/widgets/user-stats/UserStatsBlockEdit";
@@ -77,8 +77,8 @@ if (
             case "opt_in_block":
                 blockComponent = OptInBlockEdit;
                 break;
-            case "posts_block":
-                blockComponent = PostsBlockEdit;
+            case "post_block":
+                blockComponent = PostBlockEdit;
                 break;
             case "form_progress_widget_block":
                 blockComponent = FormProgressBlockEdit;

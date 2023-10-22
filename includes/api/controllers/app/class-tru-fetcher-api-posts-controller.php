@@ -56,7 +56,7 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
     public function register_routes()
     {
         register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/post/(?<post_slug>[\w-]+)', array(
-            'methods' => \WP_REST_Server::CREATABLE,
+            'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "postWithTemplateRequestHandler"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
@@ -151,17 +151,27 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
                 $this->apiPostResponse
             );
         }
+        $post = $this->postHelpers::buildPostObject($post);
         $postTemplate = $postsClass->getPostTemplateByPost($post);
         if (is_wp_error($postTemplate)) {
-            return $this->sendResponse(
-                "Post template fetch error",
+            return $this->controllerHelpers->sendErrorResponse(
+                $postTemplate->get_error_code(),
+                $postTemplate->get_error_message(),
                 $this->apiPostResponse
             );
         }
         $this->apiPostResponse->setPost($post);
-        $this->apiPostResponse->setPostTemplate($postTemplate);
-        return $this->sendResponse(
-            "Post fetch successful",
+        $this->apiPostResponse->setTemplate($this->postHelpers::buildPostObject($postTemplate));
+
+        $navigation = $this->postHelpers->getCategoryPostNavigation($post);
+        if (is_wp_error($navigation)) {
+            $this->apiPostResponse->addError($navigation);
+        } else {
+            $this->apiPostResponse->setNavigation($navigation);
+        }
+
+        return $this->controllerHelpers->sendSuccessResponse(
+            'Post fetch successful',
             $this->apiPostResponse
         );
     }

@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\Posts;
 
+use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Post_Options;
 use TruFetcher\Includes\Constants\Tru_Fetcher_Constants_Api;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Base;
@@ -9,7 +10,9 @@ use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Met
 use TruFetcher\Includes\Api\Pagination\Tru_Fetcher_Api_Pagination;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Post_Tpl;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
+use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Category;
 use WP_Error;
 use WP_Post;
 use WP_Query;
@@ -37,6 +40,12 @@ use WP_Query;
 class Tru_Fetcher_Posts
 {
 
+    private Tru_Fetcher_Meta_Fields_Post_Options $postOptions;
+    public function __construct()
+    {
+        $this->postOptions = new Tru_Fetcher_Meta_Fields_Post_Options();
+    }
+
     const DEFAULT_POST_LIST_ATTS = [
         "ID",
         "post_name",
@@ -48,12 +57,25 @@ class Tru_Fetcher_Posts
         "post_template_category",
     ];
 
-    public static function buildPostObject(WP_Post $post)
+    public static function buildPostObject(WP_Post $post, ?array $fields = [])
     {
         $postTypes = new Tru_Fetcher_Post_Types();
         $post->seo_title = $post->post_title . " - " . get_bloginfo('name');
         $post = $postTypes->buildPostTypeData($post);
+
         $post->post_content = apply_filters("the_content", $post->post_content);
+        if (count($fields) > 0) {
+            $post = (object)array_intersect_key((array)$post, array_flip($fields));
+        }
+        if (!count($fields) || in_array("post_category", $fields)) {
+            $post->categories = Tru_Fetcher_Taxonomy::getPostCategories($post, ["term_id", "name", "slug"]);
+        }
+        if (!count($fields) || in_array("post_template_category", $fields)) {
+            $post->post_template_category = null;
+        }
+        if (!count($fields) || in_array("featured_image", $fields)) {
+            $post->featured_image = get_the_post_thumbnail_url($post);
+        }
         return $post;
     }
 
@@ -111,22 +133,60 @@ class Tru_Fetcher_Posts
         return $getPageTemplate[0];
     }
 
-    public function getPostTemplateByPost(\WP_Post $post)
-    {
-        $getPostCategory = get_field("post_template_category", $post->ID);
-        if ($getPostCategory === null || !$getPostCategory) {
-            return new WP_Error("post_category_not_set", "Post category not set.");
+    public function getPostTemplateCategory(\WP_Post $post) {
+        $postTemplateCategory= null;
+
+        $postTemplateCategoryMetaKey = $this->postOptions->getMetaKey($this->postOptions::META_KEY_POST_TEMPLATE_CATEGORY);
+        if (
+            !empty($postTemplateCategoryMetaKey) &&
+            property_exists($post, "post_options") &&
+            !empty($post->post_options[$postTemplateCategoryMetaKey])
+        )
+        {
+            $postTemplateCategory = $post->post_options[$postTemplateCategoryMetaKey];
         }
 
+        if (!empty($postTemplateCategory)) {
+            $categoryId = (int)$postTemplateCategory;
+            $category = (new Tru_Fetcher_Taxonomy())->fetchTerm($categoryId, Tru_Fetcher_Taxonomy_Category::NAME);
+            if (is_wp_error($category)) {
+                return $category;
+            }
+            $source = Tru_Fetcher_Taxonomy_Category::NAME;
+        } elseif (
+            property_exists($post, "categories") &&
+            is_array($post->categories) &&
+            count($post->categories) > 0
+        ) {
+            $category = $post->categories[0];
+            $source = $postTemplateCategoryMetaKey;
+        } else {
+            return new WP_Error(
+                "post_template_category_not_found",
+                sprintf("Post template category not found or category not set for post name [%s].", $post->post_title)
+            );
+        }
+        return [
+            'source' => $source,
+            'category' => $category
+        ];
+    }
+    public function getPostTemplateByPost(\WP_Post $post)
+    {
+        $category = $this->getPostTemplateCategory($post);
+        if (is_wp_error($category)) {
+            return $category;
+        }
+        $category = $category['category'];
         $getPostTemplate = get_posts([
             'numberposts' => 1,
-            'post_type' => 'post_templates',
-            "cat" => $getPostCategory->term_id
+            'post_type' => Tru_Fetcher_Post_Types_Trf_Post_Tpl::NAME,
+            "cat" => $category->term_id
         ]);
 
         if (count($getPostTemplate) === 0) {
             return new WP_Error("post_template_not_found",
-                sprintf("Page template not found for post name [%s] - category name [%s].", $post->post_title, $getPostCategory->slug));
+                sprintf("Page template not found for post name [%s] - category name [%s].", $post->post_title, $category->slug));
         }
 
         return $getPostTemplate[0];
@@ -156,23 +216,18 @@ class Tru_Fetcher_Posts
     }
 
 
-    public function getCategoryPostNavigation($postName)
+    public function getCategoryPostNavigation(\WP_Post $post)
     {
-        $getPost = $this->getPostByName($postName);
-        if (is_wp_error($getPost)) {
-            return $getPost;
-        }
-
-        $categoryPosts = $this->getCategoryPosts($getPost);
+        $categoryPosts = $this->getCategoryPosts($post);
         if (is_wp_error($categoryPosts)) {
             return $categoryPosts;
         }
 
-        $postPosition = $this->getCurrentPostArrayPosition($getPost, $categoryPosts);
+        $postPosition = $this->getCurrentPostArrayPosition($post, $categoryPosts);
         if ($postPosition === false) {
             return new WP_Error(
                 'post_position_error',
-                sprintf("Post (%s) position not found.", $postName)
+                sprintf("Post (%s) position not found.", $post->post_title)
             );
         }
 
@@ -186,8 +241,8 @@ class Tru_Fetcher_Posts
             $nextPost = $categoryPosts[(int)$postPosition + 1];
         }
         return [
-            "prev_post" => $prevPost,
-            "next_post" => $nextPost
+            "prev_post" => ($prevPost instanceof \WP_Post)? $this::buildPostObject($prevPost) : $prevPost,
+            "next_post" => ($nextPost instanceof \WP_Post)? $this::buildPostObject($nextPost) : $nextPost
         ];
     }
 
@@ -235,25 +290,56 @@ class Tru_Fetcher_Posts
 
     private function getCategoryPosts(WP_Post $post)
     {
-        $category = get_field("post_template_category", $post->ID);
-
-        if (!$category) {
-            return new WP_Error(
-                'category_not_found',
-                "Post template category not found."
-            );
+        $categoryData = $this->getPostTemplateCategory($post);
+        $category = $categoryData['category'];
+        if (is_wp_error($category)) {
+            return $category;
         }
         $args = array(
             'numberposts' => -1,
             'orderby' => 'date',
             'order' => 'DESC',
             'post_type' => 'post',
-            'meta_key' => 'post_template_category',
-            'meta_value' => $category->term_id
         );
 
-        $getCategoryPosts = new WP_Query($args);
+        $postTemplateCategoryMetaKey = $this->postOptions->getMetaKey($this->postOptions::META_KEY_POST_TEMPLATE_CATEGORY);
 
+        $taxQuery = [
+            [
+                'taxonomy' => Tru_Fetcher_Taxonomy_Category::NAME,
+                'field' => 'term_id',
+                'terms' => array($category->term_id),
+                'operator' => 'IN',
+            ],
+            'relation' => 'OR',
+        ];
+
+        $metaQuery = [
+            [
+                'key' => $postTemplateCategoryMetaKey,
+                'value' =>  $category->term_id,
+                'compare' => '=',
+            ],
+            'relation' => 'OR',
+        ];
+
+        if (
+            $categoryData['source'] === $postTemplateCategoryMetaKey &&
+            !empty($postTemplateCategoryMetaKey)
+        ) {
+            $args['meta_query'] = $metaQuery;
+        }
+        $getCategoryPosts = null;
+        if (!empty($args['meta_query']) ) {
+            $getCategoryPosts = new WP_Query($args);
+        }
+
+        if ($getCategoryPosts instanceof \WP_Query && count($getCategoryPosts->posts) > 0) {
+            return $getCategoryPosts->posts;
+        }
+        unset($args['meta_query']);
+        $args['tax_query'] = $taxQuery;
+        $getCategoryPosts = new WP_Query($args);
         if (count($getCategoryPosts->posts) === 0) {
             return new WP_Error(
                 'category_posts_not_found',
@@ -352,22 +438,12 @@ class Tru_Fetcher_Posts
         return (int)$pageNumber * (int)$postsPerPage;
     }
 
+
+
     public function buildPostsArray(array $posts, ?array $fields = self::DEFAULT_POST_LIST_ATTS)
     {
         return array_map(function (WP_Post $post) use ($fields) {
-            if (count($fields) > 0) {
-                $post = (object)array_intersect_key((array)$post, array_flip($fields));
-            }
-            if (!count($fields) || in_array("post_category", $fields)) {
-                $post->categories = Tru_Fetcher_Taxonomy::getPostCategories($post, ["term_id", "name", "slug"]);
-            }
-            if (!count($fields) || in_array("post_template_category", $fields)) {
-                $post->post_template_category = null;
-            }
-            if (!count($fields) || in_array("featured_image", $fields)) {
-                $post->featured_image = get_the_post_thumbnail_url($post);
-            }
-            return $post;
+            return self::buildPostObject($post, $fields);
         }, $posts);
     }
 }
