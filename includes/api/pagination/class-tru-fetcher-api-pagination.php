@@ -4,42 +4,64 @@ namespace TruFetcher\Includes\Api\Pagination;
 
 class Tru_Fetcher_Api_Pagination
 {
-    public ?int $maxPages = null;
-    public ?int $perPage = null;
-    public ?int $currentPerPage = null;
+    public string $pagination_type = 'offset';
+    public ?int $page_count = null;
+    public ?int $page_size = null;
+    public ?int $page_number = null;
+    public ?int $current_per_page = null;
     public ?int $offset = null;
-    public ?int $total = null;
+    public ?int $total_items = null;
+
+    public function getPageNumber(): ?int
+    {
+        return $this->page_number;
+    }
+
+    public function setPageNumber(?int $page_number): void
+    {
+        $this->page_number = $page_number;
+    }
+
+    public function getPaginationType(): string
+    {
+        return $this->pagination_type;
+    }
+
+    public function setPaginationType(string $pagination_type): void
+    {
+        $this->pagination_type = $pagination_type;
+    }
 
     /**
      * @return int|null
      */
-    public function getMaxPages(): ?int
+    public function getPageCount(): ?int
     {
-        return $this->maxPages;
+        return $this->page_count;
     }
 
     /**
-     * @param int $maxPages
+     * @param int $page_count
      */
-    public function setMaxPages(int $maxPages): void
+    public function setPageCount(int $page_count): void
     {
-        $this->maxPages = $maxPages;
+        $this->page_count = $page_count;
     }
 
     /**
      * @return int|null
      */
-    public function getPerPage(): ?int
+    public function getPageSize(): ?int
     {
-        return $this->perPage;
+        return $this->page_size;
     }
 
     /**
-     * @param int $perPage
+     * @param int $page_size
      */
-    public function setPerPage(int $perPage): void
+    public function setPageSize(int $page_size): void
     {
-        $this->perPage = $perPage;
+        $this->page_size = $page_size;
     }
 
     /**
@@ -61,17 +83,17 @@ class Tru_Fetcher_Api_Pagination
     /**
      * @return int|null
      */
-    public function getTotal(): ?int
+    public function getTotalItems(): ?int
     {
-        return $this->total;
+        return $this->total_items;
     }
 
     /**
-     * @param int|null $total
+     * @param int|null $total_items
      */
-    public function setTotal(?int $total): void
+    public function setTotalItems(?int $total_items): void
     {
-        $this->total = $total;
+        $this->total_items = $total_items;
     }
 
     /**
@@ -79,14 +101,14 @@ class Tru_Fetcher_Api_Pagination
      */
     public function getCurrentPerPage(): ?int
     {
-        return $this->currentPerPage;
+        return $this->current_per_page;
     }
 
     /**
-     * @param int|null $currentPerPage
+     * @param int|null $current_per_page
      */
-    public function setCurrentPerPage(?int $currentPerPage): void
+    public function setCurrentPerPage(?int $current_per_page): void
     {
-        $this->currentPerPage = $currentPerPage;
+        $this->current_per_page = $current_per_page;
     }
 }

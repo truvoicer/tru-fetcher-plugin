@@ -13,16 +13,6 @@ const SearchTab = (props) => {
     return (
         <>
             <div>
-                <RangeControl
-                    label="Search Limit"
-                    initialPosition={50}
-                    max={100}
-                    min={0}
-                    value={attributes?.search_limit}
-                    onChange={(value) => setAttributes({search_limit: value})}
-                />
-            </div>
-            <div>
                 <SelectControl
                     label="Initial Load"
                     onChange={(value) => {

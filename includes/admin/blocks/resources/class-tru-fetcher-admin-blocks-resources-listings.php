@@ -115,11 +115,6 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'default' => 'infinite_scroll',
             ],
             [
-                'id' => 'search_limit',
-                'type' => 'integer',
-                'default' => 20,
-            ],
-            [
                 'id' => 'initial_load',
                 'type' => 'string',
                 'default' => 'search',
@@ -158,6 +153,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
             [
                 'id' => 'posts_per_page',
                 'type' => 'integer',
+                'default' => 20,
             ],
             [
                 'id' => 'show_all_categories',

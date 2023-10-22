@@ -11,7 +11,7 @@ const ImageryTab = (props) => {
     } = props;
 
     return (
-        <div className={'tf--imagery'}>
+        <div className={'tf--imagery'} style={{display: 'flex'}}>
             <MediaInput
               heading={'Hero Background Image'}
                 addImageText={'Add Image'}

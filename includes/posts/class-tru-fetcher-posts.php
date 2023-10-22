@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\Posts;
 
+use TruFetcher\Includes\Constants\Tru_Fetcher_Constants_Api;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Base;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
@@ -279,23 +280,71 @@ class Tru_Fetcher_Posts
         return $data;
     }
 
-    public static function getPostPagination(\WP_Query $postsQuery, \WP_Query $totalPostsQuery, int $offset, int $perPage)
+    public static function getPostPagination(\WP_Query $postsQuery, \WP_Query $totalPostsQuery, int $offset, int $perPage, ?int $pageNumber = null)
     {
         $pagination = new Tru_Fetcher_Api_Pagination();
-        $total = $totalPostsQuery->post_count;
-        $offset = $offset + $perPage + 1;
+        $total = $totalPostsQuery->found_posts;
+        $pageCount = $postsQuery->max_num_pages;
         if ($offset > $total) {
             $offset = $total;
         }
-        $pagination->setMaxPages($postsQuery->max_num_pages);
+
+        if ($pageNumber === null) {
+            if ($offset === 0) {
+                $pageNumber = 1;
+            } else {
+                $offsetPageCount = floor($total - $offset);
+                $pageNumber = floor($pageCount - floor($offsetPageCount / $perPage));
+            }
+        }
+
+        $pagination->setPageCount($pageCount);
+        $pagination->setPageNumber($pageNumber);
         $pagination->setOffset($offset);
-        $pagination->setPerPage($perPage);
-        $pagination->setTotal($total);
+        $pagination->setPageSize($perPage);
+        $pagination->setTotalItems($total);
         $pagination->setCurrentPerPage(count($postsQuery->get_posts()));
         return $pagination;
     }
 
-    public function calculateOffset($pageNumber, $postsPerPage)
+    public function getPaginationRequestData(\WP_REST_Request $request) {
+
+        $postsPerPage = 10;
+        $pageNumber = 1;
+        $offset = 0;
+
+        $paginationType = $request->get_param(Tru_Fetcher_Constants_Api::REQUEST_KEYS['PAGINATION_TYPE']);
+        if (empty($paginationType)) {
+            return new WP_Error(
+                'pagination_type_error',
+                "Pagination type not specified"
+            );
+        }
+
+        if (isset($request[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']])) {
+            $postsPerPage = (int)$request[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']];
+        }
+        switch ($paginationType) {
+            case 'offset':
+                if (isset($request[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']])) {
+                    $offset = (int)$request[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']];
+                }
+                break;
+            case 'page':
+                if (isset($request[Tru_Fetcher_Constants_Api::REQUEST_KEYS['PAGE_NUMBER']])) {
+                    $pageNumber = (int)$request[Tru_Fetcher_Constants_Api::REQUEST_KEYS['PAGE_NUMBER']];
+                }
+                $offset = self::calculateOffset($pageNumber, $postsPerPage);
+        }
+        return [
+            Tru_Fetcher_Constants_Api::REQUEST_KEYS['PAGINATION_TYPE'] => $paginationType,
+            Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE'] => $postsPerPage,
+            Tru_Fetcher_Constants_Api::REQUEST_KEYS['PAGE_NUMBER'] => $pageNumber,
+            Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET'] => $offset
+        ];
+    }
+
+    public static function calculateOffset($pageNumber, $postsPerPage)
     {
         if ((int)$pageNumber === 1) {
             return 0;

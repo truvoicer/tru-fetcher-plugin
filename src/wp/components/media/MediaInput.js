@@ -11,8 +11,8 @@ const MediaInput = ({
     onDelete
 }) => {
     return (
-        <div className={'tf--imagery--group'}>
-            <h3>{heading}</h3>
+        <div className={'tf--imagery--group'} style={{width: 200}}>
+            <h1 style={{fontSize: 12, fontWeight: 700}}>{heading}</h1>
             <div className={'tf--imagery--group--media-controls'}>
                 <MediaPicker
                     text={addImageText}
@@ -25,10 +25,13 @@ const MediaInput = ({
                     ? (
                         <>
                             <a
+                                style={{width: 100, display: 'block'}}
                                 onClick={(e) => {
                                     e.preventDefault()
                                 }}>
-                                <img src={selectedImageUrl} alt={''}/>
+                                <img
+                                    style={{width: '100%', display: 'block'}}
+                                    src={selectedImageUrl} alt={''}/>
                             </a>
                             <a
                                 onClick={(e) => {

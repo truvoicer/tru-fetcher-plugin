@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import {TextControl, SelectControl, ToggleControl, RangeControl} from "@wordpress/components";
 import Grid from "../../components/wp/Grid";
 
 const DisplayTab = (props) => {
@@ -18,13 +18,13 @@ const DisplayTab = (props) => {
                         setAttributes({show_listings_sidebar: value});
                     }}
                 />
+            </Grid>
+            <Grid columns={2}>
                 <TextControl
                     label="Heading"
                     value={attributes?.heading}
                     onChange={(value) => setAttributes({heading: value})}
                 />
-            </Grid>
-            <Grid columns={2}>
                 <SelectControl
                     label="Select Item View Display"
                     onChange={(value) => {
@@ -47,6 +47,8 @@ const DisplayTab = (props) => {
                         },
                     ]}
                 />
+            </Grid>
+            <Grid columns={2}>
                 <SelectControl
                     label="Load More Type"
                     onChange={(value) => {
@@ -68,6 +70,14 @@ const DisplayTab = (props) => {
                             value: 'infinite_scroll'
                         },
                     ]}
+                />
+                <RangeControl
+                    label="Posts Per Page"
+                    initialPosition={50}
+                    max={100}
+                    min={0}
+                    value={attributes?.posts_per_page}
+                    onChange={(value) => setAttributes({posts_per_page: value})}
                 />
             </Grid>
         </div>

@@ -3,6 +3,7 @@ namespace TruFetcher\Includes\Api\Controllers\App;
 
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Post_List_Response;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Post_Response;
+use TruFetcher\Includes\Constants\Tru_Fetcher_Constants_Api;
 use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
 
@@ -220,16 +221,18 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
 
     public function postListRequestHandler(\WP_REST_Request $request)
     {
-        $postsPerPage = 10;
         $showAllCategories = true;
         $categories = [];
-        $pageNumber = 1;
-        if (isset($request["page_number"])) {
-            $pageNumber = (int)$request["page_number"];
+
+        $paginationRequestData = $this->postHelpers->getPaginationRequestData($request);
+        if (is_wp_error($paginationRequestData)) {
+            return $this->controllerHelpers->sendErrorResponse(
+                $paginationRequestData->get_error_code(),
+                $paginationRequestData->get_error_message(),
+                $this->postListResponse
+            );
         }
-        if (isset($request["posts_per_page"])) {
-            $postsPerPage = (int)$request["posts_per_page"];
-        }
+
         if (isset($request["show_all_categories"])) {
             $showAllCategories = $request["show_all_categories"];
         }
@@ -241,7 +244,6 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
                 $categories = 0;
             }
         }
-        $offset = $this->postHelpers->calculateOffset($pageNumber, $postsPerPage);
         $args = [
             'cat' => $showAllCategories ? 0 : $categories,
             'orderby' => 'date',
@@ -251,8 +253,8 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
         ];
 
         $offsetArgs = [
-            'posts_per_page' => $postsPerPage,
-            'offset' => $offset,
+            'posts_per_page' => $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']],
+            'offset' => $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']],
         ];
 
         $allPostsQuery = new \WP_Query($args);
@@ -261,9 +263,10 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
         $pagination = Tru_Fetcher_Posts::getPostPagination(
             $postQuery,
             $allPostsQuery,
-            $offset,
-            $postsPerPage
+            $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']],
+            $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']]
         );
+        $pagination->setPaginationType($paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['PAGINATION_TYPE']]);
         $this->postListResponse->setPagination($pagination);
         $this->postListResponse->setPostList($this->postHelpers->buildPostsArray($postQuery->posts));
         return $this->controllerHelpers->sendSuccessResponse(

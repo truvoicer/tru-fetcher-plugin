@@ -47,16 +47,6 @@ const WordpressDataTab = (props) => {
             {attributes?.wordpress_data_source === 'posts' &&
                 <>
                     <Grid columns={2}>
-                        <RangeControl
-                            label="Posts Per Page"
-                            initialPosition={50}
-                            max={100}
-                            min={0}
-                            value={attributes?.posts_per_page}
-                            onChange={(value) => setAttributes({posts_per_page: value})}
-                        />
-                    </Grid>
-                    <Grid columns={2}>
                         <ToggleControl
                             label="Show all categories?"
                             checked={attributes?.show_all_categories}

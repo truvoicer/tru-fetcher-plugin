@@ -4,6 +4,7 @@ namespace TruFetcher\Includes\Api\Controllers\Admin;
 use TruFetcher\Includes\Api\Pagination\Tru_Fetcher_Api_Pagination;
 use TruFetcher\Includes\Api\Response\Admin\Tru_Fetcher_Api_Admin_Posts_Response;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Post_Response;
+use TruFetcher\Includes\Constants\Tru_Fetcher_Constants_Api;
 use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
 
 /**
@@ -33,6 +34,7 @@ class Tru_Fetcher_Api_Admin_Posts_Controller extends Tru_Fetcher_Api_Admin_Base_
     private string $protectedEndpoint;
 
     private Tru_Fetcher_Api_Admin_Posts_Response $apiPostResponse;
+    private Tru_Fetcher_Posts $postHelpers;
 
     public function __construct()
     {
@@ -50,6 +52,7 @@ class Tru_Fetcher_Api_Admin_Posts_Controller extends Tru_Fetcher_Api_Admin_Base_
     private function loadResponseObjects()
     {
         $this->apiPostResponse = new Tru_Fetcher_Api_Admin_Posts_Response();
+        $this->postHelpers = new Tru_Fetcher_Posts();
     }
 
     public function register_routes()
@@ -66,16 +69,16 @@ class Tru_Fetcher_Api_Admin_Posts_Controller extends Tru_Fetcher_Api_Admin_Base_
         $defaultPostType = 'post';
         $postType = $request->get_param('post_type');
 
-        $postsPerPage = 10;
-        $pageNumber = 1;
+        $paginationRequestData = $this->postHelpers->getPaginationRequestData($request);
+        if (is_wp_error($paginationRequestData)) {
+            return $this->controllerHelpers->sendErrorResponse(
+                $paginationRequestData->get_error_code(),
+                $paginationRequestData->get_error_message(),
+                $this->apiPostResponse
+            );
+        }
         if (empty($postType)) {
             $postType = $defaultPostType;
-        }
-        if (isset($request["page_number"])) {
-            $pageNumber = (int)$request["page_number"];
-        }
-        if (isset($request["posts_per_page"])) {
-            $postsPerPage = (int)$request["posts_per_page"];
         }
         $args = [
             'orderby' => 'date',
@@ -83,18 +86,21 @@ class Tru_Fetcher_Api_Admin_Posts_Controller extends Tru_Fetcher_Api_Admin_Base_
             'post_type' => $postType,
         ];
 
-        $offset = $this->calculateOffset($pageNumber, $postsPerPage);
         $offsetArgs = [
-            'posts_per_page' => $postsPerPage,
-            'offset' => $offset,
+            'posts_per_page' => $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']],
+            'offset' => $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']],
         ];
 
         $allPostsQuery = new \WP_Query($args);
         $postQuery = new \WP_Query(array_merge($args, $offsetArgs));
-
         $this->apiPostResponse->setPosts($this->buildPostsArray($postQuery->posts));
         $this->apiPostResponse->setPagination(
-            Tru_Fetcher_Posts::getPostPagination($postQuery, $allPostsQuery, $offset, $postsPerPage)
+            Tru_Fetcher_Posts::getPostPagination(
+                $postQuery,
+                $allPostsQuery,
+                $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']],
+                $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']]
+            )
         );
         return $this->controllerHelpers->sendSuccessResponse(
           'Posts fetched successfully',
