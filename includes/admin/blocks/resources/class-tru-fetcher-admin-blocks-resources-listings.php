@@ -85,19 +85,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'default' => [],
             ],
             [
-                'id' => 'show_listings_sidebar',
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            [
                 'id' => 'show_sidebar_widgets_in_listings_sidebar',
                 'type' => 'boolean',
                 'default' => false,
-            ],
-            [
-                'id' => 'select_sidebar',
-                'type' => 'array',
-                'default' => [],
             ],
             [
                 'id' => 'heading',
@@ -226,7 +216,24 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
         ]
     ];
 
-
+    public function __construct()
+    {
+        $this->config['attributes'] = array_merge($this->config['attributes'], self::getSidebarConfig());
+    }
+    public static function getSidebarConfig() {
+        return [
+            [
+                'id' => 'show_sidebar',
+                'type' => 'boolean',
+                'default' => false,
+            ],
+            [
+                'id' => 'select_sidebar',
+                'type' => 'array',
+                'default' => [],
+            ],
+        ];
+    }
     public function buildBlockAttributes(array $attributes) {
         $attributes = parent::buildBlockAttributes($attributes);
         if (empty($attributes['filters'])) {

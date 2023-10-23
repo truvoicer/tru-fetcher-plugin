@@ -47,4 +47,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Post extends Tru_Fetcher_Admin_Blocks_R
             ],
         ]
     ];
+
+    public function __construct()
+    {
+        $this->config['attributes'] = array_merge($this->config['attributes'], Tru_Fetcher_Admin_Blocks_Resources_Listings::getSidebarConfig());
+    }
 }

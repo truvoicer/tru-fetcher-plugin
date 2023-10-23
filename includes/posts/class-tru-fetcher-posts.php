@@ -40,9 +40,11 @@ use WP_Query;
 class Tru_Fetcher_Posts
 {
 
+    private Tru_Fetcher_Taxonomy $taxonomyHelpers;
     private Tru_Fetcher_Meta_Fields_Post_Options $postOptions;
     public function __construct()
     {
+        $this->taxonomyHelpers = new Tru_Fetcher_Taxonomy();
         $this->postOptions = new Tru_Fetcher_Meta_Fields_Post_Options();
     }
 
@@ -171,6 +173,9 @@ class Tru_Fetcher_Posts
             'category' => $category
         ];
     }
+    public function getUncategorisedPostTemplateByPost(\WP_Post $post) {
+
+    }
     public function getPostTemplateByPost(\WP_Post $post)
     {
         $category = $this->getPostTemplateCategory($post);
@@ -184,12 +189,34 @@ class Tru_Fetcher_Posts
             "cat" => $category->term_id
         ]);
 
-        if (count($getPostTemplate) === 0) {
-            return new WP_Error("post_template_not_found",
-                sprintf("Page template not found for post name [%s] - category name [%s].", $post->post_title, $category->slug));
+        if (count($getPostTemplate) > 0) {
+            return $getPostTemplate[0];
         }
 
-        return $getPostTemplate[0];
+        $uncategorisedCategory = get_term_by(
+            "slug",
+            "uncategorised",
+            Tru_Fetcher_Taxonomy_Category::NAME);
+        if (is_wp_error($uncategorisedCategory)) {
+            return $uncategorisedCategory;
+        }
+
+        $getPostTemplate = get_posts([
+            'numberposts' => 1,
+            'post_type' => Tru_Fetcher_Post_Types_Trf_Post_Tpl::NAME,
+            "cat" => $uncategorisedCategory->term_id
+        ]);
+        if (count($getPostTemplate) > 0) {
+            return $getPostTemplate[0];
+        }
+        return new WP_Error(
+            "post_template_not_found",
+            sprintf(
+                "Page template not found for post name [%s] - category name [%s]. Please add a post template for this category or a catchall template for uncategorized.",
+                $post->post_title,
+                $category->slug
+            )
+        );
     }
 
     public static function isHomePage($pageId)

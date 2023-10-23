@@ -2,6 +2,7 @@ import React from 'react';
 import {Panel, PanelBody, TabPanel} from "@wordpress/components";
 import GeneralTab from "./tabs/GeneralTab";
 import {InnerBlocks, useBlockProps} from '@wordpress/block-editor';
+import SidebarTab from "./tabs/SidebarTab";
 
 const PostBlockEdit = (props) => {
     const {attributes, setAttributes} = props;
@@ -18,6 +19,11 @@ const PostBlockEdit = (props) => {
                 name: 'general',
                 title: 'General',
                 component: GeneralTab
+            },
+            {
+                name: 'sidebar',
+                title: 'Sidebar',
+                component: SidebarTab
             },
         ];
         return tabConfig;
