@@ -48,6 +48,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
         ],
         'taxonomies' => [
             ['name' => Tru_Fetcher_Taxonomy_Trf_Listings_Category::NAME],
+            ['name' => Tru_Fetcher_Taxonomy_Category::NAME],
         ],
         'attributes' => [
             [

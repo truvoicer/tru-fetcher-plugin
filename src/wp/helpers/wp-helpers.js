@@ -129,3 +129,17 @@ export function getBlockAttributesById(blockId) {
     }
     return false;
 }
+
+export function getTermsSelectData({select, taxonomy}) {
+    const core = select('core');
+    const categories = core.getEntityRecords('taxonomy', taxonomy);
+    if (!Array.isArray(categories)) {
+        return [];
+    }
+    return categories.map(category => {
+        return {
+            label: category.name,
+            value: category.id
+        };
+    });
+}

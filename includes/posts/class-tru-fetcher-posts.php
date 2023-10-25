@@ -119,20 +119,39 @@ class Tru_Fetcher_Posts
                     'taxonomy' => $taxonomyName,
                     'field' => 'term_id',
                     'terms' => $category->term_id,
-                ]
+                ],
             ]
         ];
         $getPageTemplate = get_posts($args);
-        if (count($getPageTemplate) === 0) {
-            return new WP_Error(
-                'page_not_found',
-                sprintf(
-                    "Page template not found for: Taxonomy [%s], Category [%s], Post Type [%s].",
-                    $taxonomyName, $category->name, $postType
-                )
-            );
+        if (count($getPageTemplate) > 0) {
+            return $getPageTemplate[0];
         }
-        return $getPageTemplate[0];
+        $uncategorisedCategory = get_term_by(
+            "slug",
+            "uncategorised",
+            Tru_Fetcher_Taxonomy_Category::NAME
+        );
+        if (is_wp_error($uncategorisedCategory)) {
+            return $uncategorisedCategory;
+        }
+        $args['tax_query'] = [
+            [
+                'taxonomy' => Tru_Fetcher_Taxonomy_Category::NAME,
+                'field' => 'term_id',
+                'terms' => $uncategorisedCategory->term_id,
+            ],
+        ];
+        $getPageTemplate = get_posts($args);
+        if (count($getPageTemplate) > 0) {
+            return $getPageTemplate[0];
+        }
+        return new WP_Error(
+            'page_not_found',
+            sprintf(
+                "Page template not found for: Taxonomy [%s], Category [%s, uncategorised], Post Type [%s].",
+                $taxonomyName, $category->name, $postType
+            )
+        );
     }
 
     public function getPostTemplateCategory(\WP_Post $post) {

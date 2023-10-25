@@ -2,9 +2,10 @@ import React from 'react';
 import {ToggleControl, SelectControl, RangeControl} from "@wordpress/components";
 import {
     findPostTypeIdIdentifier,
-    findPostTypeSelectOptions, findTaxonomyIdIdentifier, findTaxonomySelectOptions,
+    findPostTypeSelectOptions, findTaxonomyIdIdentifier, findTaxonomySelectOptions, getTermsSelectData,
 } from "../../../helpers/wp-helpers";
 import Grid from "../../components/wp/Grid";
+import {useSelect} from "@wordpress/data";
 
 const WordpressDataTab = (props) => {
     const {
@@ -13,6 +14,14 @@ const WordpressDataTab = (props) => {
         className,
         config
     } = props;
+
+    const {categoriesSelect} = useSelect(
+        (select) => {
+            return {
+                categoriesSelect: getTermsSelectData({select, taxonomy: 'category'})
+            }
+        }
+    );
 
     const itemListId = findPostTypeIdIdentifier('trf_item_list');
     const categoryId = findTaxonomyIdIdentifier('category');
@@ -70,7 +79,7 @@ const WordpressDataTab = (props) => {
                                             value: ''
                                         },
                                     ],
-                                    ...findTaxonomySelectOptions('category')
+                                    ...categoriesSelect
                                 ]}
                             />
                         }
