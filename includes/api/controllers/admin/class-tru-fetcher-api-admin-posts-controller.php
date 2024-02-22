@@ -69,14 +69,14 @@ class Tru_Fetcher_Api_Admin_Posts_Controller extends Tru_Fetcher_Api_Admin_Base_
         $defaultPostType = 'post';
         $postType = $request->get_param('post_type');
 
-        $paginationRequestData = $this->postHelpers->getPaginationRequestData($request);
-        if (is_wp_error($paginationRequestData)) {
-            return $this->controllerHelpers->sendErrorResponse(
-                $paginationRequestData->get_error_code(),
-                $paginationRequestData->get_error_message(),
-                $this->apiPostResponse
-            );
-        }
+//        $paginationRequestData = $this->postHelpers->getPaginationRequestData($request);
+//        if (is_wp_error($paginationRequestData)) {
+//            return $this->controllerHelpers->sendErrorResponse(
+//                $paginationRequestData->get_error_code(),
+//                $paginationRequestData->get_error_message(),
+//                $this->apiPostResponse
+//            );
+//        }
         if (empty($postType)) {
             $postType = $defaultPostType;
         }
@@ -86,22 +86,23 @@ class Tru_Fetcher_Api_Admin_Posts_Controller extends Tru_Fetcher_Api_Admin_Base_
             'post_type' => $postType,
         ];
 
-        $offsetArgs = [
-            'posts_per_page' => $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']],
-            'offset' => $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']],
-        ];
+//        $offsetArgs = [
+//            'posts_per_page' => $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']],
+//            'offset' => $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']],
+//        ];
 
-        $allPostsQuery = new \WP_Query($args);
-        $postQuery = new \WP_Query(array_merge($args, $offsetArgs));
+//        $allPostsQuery = new \WP_Query($args);
+//        $postQuery = new \WP_Query(array_merge($args, $offsetArgs));
+        $postQuery = new \WP_Query($args);
         $this->apiPostResponse->setPosts($this->buildPostsArray($postQuery->posts));
-        $this->apiPostResponse->setPagination(
-            Tru_Fetcher_Posts::getPostPagination(
-                $postQuery,
-                $allPostsQuery,
-                $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']],
-                $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']]
-            )
-        );
+//        $this->apiPostResponse->setPagination(
+//            Tru_Fetcher_Posts::getPostPagination(
+//                $postQuery,
+//                $allPostsQuery,
+//                $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']],
+//                $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']]
+//            )
+//        );
         return $this->controllerHelpers->sendSuccessResponse(
           'Posts fetched successfully',
             $this->apiPostResponse

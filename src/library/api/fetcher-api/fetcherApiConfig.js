@@ -5,7 +5,7 @@ export default {
     wpRequest: false,
     endpoints: {
         login: '/login',
-        checkToken: '/token/login',
+        checkToken: '/backend/auth/token/user',
         tokenRefresh: '/token/refresh',
         serviceList: '/service/list',
         categories: '/category/list',
@@ -13,6 +13,7 @@ export default {
         currencyConvert: '/currency/convert',
     },
     tokenResponseHandler: (results, appKey) => {
+        console.log('tokenResponseHandler', {results, appKey})
         const token = results?.data?.data?.session?.access_token;
         const expiresAt = results?.data?.data?.session?.expires_at;
         if (token) {

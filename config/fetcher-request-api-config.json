@@ -1,10 +1,10 @@
 {
   "baseUrl": "",
   "endpoints": {
-    "providerList": "/api/provider/list",
-    "categoryList": "/api/category/list",
-    "categoryProvidersList": "/api/category/%s/providers",
-    "serviceList": "/api/service/list",
-    "serviceResponseKeyList": "/api/service/response/key/list"
+    "providerList": "/api/backend/provider/list",
+    "categoryList": "/api/backend/category/list",
+    "categoryProvidersList": "/api/backend/category/%s/providers",
+    "serviceList": "/api/backend/service/list",
+    "serviceResponseKeyList": "/api/backend/service/response-key/list"
   }
 }
