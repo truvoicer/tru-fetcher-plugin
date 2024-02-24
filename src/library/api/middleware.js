@@ -100,7 +100,7 @@ export async function fetchRequest({config, endpoint, params = {}, apiConfig = f
         return false;
     }
     let headers = getAuthHeader(apiConfig);
-    console.log('headers', headers);
+
     if (!headers) {
         return false;
     }

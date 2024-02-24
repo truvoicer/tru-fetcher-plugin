@@ -14,7 +14,7 @@ const ApiTab = (props) => {
     function getFetcherCategories() {
         return apiConfig?.tru_fetcher?.categories;
     }
-    function getApiListingsCategoryOptions(labelKey = 'category_label', valueKey = 'id') {
+    function getApiListingsCategoryOptions(labelKey = 'label', valueKey = 'id') {
         const fetcherCategories = getFetcherCategories();
         return fetcherCategories.map((category) => {
             return {
@@ -30,8 +30,8 @@ const ApiTab = (props) => {
         const fetcherProviders = getFetcherProviders();
         return fetcherProviders.map((provider) => {
             return {
-                label: provider.provider_label,
-                value: provider.provider_name
+                label: provider.label,
+                value: provider.name
             }
         })
     }
@@ -73,7 +73,7 @@ const ApiTab = (props) => {
                         value: ''
                     },
                 ],
-                    ...getApiListingsCategoryOptions('category_label', 'category_name')
+                    ...getApiListingsCategoryOptions('label', 'name')
             ]}
             />
             <ToggleControl

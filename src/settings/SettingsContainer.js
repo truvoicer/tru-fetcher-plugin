@@ -103,7 +103,7 @@ const SettingsContainer = ({children}) => {
     function createSingleSetting(setting) {
         createSetting(setting);
     }
-    console.log({settingsContextData})
+
     return (
         <SettingsContext.Provider value={settingsContextData}>
             {children}

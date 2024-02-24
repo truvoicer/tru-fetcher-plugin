@@ -48,7 +48,7 @@ class Tru_Fetcher_Admin_Meta_Box_Base
             return false;
         }
         return array_map(function ($field) {
-            $field['field_name'] = self::buildMetaBoxFieldId($field);
+            $field['field_name'] = self::buildMetaBoxFieldId($this->getId(), $field['id']);
             return $field;
         }, $this->config['fields']);
     }
@@ -71,10 +71,10 @@ class Tru_Fetcher_Admin_Meta_Box_Base
         return "{$metaBoxIdPrefix}_{$config['id']}";
     }
 
-    public static function buildMetaBoxFieldId(array $field)
+    public static function buildMetaBoxFieldId(string $id, string $fieldId)
     {
         $metaBoxIdPrefix = self::META_BOX_ID_PREFIX;
-        return "{$metaBoxIdPrefix}_post_meta_{$field['id']}";
+        return "{$metaBoxIdPrefix}_{$id}_field_{$fieldId}";
     }
 
     public function buildPostApiKeys(\WP_Post $post) {

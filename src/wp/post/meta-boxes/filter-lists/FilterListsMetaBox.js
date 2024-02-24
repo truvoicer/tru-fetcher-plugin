@@ -49,7 +49,6 @@ const FilterListsMetaBox = ({session}) => {
     }
 
     function updateItemListValue({value, key, index}) {
-        console.log({value, key, index})
         const itemList = metaBoxContext.formData.list_items;
         const cloneItemList = [...itemList];
         cloneItemList[index][key] = value;

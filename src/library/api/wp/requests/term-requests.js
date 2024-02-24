@@ -1,7 +1,6 @@
 import {fetchRequest, sendRequest} from "../../state-middleware";
 
 export async function saveTermsRequest(data) {
-    console.log({data})
     // return await sendRequest({
     //     method: 'post',
     //     endpoint: 'taxonomy/tr_news_app_categories/terms/save',

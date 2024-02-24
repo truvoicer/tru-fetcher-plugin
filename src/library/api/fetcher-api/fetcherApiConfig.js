@@ -6,11 +6,10 @@ export default {
     endpoints: {
         login: '/login',
         checkToken: '/backend/auth/token/user',
-        tokenRefresh: '/token/refresh',
-        serviceList: '/service/list',
-        categories: '/category/list',
-        serviceResponseKeyList: '/service/response/key/list',
-        currencyConvert: '/currency/convert',
+        tokenRefresh: '/backend/session/api-token/generate',
+        service: '/backend/service',
+        categories: '/backend/category/list',
+        serviceResponseKeyList: '/backend/service/response-key/list',
     },
     tokenResponseHandler: (results, appKey) => {
         console.log('tokenResponseHandler', {results, appKey})

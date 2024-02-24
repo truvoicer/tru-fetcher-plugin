@@ -68,7 +68,7 @@ const FormListField = ({
 		})
 		callback(name, queryData, arrayFieldIndex);
 	}
-	console.log(formList)
+
 	return (
 		<div className={listClass}>
 			<button className={"btn btn-primary btn-sm add-row-button"}

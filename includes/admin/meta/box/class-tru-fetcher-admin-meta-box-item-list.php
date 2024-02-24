@@ -41,8 +41,8 @@ class Tru_Fetcher_Admin_Meta_Box_Item_List extends Tru_Fetcher_Admin_Meta_Box_Ba
             'id' => $this->id,
             'title' => $this->title,
             'post_types' => [
-                ['name' => Tru_Fetcher_Post_Types_Trf_Item_List::NAME],
-                ['name' => Tru_Fetcher_Post_Types_Trf_Single_Item::NAME],
+                ['name' => Tru_Fetcher_Post_Types_Trf_Item_List::NAME, 'show' => true],
+                ['name' => Tru_Fetcher_Post_Types_Trf_Single_Item::NAME, 'show' => false],
             ],
             'fields' => [
                 [

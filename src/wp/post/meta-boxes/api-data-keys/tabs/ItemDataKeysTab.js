@@ -28,10 +28,10 @@ const ItemDataKeysTab = ({session}) => {
     async function serviceListRequest() {
         const results = await fetchRequest({
             config: fetcherApiConfig,
-            endpoint: fetcherApiConfig.endpoints.serviceList,
+            endpoint: `${fetcherApiConfig.endpoints.service}/list`,
         });
-        if (Array.isArray(results?.data?.data)) {
-            setServices(results.data.data);
+        if (Array.isArray(results?.data?.data?.services)) {
+            setServices(results.data.data.services);
         }
     }
 
@@ -52,24 +52,24 @@ const ItemDataKeysTab = ({session}) => {
         const dataKeys = postMetaBoxContext.formData.data_keys;
         const usedKeys = dataKeys.map((item) => item.data_item_key);
         const filteredDataKeysOptions = dataKeysOptions.filter((item) => {
-            return !usedKeys.includes(item.key_value);
+            return !usedKeys.includes(item.name);
         });
         return filteredDataKeysOptions.map((item) => {
             return {
-                label: item.key_value,
-                value: item.key_value,
+                label: item.name,
+                value: item.name,
             }
         })
     }
 
     function getDataKeysSelectValue(value) {
-        const findItem = dataKeysOptions.find((item) => item?.key_value === value);
+        const findItem = dataKeysOptions.find((item) => item?.name === value);
         if (!findItem) {
             return null;
         }
         return {
-            label: findItem.key_value,
-            value: findItem.key_value,
+            label: findItem.name,
+            value: findItem.name,
         }
     }
 
@@ -146,20 +146,20 @@ const ItemDataKeysTab = ({session}) => {
         }
         const results = await fetchRequest({
             config: fetcherApiConfig,
-            endpoint: fetcherApiConfig.endpoints.serviceResponseKeyList,
+            endpoint: `${fetcherApiConfig.endpoints.service}/${postMetaBoxContext.formData?.service}/response-key/list`,
             params: {
-                service_id: postMetaBoxContext.formData?.service,
+                pagination: false,
             }
         });
-        if (Array.isArray(results?.data?.data)) {
-            setDataKeysOptions(results.data.data);
+        if (Array.isArray(results?.data?.data?.service_response_keys)) {
+            setDataKeysOptions(results.data.data.service_response_keys);
         }
     }
 
     function getServicesOptions() {
         return services.map((item) => {
             return {
-                label: item.service_label,
+                label: item.label,
                 value: item.id,
             }
         })
@@ -175,6 +175,7 @@ const ItemDataKeysTab = ({session}) => {
     useEffect(() => {
         dataKeysRequest();
     }, [postMetaBoxContext.formData?.service]);
+
 
     return (
         <>
@@ -237,7 +238,6 @@ const ItemDataKeysTab = ({session}) => {
         </>
     );
 };
-
 export default connect(
     (state) => {
         return {

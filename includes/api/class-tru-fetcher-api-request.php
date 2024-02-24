@@ -131,6 +131,7 @@ class Tru_Fetcher_Api_Request extends Tru_Fetcher_Base
         if (is_wp_error($getData)) {
             return $getData;
         }
+
         if (!$getData) {
             $this->addError(
                 new \WP_Error("api_response_error", "Error from Api", $getData)

@@ -6,7 +6,7 @@ const GeneralTab = (props) => {
         data = [],
         onChange
     } = props;
-    console.log({data})
+
     return (
         <div>
             <SelectControl

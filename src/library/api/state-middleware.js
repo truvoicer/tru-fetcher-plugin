@@ -171,7 +171,7 @@ export async function fetchRequest({ config, endpoint, params = {}}) {
         return false;
     }
     let headers = getAuthHeader(appKey);
-    console.log({headers})
+
     if (!headers && config?.wpRequest) {
         return false;
     }

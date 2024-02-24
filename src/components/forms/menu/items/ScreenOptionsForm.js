@@ -38,7 +38,6 @@ const ScreenOptionsForm = ({
 	}
 
 	function submitCallbackHandler(values) {
-		console.log({formikProps, fieldData})
 		if (!isFormikPropsValid()) {
 			console.error('Formik props error')
 			return;

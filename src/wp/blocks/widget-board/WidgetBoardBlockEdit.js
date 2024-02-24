@@ -39,7 +39,7 @@ const WidgetBoardBlockEdit = (props) => {
         return <TabComponent {...props} />;
     }
 
-    // console.log({attributes})
+
     return (
         <div {...useBlockProps()}>
             <Panel>

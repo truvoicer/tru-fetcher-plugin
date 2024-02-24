@@ -75,15 +75,14 @@ const AccessControlForm = ({
 		) {
 			return;
 		}
-		console.log(formData.items[fieldData.index])
 		switch (formData.items[fieldData.index]['state']) {
 			case 'update':
-				console.log(formData.items[fieldData.index])
 				// const results = updateMenuItemRolesRequest({
 				// 	menuId: formData.items[fieldData.index]['menu_id'],
 				// 	menuItemId: formData.items[fieldData.index]['id'],
 				// 	data: values
 				// })
+				break;
 		}
 		setShowFormModal(false);
 	}

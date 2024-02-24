@@ -44,10 +44,10 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
     ];
 
     public const META_BOXES = [
-//        Tru_Fetcher_Admin_Meta_Box_Single_Item::class,
+        Tru_Fetcher_Admin_Meta_Box_Single_Item::class,
         Tru_Fetcher_Admin_Meta_Box_Item_List::class,
         Tru_Fetcher_Admin_Meta_Box_Filter_Lists::class,
-        Tru_Fetcher_Admin_Meta_Box_Api_Data_Keys::class
+//        Tru_Fetcher_Admin_Meta_Box_Api_Data_Keys::class
     ];
 
     public function init()
@@ -82,9 +82,9 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
         }
     }
 
-    private function fetchMetaBoxFieldValue(int $postId, array $field)
+    private function fetchMetaBoxFieldValue(int $postId, string $id, array $field)
     {
-        $fieldId = Tru_Fetcher_Admin_Meta_Box_Base::buildMetaBoxFieldId($field);
+        $fieldId = Tru_Fetcher_Admin_Meta_Box_Base::buildMetaBoxFieldId($id, $field['id']);
         $fetchMeta = get_post_meta($postId, $fieldId, true);
         if (!$fetchMeta) {
             $this->addError(
@@ -108,7 +108,7 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
             $config = $metaBoxInstance->getConfig();
             $fields = $config['fields'];
             foreach ($fields as $field) {
-                $fieldId = Tru_Fetcher_Admin_Meta_Box_Base::buildMetaBoxFieldId($field);
+                $fieldId = Tru_Fetcher_Admin_Meta_Box_Base::buildMetaBoxFieldId($metaBoxInstance->getId(), $field['id']);
                 if (array_key_exists($fieldId, $_POST)) {
                     $postField = $_POST[$fieldId];
                     $saveValue = $this->buildMetaBoxFieldSaveValue($postField, $field);
@@ -133,21 +133,40 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
         }
     }
 
-    public function addEditorMetaBoxes()
+    public function findMetaBoxInstanceById(string $id)
     {
         foreach (self::META_BOXES as $metaBoxClass) {
             $metaBoxInstance = new $metaBoxClass();
             $config = $metaBoxInstance->getConfig();
-            $id = $metaBoxInstance->buildMetaBoxId();
-            $title = $config['title'];
-            foreach ($config['post_types'] as $postType) {
-                add_meta_box(
-                    $id,
-                    $title,
-                    [$this, 'renderMetaBox'],
-                    $postType
-                );
+            $postTypes = $config['post_types'];
+            $findPostTypeIndex = array_search($id, array_column($postTypes, 'name'));
+            if ($findPostTypeIndex === false) {
+                continue;
             }
+            $postType = $postTypes[$findPostTypeIndex];
+            if (!empty($postType['show'])) {
+                return $metaBoxInstance;
+            }
+        }
+        return false;
+    }
+    public function addEditorMetaBoxes()
+    {
+        $currentScreen = get_current_screen();
+        $findMetaBoxInstance = $this->findMetaBoxInstanceById($currentScreen->id);
+        if (!$findMetaBoxInstance) {
+            return;
+        }
+        $config = $findMetaBoxInstance->getConfig();
+        $id = $findMetaBoxInstance->buildMetaBoxId();
+        $title = $config['title'];
+        foreach ($config['post_types'] as $postType) {
+            add_meta_box(
+                $id,
+                $title,
+                [$this, 'renderMetaBox'],
+                $postType
+            );
         }
     }
 
@@ -181,8 +200,8 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
                 $postTypeInstance = new $postTypeClass();
                 return $postTypeInstance->getConfig();
             }, $config['post_types']);
-            $config['fields'] = array_map(function ($field) {
-                $field['field_name'] = Tru_Fetcher_Admin_Meta_Box_Base::buildMetaBoxFieldId($field);
+            $config['fields'] = array_map(function ($field) use ($metaBoxInstance) {
+                $field['field_name'] = Tru_Fetcher_Admin_Meta_Box_Base::buildMetaBoxFieldId($metaBoxInstance->getId(), $field['id']);
                 return $field;
             }, $config['fields']);
             $data[] = $config;
@@ -219,8 +238,8 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
             $id = $metaBoxInstance->buildMetaBoxId();
             $fields = $config['fields'];
             foreach ($fields as $field) {
-                $fieldId = Tru_Fetcher_Admin_Meta_Box_Base::buildMetaBoxFieldId($field);
-                $metaValue = $this->fetchMetaBoxFieldValue($post->ID, $field);
+                $fieldId = Tru_Fetcher_Admin_Meta_Box_Base::buildMetaBoxFieldId($metaBoxInstance->getId(), $field['id']);
+                $metaValue = $this->fetchMetaBoxFieldValue($post->ID, $metaBoxInstance->getId(), $field);
                 $inputArgs = [
                     'id' => $fieldId,
                     'name' => $fieldId,

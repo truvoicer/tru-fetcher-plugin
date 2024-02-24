@@ -35,7 +35,6 @@ const EditableCell = ({
     const save = async () => {
         try {
             const values = await form.validateFields();
-            console.log({values});
             // toggleEdit();
             handleSave({row: { ...record, ...values }, col});
         } catch (errInfo) {

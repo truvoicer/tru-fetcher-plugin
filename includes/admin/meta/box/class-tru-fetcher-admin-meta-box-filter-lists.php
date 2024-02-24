@@ -41,7 +41,7 @@ class Tru_Fetcher_Admin_Meta_Box_Filter_Lists extends Tru_Fetcher_Admin_Meta_Box
             'id' => $this->id,
             'title' => $this->title,
             'post_types' => [
-                ['name' => Tru_Fetcher_Post_Types_Trf_Filter_List::NAME],
+                ['name' => Tru_Fetcher_Post_Types_Trf_Filter_List::NAME, 'show' => true],
             ],
             'fields' => [
                 [

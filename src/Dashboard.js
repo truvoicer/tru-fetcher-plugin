@@ -18,10 +18,6 @@ import {getSignedJwt} from "./library/helpers/auth/jwt-helpers";
 //     return payloadJwt;
 // }
 const Dashboard = ({app, session}) => {
-    const navigate = useNavigate();
-    // useEffect(() => {
-    //     console.log(getJwt())
-    // }, []);
     return (
         <>
             Dash

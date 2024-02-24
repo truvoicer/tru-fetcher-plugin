@@ -32,7 +32,6 @@ const ItemListSingleItem = ({onChange = false, index}) => {
                 value={getSelectValue()}
                 onChange={(e, data) => {
                     if (typeof onChange === 'function') {
-                        console.log({data})
                         onChange({value: data.value, item: {name: 'single_item_id'}})
                     }
                 }}

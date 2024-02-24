@@ -34,7 +34,7 @@ const OptInBlockEdit = (props) => {
             });
         }
     }
-    // console.log({innerBlocksProps, children})
+
 
     function getTabConfig() {
         let tabConfig = [

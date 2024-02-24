@@ -16,7 +16,7 @@ function loadByPostScreenId(id) {
     let element;
     switch (id) {
         case 'trf_single_item':
-            element = document.getElementById('trf_mb_api_data_keys_react');
+            element = document.getElementById('trf_mb_single_item_react');
             if (!element) {
                 return;
             }

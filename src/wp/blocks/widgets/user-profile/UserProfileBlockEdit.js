@@ -30,7 +30,7 @@ const UserProfileBlockEdit = (props) => {
             } );
         }
     }
-    // console.log({parentAttributes})
+
     return (
         <div {...useBlockProps()}>
             <Panel>

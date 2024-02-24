@@ -17,7 +17,6 @@ const MediaInput = ({
                 <MediaPicker
                     text={addImageText}
                     onSelect={(data) => {
-                        console.log(data?.url)
                         onChange(data?.url)
                     }}
                 />

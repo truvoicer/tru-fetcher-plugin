@@ -64,12 +64,12 @@ const ApiDataKeysMetaBoxTabs = ({session, config}) => {
             return;
         }
         Object.keys(metaBoxContext.formData).forEach(field => {
-            updateMetaHiddenFields({field, metaBoxContext, fieldGroupId: 'api_data_keys'});
+            updateMetaHiddenFields({field, metaBoxContext, fieldGroupId: 'single_item'});
         })
     }, [metaBoxContext])
 
     useEffect(() => {
-        updateInitialValues({fieldGroupId: 'api_data_keys', metaBoxContext, setIsInitialized})
+        updateInitialValues({fieldGroupId: 'single_item', metaBoxContext, setIsInitialized})
     }, [])
 
     return (

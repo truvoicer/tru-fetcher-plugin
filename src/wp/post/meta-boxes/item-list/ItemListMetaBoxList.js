@@ -61,7 +61,6 @@ const ItemListMetaBoxList = ({session}) => {
     }
 
     function updateItemListValue({value, key, index}) {
-        console.log({value, key, index})
         const itemList = metaBoxContext.formData.item_list;
         const cloneItemList = [...itemList];
         cloneItemList[index][key] = value;
@@ -113,7 +112,7 @@ const ItemListMetaBoxList = ({session}) => {
                 post_type: 'trf_single_item',
             }
         });
-        console.log({results})
+
         const posts = results?.data?.posts;
         if (Array.isArray(posts)) {
             updateData('singleItemPosts', posts)

@@ -1,11 +1,9 @@
 
 export function updateInitialValues({fieldGroupId, metaBoxContext, setIsInitialized}) {
-    console.log(tru_fetcher_react)
     const findMetaFieldConfig = tru_fetcher_react.meta.metaBoxes.find(item => item?.id === fieldGroupId);
     if (!findMetaFieldConfig) {
         return;
     }
-    console.log({findMetaFieldConfig, metaBoxContext})
 
     let initialValues = {...metaBoxContext.formData};
     Object.keys(metaBoxContext.formData).forEach(key => {
@@ -37,17 +35,20 @@ export function updateInitialValues({fieldGroupId, metaBoxContext, setIsInitiali
 export function updateMetaHiddenFields({fieldGroupId, field, metaBoxContext}) {
     const findMetaFieldConfig = tru_fetcher_react.meta.metaBoxes.find(item => item?.id === fieldGroupId);
     if (!findMetaFieldConfig) {
+        console.warn('No meta field config found');
         return;
     }
     const findField = findMetaFieldConfig.fields.find(fieldItem => fieldItem.id === field);
 
     if (!findField) {
+        console.warn('No field found');
         return;
     }
     const fieldName = findField.field_name;
 
     const hiddenField = document.querySelector(`input[name="${fieldName}"]`);
     if (!hiddenField) {
+        console.warn('No hidden field found');
         return;
     }
     const data = metaBoxContext.formData[field];

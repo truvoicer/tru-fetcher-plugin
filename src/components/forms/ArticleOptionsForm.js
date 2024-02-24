@@ -36,7 +36,6 @@ const ArticleOptionsForm = ({
 		)
 	}
 	function submitCallbackHandler(values) {
-		console.log({formikProps, fieldData})
 		if (!isFormikPropsValid()) {
 			console.error('Formik props error')
 			return;
@@ -95,7 +94,6 @@ const ArticleOptionsForm = ({
 	useEffect(() => {
 		fetchOptionGroups()
 	}, [])
-	console.log({formFields})
 
 	return (
 		<div>

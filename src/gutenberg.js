@@ -23,7 +23,6 @@ import TabsBlockEdit from "./wp/blocks/tabs-block/TabsBlockEdit";
 import ItemViewBlockEdit from "./wp/blocks/item-view/ItemViewBlockEdit";
 import SearchBlockEdit from "./wp/blocks/search/SearchBlockEdit";
 
-console.log(tru_fetcher_react)
 if (!getPlugin('trf-fetcher-plugin')) {
     registerPlugin( 'trf-metadata-plugin', {
         render: SidebarMetaBoxLoader

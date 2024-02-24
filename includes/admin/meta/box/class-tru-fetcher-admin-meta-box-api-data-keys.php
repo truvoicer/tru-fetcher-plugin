@@ -39,7 +39,7 @@ class Tru_Fetcher_Admin_Meta_Box_Api_Data_Keys extends Tru_Fetcher_Admin_Meta_Bo
             'id' => $this->id,
             'title' => $this->title,
             'post_types' => [
-                ['name' => Tru_Fetcher_Post_Types_Trf_Single_Item::NAME],
+                ['name' => Tru_Fetcher_Post_Types_Trf_Single_Item::NAME, 'show' => true],
             ],
             'fields' => [
                 [
