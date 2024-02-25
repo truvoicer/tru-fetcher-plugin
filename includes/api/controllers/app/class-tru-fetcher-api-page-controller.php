@@ -2,11 +2,13 @@
 namespace TruFetcher\Includes\Api\Controllers\App;
 
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
+use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Page_List_Response;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Page_Response;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Sidebar_Response;
 use TruFetcher\Includes\Listings\Tru_Fetcher_Listings;
 use TruFetcher\Includes\Menus\Tru_Fetcher_Menu;
 use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
 use TruFetcher\Includes\Sidebars\Tru_Fetcher_Sidebars;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Category;
@@ -39,6 +41,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 	private Tru_Fetcher_Menu $menuClass;
     private Tru_Fetcher_Posts $postsClass;
 	private Tru_Fetcher_Api_Page_Response $apiPostResponse;
+	private Tru_Fetcher_Api_Page_List_Response $apiPageListResponse;
 	private Tru_Fetcher_Api_Sidebar_Response $apiSidebarResponse;
 
     public function __construct() {
@@ -57,6 +60,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 
 	private function loadResponseObjects() {
 		$this->apiPostResponse = new Tru_Fetcher_Api_Page_Response();
+		$this->apiPageListResponse = new Tru_Fetcher_Api_Page_List_Response();
 		$this->apiSidebarResponse = new Tru_Fetcher_Api_Sidebar_Response();
 	}
 
@@ -64,6 +68,11 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/template/(?<template_post_type>[\w-]+)/(?<taxonomy>[\w-]+)/(?<category_name>[\w-]+)', array(
 			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getPageTemplate"],
+			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
+		) );
+		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/list', array(
+			'methods'  => \WP_REST_Server::READABLE,
+			'callback' => [ $this, "getPages" ],
 			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
 		) );
 		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/page', array(
@@ -145,6 +154,23 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 		// Return the product as a response.
         return $this->controllerHelpers->sendSuccessResponse(
             'Page template fetch',
+            $this->apiPostResponse
+        );
+	}
+
+	public function getPages(\WP_REST_Request $request ) {
+        $args = [
+            'post_type' => Tru_Fetcher_Post_Types_Page::NAME,
+            'numberposts' => -1,
+        ];
+        $this->apiPageListResponse->setPostList(
+            $this->postsClass->buildPostsArray(
+                get_posts($args),
+            )
+        );
+        $this->apiPostResponse->setPageOptions( $this->postsClass::getPostMetaFields($pageObject) );
+        return $this->controllerHelpers->sendSuccessResponse(
+            'Page fetched successfully',
             $this->apiPostResponse
         );
 	}

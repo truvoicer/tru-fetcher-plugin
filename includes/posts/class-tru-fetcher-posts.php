@@ -489,6 +489,8 @@ class Tru_Fetcher_Posts
     public function buildPostsArray(array $posts, ?array $fields = self::DEFAULT_POST_LIST_ATTS)
     {
         return array_map(function (WP_Post $post) use ($fields) {
+
+            var_dump(get_post_permalink($post, true), $post); die;
             return self::buildPostObject($post, $fields);
         }, $posts);
     }
