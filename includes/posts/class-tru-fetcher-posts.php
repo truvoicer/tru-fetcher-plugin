@@ -62,23 +62,27 @@ class Tru_Fetcher_Posts
     public static function buildPostObject(WP_Post $post, ?array $fields = [])
     {
         $postTypes = new Tru_Fetcher_Post_Types();
-        $post->seo_title = $post->post_title . " - " . get_bloginfo('name');
-        $post = $postTypes->buildPostTypeData($post);
+        $buildPost = clone $post;
+        $buildPost->seo_title = $post->post_title . " - " . get_bloginfo('name');
+        $buildPost = $postTypes->buildPostTypeData($post);
 
-        $post->post_content = apply_filters("the_content", $post->post_content);
+        $buildPost->post_content = apply_filters("the_content", $post->post_content);
         if (count($fields) > 0) {
-            $post = (object)array_intersect_key((array)$post, array_flip($fields));
+            $buildPost = (object)array_intersect_key((array)$post, array_flip($fields));
+            if (in_array('url', $fields)) {
+                $buildPost->url = get_page_uri($post);
+            }
         }
         if (!count($fields) || in_array("post_category", $fields)) {
-            $post->categories = Tru_Fetcher_Taxonomy::getPostCategories($post, ["term_id", "name", "slug"]);
+            $buildPost->categories = Tru_Fetcher_Taxonomy::getPostCategories($post, ["term_id", "name", "slug"]);
         }
         if (!count($fields) || in_array("post_template_category", $fields)) {
-            $post->post_template_category = null;
+            $buildPost->post_template_category = null;
         }
         if (!count($fields) || in_array("featured_image", $fields)) {
-            $post->featured_image = get_the_post_thumbnail_url($post);
+            $buildPost->featured_image = get_the_post_thumbnail_url($post);
         }
-        return $post;
+        return $buildPost;
     }
 
     public function getPostByPostType(int $postId, string $postType)
@@ -489,8 +493,6 @@ class Tru_Fetcher_Posts
     public function buildPostsArray(array $posts, ?array $fields = self::DEFAULT_POST_LIST_ATTS)
     {
         return array_map(function (WP_Post $post) use ($fields) {
-
-            var_dump(get_post_permalink($post, true), $post); die;
             return self::buildPostObject($post, $fields);
         }, $posts);
     }

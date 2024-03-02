@@ -163,15 +163,15 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
             'post_type' => Tru_Fetcher_Post_Types_Page::NAME,
             'numberposts' => -1,
         ];
-        $this->apiPageListResponse->setPostList(
+        $this->apiPageListResponse->setPageList(
             $this->postsClass->buildPostsArray(
                 get_posts($args),
+                ['ID', 'url', 'post_name']
             )
         );
-        $this->apiPostResponse->setPageOptions( $this->postsClass::getPostMetaFields($pageObject) );
         return $this->controllerHelpers->sendSuccessResponse(
             'Page fetched successfully',
-            $this->apiPostResponse
+            $this->apiPageListResponse
         );
 	}
 
