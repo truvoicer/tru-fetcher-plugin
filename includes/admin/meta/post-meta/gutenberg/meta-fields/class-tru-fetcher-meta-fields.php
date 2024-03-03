@@ -28,4 +28,25 @@ class Tru_Fetcher_Meta_Fields
         Tru_Fetcher_Meta_Fields_Page_Options::class,
         Tru_Fetcher_Meta_Fields_Post_Options::class,
     ];
+    private static string $gutenbergMetaIdPrefix = 'trf_gut_pmf';
+
+    public static function buildGutenbergMetaFieldId(array $field)
+    {
+        return sprintf("%s_%s",
+            self::$gutenbergMetaIdPrefix,
+            $field['meta_key']
+        );
+    }
+    public static function getMetaFieldIdByMetaKey(string $meta_key): string|null
+    {
+        foreach (self::META_FIELDS as $metaField) {
+            $metaField = new $metaField();
+            $field = $metaField->getField($meta_key);
+            if (empty($field['meta_key'])) {
+                continue;
+            }
+            return self::buildGutenbergMetaFieldId($field);
+        }
+        return null;
+    }
 }

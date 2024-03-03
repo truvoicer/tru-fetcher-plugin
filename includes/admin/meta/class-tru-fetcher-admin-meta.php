@@ -6,6 +6,7 @@ use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Api_Data_Keys;
 use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Base;
 use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Filter_Lists;
 use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Item_List;
+use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Base;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Post_Options;
@@ -257,7 +258,7 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
     public function getMetaFields(Tru_Fetcher_Meta_Fields_Base $fieldGroupClass)
     {
         return array_map(function ($field) use ($fieldGroupClass) {
-            $id = $fieldGroupClass::buildGutenbergMetaFieldId($field);
+            $id = Tru_Fetcher_Meta_Fields::buildGutenbergMetaFieldId($field);
             return [
                 'post_type' => $field['post_type'],
                 'meta_key' => $id,

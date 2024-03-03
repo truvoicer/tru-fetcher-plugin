@@ -27,21 +27,11 @@ class Tru_Fetcher_Meta_Fields_Base
     protected string $name;
     protected string $postType;
     protected array $fields = [];
-    private static string $gutenbergMetaIdPrefix = 'trf_gut_pmf';
-
-    public static function buildGutenbergMetaFieldId(array $field)
-    {
-        return sprintf("%s_%s",
-            self::$gutenbergMetaIdPrefix,
-            $field['meta_key']
-        );
-    }
 
     public function getField(string $meta_key): array|null
     {
         foreach ($this->fields as $field) {
             if ($field['meta_key'] === $meta_key) {
-                $field['meta_key'] = $this->buildGutenbergMetaFieldId($field);
                 return $field;
             }
         }
@@ -51,7 +41,7 @@ class Tru_Fetcher_Meta_Fields_Base
     {
         $field = $this->getField($meta_key);
         if (!empty($field['meta_key'])) {
-            return $field['meta_key'];
+            return Tru_Fetcher_Meta_Fields::buildGutenbergMetaFieldId($field);
         }
         return null;
     }
@@ -59,7 +49,7 @@ class Tru_Fetcher_Meta_Fields_Base
     public function renderPost(\WP_Post $post ) {
         $post->{$this->name} = [];
         foreach ($this->fields as $field) {
-            $metaKey = self::buildGutenbergMetaFieldId($field);
+            $metaKey = Tru_Fetcher_Meta_Fields::buildGutenbergMetaFieldId($field);
             $single = false;
             if (isset($field['args']['single'])) {
                 $single = (bool)$field['args']['single'];
@@ -76,7 +66,7 @@ class Tru_Fetcher_Meta_Fields_Base
     public function buildPostMetaFieldsData(\WP_Post $post ) {
         $options = [];
         foreach ($this->fields as $field) {
-            $metaKey = self::buildGutenbergMetaFieldId($field);
+            $metaKey = Tru_Fetcher_Meta_Fields::buildGutenbergMetaFieldId($field);
             $single = false;
             if (isset($field['args']['single'])) {
                 $single = (bool)$field['args']['single'];

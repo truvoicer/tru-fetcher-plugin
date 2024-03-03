@@ -2,6 +2,8 @@
 namespace TruFetcher\Includes\Menus;
 
 use stdClass;
+use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields;
+use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
 use TruFetcher\Includes\Listings\Tru_Fetcher_Listings;
 use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
 
@@ -50,7 +52,7 @@ class Tru_Fetcher_Menu {
 			$subItems = [];
 			foreach ( $getMenu as $subItem ) {
 				if ( (int) $subItem->menu_item_parent == (int) $item->ID ) {
-					array_push($subItems, $this->getPostFromMenuItem( $subItem ));
+					$subItems[] = $this->getPostFromMenuItem($subItem);
 				}
 			}
 
@@ -75,7 +77,6 @@ class Tru_Fetcher_Menu {
 		if ($getPost->ID === (int) get_option( 'page_on_front' )) {
 			$pageUrl = str_replace(get_site_url(), "", get_page_link($getPost));
 		}
-        $pageOptions = Tru_Fetcher_Posts::getPostMetaFields($getPost);
 		$post = new stdClass();
 		$post->isfront = (int) get_option( 'page_on_front' );
 		$post->menu_title = $menuItem->title;
@@ -83,8 +84,15 @@ class Tru_Fetcher_Menu {
 		$post->post_name = $getPost->post_name;
 		$post->post_content = $getPost->post_content;
 		$post->post_url = $pageUrl;
-        if (isset($pageOptions['pageType'])) {
-            $post->post_type = $pageOptions['pageType'];
+
+        $pageOptions = Tru_Fetcher_Posts::getPostMetaFields($getPost);
+
+        $pageTypeId = Tru_Fetcher_Meta_Fields::getMetaFieldIdByMetaKey(
+            Tru_Fetcher_Meta_Fields_Page_Options::META_KEY_PAGE_TYPE
+        );
+
+        if (isset($pageOptions[$pageTypeId])) {
+            $post->post_type = $pageOptions[$pageTypeId];
         } else {
             $post->post_type = null;
         }
