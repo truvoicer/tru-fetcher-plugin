@@ -3,6 +3,7 @@ namespace TruFetcher\Includes\Api\Controllers\App;
 
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Page_Response;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Settings_Response;
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Setting;
 use TruFetcher\Includes\Listings\Tru_Fetcher_Listings;
 use TruFetcher\Includes\Menus\Tru_Fetcher_Menu;
 use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
@@ -31,10 +32,12 @@ use TruFetcher\Includes\Sidebars\Tru_Fetcher_Sidebars;
 class Tru_Fetcher_Api_Settings_Controller extends Tru_Fetcher_Api_Controller_Base {
 
 	private Tru_Fetcher_Api_Settings_Response $apiSettingsResponse;
+    private Tru_Fetcher_Api_Helpers_Setting $settingHelpers;
 
     public function __construct() {
         parent::__construct();
         $this->apiConfigEndpoints->endpointsInit('/settings');
+        $this->settingHelpers = new Tru_Fetcher_Api_Helpers_Setting();
     }
 
 	public function init() {
@@ -60,16 +63,10 @@ class Tru_Fetcher_Api_Settings_Controller extends Tru_Fetcher_Api_Controller_Bas
 	}
 
 	private function getSiteConfig() {
-		return [
-			"admin_email"      => get_option( "admin_email" ),
-			"blogname"         => get_option( "blogname" ),
-			"blogdescription"  => get_option( "blogdescription" ),
-			"blog_charset"     => get_option( "blog_charset" ),
-			"date_format"      => get_option( "date_format" ),
-			"default_category" => get_option( "default_category" ),
-			"home"             => get_option( "home" ),
-			"siteurl"          => get_option( "siteurl" ),
-			"posts_per_page"   => get_option( "posts_per_page" ),
-		];
+        return array_merge(
+            $this->settingHelpers->getFormattedSettings(['api_key', 'api_url', 'docker_api_url', 'docker_api_key', 'docker']),
+            $this->settingHelpers->getWordpressSettings()
+        );
+
 	}
 }

@@ -27,9 +27,11 @@ use TruFetcher\Includes\DB\Traits\WP\Tru_Fetcher_DB_Traits_WP_Site;
  * @subpackage Tru_Fetcher/includes
  * @author     Michael <michael@local.com>
  */
-class Tru_Fetcher_Api_Helpers_Setting {
+class Tru_Fetcher_Api_Helpers_Setting
+{
 
     use Tru_Fetcher_DB_Traits_WP_Site;
+
     public const ERROR_PREFIX = TRU_FETCHER_ERROR_PREFIX . '_settings';
 
     private Tru_Fetcher_DB_Engine $db;
@@ -44,7 +46,40 @@ class Tru_Fetcher_Api_Helpers_Setting {
         $this->db = new Tru_Fetcher_DB_Engine();
     }
 
-    public function getSetting(string $name) {
+    public function getWordpressSettings()
+    {
+        return [
+            "admin_email" => get_option("admin_email"),
+            "blogname" => get_option("blogname"),
+            "blogdescription" => get_option("blogdescription"),
+            "blog_charset" => get_option("blog_charset"),
+            "date_format" => get_option("date_format"),
+            "default_category" => get_option("default_category"),
+            "home" => get_option("home"),
+            "siteurl" => get_option("siteurl"),
+            "posts_per_page" => get_option("posts_per_page"),
+        ];
+    }
+
+    public function getFormattedSettings(?array $exclude = [])
+    {
+        $formattedSettings = [];
+        foreach ($this->getSettings($exclude) as $setting) {
+            $formattedSettings[$setting[$this->settingsModel->getNameColumn()]] = $setting[$this->settingsModel->getValueColumn()];
+        }
+        return $formattedSettings;
+    }
+
+    public function getSettings(?array $exclude = [])
+    {
+        foreach ($exclude as $key) {
+            $this->settingsRepository->addWhere($this->settingsModel->getNameColumn(), $key, '!=');
+        }
+        return $this->settingsRepository->findMany();
+    }
+
+    public function getSetting(string $name)
+    {
         $setting = $this->settingsRepository->findSettingByName($name);
         if (!$setting) {
             return false;

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use TruFetcher\Includes\Api\Response\Admin\Tru_Fetcher_Api_Admin_Token_Response;
 use TruFetcher\Includes\Firebase\Helpers\Tru_Fetcher_Firebase_Helpers;
 use TruFetcher\Includes\Firebase\Tru_Fetcher_Firebase_Messaging;
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Setting;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
 use TruFetcher\Includes\User\Tru_Fetcher_User;
@@ -40,12 +41,26 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
     const AUTH_PROVIDER_WORDPRESS = 'wordpress';
 
     private Tru_Fetcher_Firebase_Helpers $firebaseHelpers;
+    private Tru_Fetcher_Api_Helpers_Setting $settingsHelpers;
+    private array $googleAuthProperties = [
+        'sub',
+        'email',
+        'email_verified',
+        'name',
+        'picture',
+        'given_name',
+        'family_name',
+        'locale',
+        'iat',
+        'exp',
+    ];
 
     public function __construct()
     {
         parent::__construct();
         $this->authJwt->setSecret($this->getAppSecretKey());
         $this->firebaseHelpers = new Tru_Fetcher_Firebase_Helpers();
+        $this->settingsHelpers = new Tru_Fetcher_Api_Helpers_Setting();
     }
 
 
@@ -193,16 +208,34 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
         return $getUser;
     }
 
+    private function buildGoogleAuthVerifyResponse(array $payload) {
+        $response = [];
+        foreach ($this->googleAuthProperties as $prop) {
+            if (array_key_exists($prop, $payload)) {
+                $response[$prop] = $payload[$prop];
+            }
+        }
+        return $response;
+    }
+
     private function validateGoogleToken(\WP_REST_Request $request, string $authProvider)
     {
         $token = $request->get_param('token');
-        $validateKey = file_get_contents(sprintf($this->googleValidateUrl, $token));
-        if (!$validateKey) {
-            return new WP_Error('auth_error', __('Validation failed, invalid Google auth key.', 'jwt-auth'));
+        $clientId = $this->settingsHelpers->getSetting('google_login_client_id');
+        if (empty($clientId)) {
+            return new WP_Error('auth_error', __('Google client id not found.', 'jwt-auth'));
         }
 
-        $validateObject = json_decode($validateKey);
-        $userEmail = $validateObject->email;
+        $client = new \Google_Client(['client_id' => $clientId]);  // Specify the CLIENT_ID of the app that accesses the backend
+
+        $payload = $client->verifyIdToken($token);
+
+        if (!is_array($payload) || !count($payload) || empty($payload['sub'])) {
+            return new WP_Error('auth_error', __('Validation failed, invalid Google auth key.', 'jwt-auth'));
+        }
+        $data = $this->buildGoogleAuthVerifyResponse($payload);
+
+        $userEmail = $data['email'];
         $getUser = get_user_by_email($userEmail);
 
         if (!$getUser) {
@@ -210,9 +243,9 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
                 "nickname" => $userEmail,
                 "user_nicename" => $userEmail,
                 "display_name" => $userEmail,
-                "first_name" => $validateObject->given_name,
-                "last_name" => $validateObject->family_name,
-                'picture' => $validateObject->picture
+                "first_name" => $data['given_name'],
+                "last_name" => $data['family_name'],
+                'picture' => $data['picture']
             ];
             $getUser = $this->createUser(
                 $authProvider,
@@ -231,12 +264,25 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
     private function validateFacebookToken(\WP_REST_Request $request, string $authProvider)
     {
         $token = $request->get_param('token');
-        $config = parent::getConfig(self::FACEBOOK_CONFIG);
+
+        $appId = $this->settingsHelpers->getSetting('facebook_app_id');
+        $appSecret = $this->settingsHelpers->getSetting('facebook_app_secret');
+        $graphVersion = $this->settingsHelpers->getSetting('facebook_graph_version');
+        if (empty($appId)) {
+            return new WP_Error('auth_error', __('Facebook app id not found.', 'jwt-auth'));
+        }
+        if (empty($appSecret)) {
+            return new WP_Error('auth_error', __('Facebook app secret not found.', 'jwt-auth'));
+        }
+        if (empty($graphVersion)) {
+            return new WP_Error('auth_error', __('Facebook graph version not found.', 'jwt-auth'));
+        }
+
         try {
             $fb = new \Facebook\Facebook([
-                'app_id' => $config->facebook_sdk->app_id,
-                'app_secret' => $config->facebook_sdk->app_secret,
-                'default_graph_version' => $config->facebook_sdk->graph_version,
+                'app_id' => $appId,
+                'app_secret' => $appSecret,
+                'default_graph_version' => $graphVersion,
             ]);
             // The OAuth 2.0 client handler helps us manage access tokens
             $oAuth2Client = $fb->getOAuth2Client();
@@ -348,12 +394,12 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
         $authProvider = $request->get_param(self::AUTH_PROVIDER);
 
         switch ($authProvider) {
-//            case self::AUTH_PROVIDER_GOOGLE:
-//                $user = $this->validateGoogleToken($request, $authProvider);
-//                break;
-//            case self::AUTH_PROVIDER_FACEBOOK:
-//                $user = $this->validateFacebookToken($request, $authProvider);
-//                break;
+            case self::AUTH_PROVIDER_GOOGLE:
+                $user = $this->validateGoogleToken($request, $authProvider);
+                break;
+            case self::AUTH_PROVIDER_FACEBOOK:
+                $user = $this->validateFacebookToken($request, $authProvider);
+                break;
             case self::AUTH_PROVIDER_WORDPRESS:
                 $user = $this->wordpressLoginHandler($request, $authProvider);
                 break;
@@ -377,17 +423,19 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
 
         $fetchApiToken = $this->apiTokensRepository->getUserToken($authProvider, $user);
         if (!$fetchApiToken) {
-            return $this->generateToken($authProvider);
+            $this->setUserToken($this->generateToken($authProvider));
+        } else if (!isset($fetchApiToken[$this->apiTokenModel->getExpiresAtColumn()])) {
+            $this->setUserToken($this->generateToken($authProvider));
+        } else {
+            $expiry = $fetchApiToken[$this->apiTokenModel->getExpiresAtColumn()];
+            $expiryDateTime = strtotime($expiry);
+            if ($expiryDateTime < time()) {
+                $this->setUserToken($this->generateToken($authProvider));
+            } else {
+                $this->setUserToken($fetchApiToken);
+            }
         }
-        if (!isset($fetchApiToken[$this->apiTokenModel->getExpiresAtColumn()])) {
-            return $this->generateToken($authProvider);
-        }
-        $expiry = $fetchApiToken[$this->apiTokenModel->getExpiresAtColumn()];
-        $expiryDateTime = strtotime($expiry);
-        if ($expiryDateTime < time()) {
-            return $this->generateToken($authProvider);
-        }
-        return $fetchApiToken;
+        return $this->userToken;
     }
 
     public function generateToken(string $appKey)
