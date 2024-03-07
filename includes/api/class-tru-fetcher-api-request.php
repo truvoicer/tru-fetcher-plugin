@@ -13,10 +13,13 @@ class Tru_Fetcher_Api_Request extends Tru_Fetcher_Base
 {
     use Tru_Fetcher_Traits_Errors;
 
+    const RESPONSE_FORMAT_ARRAY = "array";
+    const RESPONSE_FORMAT_OBJECT = "object";
     const API_CONFIG_FILE = "fetcher-request-api-config";
     const ALLOWED_METHODS = ["GET", "POST"];
 
     private Tru_Fetcher_Api_Helpers_Setting $settingHelper;
+    private string $responseFormat = 'object';
     private $apiConfig;
     private string $baseUrl;
 
@@ -103,17 +106,22 @@ class Tru_Fetcher_Api_Request extends Tru_Fetcher_Base
         }
     }
 
+    private function isResponseFormatAssoc(): bool
+    {
+        return $this->responseFormat === self::RESPONSE_FORMAT_ARRAY;
+    }
+
     private function responseHandler(\GuzzleHttp\Psr7\Response $response)
     {
         switch ($response->getStatusCode()) {
             case 200:
-                return json_decode($response->getBody()->getContents());
+                return json_decode($response->getBody()->getContents(), $this->isResponseFormatAssoc());
             default:
                 $this->addError(
                     new \WP_Error(
                         "api_response_error",
                         "Error from Api",
-                        json_decode($response->getBody()->getContents())
+                        json_decode($response->getBody()->getContents(), $this->isResponseFormatAssoc())
                     )
                 );
                 return false;
@@ -162,5 +170,11 @@ class Tru_Fetcher_Api_Request extends Tru_Fetcher_Base
     {
         return $this->token;
     }
+
+    public function setResponseFormat(string $responseFormat): void
+    {
+        $this->responseFormat = $responseFormat;
+    }
+
 }
 

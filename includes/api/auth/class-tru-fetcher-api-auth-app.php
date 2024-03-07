@@ -4,6 +4,7 @@ namespace TruFetcher\Includes\Api\Auth;
 
 use Carbon\Carbon;
 use TruFetcher\Includes\Api\Response\Admin\Tru_Fetcher_Api_Admin_Token_Response;
+use TruFetcher\Includes\Providers\Facebook\Tru_Fetcher_Providers_Facebook;
 use TruFetcher\Includes\Firebase\Helpers\Tru_Fetcher_Firebase_Helpers;
 use TruFetcher\Includes\Firebase\Tru_Fetcher_Firebase_Messaging;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Setting;
@@ -263,69 +264,37 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
 
     private function validateFacebookToken(\WP_REST_Request $request, string $authProvider)
     {
-        $token = $request->get_param('token');
-
-        $appId = $this->settingsHelpers->getSetting('facebook_app_id');
-        $appSecret = $this->settingsHelpers->getSetting('facebook_app_secret');
-        $graphVersion = $this->settingsHelpers->getSetting('facebook_graph_version');
-        if (empty($appId)) {
-            return new WP_Error('auth_error', __('Facebook app id not found.', 'jwt-auth'));
+        $facebookAuth = new Tru_Fetcher_Providers_Facebook();
+        if (is_wp_error($facebookAuth)) {
+            return $facebookAuth;
         }
-        if (empty($appSecret)) {
-            return new WP_Error('auth_error', __('Facebook app secret not found.', 'jwt-auth'));
-        }
-        if (empty($graphVersion)) {
-            return new WP_Error('auth_error', __('Facebook graph version not found.', 'jwt-auth'));
+        $facebookAuth->setAccessToken($request->get_param('token'));
+        $getFbUser = $facebookAuth->getFacebookUser();
+        if (!$getFbUser && $facebookAuth->getApiRequest()->hasErrors()) {
+            return new WP_Error('auth_error', __('Error validating facebook token.', 'jwt-auth'), $facebookAuth->getApiRequest()->getErrors());
         }
 
-        try {
-            $fb = new \Facebook\Facebook([
-                'app_id' => $appId,
-                'app_secret' => $appSecret,
-                'default_graph_version' => $graphVersion,
-            ]);
-            // The OAuth 2.0 client handler helps us manage access tokens
-            $oAuth2Client = $fb->getOAuth2Client();
+        if (!empty($getFbUser["picture"])) {
+            $getFbUser['picture'] = $getFbUser["picture"]["data"]["url"];
+        }
 
-            // Get the access token metadata from /debug_token
-            $tokenMetadata = $oAuth2Client->debugToken($token);
-            if (!$tokenMetadata->getIsValid()) {
-                return new \WP_Error('auth_error', $tokenMetadata->getErrorMessage());
-            }
+        $email = $getFbUser['email'];
+        $getUser = get_user_by_email($email);
 
-            $getFbUser = $fb->get('/me?fields=id,name,first_name,last_name,email,picture', $token);
-            if (!array_key_exists("email", $getFbUser->getDecodedBody())) {
-                return new \WP_Error('auth_error', __('Error pulling email address from facebook.', 'jwt-auth'));
-            }
-            $email = $getFbUser->getDecodedBody()["email"];
-            $getUser = get_user_by_email($email);
+        $getFbUser['nickname'] = $email;
+        $getFbUser['user_nicename'] = $email;
+        $getFbUser['display_name'] = $email;
 
-            $userData = [];
-            if (array_key_exists("first_name", $getFbUser->getDecodedBody())) {
-                $userData['first_name'] = $getFbUser->getDecodedBody()["first_name"];
+        if (!$getUser) {
+            $getUser = $this->createUser(
+                $authProvider,
+                $email,
+                $email,
+                $getFbUser
+            );
+            if (is_wp_error($getUser)) {
+                return $getUser;
             }
-            if (array_key_exists("last_name", $getFbUser->getDecodedBody())) {
-                $userData['last_name'] = $getFbUser->getDecodedBody()["last_name"];
-            }
-            if (array_key_exists("picture", $getFbUser->getDecodedBody())) {
-                $userData['picture'] = $getFbUser->getDecodedBody()["picture"]["data"]["url"];
-            }
-            $userData['nickname'] = $email;
-            $userData['user_nicename'] = $email;
-            $userData['display_name'] = $email;
-            if (!$getUser) {
-                $getUser = $this->createUser(
-                    $authProvider,
-                    $email,
-                    $email,
-                    $userData
-                );
-                if (is_wp_error($getUser)) {
-                    return $getUser;
-                }
-            }
-        } catch (\Facebook\Exceptions\FacebookSDKException $e) {
-            return new \WP_Error('auth_error', $e->getMessage());
         }
 
         return $getUser;

@@ -80,6 +80,16 @@ const GeneralSettings = () => {
                     label: 'Facebook App ID',
                     type: 'text'
                 },
+                {
+                    name: 'facebook_app_secret',
+                    label: 'Facebook App Secret',
+                    type: 'text'
+                },
+                {
+                    name: 'facebook_graph_version',
+                    label: 'Facebook Graph Version',
+                    type: 'text'
+                },
             ]
         },
         {
