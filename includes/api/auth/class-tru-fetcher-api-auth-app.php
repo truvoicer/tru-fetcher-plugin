@@ -37,6 +37,7 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
 {
     use Tru_Fetcher_Traits_Errors;
     const AUTH_PROVIDER = 'auth_provider';
+    const AUTH_PROVIDER_USER_ID = 'auth_provider_user_id';
     const AUTH_PROVIDER_FACEBOOK = 'facebook';
     const AUTH_PROVIDER_GOOGLE = 'google';
     const AUTH_PROVIDER_WORDPRESS = 'wordpress';
@@ -171,7 +172,13 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
             "user_nicename" => $username,
             "display_name" => $username
         ];
-        return $this->createUser($authProvider, $username, $email, $userData, $password);
+        $createUser = $this->createUser($authProvider, $username, $email, $userData, $password);
+        if (is_wp_error($createUser)) {
+            return $createUser;
+        }
+
+        update_user_meta($createUser->ID, self::AUTH_PROVIDER, $authProvider);
+        return $createUser;
     }
 
     private function getPassword(string $authProvider, ?string $password = null) {
@@ -188,6 +195,7 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
                 return new \WP_Error('auth_error', 'Invalid auth provider');
         }
     }
+
     private function createUser(string $authProvider, string $username, string $email, array $userData, ?string $password = null)
     {
         $password = $this->getPassword($authProvider, $password);
@@ -200,7 +208,6 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
         }
         $userData['ID'] = $createUser;
         wp_update_user($userData);
-        update_user_meta($createUser, self::AUTH_PROVIDER, $authProvider);
         $getUser = get_userdata($createUser);
         if (is_wp_error($getUser)) {
             return new \WP_Error('auth_error', __('Error retrieving new user.', 'jwt-auth'));
@@ -259,6 +266,8 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
             }
         }
 
+        update_user_meta($getUser->ID, self::AUTH_PROVIDER_USER_ID, $payload['sub']);
+        update_user_meta($getUser->ID, self::AUTH_PROVIDER, $authProvider);
         return $getUser;
     }
 
@@ -296,7 +305,8 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
                 return $getUser;
             }
         }
-
+        update_user_meta($getUser->ID, self::AUTH_PROVIDER_USER_ID, $getFbUser['id']);
+        update_user_meta($getUser->ID, self::AUTH_PROVIDER, $authProvider);
         return $getUser;
     }
 
@@ -434,11 +444,12 @@ class Tru_Fetcher_Api_Auth_App extends Tru_Fetcher_Api_Auth
         $userTokenData = $this->getUserToken();
         $responseData = [];
         if (!empty($userTokenData['type'])) {
-            $responseData['auth_type'] = $userTokenData['type'];
+            $responseData[self::AUTH_PROVIDER] = $userTokenData['type'];
         }
         if (!empty($userTokenData['token'])) {
             $responseData['token'] = $userTokenData['token'];
         }
+        $responseData[self::AUTH_PROVIDER_USER_ID] = get_user_meta($user->ID, self::AUTH_PROVIDER_USER_ID, true);
         $responseData['id'] = $user->ID;
         $responseData['user_email'] = $user->user_email;
         $responseData['display_name'] = $user->display_name;

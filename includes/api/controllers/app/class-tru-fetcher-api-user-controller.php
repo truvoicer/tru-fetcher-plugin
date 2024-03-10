@@ -1,11 +1,11 @@
 <?php
 namespace TruFetcher\Includes\Api\Controllers\App;
 
-use includes\forms\Tru_Fetcher_Api_Form_Handler;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Items_Response;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_User_Response;
 use TruFetcher\Includes\Database\Tru_Fetcher_Database;
 use TruFetcher\Includes\Email\Tru_Fetcher_Email;
+use TruFetcher\Includes\Forms\Tru_Fetcher_Api_Form_Handler;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Ratings;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Saved_Items;
 use TruFetcher\Includes\Tru_Fetcher;
@@ -180,15 +180,15 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
         $userData["user_login"] = $request["user_login"];
         $userData["user_email"] = $request["user_email"];
 
-        if (!in_array($request["auth_type"], self::AUTH_TYPES)) {
-            return $this->showError("auth_type_invalid", "Invalid authentication type in request.");
+        if (!in_array($request["auth_provider"], self::AUTH_TYPES)) {
+            return $this->showError("auth_provider_invalid", "Invalid authentication type in request.");
         }
 
         if (isset($request["change_password"]) && $request["change_password"]) {
-            if ($request["auth_type"] !== self::AUTH_TYPE_META_VALUE) {
+            if ($request["auth_provider"] !== self::AUTH_TYPE_META_VALUE) {
                 return $this->showError(
-                    "auth_type_not_allowed",
-                    sprintf("Authentication (%s) password change not allowed.", $request["auth_type"])
+                    "auth_provider_not_allowed",
+                    sprintf("Authentication (%s) password change not allowed.", $request["auth_provider"])
                 );
             }
             $authenticateUser = wp_authenticate($userData["user_email"], $request["current_password"]);
