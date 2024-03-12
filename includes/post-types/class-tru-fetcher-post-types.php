@@ -26,9 +26,9 @@ class Tru_Fetcher_Post_Types {
 
     private array $postTypes = [
         Tru_Fetcher_Post_Types_Trf_Post_Tpl::class,
-        Tru_Fetcher_Post_Types_Trf_Single_Item::class,
+//        Tru_Fetcher_Post_Types_Trf_Single_Item::class,
         Tru_Fetcher_Post_Types_Trf_Filter_List::class,
-        Tru_Fetcher_Post_Types_Trf_Item_List::class,
+//        Tru_Fetcher_Post_Types_Trf_Item_List::class,
         Tru_Fetcher_Post_Types_Trf_Category_Tpl::class,
         Tru_Fetcher_Post_Types_Trf_Item_View_Tpl::class,
         Tru_Fetcher_Post_Types_Post::class,

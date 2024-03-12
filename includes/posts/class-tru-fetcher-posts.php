@@ -416,6 +416,32 @@ class Tru_Fetcher_Posts
         return $data;
     }
 
+    public static function getPagination(int $total, int $offset, int $perPage, ?int $pageNumber = null)
+    {
+        $pagination = new Tru_Fetcher_Api_Pagination();
+        $pageCount = ceil($total / $perPage);
+        if ($offset > $total) {
+            $offset = $total;
+        }
+
+        if ($pageNumber === null) {
+            if ($offset === 0) {
+                $pageNumber = 1;
+            } else {
+                $offsetPageCount = floor($total - $offset);
+                $pageNumber = floor($pageCount - floor($offsetPageCount / $perPage));
+            }
+        }
+
+        $pagination->setPageCount($pageCount);
+        $pagination->setPageNumber($pageNumber);
+        $pagination->setOffset($offset);
+        $pagination->setPageSize($perPage);
+        $pagination->setTotalItems($total);
+        $pagination->setCurrentPerPage($perPage);
+        return $pagination;
+    }
+
     public static function getPostPagination(\WP_Query $postsQuery, \WP_Query $totalPostsQuery, int $offset, int $perPage, ?int $pageNumber = null)
     {
         $pagination = new Tru_Fetcher_Api_Pagination();

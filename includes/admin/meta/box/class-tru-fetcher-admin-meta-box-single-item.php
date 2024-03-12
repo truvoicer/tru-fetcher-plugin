@@ -28,6 +28,9 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
  */
 class Tru_Fetcher_Admin_Meta_Box_Single_Item extends Tru_Fetcher_Admin_Meta_Box_Base
 {
+    public const SERVICE_ID = 'service';
+    public const DATA_KEYS_ID = 'data_keys';
+
     protected string $id = 'single_item';
     protected string $title = 'Single Item';
 
@@ -44,48 +47,12 @@ class Tru_Fetcher_Admin_Meta_Box_Single_Item extends Tru_Fetcher_Admin_Meta_Box_
             ],
             'fields' => [
                 [
-                    'id' => 'type',
-                    'type' => 'text',
-                ],
-                [
-                    'id' => 'service',
+                    'id' => self::SERVICE_ID,
                     'type' => 'integer',
                 ],
                 [
-                    'id' => 'data_keys',
+                    'id' => self::DATA_KEYS_ID,
                     'type' => 'array',
-                ],
-                [
-                    'id' => 'item_image',
-                    'type' => 'text'
-                ],
-                [
-                    'id' => 'item_header',
-                    'type' => 'text'
-                ],
-                [
-                    'id' => 'item_text',
-                    'type' => 'text'
-                ],
-                [
-                    'id' => 'item_rating',
-                    'type' => 'number'
-                ],
-                [
-                    'id' => 'item_link_text',
-                    'type' => 'text'
-                ],
-                [
-                    'id' => 'item_link',
-                    'type' => 'text'
-                ],
-                [
-                    'id' => 'item_badge_text',
-                    'type' => 'text'
-                ],
-                [
-                    'id' => 'item_badge_link',
-                    'type' => 'text'
                 ],
             ]
         ];

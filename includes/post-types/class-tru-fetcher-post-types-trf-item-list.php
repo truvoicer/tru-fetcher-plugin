@@ -2,6 +2,8 @@
 
 namespace TruFetcher\Includes\PostTypes;
 
+use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Single_Item;
+
 /**
  * Fired during plugin activation
  *
@@ -44,6 +46,43 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
                 'capability_type' => 'page',
             ]
         );
+    }
+    public function renderSingleItem(\WP_Post $post) {
+        if (!property_exists($post, Tru_Fetcher_Post_Types_Trf_Single_Item::API_ID_IDENTIFIER)) {
+            return null;
+        }
+        $data = $post->{Tru_Fetcher_Post_Types_Trf_Single_Item::API_ID_IDENTIFIER};
+        if (!is_array($data)) {
+            return null;
+        }
+        if (empty($data[Tru_Fetcher_Admin_Meta_Box_Single_Item::SERVICE_ID]) ||
+            empty($data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID])
+        ) {
+            return null;
+        }
+        if (!is_array($data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID])) {
+            return null;
+        }
+
+        return array_merge(
+            [Tru_Fetcher_Admin_Meta_Box_Single_Item::SERVICE_ID => $data[Tru_Fetcher_Admin_Meta_Box_Single_Item::SERVICE_ID]],
+            $data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID]
+        );
+    }
+    public function renderPost(\WP_Post $post)
+    {
+        $buildPost = parent::renderPost($post);
+        return array_map(function ($item) {
+            switch ($item->type) {
+                case 'single_item':
+                    if (!property_exists($item, Tru_Fetcher_Post_Types_Trf_Single_Item::ID_IDENTIFIER)) {
+                        return null;
+                    }
+                    return $this->renderSingleItem($item->{Tru_Fetcher_Post_Types_Trf_Single_Item::ID_IDENTIFIER});
+                default:
+                    return $item;
+            }
+        }, $buildPost->{self::API_ID_IDENTIFIER}[self::API_ID_IDENTIFIER]);
     }
 
 }
