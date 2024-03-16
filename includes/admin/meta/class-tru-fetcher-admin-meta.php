@@ -198,9 +198,13 @@ class Tru_Fetcher_Admin_Meta extends Tru_Fetcher_Base
             }
             $config['post_types'] = array_map(function (array $postType) use($postTypesManager) {
                 $postTypeClass = $postTypesManager->findPostTypeByName($postType['name']);
+                if (!$postTypeClass) {
+                    return false;
+                }
                 $postTypeInstance = new $postTypeClass();
                 return $postTypeInstance->getConfig();
             }, $config['post_types']);
+            $config['post_types'] = array_filter($config['post_types']);
             $config['fields'] = array_map(function ($field) use ($metaBoxInstance) {
                 $field['field_name'] = Tru_Fetcher_Admin_Meta_Box_Base::buildMetaBoxFieldId($metaBoxInstance->getId(), $field['id']);
                 return $field;

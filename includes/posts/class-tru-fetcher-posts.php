@@ -85,20 +85,33 @@ class Tru_Fetcher_Posts
         return $buildPost;
     }
 
-    public function getPostByPostType(int $postId, string $postType)
+    public function getPostTypePostById(int $postId, string $postType)
     {
         $args = [
             'post_type' => $postType,
             'numberposts' => 1,
             'p' => $postId
         ];
+        return $this->findPostByArgs($args);
+    }
+    public function getPostTypePostByName(string $postName, string $postType)
+    {
+        $args = [
+            'post_type' => $postType,
+            'numberposts' => 1,
+            'name' => $postName
+        ];
+        return $this->findPostByArgs($args);
+    }
+
+    public function findPostByArgs(array $args) {
         $getPageTemplate = get_posts($args);
         if (count($getPageTemplate) === 0) {
             return new WP_Error(
                 'post_not_found',
                 sprintf(
-                    "Post not found for: id [%d], Post Type [%s].",
-                    $postId, $postType
+                    "Post not found for: args [%s].",
+                    json_encode($args)
                 )
             );
         }
@@ -439,6 +452,7 @@ class Tru_Fetcher_Posts
         $pagination->setPageSize($perPage);
         $pagination->setTotalItems($total);
         $pagination->setCurrentPerPage($perPage);
+        $pagination->setTotalPages($pageCount);
         return $pagination;
     }
 
@@ -511,7 +525,7 @@ class Tru_Fetcher_Posts
         if ((int)$pageNumber === 1) {
             return 0;
         }
-        return (int)$pageNumber * (int)$postsPerPage;
+        return  (int)$postsPerPage * ((int)$pageNumber - 1);
     }
 
 

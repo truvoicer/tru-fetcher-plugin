@@ -161,7 +161,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
     }
     public function buildPostTypeBlockAttributes(array $attributes) {
         $postTypesManager = new Tru_Fetcher_Post_Types();
-        foreach ($postTypesManager->getPostTypes() as $postTypeClass) {
+        foreach ($postTypesManager->getCommonPostTypes() as $postTypeClass) {
             $postType = new $postTypeClass();
             $postTypeIdIdentifier = $postType->getIdIdentifier();
             if (empty($postTypeIdIdentifier)) {

@@ -73,9 +73,8 @@ class Tru_Fetcher_Api_List_Controller extends Tru_Fetcher_Api_Controller_Base
                 $this->listResponse
             );
         }
+
         $id = (int)$id;
-        $showAllCategories = true;
-        $categories = [];
 
         $paginationRequestData = $this->postHelpers->getPaginationRequestData($request);
         if (is_wp_error($paginationRequestData)) {
@@ -86,7 +85,7 @@ class Tru_Fetcher_Api_List_Controller extends Tru_Fetcher_Api_Controller_Base
             );
         }
 
-        $post = $this->postHelpers->getPostByPostType(
+        $post = $this->postHelpers->getPostTypePostById(
             $id,
             Tru_Fetcher_Post_Types_Trf_Item_List::NAME
         );
@@ -97,45 +96,20 @@ class Tru_Fetcher_Api_List_Controller extends Tru_Fetcher_Api_Controller_Base
                 $this->listResponse
             );
         }
-
-
-//        if (isset($request["show_all_categories"])) {
-//            $showAllCategories = $request["show_all_categories"];
-//        }
-//        if (isset($request["categories"])) {
-//            $categories = $request["categories"];
-//            if (is_array($categories) && count($categories) > 0) {
-//                $categories = implode(",", $categories);
-//            } else {
-//                $categories = 0;
-//            }
-//        }
-//        $args = [
-//            'cat' => $showAllCategories ? 0 : $categories,
-//            'orderby' => 'date',
-//            'order' => 'DESC',
-//            'post_type' => 'post',
-//            'meta_key' => '_thumbnail_id',
-//        ];
-//
-//        $offsetArgs = [
-//            'posts_per_page' => $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']],
-//            'offset' => $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']],
-//        ];
-//
-//        $allPostsQuery = new \WP_Query($args);
-//        $postQuery = new \WP_Query(array_merge($args, $offsetArgs));
-//
         $buildItemList = (new Tru_Fetcher_Post_Types_Trf_Item_List())->renderPost($post);
-        $sliceList = array_slice(
-            $buildItemList,
-            $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']],
-            $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']]
-        );
+        $postsPerPage = $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']];
+        $pageNumber = $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['PAGE_NUMBER']];
         $pagination = Tru_Fetcher_Posts::getPagination(
             count($buildItemList),
             $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']],
-            $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']]
+            $postsPerPage,
+            $pageNumber
+        );
+
+        $sliceList = array_slice(
+            $buildItemList,
+            Tru_Fetcher_Posts::calculateOffset($pageNumber, $postsPerPage),
+            $postsPerPage
         );
         $this->listResponse->setList($sliceList);
         $pagination->setPaginationType($paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['PAGINATION_TYPE']]);

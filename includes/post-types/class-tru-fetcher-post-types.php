@@ -24,11 +24,20 @@ namespace TruFetcher\Includes\PostTypes;
  */
 class Tru_Fetcher_Post_Types {
 
-    private array $postTypes = [
+    private array $commonPostTypes = [
         Tru_Fetcher_Post_Types_Trf_Post_Tpl::class,
-//        Tru_Fetcher_Post_Types_Trf_Single_Item::class,
         Tru_Fetcher_Post_Types_Trf_Filter_List::class,
-//        Tru_Fetcher_Post_Types_Trf_Item_List::class,
+        Tru_Fetcher_Post_Types_Trf_Category_Tpl::class,
+        Tru_Fetcher_Post_Types_Trf_Item_View_Tpl::class,
+        Tru_Fetcher_Post_Types_Trf_Single_Item::class,
+        Tru_Fetcher_Post_Types_Post::class,
+        Tru_Fetcher_Post_Types_Page::class,
+    ];
+    private array $allPostTypes = [
+        Tru_Fetcher_Post_Types_Trf_Post_Tpl::class,
+        Tru_Fetcher_Post_Types_Trf_Single_Item::class,
+        Tru_Fetcher_Post_Types_Trf_Filter_List::class,
+        Tru_Fetcher_Post_Types_Trf_Item_List::class,
         Tru_Fetcher_Post_Types_Trf_Category_Tpl::class,
         Tru_Fetcher_Post_Types_Trf_Item_View_Tpl::class,
         Tru_Fetcher_Post_Types_Post::class,
@@ -36,7 +45,7 @@ class Tru_Fetcher_Post_Types {
     ];
 
     public function buildPostTypeData(\WP_Post $post) {
-        foreach ($this->getPostTypes() as $postType) {
+        foreach ($this->getCommonPostTypes() as $postType) {
             if ($post->post_type !== $postType::NAME) {
                 continue;
             }
@@ -53,13 +62,18 @@ class Tru_Fetcher_Post_Types {
     /**
      * @return array
      */
-    public function getPostTypes(): array
+    public function getCommonPostTypes(): array
     {
-        return $this->postTypes;
+        return $this->commonPostTypes;
+    }
+
+    public function getAllPostTypes(): array
+    {
+        return $this->allPostTypes;
     }
 
     public function findPostTypeByName(string $name) {
-        foreach ($this->getPostTypes() as $postType) {
+        foreach ($this->getAllPostTypes() as $postType) {
             $postTypeName = (new $postType())->getName();
             if ($postTypeName === $name) {
                 return $postType;

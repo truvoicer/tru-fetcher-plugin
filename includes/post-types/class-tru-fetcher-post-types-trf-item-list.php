@@ -26,6 +26,9 @@ use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Single_Item;
  */
 class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
 {
+    public const SERVICE_ID = 'service';
+    public const ITEM_ID = 'item_id';
+    public const PROVIDER = 'provider';
     public const NAME = 'trf_item_list';
     public const ID_IDENTIFIER = 'item_list_id';
     public const API_ID_IDENTIFIER = 'item_list';
@@ -55,7 +58,7 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
         if (!is_array($data)) {
             return null;
         }
-        if (empty($data[Tru_Fetcher_Admin_Meta_Box_Single_Item::SERVICE_ID]) ||
+        if (empty($data[self::SERVICE_ID]) ||
             empty($data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID])
         ) {
             return null;
@@ -65,7 +68,12 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
         }
 
         return array_merge(
-            [Tru_Fetcher_Admin_Meta_Box_Single_Item::SERVICE_ID => $data[Tru_Fetcher_Admin_Meta_Box_Single_Item::SERVICE_ID]],
+            [
+                self::SERVICE_ID => $data[self::SERVICE_ID],
+                self::ITEM_ID => $post->ID,
+                'post_name' => $post->post_name,
+                self::PROVIDER => 'internal',
+            ],
             $data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID]
         );
     }

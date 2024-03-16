@@ -6,7 +6,7 @@ class Tru_Fetcher_Constants_Api
 {
     public const REQUEST_KEYS = [
         "PAGINATION_TYPE" => "pagination_type",
-        "POST_PER_PAGE" => "post_per_page",
+        "POST_PER_PAGE" => "page_size",
         "TOTAL_ITEMS" => "total_items",
         "TOTAL_PAGES" => "total_pages",
         "PAGE_SIZE" => "page_size",

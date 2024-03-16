@@ -11,6 +11,7 @@ class Tru_Fetcher_Api_Pagination
     public ?int $current_per_page = null;
     public ?int $offset = null;
     public ?int $total_items = null;
+    public ?int $total_pages = null;
 
     public function getPageNumber(): ?int
     {
@@ -111,4 +112,15 @@ class Tru_Fetcher_Api_Pagination
     {
         $this->current_per_page = $current_per_page;
     }
+
+    public function getTotalPages(): ?int
+    {
+        return $this->total_pages;
+    }
+
+    public function setTotalPages(?int $total_pages): void
+    {
+        $this->total_pages = $total_pages;
+    }
+
 }

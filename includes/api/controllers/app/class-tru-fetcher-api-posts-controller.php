@@ -65,7 +65,7 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
             'callback' => [$this, "singlePost"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
-        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/post/(?<post_id>[\d]+)/type/(?<post_type>[\w-]+)', array(
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/post/(?<post_id>[_\d\w-]+)/type/(?<post_type>[\w-]+)', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "singlePostType"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
@@ -95,6 +95,7 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
     public function singlePostType(\WP_REST_Request $request)
     {
         $postId = $request->get_param("post_id");
+
         $postType = $request->get_param("post_type");
         if (empty($postType)) {
             return $this->controllerHelpers->sendErrorResponse(
@@ -104,7 +105,11 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
             );
         }
         $postsClass = new Tru_Fetcher_Posts();
-        $post = $postsClass->getPostByPostType($postId, $postType);
+        if (is_numeric($postId)) {
+            $post = $postsClass->getPostTypePostById($postId, $postType);
+        } else {
+            $post = $postsClass->getPostTypePostByName($postId, $postType);
+        }
         if (is_wp_error($post)) {
             return $this->controllerHelpers->sendErrorResponse(
                 'post_fetch_error',
