@@ -15,9 +15,9 @@ class Tru_Fetcher_Api_Response
 
     public const BASE_API_RESPONSE_ERROR_CODE_PREFIX = 'tr_news_app_';
 
-    public $status;
-    public $message;
-    public $data;
+    public string $status;
+    public string $message;
+    public string $data;
     public ?Tru_Fetcher_Api_Pagination $pagination = null;
 
 	/**

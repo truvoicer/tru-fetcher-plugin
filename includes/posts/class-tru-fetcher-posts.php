@@ -82,6 +82,7 @@ class Tru_Fetcher_Posts
         if (!count($fields) || in_array("featured_image", $fields)) {
             $buildPost->featured_image = get_the_post_thumbnail_url($post);
         }
+        $buildPost->provider = 'internal';
         return $buildPost;
     }
 

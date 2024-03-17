@@ -119,6 +119,7 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
         }
         $pageObject = Tru_Fetcher_Posts::buildPostObject($post);
         $this->apiPostResponse->setPost($pageObject);
+        $this->apiPostResponse->setProvider('internal');
         return $this->controllerHelpers->sendSuccessResponse(
             'Post type fetch',
             $this->apiPostResponse
