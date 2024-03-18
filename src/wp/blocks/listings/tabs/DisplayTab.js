@@ -18,6 +18,32 @@ const DisplayTab = (props) => {
                         setAttributes({show_listings_sidebar: value});
                     }}
                 />
+                <SelectControl
+                    label="Display As"
+                    onChange={(value) => {
+                        setAttributes({display_as: value});
+                    }}
+                    value={attributes?.display_as}
+                    options={[
+                        {
+                            disabled: true,
+                            label: 'Select an Option',
+                            value: ''
+                        },
+                        {
+                            label: 'List',
+                            value: 'list'
+                        },
+                        {
+                            label: 'Posts List',
+                            value: 'post_list'
+                        },
+                        {
+                            label: 'Comparisons',
+                            value: 'comparisons'
+                        },
+                    ]}
+                />
             </Grid>
             <Grid columns={2}>
                 <TextControl
