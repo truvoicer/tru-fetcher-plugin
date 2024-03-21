@@ -3,6 +3,7 @@ import GeneralSettings from "../../settings/pages/GeneralSettings";
 import FormPresets from "../../settings/pages/presets/FormPresets";
 import TabPresets from "../../settings/pages/presets/TabPresets";
 import Presets from "../../settings/pages/presets/Presets";
+import Keymaps from "../../settings/pages/keymaps/KeyMaps";
 
 export default [
     {
@@ -39,5 +40,12 @@ export default [
                 component: TabPresets,
             },
         ]
+    },
+    {
+        home: false,
+        path: "/key-maps",
+        key: 'key-maps',
+        label: 'Keymaps',
+        component: Keymaps,
     },
 ];

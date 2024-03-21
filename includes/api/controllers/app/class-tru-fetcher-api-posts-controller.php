@@ -60,6 +60,11 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
             'callback' => [$this, "postWithTemplateRequestHandler"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/template', array(
+            'methods' => \WP_REST_Server::READABLE,
+            'callback' => [$this, "postTemplateRequestHandler"],
+            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
+        ));
         register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/post/(?<post_id>[\d]+)', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "singlePost"],
@@ -175,6 +180,33 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
         } else {
             $this->apiPostResponse->setNavigation($navigation);
         }
+
+        return $this->controllerHelpers->sendSuccessResponse(
+            'Post fetch successful',
+            $this->apiPostResponse
+        );
+    }
+    public function postTemplateRequestHandler(\WP_REST_Request $request)
+    {
+        $category = $request->get_param("category");
+
+        $postsClass = new Tru_Fetcher_Posts();
+        $postTemplate = $postsClass->getPostTemplate($category);
+        if (is_wp_error($postTemplate)) {
+            return $this->controllerHelpers->sendErrorResponse(
+                $postTemplate->get_error_code(),
+                $postTemplate->get_error_message(),
+                $this->apiPostResponse
+            );
+        }
+        $this->apiPostResponse->setTemplate($this->postHelpers::buildPostObject($postTemplate));
+
+//        $navigation = $this->postHelpers->getCategoryPostNavigation($post);
+//        if (is_wp_error($navigation)) {
+//            $this->apiPostResponse->addError($navigation);
+//        } else {
+//            $this->apiPostResponse->setNavigation($navigation);
+//        }
 
         return $this->controllerHelpers->sendSuccessResponse(
             'Post fetch successful',

@@ -2,6 +2,7 @@
 import {setSessionLocalStorage, setSessionState} from "../../redux/actions/session-actions";
 
 export default {
+    id: 'tru_fetcher',
     wpRequest: false,
     endpoints: {
         login: '/login',

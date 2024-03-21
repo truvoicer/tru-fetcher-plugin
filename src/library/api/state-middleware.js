@@ -11,6 +11,7 @@ import {SESSION_STATE, SESSION_USER_TOKEN, SESSION_USER_TOKEN_EXPIRES_AT} from "
 import {getAppKeyAction, getAppNameAction} from "../redux/actions/app-actions";
 import {getSignedJwt} from "../helpers/auth/jwt-helpers";
 import store from "../redux/store";
+import {APP_STATE} from "../redux/constants/app-constants";
 
 const axios = require("axios");
 const sprintf = require('sprintf-js').sprintf
@@ -63,6 +64,20 @@ export function loadAxiosInterceptors(apiRequest) {
  * @returns {{Authorization: string}|boolean}
  */
 const getAuthHeader = (appKey) => {
+    const appState = store.getState()[APP_STATE];
+    if (appKey && typeof appState?.api === 'object') {
+        const findApiConfigKey = Object.keys(appState.api).find((key) => {
+            if (typeof appState.api[key]['app_key'] === 'undefined') {
+                return false;
+            }
+            return (appState.api[key]['app_key'] === appKey);
+        });
+        if (findApiConfigKey && isNotEmpty(appState?.api?.[findApiConfigKey]?.['token'])) {
+            return {
+                'Authorization': `Bearer ${appState?.api?.[findApiConfigKey]?.['token']}`
+            };
+        }
+    }
     const sessionStorage = getSessionLocalStorage(appKey);
     let token = false;
     //Return false if local session token is invalid
@@ -158,7 +173,7 @@ export async function fetchRequest({ config, endpoint, params = {}}) {
     if (!apiRequest) {
         return false;
     }
-    const appKey = getAppKeyAction();
+    const appKey = getAppKeyAction(config);
     if (config?.wpRequest) {
         const apiRequestAuthData = getApiRequestAuthData(config, appKey);
         if (!apiRequestAuthData) {
@@ -166,12 +181,14 @@ export async function fetchRequest({ config, endpoint, params = {}}) {
         }
         requestParams = {...requestParams, ...apiRequestAuthData};
     }
-    const urlBase = getSessionApiUrlBaseAction();
+    const urlBase = getSessionApiUrlBaseAction(config);
+    console.log({urlBase})
     if (!urlBase) {
         return false;
     }
     let headers = getAuthHeader(appKey);
 
+    console.log({headers})
     if (!headers && config?.wpRequest) {
         return false;
     }

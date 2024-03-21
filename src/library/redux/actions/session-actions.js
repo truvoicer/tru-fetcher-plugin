@@ -17,6 +17,7 @@ import {
     SESSION_NONCE, SESSION_USER, SESSION_USER_ID, SESSION_REFRESH_COUNT,
 } from "../constants/session-constants";
 import {isNotEmpty, isObject, isObjectEmpty} from "../../helpers/utils-helpers";
+import {APP_STATE} from "../constants/app-constants";
 
 /**
  * Sets userToken session redux state
@@ -78,7 +79,11 @@ export function getSessionUserIdAction() {
     return sessionState[SESSION_USER][SESSION_USER_ID];
 }
 
-export function getSessionApiUrlBaseAction() {
+export function getSessionApiUrlBaseAction(config = null) {
+    const appState = store.getState()[APP_STATE];
+    if (config?.id && isNotEmpty(appState?.api?.[config.id]?.['baseUrl'])) {
+        return appState?.api?.[config.id]?.['baseUrl'];
+    }
     const apiUrls = getSessionApiUrlsAction();
     if (
         !apiUrls ||
@@ -93,6 +98,7 @@ export function getSessionApiUrlBaseAction() {
 
 export function getSessionApiUrlsAction() {
     const sessionState = store.getState()[SESSION_STATE];
+    console.log('getSessionApiUrlsAction', sessionState)
     if (
         typeof sessionState[SESSION_API_URLS] === 'undefined' ||
         !isNotEmpty(sessionState[SESSION_API_URLS]) ||

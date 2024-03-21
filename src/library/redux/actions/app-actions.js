@@ -74,8 +74,11 @@ export function getAppApiAction() {
     return apiConfigs;
 }
 
-export function getAppKeyAction() {
+export function getAppKeyAction(config = null) {
     const appState = store.getState()[APP_STATE];
+    if (config?.id && isNotEmpty(appState?.api?.[config.id]?.['app_key'])) {
+        return appState?.api?.[config.id]?.['app_key'];
+    }
     if (
         typeof appState[APP_CURRENT_APP_KEY] === 'undefined' ||
         !isNotEmpty(appState[APP_CURRENT_APP_KEY])

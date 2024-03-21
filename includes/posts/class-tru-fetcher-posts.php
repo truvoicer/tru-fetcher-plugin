@@ -210,26 +210,29 @@ class Tru_Fetcher_Posts
             'category' => $category
         ];
     }
-    public function getUncategorisedPostTemplateByPost(\WP_Post $post) {
 
-    }
-    public function getPostTemplateByPost(\WP_Post $post)
+    public function getPostTemplate(?string $category)
     {
-        $category = $this->getPostTemplateCategory($post);
-        if (is_wp_error($category)) {
-            return $category;
+        if (!$category) {
+            return $this->getUncategorisedPostTemplate();
         }
-        $category = $category['category'];
+        $findTerm = get_term_by("slug", $category, Tru_Fetcher_Taxonomy_Category::NAME);
+        if (is_wp_error($findTerm)) {
+            return $findTerm;
+        }
         $getPostTemplate = get_posts([
             'numberposts' => 1,
             'post_type' => Tru_Fetcher_Post_Types_Trf_Post_Tpl::NAME,
-            "cat" => $category->term_id
+            "cat" => $findTerm->term_id
         ]);
-
         if (count($getPostTemplate) > 0) {
             return $getPostTemplate[0];
         }
+        return $this->getUncategorisedPostTemplate();
+    }
 
+    public function getUncategorisedPostTemplate()
+    {
         $uncategorisedCategory = get_term_by(
             "slug",
             "uncategorised",
@@ -249,11 +252,40 @@ class Tru_Fetcher_Posts
         return new WP_Error(
             "post_template_not_found",
             sprintf(
-                "Page template not found for post name [%s] - category name [%s]. Please add a post template for this category or a catchall template for uncategorized.",
-                $post->post_title,
-                $category->slug
+                "Page template not found for uncategorized category. Please add a post template for this category."
             )
         );
+    }
+
+    public function getPostTemplateByPost(\WP_Post $post)
+    {
+        $category = $this->getPostTemplateCategory($post);
+        if (is_wp_error($category)) {
+            return $category;
+        }
+        $category = $category['category'];
+        $getPostTemplate = get_posts([
+            'numberposts' => 1,
+            'post_type' => Tru_Fetcher_Post_Types_Trf_Post_Tpl::NAME,
+            "cat" => $category->term_id
+        ]);
+
+        if (count($getPostTemplate) > 0) {
+            return $getPostTemplate[0];
+        }
+
+        $uncategorisedTemplate = $this->getUncategorisedPostTemplate();
+        if (is_wp_error($uncategorisedTemplate)) {
+            return new WP_Error(
+                "post_template_not_found",
+                sprintf(
+                    "Page template not found for post name [%s] - category name [%s]. Please add a post template for this category or a catchall template for uncategorized.",
+                    $post->post_title,
+                    $category->slug
+                )
+            );
+        }
+        return $uncategorisedTemplate;
     }
 
     public static function isHomePage($pageId)

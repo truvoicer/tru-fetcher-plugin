@@ -205,6 +205,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         $localizedScriptData = $this->buildDefaultLocalizedScriptData();
         $localizedScriptData['api'] = [];
         $localizedScriptData['api'] = array_merge($localizedScriptData['api'], $this->buildWordpressApiLocalizedScriptData());
+        $localizedScriptData['api'] = array_merge($localizedScriptData['api'], $this->buildTruFetcherApiLocalizedScriptData());
         $localizedScriptData = array_merge($localizedScriptData, $this->buildAdminReactBlocksLocalizedScriptData());
         $localizedScriptData = array_merge($localizedScriptData, $this->buildFormPresetsLocalizedScriptData());
         wp_localize_script(
