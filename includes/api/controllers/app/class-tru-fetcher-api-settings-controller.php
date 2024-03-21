@@ -3,6 +3,7 @@ namespace TruFetcher\Includes\Api\Controllers\App;
 
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Page_Response;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Settings_Response;
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Keymaps;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Setting;
 use TruFetcher\Includes\Listings\Tru_Fetcher_Listings;
 use TruFetcher\Includes\Menus\Tru_Fetcher_Menu;
@@ -33,11 +34,13 @@ class Tru_Fetcher_Api_Settings_Controller extends Tru_Fetcher_Api_Controller_Bas
 
 	private Tru_Fetcher_Api_Settings_Response $apiSettingsResponse;
     private Tru_Fetcher_Api_Helpers_Setting $settingHelpers;
+    private Tru_Fetcher_Api_Helpers_Keymaps $keymapHelpers;
 
     public function __construct() {
         parent::__construct();
         $this->apiConfigEndpoints->endpointsInit('/settings');
         $this->settingHelpers = new Tru_Fetcher_Api_Helpers_Setting();
+        $this->keymapHelpers = new Tru_Fetcher_Api_Helpers_Keymaps();
     }
 
 	public function init() {
@@ -63,6 +66,8 @@ class Tru_Fetcher_Api_Settings_Controller extends Tru_Fetcher_Api_Controller_Bas
 	}
 
 	private function getSiteConfig() {
+//        $keymaps = $this->keymapHelpers->getKeymapRepository()->findMany();
+//        var_dump($keymaps);
         return array_merge(
             $this->settingHelpers->getFormattedSettings(['api_key', 'api_url', 'docker_api_url', 'docker_api_key', 'docker']),
             $this->settingHelpers->getWordpressSettings()

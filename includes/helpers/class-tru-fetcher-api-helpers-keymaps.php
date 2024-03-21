@@ -49,6 +49,18 @@ class Tru_Fetcher_Api_Helpers_Keymaps {
         $this->db = new Tru_Fetcher_DB_Engine();
     }
 
+    public function mapDataKeysWithKeymap(array $dataKeys, array $keymapData) {
+        $data = [];
+        foreach ($dataKeys as $key => $value) {
+            $findIndex = array_search($key, array_column($keymapData, 'keymap'));
+            if ($findIndex !== false) {
+                $data[$keymapData[$findIndex]['key']] = $value;
+            } else {
+                $data[$key] = $key;
+            }
+        }
+        return $data;
+    }
     public function buildKeymapData(?array $keymapData = [])
     {
         $rc = new \ReflectionClass(\WP_Post::class);
@@ -135,17 +147,17 @@ class Tru_Fetcher_Api_Helpers_Keymaps {
     }
 
     /**
-     * @return Tru_Fetcher_DB_Model_Tab_Presets
+     * @return Tru_Fetcher_DB_Model_Keymap
      */
-    public function getKeymapModel(): Tru_Fetcher_DB_Model_Tab_Presets
+    public function getKeymapModel(): Tru_Fetcher_DB_Model_Keymap
     {
         return $this->keymapModel;
     }
 
     /**
-     * @return Tru_Fetcher_DB_Repository_Tab_Presets
+     * @return Tru_Fetcher_DB_Repository_Keymap
      */
-    public function getKeymapRepository(): Tru_Fetcher_DB_Repository_Tab_Presets
+    public function getKeymapRepository(): Tru_Fetcher_DB_Repository_Keymap
     {
         return $this->keymapRepository;
     }

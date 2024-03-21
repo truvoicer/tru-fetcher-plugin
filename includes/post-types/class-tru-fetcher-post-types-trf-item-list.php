@@ -3,6 +3,7 @@
 namespace TruFetcher\Includes\PostTypes;
 
 use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Single_Item;
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Keymaps;
 
 /**
  * Fired during plugin activation
@@ -32,10 +33,17 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
     public const NAME = 'trf_item_list';
     public const ID_IDENTIFIER = 'item_list_id';
     public const API_ID_IDENTIFIER = 'item_list';
+
+    private Tru_Fetcher_Api_Helpers_Keymaps $keymapHelpers;
     protected string $apiIdIdentifier = self::API_ID_IDENTIFIER;
     protected string $idIdentifier = self::ID_IDENTIFIER;
     protected string $name = self::NAME;
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->keymapHelpers = new Tru_Fetcher_Api_Helpers_Keymaps();
+    }
 
     public function init()
     {
@@ -66,7 +74,13 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
         if (!is_array($data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID])) {
             return null;
         }
-
+//        $keymap = $this->keymapHelpers->getKeymap((int)$data[self::SERVICE_ID]);
+//        $dataKeys = $data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID];
+//        $buildDataKeys = $this->keymapHelpers->mapDataKeysWithKeymap(
+//            $dataKeys,
+//            $keymap
+//        );
+//        var_dump($buildDataKeys); die;
         return array_merge(
             [
                 self::SERVICE_ID => $data[self::SERVICE_ID],
@@ -80,7 +94,7 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
     public function renderPost(\WP_Post $post)
     {
         $buildPost = parent::renderPost($post);
-        return array_map(function ($item) {
+        $buildData = array_map(function ($item) {
             switch ($item->type) {
                 case 'single_item':
                     if (!property_exists($item, Tru_Fetcher_Post_Types_Trf_Single_Item::ID_IDENTIFIER)) {
@@ -91,6 +105,9 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
                     return $item;
             }
         }, $buildPost->{self::API_ID_IDENTIFIER}[self::API_ID_IDENTIFIER]);
+        return array_values(
+            array_filter($buildData)
+        );
     }
 
 }
