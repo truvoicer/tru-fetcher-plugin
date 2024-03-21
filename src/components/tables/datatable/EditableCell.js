@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef, useContext} from 'react';
-import {Form, Input, Checkbox, Select} from 'antd';
+import {Form, Input, Checkbox} from 'antd';
 import EditableContext from "./contexts/EditableContext";
 import {isNotEmpty} from "../../../library/helpers/utils-helpers";
 const EditableCell = ({
@@ -7,33 +7,14 @@ const EditableCell = ({
     children,
     record,
     handleSave,
-    hasGroups,
-    selectOptions = [],
     ...restProps
 }) => {
     const [editing, setEditing] = useState(false);
     const inputRef = useRef(null);
     const form = useContext(EditableContext);
-    function getSelectOptions() {
-        if (hasGroups && Array.isArray(record?.options)) {
-            return record.options;
-        }
-        if (Array.isArray(col?.options)) {
-            return col.options;
-        }
-        if (Array.isArray(selectOptions)) {
-            return selectOptions;
-        }
-        return [];
-    }
-    function getColType() {
-        if (hasGroups) {
-            return record?.type;
-        }
-        return col?.type;
-    }
+
     useEffect(() => {
-        switch (getColType()) {
+        switch (record?.type) {
             case 'text':
                 if (editing) {
                     inputRef.current.focus();
@@ -54,15 +35,14 @@ const EditableCell = ({
     const save = async () => {
         try {
             const values = await form.validateFields();
-            toggleEdit();
-            handleSave({row: {...record, ...values}, col});
-
+            // toggleEdit();
+            handleSave({row: { ...record, ...values }, col});
         } catch (errInfo) {
             console.log('Save failed:', errInfo);
         }
     };
     function getFormComponent() {
-        switch (getColType()) {
+        switch (record?.type) {
             case 'checkbox':
                 return (
                     <Form.Item
@@ -88,30 +68,6 @@ const EditableCell = ({
                         />
                     </Form.Item>
                 );
-            case 'select':
-                return (
-                    <Form.Item
-                        style={{ margin: 0 }}
-                        name={col.dataIndex}
-                        rules={[
-                            {
-                                required: false,
-                            },
-                        ]}
-                    >
-                    <Select
-                        ref={inputRef}
-                        placeholder={col?.label || 'Please Select'}
-                        style={{minWidth: 180}}
-                        options={getSelectOptions()}
-                        value={record?.[col.dataIndex]}
-                        onChange={(e, data) => {
-                            form.setFieldValue(col.dataIndex, data?.value);
-                            save();
-                        }}
-                    />
-                    </Form.Item>
-                )
             case 'text':
             case 'url':
                 return (
@@ -133,6 +89,7 @@ const EditableCell = ({
         }
     }
     let childNode = children;
+
     if (col?.editable) {
         childNode = editing ? (
             getFormComponent(col)

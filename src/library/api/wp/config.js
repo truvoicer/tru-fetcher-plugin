@@ -12,6 +12,7 @@ export default {
         settings: '/settings',
         formPresets: '/form/presets',
         tabPresets: '/tab/presets',
+        keymap: '/keymap',
     },
     tokenResponseHandler: (results, appKey) => {
 

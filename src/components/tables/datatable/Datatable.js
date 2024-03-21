@@ -3,20 +3,10 @@ import {Table, Button, Form, Input, Modal} from 'antd';
 import EditableRow from "./EditableRow";
 import EditableCell from "./EditableCell";
 
-const NameValueDatatable = ({
-    columns = [],
-    dataSource = [],
-    selectOptions = [],
-    groups = [],
-    onDelete,
-    onSave,
-    onAdd,
-    showAddButton = true
-}) => {
+const Datatable = ({columns = [], dataSource = [], groups = [], onDelete, onSave, onAdd}) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [tableData, setTableData] = useState([]);
-    const [hasGroups, setHasGroups] = useState(false);
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -48,8 +38,6 @@ const NameValueDatatable = ({
                 onCell: (record) => ({
                     record,
                     col,
-                    hasGroups,
-                    selectOptions,
                     handleSave,
                 }),
             };
@@ -116,19 +104,11 @@ const NameValueDatatable = ({
         buildTableData();
     }, [dataSource]);
 
-    useEffect(() => {
-        if (groups.length && !hasGroups) {
-            setHasGroups(true);
-        }
-    }, [groups]);
-
     return (
         <>
-            {showAddButton && (
-                <Button onClick={showModal} type="primary" style={{marginBottom: 16}}>
-                    Add a row
-                </Button>
-            )}
+            <Button onClick={showModal} type="primary" style={{marginBottom: 16}}>
+                Add a row
+            </Button>
             <Table
                 pagination={false}
                 size={'small'}
@@ -142,57 +122,50 @@ const NameValueDatatable = ({
                         groups,
                         record,
                         rowIndex,
-                        onClick: (event) => {
-                        }, // click row
-                        onDoubleClick: (event) => {
-                        }, // double click row
-                        onContextMenu: (event) => {
-                        }, // right button click row
-                        onMouseEnter: (event) => {
-                        }, // mouse enter row
-                        onMouseLeave: (event) => {
-                        }, // mouse leave row
+                        onClick: (event) => {}, // click row
+                        onDoubleClick: (event) => {}, // double click row
+                        onContextMenu: (event) => {}, // right button click row
+                        onMouseEnter: (event) => {}, // mouse enter row
+                        onMouseLeave: (event) => {}, // mouse leave row
                     };
                 }}
             />
-            {showAddButton && (
-                <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                    <Form
-                        name="basic"
-                        style={{maxWidth: 600}}
-                        initialValues={{name: '', value: ''}}
-                        onFinish={(values) => {
-                            onAdd({values})
-                        }}
-                        onFinishFailed={errorInfo => {
-                            console.log('Failed:', errorInfo);
-                        }}
-                        autoComplete="off"
+            <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                <Form
+                    name="basic"
+                    style={{maxWidth: 600}}
+                    initialValues={{name: '', value: ''}}
+                    onFinish={(values) => {
+                        onAdd({values})
+                    }}
+                    onFinishFailed={errorInfo => {
+                        console.log('Failed:', errorInfo);
+                    }}
+                    autoComplete="off"
+                >
+                    <Form.Item
+                        label="Name"
+                        name="name"
+                        rules={[{required: true, message: 'Please input your username!'}]}
                     >
-                        <Form.Item
-                            label="Name"
-                            name="name"
-                            rules={[{required: true, message: 'Please input your username!'}]}
-                        >
-                            <Input/>
-                        </Form.Item>
-                        <Form.Item
-                            label="Value"
-                            name="value"
-                            rules={[{required: true, message: 'Please input your username!'}]}
-                        >
-                            <Input/>
-                        </Form.Item>
-                        <Form.Item>
-                            <Button type="primary" htmlType="submit">
-                                Submit
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                </Modal>
-            )}
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item
+                        label="Value"
+                        name="value"
+                        rules={[{required: true, message: 'Please input your username!'}]}
+                    >
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
         </>
     );
 };
 
-export default NameValueDatatable;
+export default Datatable;

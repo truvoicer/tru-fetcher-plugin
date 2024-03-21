@@ -17,6 +17,7 @@ use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Device;
 
 
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Form_Presets;
+use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Keymap;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Locale;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Post_Meta;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Ratings;
@@ -57,6 +58,44 @@ class Tru_Fetcher_DB_Engine_Base
 		$this->charsetCollate = $wpdb->get_charset_collate();
         $this->initialise();
 	}
+
+    /**
+     * @return array
+     */
+    public static function getTables(): array
+    {
+        return [
+            new Tru_Fetcher_DB_Model_Device(),
+            new Tru_Fetcher_DB_Model_Topic(),
+            new Tru_Fetcher_DB_Model_Device_Topic(),
+            new Tru_Fetcher_DB_Model_User_Device_Access(),
+            new Tru_Fetcher_DB_Model_Settings(),
+            new Tru_Fetcher_DB_Model_Api_Tokens(),
+            new Tru_Fetcher_DB_Model_Post_Meta(),
+            new Tru_Fetcher_DB_Model_Saved_Items(),
+            new Tru_Fetcher_DB_Model_Ratings(),
+            new Tru_Fetcher_DB_Model_Form_Presets(),
+            new Tru_Fetcher_DB_Model_Tab_Presets(),
+            new Tru_Fetcher_DB_Model_Skill(),
+            new Tru_Fetcher_DB_Model_User_Skill(),
+            new Tru_Fetcher_DB_Model_Locale(),
+            new Tru_Fetcher_DB_Model_Keymap()
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getInitialTableData(): array
+    {
+        return [
+            new Tru_Fetcher_DB_Data_Settings(),
+            new Tru_Fetcher_DB_Data_Topic(),
+            new Tru_Fetcher_DB_Data_Tab_Preset(),
+            new Tru_Fetcher_DB_Data_Form_Preset(),
+            new Tru_Fetcher_DB_Data_Locale(),
+        ];
+    }
 
 
 	public function dbExec($sql)
@@ -902,33 +941,6 @@ class Tru_Fetcher_DB_Engine_Base
 		add_option('tru_fetcher_db_version', self::DB_VERSION);
 	}
 
-	/**
-	 *
-	 * /**
-	 * /**
-	 * @return array
-	 */
-	public static function getTables(): array
-	{
-		return [
-			new Tru_Fetcher_DB_Model_Device(),
-			new Tru_Fetcher_DB_Model_Topic(),
-			new Tru_Fetcher_DB_Model_Device_Topic(),
-			new Tru_Fetcher_DB_Model_User_Device_Access(),
-			new Tru_Fetcher_DB_Model_Settings(),
-            new Tru_Fetcher_DB_Model_Api_Tokens(),
-            new Tru_Fetcher_DB_Model_Post_Meta(),
-            new Tru_Fetcher_DB_Model_Saved_Items(),
-            new Tru_Fetcher_DB_Model_Ratings(),
-            new Tru_Fetcher_DB_Model_Form_Presets(),
-            new Tru_Fetcher_DB_Model_Tab_Presets(),
-            new Tru_Fetcher_DB_Model_Skill(),
-            new Tru_Fetcher_DB_Model_User_Skill(),
-            new Tru_Fetcher_DB_Model_Locale(),
-		];
-	}
-
-
     public static function findModelByTableName(string $tableName) {
         foreach (self::getTables() as $model) {
             if ($model->getTableName() === $tableName) {
@@ -960,22 +972,6 @@ class Tru_Fetcher_DB_Engine_Base
             return $model instanceof Tru_Fetcher_DB_Data;
         }, ARRAY_FILTER_USE_BOTH);
     }
-	/**
-	 *
-	 * /**
-	 * /**
-	 * @return array
-	 */
-	public static function getInitialTableData(): array
-	{
-		return [
-			new Tru_Fetcher_DB_Data_Settings(),
-			new Tru_Fetcher_DB_Data_Topic(),
-			new Tru_Fetcher_DB_Data_Tab_Preset(),
-			new Tru_Fetcher_DB_Data_Form_Preset(),
-			new Tru_Fetcher_DB_Data_Locale(),
-		];
-	}
 
 	/**
 	 *
