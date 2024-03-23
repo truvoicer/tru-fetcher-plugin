@@ -1,26 +1,17 @@
 import React, {useState, useEffect} from 'react';
-import {Modal, Card, Select, Space, Form, Row, Col, Button} from 'antd';
+import {Modal, Card, Select, Space, Tabs, Row, Col, Button} from 'antd';
 import PostMetaBoxContext from "../../contexts/PostMetaBoxContext";
 import {APP_STATE} from "../../../../library/redux/constants/app-constants";
 import {SESSION_STATE} from "../../../../library/redux/constants/session-constants";
 import {connect} from "react-redux";
 import Auth from "../../../../components/auth/Auth";
-import CustomItemFormFields from "../../components/item/CustomItemFormFields";
-import ItemListSingleItem from "./types/ItemListSingleItem";
 import {findMetaBoxConfig, updateInitialValues, updateMetaHiddenFields} from "../helpers/metaboxes-helpers";
 import {fetchRequest} from "../../../../library/api/state-middleware";
 import config from "../../../../library/api/wp/config";
+import GeneralTab from "./tabs/GeneralTab";
+import SingleItemTab from "./tabs/SingleItemTab";
+import SingleItemOverrideTab from "./tabs/SingleItemOverrideTab";
 
-const selectOptions = [
-    {
-        label: 'Single Item',
-        value: 'single_item',
-    },
-    {
-        label: 'Custom',
-        value: 'custom',
-    }
-]
 const ItemListMetaBoxList = ({session}) => {
     const [showModal, setShowModal] = useState(false);
     const [modalComponent, setModalComponent] = useState(null);
@@ -67,43 +58,54 @@ const ItemListMetaBoxList = ({session}) => {
         updateFormData('item_list', cloneItemList);
     }
 
-    function getTypeSelectValue({index}) {
-        if (typeof metaBoxContext.formData.item_list[index] === 'undefined') {
-            return '';
-        }
-        return metaBoxContext.formData.item_list[index].type;
-    }
-
-    function getItemComponent(item, index) {
-        switch (item.type) {
+    function getTabConfig(index) {
+        let tabConfig = [
+            {
+                name: 'general',
+                title: 'General',
+                component: GeneralTab
+            },
+            // {
+            //     name: 'sidebar',
+            //     title: 'Sidebar',
+            //     component: SidebarTab
+            // },
+        ];
+        switch (metaBoxContext.formData.item_list[index]?.type) {
             case 'single_item':
-                return <ItemListSingleItem
-                    index={index}
-                    onChange={({value, item}) => {
-                        updateItemListValue({
-                            value,
-                            key: item.name,
-                            index,
-                        })
-                    }}
-                />
-            case 'custom':
-                return <CustomItemFormFields
-                    formItem={metaBoxContext.formData.item_list[index]}
-                    onChange={({value, item}) => {
-                        updateItemListValue({
-                            value,
-                            key: item.name,
-                            index,
-                        })
-                    }}
-                />
-            default:
-                return null;
+                tabConfig.push({
+                    name: 'single_item',
+                    title: 'Single Item',
+                    component: SingleItemTab
+                })
+                break;
         }
+        if (metaBoxContext.formData.item_list[index]?.override) {
+            tabConfig.push({
+                name: 'overrides',
+                title: 'Overrides',
+                component: SingleItemOverrideTab
+            })
+        }
+        return tabConfig;
     }
 
-
+    function getTabComponent(tab, item, index) {
+        if (!tab?.component) {
+            return null;
+        }
+        let TabComponent = tab.component;
+        return <TabComponent
+            index={index}
+            formItem={item}
+            onChange={({value, item}) => {
+                updateItemListValue({
+                    value,
+                    key: item.name,
+                    index,
+                })
+            }} />;
+    }
     async function fetchSingleItemPostData() {
         const results = await fetchRequest({
             config: config,
@@ -139,29 +141,16 @@ const ItemListMetaBoxList = ({session}) => {
 
     function getFormGroup({item, index}) {
         return (
-            <Card style={{width: '100%'}}>
-                <Row>
-                    <Col span={6}>
-                        <Form.Item label="Type">
-                            <Select
-                                style={{minWidth: 180}}
-                                options={selectOptions}
-                                value={getTypeSelectValue({index})}
-                                onChange={(e, data) => {
-                                    updateItemListValue({
-                                        index,
-                                        key: 'type',
-                                        value: data.value
-                                    })
-                                }}
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col span={18}>
-                        {getItemComponent(item, index)}
-                    </Col>
-                </Row>
-            </Card>
+            <Tabs
+                defaultActiveKey="1"
+                items={ getTabConfig(index).map((tab, tabIndex) => {
+                    return {
+                        key: tabIndex,
+                        label: tab.title,
+                        children: getTabComponent(tab, item, index)
+                    }
+                })}
+            />
         )
     }
 
@@ -186,7 +175,7 @@ const ItemListMetaBoxList = ({session}) => {
                                 updateFormData('item_list', [
                                     ...metaBoxContext.formData.item_list,
                                     {
-                                        type: '',
+                                        type: 'single_item',
                                         single_item_id: null,
                                         item_image: null,
                                         item_header: null,

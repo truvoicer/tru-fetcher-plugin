@@ -30,6 +30,7 @@ class Tru_Fetcher_Admin_Meta_Box_Single_Item extends Tru_Fetcher_Admin_Meta_Box_
 {
     public const SERVICE_ID = 'service';
     public const DATA_KEYS_ID = 'data_keys';
+    public const OVERRIDE_ID = 'override';
 
     protected string $id = 'single_item';
     protected string $title = 'Single Item';
@@ -53,6 +54,11 @@ class Tru_Fetcher_Admin_Meta_Box_Single_Item extends Tru_Fetcher_Admin_Meta_Box_
                 [
                     'id' => self::DATA_KEYS_ID,
                     'type' => 'array',
+                ],
+                [
+                    'id' => self::OVERRIDE_ID,
+                    'type' => 'array',
+                    'default' => []
                 ],
             ]
         ];

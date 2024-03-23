@@ -8,6 +8,8 @@ import {isNotEmpty} from "../../../../../library/helpers/utils-helpers";
 import buildFormField, {FIELDS} from "../../../components/comparisons/fields/field-selector";
 import {APP_STATE} from "../../../../../library/redux/constants/app-constants";
 import {SESSION_STATE} from "../../../../../library/redux/constants/session-constants";
+import {CONFIG} from "../../../components/item/CustomItemFormFields";
+
 
 const ItemDataKeysTab = ({session}) => {
     const [services, setServices] = useState([]);
@@ -54,16 +56,21 @@ const ItemDataKeysTab = ({session}) => {
         const filteredDataKeysOptions = dataKeysOptions.filter((item) => {
             return !usedKeys.includes(item.name);
         });
-        return filteredDataKeysOptions.map((item) => {
+
+        const extraDataKeys = CONFIG.filter((item) => {
+            return !usedKeys.includes(item.name) && !filteredDataKeysOptions.find((key) => key.name === item.name);
+        });
+
+        return [...extraDataKeys, ...filteredDataKeysOptions].map((item) => {
             return {
                 label: item.name,
                 value: item.name,
             }
-        })
+        });
     }
 
     function getDataKeysSelectValue(value) {
-        const findItem = dataKeysOptions.find((item) => item?.name === value);
+        const findItem = [...CONFIG, ...dataKeysOptions].find((item) => item?.name === value);
         if (!findItem) {
             return null;
         }

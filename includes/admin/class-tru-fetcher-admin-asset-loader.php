@@ -128,7 +128,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
 
     public function loadMetaBoxesAssets(\WP_Screen $currentScreen)
     {
-//        $asset_file = include TRU_FETCHER_PLUGIN_DIR . "build/{$this->gutenbergReactScriptName}.asset.php";
+        $asset_file = include TRU_FETCHER_PLUGIN_DIR . "build/{$this->gutenbergReactScriptName}.asset.php";
         $handle = "{$this->plugin_name}-{$this->metaBoxesReactScriptName}";
         $metaBoxesPostTypes = (new Tru_Fetcher_Admin_Meta())->getMetaboxPostTypes();
         if (in_array($currentScreen->id, $metaBoxesPostTypes)) {
@@ -140,8 +140,8 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
             wp_enqueue_script(
                 $handle,
                 TRU_FETCHER_PLUGIN_URL . "build/{$this->metaBoxesReactScriptName}.js",
-                ['wp-element', 'wp-components'],
-                $this->version,
+                $asset_file['dependencies'],
+                $asset_file['version'],
                 true
             );
             $localizedScriptData = $this->buildDefaultLocalizedScriptData();
@@ -164,6 +164,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
     {
         // Automatically load imported dependencies and assets version.
         $asset_file = include TRU_FETCHER_PLUGIN_DIR . "build/{$this->gutenbergReactScriptName}.asset.php";
+
         wp_enqueue_media();
         wp_enqueue_style(
             "{$this->plugin_name}-{$this->gutenbergReactScriptName}",

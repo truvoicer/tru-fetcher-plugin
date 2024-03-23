@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\Admin\Meta\Box;
 
+use TruFetcher\Includes\Admin\Meta\Tru_Fetcher_Admin_Meta;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_List;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Single_Item;
@@ -61,7 +62,9 @@ class Tru_Fetcher_Admin_Meta_Box_Item_List extends Tru_Fetcher_Admin_Meta_Box_Ba
             return $post;
         }
         $singleItemPostType = new Tru_Fetcher_Post_Types_Trf_Single_Item();
-        $post->{$this->id}['item_list'] = array_map(function ($item) use($singleItemPostType) {
+
+        $metaBoxClass = new Tru_Fetcher_Admin_Meta_Box_Single_Item();
+        $post->{$this->id}['item_list'] = array_map(function ($item) use($singleItemPostType, $metaBoxClass) {
             $postTypeIdIdentifier = $singleItemPostType->getIdIdentifier();
             if (empty($postTypeIdIdentifier)) {
                 return $item;
@@ -79,9 +82,23 @@ class Tru_Fetcher_Admin_Meta_Box_Item_List extends Tru_Fetcher_Admin_Meta_Box_Ba
             if (!count($getItemListPosts)) {
                 return $item;
             }
-            $item->{$postTypeIdIdentifier} = $singleItemPostType->renderPost(
+            $singleItemPost = $singleItemPostType->renderPost(
                 $getItemListPosts[array_key_first($getItemListPosts)]
             );
+            if (!property_exists($item, $postTypeIdIdentifier)) {
+                return $item;
+            }
+            if (!property_exists($singleItemPost, $singleItemPostType->getApiIdIdentifier())) {
+                return $item;
+            }
+
+
+            foreach ($metaBoxClass->getConfig()['fields'] as $field) {
+                if (property_exists($item, $field['id'])) {
+                    $singleItemPost->{$singleItemPostType->getApiIdIdentifier()}[$field['id']] = $item->{$field['id']};
+                }
+            }
+            $item->{$postTypeIdIdentifier} = $singleItemPost;
             return $item;
         }, $post->{$this->id}['item_list']);
         return $post;

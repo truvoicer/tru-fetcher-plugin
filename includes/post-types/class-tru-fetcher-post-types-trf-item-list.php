@@ -82,20 +82,21 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
         if (!is_array($data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID])) {
             return null;
         }
-        $dataKeys = $data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID];
         switch ($this->displayAs) {
             case 'post_list':
                 $keymap = $this->keymapHelpers->getKeymap((int)$data[self::SERVICE_ID]);
-                $dataKeys = $this->keymapHelpers->mapDataKeysWithKeymap(
-                    $dataKeys,
+                $data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID] = $this->keymapHelpers->mapDataKeysWithKeymap(
+                    $data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID],
                     $keymap
                 );
 
                 break;
         }
+        $dataKeys = $data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID];
+        unset($data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID]);
         return array_merge(
+            $data,
             [
-                self::SERVICE_ID => $data[self::SERVICE_ID],
                 self::ITEM_ID => $post->ID,
                 'post_name' => $post->post_name,
                 self::PROVIDER => 'internal',
@@ -106,6 +107,7 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
     public function renderPost(\WP_Post $post)
     {
         $buildPost = parent::renderPost($post);
+
         $buildData = array_map(function ($item) {
             switch ($item->type) {
                 case 'single_item':

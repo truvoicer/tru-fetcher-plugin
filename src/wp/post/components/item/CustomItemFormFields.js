@@ -6,13 +6,19 @@ import fetcherApiConfig from "../../../../library/api/fetcher-api/fetcherApiConf
 import {isNotEmpty} from "../../../../library/helpers/utils-helpers";
 import buildFormField, {FIELDS} from "../comparisons/fields/field-selector";
 
-const CONFIG = [
+export const CONFIG = [
+    {label: 'Item Logo BG', name: 'item_logo_bg', field: FIELDS.TEXT},
+    {label: 'Item Logo', name: 'item_logo', field: FIELDS.IMAGE},
     {label: 'Item Image', name: 'item_image', field: FIELDS.IMAGE},
     {label: 'Item Header', name: 'item_header', field: FIELDS.TEXT},
-    {label: 'Item Text', name: 'item_text', field: FIELDS.HTML},
+    {label: 'Item Content', name: 'item_content', field: FIELDS.HTML},
+    {label: 'Item Excerpt', name: 'item_excerpt', field: FIELDS.HTML},
     {label: 'Item Rating', name: 'item_rating', field: FIELDS.NUMBER},
+    {label: 'Item Offer', name: 'item_offer', field: FIELDS.TEXT},
     {label: 'Item Link Text', name: 'item_link_text', field: FIELDS.TEXT},
     {label: 'Item Link', name: 'item_link', field: FIELDS.URL},
+    {label: 'Item Ribbon Text', name: 'item_ribbon_text', field: FIELDS.TEXT},
+    {label: 'Item Ribbon Link', name: 'item_ribbon_link', field: FIELDS.URL},
     {label: 'Item Badge Text', name: 'item_badge_text', field: FIELDS.TEXT},
     {label: 'Item Badge Link', name: 'item_badge_link', field: FIELDS.URL},
 ]
