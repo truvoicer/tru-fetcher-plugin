@@ -66,6 +66,7 @@ class Tru_Fetcher_Api_Settings_Controller extends Tru_Fetcher_Api_Controller_Bas
 	}
 
 	private function getSiteConfig() {
+        
 //        $keymaps = $this->keymapHelpers->getKeymapRepository()->findMany();
 //        var_dump($keymaps);
         return array_merge(

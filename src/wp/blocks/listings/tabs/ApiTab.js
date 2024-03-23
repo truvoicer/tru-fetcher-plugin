@@ -11,12 +11,17 @@ const ApiTab = (props) => {
         apiConfig
     } = props;
 
+    function getFetcherServices() {
+        return apiConfig?.tru_fetcher?.services;
+    }
     function getFetcherCategories() {
         return apiConfig?.tru_fetcher?.categories;
     }
-    function getApiListingsCategoryOptions(labelKey = 'label', valueKey = 'id') {
-        const fetcherCategories = getFetcherCategories();
-        return fetcherCategories.map((category) => {
+    function buildSelectOptions(data, labelKey = 'label', valueKey = 'id') {
+        if (!Array.isArray(data)) {
+            return [];
+        }
+        return data.map((category) => {
             return {
                 label: category[labelKey],
                 value: category[valueKey]
@@ -60,6 +65,23 @@ const ApiTab = (props) => {
                 ]}
             />
             <SelectControl
+                label="Api Listings Service"
+                onChange={(value) => {
+                    setAttributes({api_listings_service: value});
+                }}
+                value={attributes?.api_listings_service}
+                options={[
+                    ...[
+                    {
+                        disabled: false,
+                        label: 'Select a service',
+                        value: ''
+                    },
+                ],
+                    ...buildSelectOptions(getFetcherServices(), 'label', 'id')
+            ]}
+            />
+            <SelectControl
                 label="Api Listings Category"
                 onChange={(value) => {
                     setAttributes({api_listings_category: value});
@@ -68,12 +90,12 @@ const ApiTab = (props) => {
                 options={[
                     ...[
                     {
-                        disabled: true,
-                        label: 'Select an Option',
+                        disabled: false,
+                        label: 'Select a category',
                         value: ''
                     },
                 ],
-                    ...getApiListingsCategoryOptions('label', 'name')
+                    ...buildSelectOptions(getFetcherCategories(), 'label', 'name')
             ]}
             />
             <ToggleControl

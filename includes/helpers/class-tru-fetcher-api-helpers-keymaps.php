@@ -49,14 +49,19 @@ class Tru_Fetcher_Api_Helpers_Keymaps {
         $this->db = new Tru_Fetcher_DB_Engine();
     }
 
+    public function flattenKeymap(array $keymapData) {
+        return array_combine(
+            array_column($keymapData, 'key'),
+            array_column($keymapData, 'keymap')
+        );
+    }
     public function mapDataKeysWithKeymap(array $dataKeys, array $keymapData) {
         $data = [];
-        foreach ($dataKeys as $key => $value) {
-            $findIndex = array_search($key, array_column($keymapData, 'keymap'));
-            if ($findIndex !== false) {
-                $data[$keymapData[$findIndex]['key']] = $value;
+        foreach ($keymapData as $item) {
+            if (array_key_exists($item['keymap'], $dataKeys)) {
+                $data[$item['key']] = $dataKeys[$item['keymap']];
             } else {
-                $data[$key] = $key;
+                $data[$item['key']] = '';
             }
         }
         return $data;

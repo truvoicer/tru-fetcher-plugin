@@ -3,10 +3,20 @@ namespace TruFetcher\Includes\Api\Response;
 
 class Tru_Fetcher_Api_Post_Response extends Tru_Fetcher_Api_Response
 {
-
+    public array $keymap = [];
     public ?\WP_Post $post;
     public ?\WP_Post $template;
     public ?array $navigation;
+
+    public function getKeymap(): array
+    {
+        return $this->keymap;
+    }
+
+    public function setKeymap(array $keymap): void
+    {
+        $this->keymap = $keymap;
+    }
 
     /**
      * @return \WP_Post|null

@@ -38,12 +38,20 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
     protected string $apiIdIdentifier = self::API_ID_IDENTIFIER;
     protected string $idIdentifier = self::ID_IDENTIFIER;
     protected string $name = self::NAME;
+    protected ?string $displayAs = 'list';
+
 
     public function __construct()
     {
         parent::__construct();
         $this->keymapHelpers = new Tru_Fetcher_Api_Helpers_Keymaps();
     }
+    public function setDisplayAs(?string $displayAs = 'list'): self
+    {
+        $this->displayAs = $displayAs;
+        return $this;
+    }
+
 
     public function init()
     {
@@ -74,13 +82,17 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
         if (!is_array($data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID])) {
             return null;
         }
-//        $keymap = $this->keymapHelpers->getKeymap((int)$data[self::SERVICE_ID]);
-//        $dataKeys = $data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID];
-//        $buildDataKeys = $this->keymapHelpers->mapDataKeysWithKeymap(
-//            $dataKeys,
-//            $keymap
-//        );
-//        var_dump($buildDataKeys); die;
+        $dataKeys = $data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID];
+        switch ($this->displayAs) {
+            case 'post_list':
+                $keymap = $this->keymapHelpers->getKeymap((int)$data[self::SERVICE_ID]);
+                $dataKeys = $this->keymapHelpers->mapDataKeysWithKeymap(
+                    $dataKeys,
+                    $keymap
+                );
+
+                break;
+        }
         return array_merge(
             [
                 self::SERVICE_ID => $data[self::SERVICE_ID],
@@ -88,7 +100,7 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
                 'post_name' => $post->post_name,
                 self::PROVIDER => 'internal',
             ],
-            $data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID]
+            $dataKeys
         );
     }
     public function renderPost(\WP_Post $post)

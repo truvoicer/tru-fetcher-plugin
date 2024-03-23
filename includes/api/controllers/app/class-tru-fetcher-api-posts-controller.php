@@ -4,6 +4,7 @@ namespace TruFetcher\Includes\Api\Controllers\App;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Post_List_Response;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Post_Response;
 use TruFetcher\Includes\Constants\Tru_Fetcher_Constants_Api;
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Keymaps;
 use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
 
@@ -32,11 +33,13 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
     private Tru_Fetcher_Posts $postHelpers;
     private Tru_Fetcher_Api_Post_Response $apiPostResponse;
     private Tru_Fetcher_Api_Post_List_Response $postListResponse;
+    private Tru_Fetcher_Api_Helpers_Keymaps $keymapHelpers;
 
     public function __construct()
     {
         parent::__construct();
         $this->apiConfigEndpoints->endpointsInit('/posts');
+        $this->keymapHelpers = new Tru_Fetcher_Api_Helpers_Keymaps();
     }
 
     public function init()
@@ -189,7 +192,14 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
     public function postTemplateRequestHandler(\WP_REST_Request $request)
     {
         $category = $request->get_param("category");
+        $apiListingsServiceId = $request->get_param("api_listings_service");
 
+        if (!empty($apiListingsServiceId)) {
+            $findKeymap = $this->keymapHelpers->getKeymap((int)$apiListingsServiceId);
+            $this->apiPostResponse->setKeymap(
+                $this->keymapHelpers->flattenKeymap($findKeymap)
+            );
+        }
         $postsClass = new Tru_Fetcher_Posts();
         $postTemplate = $postsClass->getPostTemplate($category);
         if (is_wp_error($postTemplate)) {

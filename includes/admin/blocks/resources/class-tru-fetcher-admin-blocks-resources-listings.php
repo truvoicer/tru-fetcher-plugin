@@ -2,6 +2,8 @@
 
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
+use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Single_Item;
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Keymaps;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_List;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Single_Item;
@@ -30,6 +32,8 @@ use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Trf_Listings_Category;
  */
 class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Blocks_Resources_Base
 {
+    private Tru_Fetcher_Api_Helpers_Keymaps $keymapHelpers;
+
     public const BLOCK_ID = 'listings_block';
     public const BLOCK_NAME = 'tru-fetcher/listings-block';
     public const BLOCK_TITLE = 'Tf Listings Block';
@@ -72,8 +76,12 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'default' => '',
             ],
             [
+                'id' => 'api_listings_service',
+                'type' => 'integer',
+            ],
+            [
                 'id' => 'api_listings_category',
-                'type' => 'string',
+                'type' => 'integer',
             ],
             [
                 'id' => 'select_providers',
@@ -224,6 +232,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
 
     public function __construct()
     {
+        $this->keymapHelpers = new Tru_Fetcher_Api_Helpers_Keymaps();
         $this->config['attributes'] = array_merge($this->config['attributes'], self::getSidebarConfig());
     }
     public static function getSidebarConfig() {
@@ -241,7 +250,14 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
         ];
     }
     public function buildBlockAttributes(array $attributes) {
+
         $attributes = parent::buildBlockAttributes($attributes);
+        $attributes['keymap'] = [];
+        if (!empty($attributes['api_listings_service'])) {
+            $findKeymap = $this->keymapHelpers->getKeymap((int)$attributes['api_listings_service']);
+            $attributes['keymap'] = $this->keymapHelpers->flattenKeymap($findKeymap);
+        }
+
         if (empty($attributes['filters'])) {
             return $attributes;
         }

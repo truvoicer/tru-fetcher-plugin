@@ -17,7 +17,7 @@ class Tru_Fetcher_Api_Response
 
     public string $status;
     public string $message;
-    public string $data;
+    public array $data;
     public ?Tru_Fetcher_Api_Pagination $pagination = null;
 
 	/**
