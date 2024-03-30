@@ -220,6 +220,9 @@ class Tru_Fetcher_Posts
         if (is_wp_error($findTerm)) {
             return $findTerm;
         }
+        if (!$findTerm) {
+            return $this->getUncategorisedPostTemplate();
+        }
         $getPostTemplate = get_posts([
             'numberposts' => 1,
             'post_type' => Tru_Fetcher_Post_Types_Trf_Post_Tpl::NAME,

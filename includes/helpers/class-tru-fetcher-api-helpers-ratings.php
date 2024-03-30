@@ -51,7 +51,7 @@ class Tru_Fetcher_Api_Helpers_Ratings {
 
     public function getRatingsData($providerName, $category, $idList, $user_id)
     {
-        if (count($idList) === 0) {
+        if (!is_array($idList) || count($idList) === 0) {
             return [];
         }
         $getRatings = [];

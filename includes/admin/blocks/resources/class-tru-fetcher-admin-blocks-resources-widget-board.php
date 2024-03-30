@@ -65,7 +65,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Widget_Board extends Tru_Fetcher_Admin_
         ]
     ];
 
-    public function buildBlockAttributes(array $attributes)
+    public function buildBlockAttributes(array $attributes, ?bool $includeDefaults = true)
     {
         $buildAttributes = parent::buildBlockAttributes($attributes);
         $buildAttributes = $this->buildWidgetAttributes('content_widgets', $buildAttributes);

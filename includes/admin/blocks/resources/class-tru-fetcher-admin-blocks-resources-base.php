@@ -120,7 +120,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         }
         return $keys;
     }
-    public function buildBlockAttributes(array $attributes) {
+    public function buildBlockAttributes(array $attributes, ?bool $includeDefaults = true) {
         $config = $this->getConfig();
         $configAttributes = $config['attributes'];
         $attributeDefaults = [];
@@ -129,7 +129,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         }
        $attributes = $this->buildTaxonomyBlockAttributes($attributes);
        $attributes = $this->buildPostTypeBlockAttributes($attributes);
-        $attributes = array_merge($attributeDefaults, $attributes);
+       if ($includeDefaults) {
+           $attributes = array_merge($attributeDefaults, $attributes);
+       }
         return $attributes;
     }
 
@@ -173,7 +175,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
             }
             foreach ($findAttributeKeys as $findAttributeKey) {
                 $attrPostTypeId = $attributes[$findAttributeKey];
-
+                if (empty($attrPostTypeId)) {
+                    continue;
+                }
                 if (!is_array($attrPostTypeId)) {
                     $post = $postType->getPostTypeDataById($postType->getName(), (int)$attrPostTypeId);
                     if ($post) {

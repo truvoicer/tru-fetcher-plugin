@@ -437,10 +437,9 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
 
     private function getSavedItemsData($providerName, $category, $idList, $user_id)
     {
-        if (count($idList) === 0) {
+        if (!is_array($idList) || count($idList) === 0) {
             return [];
         }
-
         return $this->savedItemsHelper->getSavedItemsRepository()->fetchByItemIdBatch(
             $this->apiAuthApp->getUser(),
             $providerName,

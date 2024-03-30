@@ -77,11 +77,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
             ],
             [
                 'id' => 'api_listings_service',
-                'type' => 'integer',
+                'type' => 'string',
             ],
             [
                 'id' => 'api_listings_category',
-                'type' => 'integer',
+                'type' => 'string',
             ],
             [
                 'id' => 'select_providers',
@@ -249,10 +249,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
             ],
         ];
     }
-    public function buildBlockAttributes(array $attributes) {
+    public function buildBlockAttributes(array $attributes, ?bool $includeDefaults = true) {
 
         $attributes = parent::buildBlockAttributes($attributes);
         $attributes['keymap'] = [];
+
         if (!empty($attributes['api_listings_service'])) {
             $findKeymap = $this->keymapHelpers->getKeymap((int)$attributes['api_listings_service']);
             $attributes['keymap'] = $this->keymapHelpers->flattenKeymap($findKeymap);
@@ -265,7 +266,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
             return $attributes;
         }
         $attributes['filters'] = array_map(function($filter) {
-            return parent::buildBlockAttributes($filter);
+            return parent::buildBlockAttributes($filter, false);
         }, $attributes['filters']);
         return $attributes;
     }

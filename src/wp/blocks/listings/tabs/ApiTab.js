@@ -40,6 +40,7 @@ const ApiTab = (props) => {
             }
         })
     }
+    console.log({attributes})
     return (
         <div>
             <SelectControl
