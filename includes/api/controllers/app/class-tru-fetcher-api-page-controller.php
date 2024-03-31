@@ -187,6 +187,7 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
             );
 		}
         $pageObject = $this->postsClass::buildPostObject($getPage);
+
         $this->apiPostResponse->setPage($pageObject);
         $this->apiPostResponse->setPageOptions( $this->postsClass::getPostMetaFields($pageObject) );
         return $this->controllerHelpers->sendSuccessResponse(

@@ -46,4 +46,9 @@ class Tru_Fetcher_Post_Types_Trf_Filter_List extends Tru_Fetcher_Post_Types_Base
         );
     }
 
+    public function renderPost(\WP_Post $post)
+    {
+        $buildPost = parent::renderPost($post);
+        return $buildPost;
+    }
 }

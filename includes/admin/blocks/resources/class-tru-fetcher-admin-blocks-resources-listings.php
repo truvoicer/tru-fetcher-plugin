@@ -268,6 +268,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
         $attributes['filters'] = array_map(function($filter) {
             return parent::buildBlockAttributes($filter, false);
         }, $attributes['filters']);
+//        var_dump($attributes['filters']); die;
         return $attributes;
     }
 
