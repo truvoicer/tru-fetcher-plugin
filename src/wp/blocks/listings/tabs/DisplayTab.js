@@ -11,12 +11,10 @@ const DisplayTab = (props) => {
     return (
         <div>
             <Grid columns={2}>
-                <ToggleControl
-                    label="Show Listings Sidebar"
-                    checked={attributes?.show_listings_sidebar}
-                    onChange={(value) => {
-                        setAttributes({show_listings_sidebar: value});
-                    }}
+                <TextControl
+                    label="Heading"
+                    value={attributes?.heading}
+                    onChange={(value) => setAttributes({heading: value})}
                 />
                 <SelectControl
                     label="Display As"
@@ -42,15 +40,14 @@ const DisplayTab = (props) => {
                             label: 'Comparisons',
                             value: 'comparisons'
                         },
+                        {
+                            label: 'Tiles',
+                            value: 'tiles'
+                        },
                     ]}
                 />
             </Grid>
             <Grid columns={2}>
-                <TextControl
-                    label="Heading"
-                    value={attributes?.heading}
-                    onChange={(value) => setAttributes({heading: value})}
-                />
                 <SelectControl
                     label="Select Item View Display"
                     onChange={(value) => {
@@ -73,8 +70,6 @@ const DisplayTab = (props) => {
                         },
                     ]}
                 />
-            </Grid>
-            <Grid columns={2}>
                 <SelectControl
                     label="Load More Type"
                     onChange={(value) => {
@@ -97,6 +92,8 @@ const DisplayTab = (props) => {
                         },
                     ]}
                 />
+            </Grid>
+            <Grid columns={2}>
                 <RangeControl
                     label="Posts Per Page"
                     initialPosition={50}

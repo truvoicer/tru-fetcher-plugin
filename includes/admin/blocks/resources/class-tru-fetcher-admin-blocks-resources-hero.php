@@ -42,18 +42,8 @@ class Tru_Fetcher_Admin_Blocks_Resources_Hero extends Tru_Fetcher_Admin_Blocks_R
         'taxonomies' => [],
         'attributes' => [
             [
-                'id' => 'hero_background_image',
-                'type' => 'string',
-            ],
-            [
-                'id' => 'hero_background_image_2',
-                'type' => 'string',
-                'default' => 'search',
-            ],
-            [
-                'id' => 'hero_background_image_3',
-                'type' => 'string',
-                'default' => '',
+                'id' => 'images',
+                'type' => 'array',
             ],
             [
                 'id' => 'hero_type',

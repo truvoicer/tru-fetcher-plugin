@@ -2,6 +2,12 @@
   &--imagery {
     display: flex;
     flex-direction: row;
+    &.wrap {
+      flex-wrap: wrap;
+    }
+    .no-wrap {
+      flex-wrap: nowrap;
+    }
     &--group {
       width: 250px;
       display: flex;

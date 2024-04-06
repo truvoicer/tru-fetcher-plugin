@@ -5,6 +5,7 @@ const MediaInput = ({
     heading = '',
     addImageText = 'Add Image',
     noImageText = 'No Image Selected',
+    hideDelete = false,
     deleteText = 'Delete',
     selectedImageUrl = null,
     onChange,
@@ -32,6 +33,7 @@ const MediaInput = ({
                                     style={{width: '100%', display: 'block'}}
                                     src={selectedImageUrl} alt={''}/>
                             </a>
+                            {hideDelete &&
                             <a
                                 onClick={(e) => {
                                     e.preventDefault()
@@ -39,6 +41,7 @@ const MediaInput = ({
                                 }}>
                                 {deleteText}
                             </a>
+                            }
                         </>
                     )
                     : (
