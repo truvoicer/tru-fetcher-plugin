@@ -511,6 +511,7 @@ class Tru_Fetcher_Posts
         }
 
         $pagination->setPageCount($pageCount);
+        $pagination->setTotalPages($pageCount);
         $pagination->setPageNumber($pageNumber);
         $pagination->setOffset($offset);
         $pagination->setPageSize($perPage);
