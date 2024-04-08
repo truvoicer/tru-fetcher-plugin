@@ -127,12 +127,7 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
         }
         $pageObject = Tru_Fetcher_Posts::buildPostObject($post);
         $this->apiPostResponse->setPost($pageObject);
-        $navigation = $this->postHelpers->getPostNavigation($post);
-//        if (is_wp_error($navigation)) {
-//            $this->apiPostResponse->addError($navigation);
-//        } else {
-//            $this->apiPostResponse->setNavigation($navigation);
-//        }
+        $this->apiPostResponse->setNavigation($this->postHelpers->getPostTypeNavigation($post));
 //        $this->apiPostResponse->setProvider('internal');
         return $this->controllerHelpers->sendSuccessResponse(
             'Post type fetch',

@@ -10,6 +10,7 @@ use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Met
 use TruFetcher\Includes\Api\Pagination\Tru_Fetcher_Api_Pagination;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
+use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Post;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Post_Tpl;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Category;
@@ -321,8 +322,13 @@ class Tru_Fetcher_Posts
         if (is_wp_error($categoryPosts)) {
             return $categoryPosts;
         }
+        return $this->getPostNavigation($post, $categoryPosts);
+    }
 
-        $postPosition = $this->getCurrentPostArrayPosition($post, $categoryPosts);
+
+    public function getPostNavigation(\WP_Post $post, array $postList)
+    {
+        $postPosition = $this->getCurrentPostArrayPosition($post, $postList);
         if ($postPosition === false) {
             return new WP_Error(
                 'post_position_error',
@@ -333,50 +339,33 @@ class Tru_Fetcher_Posts
         $prevPost = false;
         $nextPost = false;
 
-        if ($postPosition > 0 && isset($categoryPosts[(int)$postPosition - 1])) {
-            $prevPost = $categoryPosts[(int)$postPosition - 1];
+        if ($postPosition > 0 && isset($postList[(int)$postPosition - 1])) {
+            $prevPost = $postList[(int)$postPosition - 1];
         }
-        if (isset($categoryPosts[(int)$postPosition + 1])) {
-            $nextPost = $categoryPosts[(int)$postPosition + 1];
+        if (isset($postList[(int)$postPosition + 1])) {
+            $nextPost = $postList[(int)$postPosition + 1];
         }
         return [
             "prev_post" => ($prevPost instanceof \WP_Post)? $this::buildPostObject($prevPost) : $prevPost,
             "next_post" => ($nextPost instanceof \WP_Post)? $this::buildPostObject($nextPost) : $nextPost
         ];
     }
-
-    public function getPostNavigation(\WP_Post $post)
+    public function getPostTypeNavigation(\WP_Post $post)
     {
-        $postTypeHelpers = new Tru_Fetcher_Post_Types();
-        $postTypeClass = $postTypeHelpers->findPostTypeByName($post->post_type);
-        var_dump($postType);
-        die;
-        $categoryPosts = $this->getCategoryPosts($post);
-        if (is_wp_error($categoryPosts)) {
-            return $categoryPosts;
+        switch ($post->post_type) {
+            case Tru_Fetcher_Post_Types_Page::NAME:
+            case Tru_Fetcher_Post_Types_Post::NAME:
+                return $this->getCategoryPostNavigation($post);
         }
 
-        $postPosition = $this->getCurrentPostArrayPosition($post, $categoryPosts);
-        if ($postPosition === false) {
-            return new WP_Error(
-                'post_position_error',
-                sprintf("Post (%s) position not found.", $post->post_title)
-            );
-        }
-
-        $prevPost = false;
-        $nextPost = false;
-
-        if ($postPosition > 0 && isset($categoryPosts[(int)$postPosition - 1])) {
-            $prevPost = $categoryPosts[(int)$postPosition - 1];
-        }
-        if (isset($categoryPosts[(int)$postPosition + 1])) {
-            $nextPost = $categoryPosts[(int)$postPosition + 1];
-        }
-        return [
-            "prev_post" => ($prevPost instanceof \WP_Post)? $this::buildPostObject($prevPost) : $prevPost,
-            "next_post" => ($nextPost instanceof \WP_Post)? $this::buildPostObject($nextPost) : $nextPost
-        ];
+        $args = array(
+            'numberposts' => -1,
+            'orderby' => 'date',
+            'order' => 'DESC',
+            'post_type' => $post->post_type,
+        );
+        $posts = new WP_Query($args);
+        return $this->getPostNavigation($post, $posts->posts);
     }
 
     private function getCurrentPostArrayPosition(WP_Post $currentPost, $postsArray)
