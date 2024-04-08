@@ -345,6 +345,40 @@ class Tru_Fetcher_Posts
         ];
     }
 
+    public function getPostNavigation(\WP_Post $post)
+    {
+        $postTypeHelpers = new Tru_Fetcher_Post_Types();
+        $postTypeClass = $postTypeHelpers->findPostTypeByName($post->post_type);
+        var_dump($postType);
+        die;
+        $categoryPosts = $this->getCategoryPosts($post);
+        if (is_wp_error($categoryPosts)) {
+            return $categoryPosts;
+        }
+
+        $postPosition = $this->getCurrentPostArrayPosition($post, $categoryPosts);
+        if ($postPosition === false) {
+            return new WP_Error(
+                'post_position_error',
+                sprintf("Post (%s) position not found.", $post->post_title)
+            );
+        }
+
+        $prevPost = false;
+        $nextPost = false;
+
+        if ($postPosition > 0 && isset($categoryPosts[(int)$postPosition - 1])) {
+            $prevPost = $categoryPosts[(int)$postPosition - 1];
+        }
+        if (isset($categoryPosts[(int)$postPosition + 1])) {
+            $nextPost = $categoryPosts[(int)$postPosition + 1];
+        }
+        return [
+            "prev_post" => ($prevPost instanceof \WP_Post)? $this::buildPostObject($prevPost) : $prevPost,
+            "next_post" => ($nextPost instanceof \WP_Post)? $this::buildPostObject($nextPost) : $nextPost
+        ];
+    }
+
     private function getCurrentPostArrayPosition(WP_Post $currentPost, $postsArray)
     {
         foreach ($postsArray as $key => $post) {

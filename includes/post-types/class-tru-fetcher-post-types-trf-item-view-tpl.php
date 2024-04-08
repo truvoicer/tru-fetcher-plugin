@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\PostTypes;
 
+use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Category;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Trf_Listings_Category;
 
 /**
@@ -41,7 +42,7 @@ class Tru_Fetcher_Post_Types_Trf_Item_View_Tpl extends Tru_Fetcher_Post_Types_Ba
             [
                 'supports' => array('title', 'editor', 'thumbnail', 'comments', 'trackbacks', 'revisions', 'custom-fields', 'page-attributes', 'post-formats'),
                 'taxonomies' => [
-                    Tru_Fetcher_Taxonomy_Trf_Listings_Category::NAME
+                    Tru_Fetcher_Taxonomy_Trf_Listings_Category::NAME,
                 ],
                 'menu_position' => 5,
                 'capability_type' => 'page',

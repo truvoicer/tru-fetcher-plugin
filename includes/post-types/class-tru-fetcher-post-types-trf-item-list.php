@@ -94,12 +94,14 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
         }
         $dataKeys = $data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID];
         unset($data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID]);
+        if (empty($dataKeys[self::PROVIDER])) {
+            $dataKeys[self::PROVIDER] = 'internal';
+        }
         return array_merge(
             $data,
             [
                 self::ITEM_ID => $post->ID,
                 'post_name' => $post->post_name,
-                self::PROVIDER => 'internal',
             ],
             $dataKeys
         );

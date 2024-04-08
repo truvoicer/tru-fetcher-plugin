@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\PostTypes;
 
+use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Category;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Trf_Listings_Category;
 
 /**
@@ -40,7 +41,8 @@ class Tru_Fetcher_Post_Types_Trf_Single_Item extends Tru_Fetcher_Post_Types_Base
             [
                 'supports' => array('title'),
                 'taxonomies' => [
-                    Tru_Fetcher_Taxonomy_Trf_Listings_Category::NAME
+                    Tru_Fetcher_Taxonomy_Trf_Listings_Category::NAME,
+                    Tru_Fetcher_Taxonomy_Category::NAME
                 ],
                 'menu_position' => 5,
                 'capability_type' => 'page',

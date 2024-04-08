@@ -21,6 +21,7 @@ export const CONFIG = [
     {label: 'Item Ribbon Link', name: 'item_ribbon_link', field: FIELDS.URL},
     {label: 'Item Badge Text', name: 'item_badge_text', field: FIELDS.TEXT},
     {label: 'Item Badge Link', name: 'item_badge_link', field: FIELDS.URL},
+    {label: 'Provider', name: 'provider', field: FIELDS.TEXT},
 ]
 const CustomItemFormFields = ({onChange, formItem}) => {
     const [showModal, setShowModal] = useState(false);

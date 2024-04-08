@@ -8,6 +8,7 @@ const GeneralTab = ({onChange = false, index, formItem}) => {
     const postMetaBoxContext = useContext(PostMetaBoxContext);
     const singleItemPostType = findMetaBoxPostType('trf_single_item', postMetaBoxContext?.config);
 
+    const selectOptions = buildSelectOptions();
     function buildSelectOptions() {
         const singleItemPosts = postMetaBoxContext?.data?.singleItemPosts;
         if (!Array.isArray(singleItemPosts)) {
@@ -25,7 +26,11 @@ const GeneralTab = ({onChange = false, index, formItem}) => {
         if (typeof postMetaBoxContext.formData.item_list[index] === 'undefined') {
             return '';
         }
-        return postMetaBoxContext.formData.item_list[index]?.[singleItemPostType?.idIdentifier];
+        const selectedValue = postMetaBoxContext.formData.item_list[index]?.[singleItemPostType?.idIdentifier];
+        if (!selectedValue) {
+            return {};
+        }
+        return selectOptions.find(option => option?.value === selectedValue) || {};
     }
 
     return (
@@ -33,7 +38,7 @@ const GeneralTab = ({onChange = false, index, formItem}) => {
             <Form.Item label="Single Item">
                 <Select
                     style={{minWidth: 180}}
-                    options={buildSelectOptions()}
+                    options={selectOptions}
                     value={getSelectValue()}
                     onChange={(e, data) => {
                         if (typeof onChange === 'function') {
