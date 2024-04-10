@@ -90,6 +90,51 @@ const GeneralSettings = () => {
                     label: 'Facebook Graph Version',
                     type: 'text'
                 },
+                {
+                    name: 'facebook_follow_url',
+                    label: 'Facebook Follow Url',
+                    type: 'text'
+                },
+            ]
+        },
+        {
+            title: 'Instagram Settings',
+            names: [
+                {
+                    name: 'instagram_follow_url',
+                    label: 'Instagram Follow Url',
+                    type: 'text'
+                },
+            ]
+        },
+        {
+            title: 'Tiktok Settings',
+            names: [
+                {
+                    name: 'tiktok_follow_url',
+                    label: 'Tiktok Follow Url',
+                    type: 'text'
+                },
+            ]
+        },
+        {
+            title: 'Pinterest Settings',
+            names: [
+                {
+                    name: 'pinterest_follow_url',
+                    label: 'Pinterest Follow Url',
+                    type: 'text'
+                },
+            ]
+        },
+        {
+            title: 'X Settings',
+            names: [
+                {
+                    name: 'x_follow_url',
+                    label: 'X Follow Url',
+                    type: 'text'
+                },
             ]
         },
         {
