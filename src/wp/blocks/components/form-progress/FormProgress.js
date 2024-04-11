@@ -1,6 +1,7 @@
 import React from 'react';
 import {Panel, PanelBody, TabPanel} from "@wordpress/components";
 import GeneralTab from "./tabs/GeneralTab";
+import GlobalOptionsTabConfig from "../global/tabs/GlobalOptionsTabConfig";
 
 const FormProgress = (props) => {
     function getTabConfig() {
@@ -11,6 +12,7 @@ const FormProgress = (props) => {
                 component: GeneralTab
             },
         ];
+        tabConfig = [...tabConfig, ...GlobalOptionsTabConfig];
         return tabConfig;
     }
 

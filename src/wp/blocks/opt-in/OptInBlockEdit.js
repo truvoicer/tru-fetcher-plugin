@@ -7,6 +7,7 @@ import {getBlockAttributesById, getChildBlockIds, getChildBlockParams} from "../
 import Carousel from "../components/carousel/Carousel";
 import FormComponent from "../components/form/FormComponent";
 import { useSelect, useDispatch } from '@wordpress/data';
+import GlobalOptionsTabConfig from "../components/global/tabs/GlobalOptionsTabConfig";
 
 
 const OptInBlockEdit = (props) => {
@@ -75,6 +76,7 @@ const OptInBlockEdit = (props) => {
                 component: Carousel
             });
         }
+        tabConfig = [...tabConfig, ...GlobalOptionsTabConfig];
         return tabConfig;
     }
     function getTabComponent(tab) {

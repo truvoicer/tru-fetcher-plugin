@@ -3,6 +3,7 @@ import {Panel, PanelBody, TabPanel} from "@wordpress/components";
 import GeneralTab from "./tabs/GeneralTab";
 import {InnerBlocks, useBlockProps} from '@wordpress/block-editor';
 import SidebarTab from "./tabs/SidebarTab";
+import GlobalOptionsTabConfig from "../components/global/tabs/GlobalOptionsTabConfig";
 
 const PostBlockEdit = (props) => {
     const {attributes, setAttributes} = props;
@@ -26,6 +27,7 @@ const PostBlockEdit = (props) => {
                 component: SidebarTab
             },
         ];
+        tabConfig = [...tabConfig, ...GlobalOptionsTabConfig];
         return tabConfig;
     }
     function getTabComponent(tab) {

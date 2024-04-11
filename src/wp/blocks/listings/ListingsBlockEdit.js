@@ -8,8 +8,8 @@ import ApiTab from "./tabs/ApiTab";
 import WordpressDataTab from "./tabs/WordpressDataTab";
 import SearchTab from "./tabs/SearchTab";
 import CustomItemsTab from "./tabs/CustomItemsTab";
-import FiltersTab from "./tabs/FiltersTab";
 import SidebarTab from "./tabs/SidebarTab";
+import GlobalOptionsTabConfig from "../components/global/tabs/GlobalOptionsTabConfig";
 
 const ListingsBlockEdit = (props) => {
 
@@ -45,11 +45,6 @@ const ListingsBlockEdit = (props) => {
             title: 'Sidebar',
             component: SidebarTab
         });
-        tabConfig.push({
-            name: 'filters',
-            title: 'Filters',
-            component: FiltersTab
-        });
         if (props.attributes?.source === 'api') {
             tabConfig.push({
                 name: 'api_settings',
@@ -67,6 +62,7 @@ const ListingsBlockEdit = (props) => {
             title: 'Custom Items',
             component: CustomItemsTab
         });
+        tabConfig = [...tabConfig, ...GlobalOptionsTabConfig];
         return tabConfig;
     }
 

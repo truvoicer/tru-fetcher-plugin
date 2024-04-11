@@ -233,22 +233,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
     public function __construct()
     {
         $this->keymapHelpers = new Tru_Fetcher_Api_Helpers_Keymaps();
-        $this->config['attributes'] = array_merge($this->config['attributes'], self::getSidebarConfig());
+        $this->config['attributes'] = array_merge($this->config['attributes'], parent::getSidebarConfig());
     }
-    public static function getSidebarConfig() {
-        return [
-            [
-                'id' => 'show_sidebar',
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            [
-                'id' => 'select_sidebar',
-                'type' => 'array',
-                'default' => [],
-            ],
-        ];
-    }
+
     public function buildBlockAttributes(array $attributes, ?bool $includeDefaults = true) {
 
         $attributes = parent::buildBlockAttributes($attributes);

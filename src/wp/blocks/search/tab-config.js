@@ -1,5 +1,6 @@
 import GeneralTab from "./tabs/GeneralTab";
 import ListingsOptionsTab from "../common/tabs/listings/ListingsOptionsTab";
+import GlobalOptionsTabConfig from "../components/global/tabs/GlobalOptionsTabConfig";
 export default [
     {
         name: 'general',
@@ -11,4 +12,5 @@ export default [
         title: 'Listings Options',
         component: ListingsOptionsTab
     },
+    ...GlobalOptionsTabConfig
 ]

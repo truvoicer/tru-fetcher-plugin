@@ -1,6 +1,7 @@
 import React from 'react';
 import {Panel, PanelBody, TabPanel} from "@wordpress/components";
 import GeneralTab from "./tabs/GeneralTab";
+import GlobalOptionsTabConfig from "../global/tabs/GlobalOptionsTabConfig";
 
 const UserProfile = (props) => {
 
@@ -12,6 +13,7 @@ const UserProfile = (props) => {
                 component: GeneralTab
             },
         ];
+        tabConfig = [...tabConfig, ...GlobalOptionsTabConfig];
         return tabConfig;
     }
 

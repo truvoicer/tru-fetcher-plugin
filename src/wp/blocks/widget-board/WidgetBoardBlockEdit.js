@@ -5,6 +5,7 @@ import {InnerBlocks, useBlockProps} from '@wordpress/block-editor';
 import ContentWidgetsTab from "./tabs/ContentWidgetsTab";
 import Carousel from "../components/carousel/Carousel";
 import SidebarWidgetsTab from "./tabs/SidebarWidgetsTab";
+import GlobalOptionsTabConfig from "../components/global/tabs/GlobalOptionsTabConfig";
 
 const WidgetBoardBlockEdit = (props) => {
     const {attributes, setAttributes} = props;
@@ -28,6 +29,7 @@ const WidgetBoardBlockEdit = (props) => {
                 component: SidebarWidgetsTab
             });
         }
+        tabConfig = [...tabConfig, ...GlobalOptionsTabConfig];
         return tabConfig;
     }
 

@@ -6,6 +6,7 @@ import FormLayoutTab from "./tabs/FormLayoutTab";
 import FormRowsTab from "./tabs/FormRowsTab";
 import ExternalProvidersTab from "./tabs/ExternalProvidersTab";
 import Grid from "../wp/Grid";
+import GlobalOptionsTabConfig from "../global/tabs/GlobalOptionsTabConfig";
 
 const FormComponent = ({data, onChange, showPresets = true}) => {
     function getTabComponent(tab) {
@@ -47,6 +48,7 @@ const FormComponent = ({data, onChange, showPresets = true}) => {
                 });
             }
         }
+        tabs = [...tabs, ...GlobalOptionsTabConfig];
         return tabs;
     }
 

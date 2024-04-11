@@ -3,6 +3,7 @@ import {Panel, PanelBody, TabPanel, SelectControl} from "@wordpress/components";
 import GeneralTab from "./tabs/GeneralTab";
 import CustomTabs from "./CustomTabs";
 import RequestOptions from "../request-options/RequestOptions";
+import GlobalOptionsTabConfig from "../global/tabs/GlobalOptionsTabConfig";
 
 const Tabs = (props) => {
     const {
@@ -33,6 +34,7 @@ const Tabs = (props) => {
                 component: RequestOptions
             });
         }
+        tabConfig = [...tabConfig, ...GlobalOptionsTabConfig];
         return tabConfig;
     }
 

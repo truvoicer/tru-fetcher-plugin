@@ -31,6 +31,29 @@ use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
 class Tru_Fetcher_Admin_Blocks_Resources_Base
 {
     public array $config;
+    protected array $defaultAttributes = [
+        [
+            'id' => 'sidebar_layout_position',
+            'type' => 'string',
+            'default' => 'default',
+        ],
+    ];
+
+    public static function getSidebarConfig() {
+        return [
+            [
+                'id' => 'show_sidebar',
+                'type' => 'boolean',
+                'default' => false,
+            ],
+            [
+                'id' => 'select_sidebar',
+                'type' => 'array',
+                'default' => [],
+            ],
+        ];
+    }
+
     public function renderBlock( $blockAttributes, $content ) {
         $config = $this->getConfig();
         $id = $config['id'];
@@ -207,7 +230,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
      */
     public function getConfig(): array
     {
-        return $this->config;
+        $config = $this->config;
+        $config['attributes'] = array_merge($this->defaultAttributes, $config['attributes']);
+        return $config;
     }
 
 }

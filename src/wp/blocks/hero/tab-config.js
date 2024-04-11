@@ -2,6 +2,7 @@ import DataTab from "./tabs/DataTab";
 import ImageryTab from "./tabs/ImageryTab";
 import SearchTab from "./tabs/SearchTab";
 import ExtraDataTab from "./tabs/ExtraDataTab";
+import GlobalOptionsTabConfig from "../components/global/tabs/GlobalOptionsTabConfig";
 
 export default [
     {
@@ -24,4 +25,5 @@ export default [
         title: 'Extra Data',
         component: ExtraDataTab
     },
+    ...GlobalOptionsTabConfig
 ]
