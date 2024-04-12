@@ -1,69 +1,90 @@
 import React from 'react';
 import {TextControl, SelectControl, ToggleControl} from "@wordpress/components";
 import Filters from "../../components/filters/Filters";
-import Sidebar from "../../common/Sidebar";
+import Grid from "../../components/wp/Grid";
 
 const SidebarTab = (props) => {
-    const {
-        attributes,
-        setAttributes,
-        className,
-    } = props;
+        const {
+            attributes,
+            setAttributes,
+            className,
+        } = props;
 
-    function formChangeHandler({key, value}) {
-        setAttributes({
-            ...attributes,
-            [key]: value
-        });
-    }
-    return (
-        <>
-            <ToggleControl
-                label="Show Sidebar widgets in listings sidebar"
-                checked={attributes?.show_sidebar_widgets_in_listings_sidebar}
-                onChange={(value) => {
-                    setAttributes({show_sidebar_widgets_in_listings_sidebar: value});
-                }}
-            />
-            <ToggleControl
-                label="Show Filters"
-                checked={attributes?.show_filters_toggle}
-                onChange={(value) => {
-                    setAttributes({show_filters_toggle: value});
-                }}
-            />
-            <SelectControl
-                label="Filters Position"
-                onChange={(value) => {
-                    setAttributes({filters_position: value});
-                }}
-                value={attributes?.filters_position}
-                options={[
-                    {
-                        label: 'Left',
-                        value: 'left'
-                    },
-                    {
-                        label: 'Right',
-                        value: 'right'
-                    },
-                ]}
-            />
-            {attributes?.show_filters_toggle &&
-                <>
-                    <TextControl
-                        label="Filter Heading"
-                        placeholder="Filter Heading"
-                        value={attributes.filter_heading}
+        function formChangeHandler({key, value}) {
+            setAttributes({
+                ...attributes,
+                [key]: value
+            });
+        }
+
+        return (
+            <>
+                <Grid columns={2}>
+                    <ToggleControl
+                        label="Show Filters"
+                        checked={attributes?.show_filters}
                         onChange={(value) => {
-                            setAttributes({filter_heading: value});
+                            setAttributes({show_filters: value});
                         }}
                     />
-                    <Filters data={attributes.filters} onChange={formChangeHandler}/>
-                </>
-            }
-        </>
-    );
-};
+                    {attributes?.show_filters &&
+                        <ToggleControl
+                            label="Show Sidebar widgets in filters"
+                            checked={attributes?.show_sidebar_widgets_in_filters}
+                            onChange={(value) => {
+                                setAttributes({show_sidebar_widgets_in_filters: value});
+                            }}
+                        />
+                    }
+                </Grid>
+
+                {attributes?.show_filters &&
+                    <>
+                        <Grid columns={2}>
+                            <ToggleControl
+                                label="Show filters in sidebar"
+                                checked={attributes?.show_filters_in_sidebar}
+                                onChange={(value) => {
+                                    setAttributes({show_filters_in_sidebar: value});
+                                }}
+                            />
+                            <SelectControl
+                                label="Filters Position"
+                                onChange={(value) => {
+                                    setAttributes({filters_position: value});
+                                }}
+                                value={attributes?.filters_position}
+                                options={[
+                                    {
+                                        label: 'Left',
+                                        value: 'left'
+                                    },
+                                    {
+                                        label: 'Right',
+                                        value: 'right'
+                                    },
+                                ]}
+                            />
+                        </Grid>
+                        <Grid columns={2}>
+                            <TextControl
+                                label="Filter Heading"
+                                placeholder="Filter Heading"
+                                value={attributes.filter_heading}
+                                onChange={(value) => {
+                                    setAttributes({filter_heading: value});
+                                }}
+                            />
+                        </Grid>
+                        <Grid columns={1}>
+                            <Filters data={attributes.filters} onChange={formChangeHandler}/>
+                        </Grid>
+                    </>
+                }
+            </>
+        )
+            ;
+    }
+;
 
 export default SidebarTab;

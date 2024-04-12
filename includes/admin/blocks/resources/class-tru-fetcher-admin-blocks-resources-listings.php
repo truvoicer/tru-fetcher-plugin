@@ -94,11 +94,6 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'default' => [],
             ],
             [
-                'id' => 'show_sidebar_widgets_in_listings_sidebar',
-                'type' => 'boolean',
-                'default' => false,
-            ],
-            [
                 'id' => 'heading',
                 'type' => 'string',
                 'default' => '',
@@ -208,7 +203,17 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'type' => 'integer',
             ],
             [
-                'id' => 'show_filters_toggle',
+                'id' => 'show_filters_in_sidebar',
+                'type' => 'boolean',
+                'default' => false,
+            ],
+            [
+                'id' => 'show_sidebar_widgets_in_filters',
+                'type' => 'boolean',
+                'default' => false,
+            ],
+            [
+                'id' => 'show_filters',
                 'type' => 'boolean',
                 'default' => true,
             ],
