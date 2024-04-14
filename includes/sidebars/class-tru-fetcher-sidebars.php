@@ -96,9 +96,6 @@ class Tru_Fetcher_Sidebars {
     private function buildSidebarBlockItem(string $content) {
         $blockData = parse_blocks($content);
         $blockName = $blockData[0]['blockName'];
-        $blockName = explode("/", $blockName); // Remove namespace
-        $blockName = $blockName[array_key_last($blockName)];
-        $blockData = $blockData[0]['attrs'];
         return [
             'name' => $blockName,
             'data' => $blockData
