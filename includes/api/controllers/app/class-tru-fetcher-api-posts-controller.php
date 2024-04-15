@@ -78,19 +78,9 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
             'callback' => [$this, "singlePostType"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
-        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/list/request', array(
-            'methods' => \WP_REST_Server::CREATABLE,
+        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/list', array(
+            'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "postListRequestHandler"],
-            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
-        ));
-        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/list/recent', array(
-            'methods' => \WP_REST_Server::READABLE,
-            'callback' => [$this, "postListRecentRequestHandler"],
-            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
-        ));
-        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/category/list', array(
-            'methods' => \WP_REST_Server::READABLE,
-            'callback' => [$this, "categoryListRequestHandler"],
             'permission_callback' => [$this->apiAuthApp, 'allowRequest']
         ));
         register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/category/list', array(
@@ -224,38 +214,6 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
             $this->apiPostResponse
         );
     }
-    public function postListRecentRequestHandler(\WP_REST_Request $request)
-    {
-        $postCount = 5;
-        if (isset($request["number"])) {
-            $postCount = (int) $request["number"];
-        }
-        $args = [
-            'post_type' => "post",
-            "orderby" => "date",
-            "order" => "desc",
-            "posts_per_page" => $postCount
-        ];
-        $postList = [];
-        foreach (get_posts($args) as $post) {
-            $categoryName = false;
-            $category = get_field("post_template_category", $post->ID);
-            if ($category) {
-                $categoryName = $category->slug;
-            }
-            array_push($postList, [
-                "name" => $post->post_title,
-                "slug" => $post->post_name,
-                "date" => $post->post_date_gmt,
-                "thumb" => get_the_post_thumbnail_url($post->ID),
-                "category" => $categoryName
-            ]);
-        }
-        return $this->sendResponse(
-            "Post fetch successful",
-            $postList
-        );
-    }
 
     public function categoryListRequestHandler(\WP_REST_Request $request)
     {
@@ -280,17 +238,16 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
 
     public function postListRequestHandler(\WP_REST_Request $request)
     {
+        $orderBy = $request->get_param("order_by");
+        $order = $request->get_param("order");
+        if (empty($orderBy)) {
+            $orderBy = "date";
+        }
+        if (empty($order)) {
+            $order = "desc";
+        }
         $showAllCategories = true;
         $categories = [];
-
-        $paginationRequestData = $this->postHelpers->getPaginationRequestData($request);
-        if (is_wp_error($paginationRequestData)) {
-            return $this->controllerHelpers->sendErrorResponse(
-                $paginationRequestData->get_error_code(),
-                $paginationRequestData->get_error_message(),
-                $this->postListResponse
-            );
-        }
 
         if (isset($request["show_all_categories"])) {
             $showAllCategories = $request["show_all_categories"];
@@ -305,32 +262,23 @@ class Tru_Fetcher_Api_Posts_Controller extends Tru_Fetcher_Api_Controller_Base
         }
         $args = [
             'cat' => $showAllCategories ? 0 : $categories,
-            'orderby' => 'date',
-            'order' => 'DESC',
+            'orderby' => $orderBy,
+            'order' => $order,
             'post_type' => 'post',
             'meta_key' => '_thumbnail_id',
         ];
 
-        $offsetArgs = [
-            'posts_per_page' => $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']],
-            'offset' => $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']],
-        ];
-
-        $allPostsQuery = new \WP_Query($args);
-        $postQuery = new \WP_Query(array_merge($args, $offsetArgs));
-
-        $pagination = Tru_Fetcher_Posts::getPostPagination(
-            $postQuery,
-            $allPostsQuery,
-            $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']],
-            $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']]
-        );
-        $pagination->setPaginationType($paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['PAGINATION_TYPE']]);
-        $this->postListResponse->setPagination($pagination);
-        $this->postListResponse->setPostList($this->postHelpers->buildPostsArray($postQuery->posts));
+        $paginatedPostList = $this->postHelpers->getPaginatedPostList($args, $request);
+        if (is_wp_error($paginatedPostList)) {
+            return $this->controllerHelpers->sendErrorResponse(
+                $paginatedPostList->get_error_code(),
+                $paginatedPostList->get_error_message(),
+                $this->postListResponse
+            );
+        }
         return $this->controllerHelpers->sendSuccessResponse(
             "Post list request success",
-            $this->postListResponse
+            $paginatedPostList
         );
     }
 

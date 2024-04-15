@@ -3,6 +3,7 @@
 namespace TruFetcher\Includes\Posts;
 
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Post_Options;
+use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Post_List_Response;
 use TruFetcher\Includes\Constants\Tru_Fetcher_Constants_Api;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Base;
@@ -595,5 +596,34 @@ class Tru_Fetcher_Posts
         return array_map(function (WP_Post $post) use ($fields) {
             return self::buildPostObject($post, $fields);
         }, $posts);
+    }
+
+    public function getPaginatedPostList(array $args, \WP_REST_Request $request) {
+        $postListResponse = new Tru_Fetcher_Api_Post_List_Response();
+
+        $paginationRequestData = $this->getPaginationRequestData($request);
+        if (is_wp_error($paginationRequestData)) {
+            return $paginationRequestData;
+        }
+
+        $offsetArgs = [
+            'posts_per_page' => $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']],
+            'offset' => $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']],
+        ];
+
+        $allPostsQuery = new \WP_Query($args);
+        $postQuery = new \WP_Query(array_merge($args, $offsetArgs));
+
+        $pagination = Tru_Fetcher_Posts::getPostPagination(
+            $postQuery,
+            $allPostsQuery,
+            $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['OFFSET']],
+            $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']]
+        );
+        $pagination->setPaginationType($paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['PAGINATION_TYPE']]);
+        $postListResponse->setPagination($pagination);
+        $postListResponse->setPostList($this->buildPostsArray($postQuery->posts));
+
+        return $postListResponse;
     }
 }
