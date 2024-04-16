@@ -6,7 +6,24 @@ import {PanelRow, TextareaControl, ToggleControl, SelectControl, TabPanel} from 
 import {useState} from '@wordpress/element';
 
 const POST_TYPES = ['item_view_templates', 'page'];
-const PageOptionsMetaBox = ({config, postType, metaFields, setMetaFields}) => {
+const PageOptionsMetaBox = ({config, postType, sidebars, metaFields, setMetaFields}) => {
+    function buildSidebarSelectOptions() {
+        const sidebarSelectOptions = [
+            {
+                disabled: true,
+                label: 'Select an Option',
+                value: ''
+            },
+        ];
+        sidebars?.map(sidebar => {
+            sidebarSelectOptions.push({
+                label: sidebar?.name,
+                value: sidebar?.id
+            })
+        });
+        return sidebarSelectOptions;
+    }
+
     return (
         <PluginDocumentSettingPanel
             title={__('Page Options')}
@@ -30,17 +47,26 @@ const PageOptionsMetaBox = ({config, postType, metaFields, setMetaFields}) => {
             </PanelRow>
             <PanelRow>
                 <SelectControl
-                    label={__("Page Template")}
-                    value={metaFields.trf_gut_pmf_page_options_page_template}
+                    label={__("Layout")}
+                    value={metaFields.trf_gut_pmf_page_options_layout}
                     options={[
                         {value: 'full-width', label: 'Full Width'},
-                        {value: 'left-sidebar', label: 'Left Sidebar'},
-                        {value: 'right-sidebar', label: 'Right Sidebar'},
+                        {value: 'sidebar', label: 'Sidebar'},
                     ]}
-                    onChange={(value) => setMetaFields({trf_gut_pmf_page_options_page_template: value})}
+                    onChange={(value) => setMetaFields({trf_gut_pmf_page_options_layout: value})}
                     __nextHasNoMarginBottom
                 />
             </PanelRow>
+            {metaFields.trf_gut_pmf_page_options_layout === 'sidebar' && (
+                <PanelRow>
+                    <SelectControl
+                        label="Select Sidebar"
+                        onChange={(value) => setMetaFields({trf_gut_pmf_page_options_sidebar: value})}
+                        value={metaFields.trf_gut_pmf_page_options_sidebar}
+                        options={buildSidebarSelectOptions()}
+                    />
+                </PanelRow>
+            )}
             <PanelRow>
                 <TabPanel
                     className="my-tab-panel"
@@ -107,7 +133,8 @@ const PageOptionsMetaBox = ({config, postType, metaFields, setMetaFields}) => {
 const applyWithSelect = withSelect((select) => {
     return {
         metaFields: select('core/editor').getEditedPostAttribute('meta'),
-        postType: select('core/editor').getCurrentPostType()
+        postType: select('core/editor').getCurrentPostType(),
+        sidebars: select('core').getSidebars()
     };
 });
 

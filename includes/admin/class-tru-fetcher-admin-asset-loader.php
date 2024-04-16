@@ -295,7 +295,13 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
                 $encodeNonce
             );
             if (!$saveMeta) {
-                throw new Exception('Error saving nonce user meta');
+                throw new Exception(
+                    sprintf(
+                        'Error saving nonce user meta | user_id: %s | user_email: %s',
+                        $getCurrentUser->ID,
+                        $getCurrentUser->user_email
+                    )
+                );
             }
         }
         return [

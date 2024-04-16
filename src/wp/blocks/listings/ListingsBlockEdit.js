@@ -65,9 +65,17 @@ const ListingsBlockEdit = (props) => {
         tabConfig = [...tabConfig, ...GlobalOptionsTabConfig];
         return tabConfig;
     }
-
+    function getContainerProps() {
+        console.log(props)
+        if (props?.source === 'api') {
+            return {
+                className: 'listings-block-container listings-block-container-api'
+            }
+        }
+        return useBlockProps();
+    }
     return (
-        <div {...useBlockProps()}>
+        <div {...getContainerProps()}>
             <Panel>
                 <PanelBody title="Listings Block" initialOpen={true}>
                     <TabPanel

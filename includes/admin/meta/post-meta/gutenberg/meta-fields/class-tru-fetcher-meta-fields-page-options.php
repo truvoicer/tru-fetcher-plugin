@@ -30,7 +30,8 @@ use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Post_Tpl;
 class Tru_Fetcher_Meta_Fields_Page_Options extends Tru_Fetcher_Meta_Fields_Base
 {
     public const META_KEY_PAGE_TYPE = 'page_options_page_type';
-    public const META_KEY_PAGE_TEMPLATE = 'page_options_page_template';
+    public const META_KEY_PAGE_LAYOUT = 'page_options_layout';
+    public const META_KEY_SIDEBAR = 'page_options_sidebar';
     public const META_KEY_HEADER_OVERRIDE = 'page_options_header_override';
     public const META_KEY_HEADER_SCRIPTS = 'page_options_header_scripts';
     public const META_KEY_FOOTER_OVERRIDE = 'page_options_footer_override';
@@ -61,8 +62,23 @@ class Tru_Fetcher_Meta_Fields_Page_Options extends Tru_Fetcher_Meta_Fields_Base
                 Tru_Fetcher_Post_Types_Trf_Post_Tpl::NAME,
                 Tru_Fetcher_Post_Types_Trf_Category_Tpl::NAME
             ],
-            'meta_key' => self::META_KEY_PAGE_TEMPLATE,
+            'meta_key' => self::META_KEY_PAGE_LAYOUT,
             'default' => 'full-width',
+            'args' => [
+                'show_in_rest' => true,
+                'single' => true,
+                'type' => 'string',
+            ]
+        ],
+        [
+            'post_type' => [
+                Tru_Fetcher_Post_Types_Page::NAME,
+                Tru_Fetcher_Post_Types_Trf_Item_View_Tpl::NAME,
+                Tru_Fetcher_Post_Types_Trf_Post_Tpl::NAME,
+                Tru_Fetcher_Post_Types_Trf_Category_Tpl::NAME
+            ],
+            'meta_key' => self::META_KEY_SIDEBAR,
+            'default' => false,
             'args' => [
                 'show_in_rest' => true,
                 'single' => true,

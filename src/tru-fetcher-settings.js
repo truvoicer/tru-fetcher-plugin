@@ -1,5 +1,7 @@
 
 import { render } from '@wordpress/element';
+import { registerPlugin, getPlugin } from '@wordpress/plugins';
+import { registerBlockType } from '@wordpress/blocks';
 import 'antd/dist/reset.css';
 import '../assets/sass/tru-fetcher-admin.scss';
 import App from "./App";

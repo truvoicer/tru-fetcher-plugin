@@ -4,6 +4,7 @@ import FormPresets from "../../settings/pages/presets/FormPresets";
 import TabPresets from "../../settings/pages/presets/TabPresets";
 import Presets from "../../settings/pages/presets/Presets";
 import Keymaps from "../../settings/pages/keymaps/KeyMaps";
+import Listings from "../../settings/pages/Listings";
 
 export default [
     {
@@ -19,6 +20,13 @@ export default [
         key: 'settings',
         label: 'Settings',
         component: GeneralSettings,
+    },
+    {
+        home: false,
+        path: "/listings",
+        key: 'listings',
+        label: 'Listings',
+        component: Listings,
     },
     {
         home: false,
