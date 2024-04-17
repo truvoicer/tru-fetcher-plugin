@@ -62,7 +62,10 @@ export function findTaxonomyIdIdentifier(taxonomy) {
 
 export function addParam({attr, attributes, setAttributes}) {
     let cloneAtts = {...attributes};
-    let cloneSearchParam = [...cloneAtts[attr]];
+    let cloneSearchParam = [];
+    if (Array.isArray(cloneAtts[attr])) {
+        cloneSearchParam = [...cloneAtts[attr]];
+    }
     cloneSearchParam.push({name: '', value: ''});
     setAttributes({[attr]: cloneSearchParam});
 }

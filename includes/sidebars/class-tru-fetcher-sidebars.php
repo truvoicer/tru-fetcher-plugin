@@ -1,6 +1,7 @@
 <?php
 namespace TruFetcher\Includes\Sidebars;
 
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Listings;
 use TruFetcher\Includes\Menus\Tru_Fetcher_Menu;
 
 /**
@@ -30,9 +31,11 @@ class Tru_Fetcher_Sidebars {
     ];
 
 	private $menuClass;
+    private Tru_Fetcher_Api_Helpers_Listings $listingsHelpers;
 
 	public function __construct() {
 		$this->menuClass = new Tru_Fetcher_Menu();
+        $this->listingsHelpers = new Tru_Fetcher_Api_Helpers_Listings();
 	}
 
 	public function getAllSidebars() {
@@ -78,6 +81,14 @@ class Tru_Fetcher_Sidebars {
                     $menuObject = wp_get_nav_menu_object($widgetData['nav_menu']);
                     $array[ $widgetInstanceName ]["menu_slug"] = $menuObject->slug;
                     $array[ $widgetInstanceName ]["menu_items"] = $this->menuClass->getMenu( $menuObject );
+                    break;
+                case 'listings_widget':
+                    $listingId = $widgetData['listing'];
+                    $listing = $this->listingsHelpers->getListingById((int)$listingId);
+                    if (!$listing) {
+                        break;
+                    }
+                    $array[ $widgetInstanceName ] = $listing['config_data'];
                     break;
                 case 'block':
                     $blockItem = $this->buildSidebarBlockItem($widgetData['content']);

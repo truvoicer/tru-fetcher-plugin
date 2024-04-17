@@ -49,6 +49,36 @@ const DisplayTab = (props) => {
             </Grid>
             <Grid columns={2}>
                 <SelectControl
+                    label="Grid Layout"
+                    onChange={(value) => {
+                        setAttributes({grid_layout: value});
+                    }}
+                    value={attributes?.grid_layout}
+                    options={[
+                        {
+                            disabled: true,
+                            label: 'Select an Option',
+                            value: ''
+                        },
+                        {
+                            label: 'List',
+                            value: 'list'
+                        },
+                        {
+                            label: 'Compact',
+                            value: 'compact'
+                        },
+                        {
+                            label: 'Detailed',
+                            value: 'detailed'
+                        },
+                        {
+                            label: 'Sidebar',
+                            value: 'sidebar'
+                        },
+                    ]}
+                />
+                <SelectControl
                     label="Select Item View Display"
                     onChange={(value) => {
                         setAttributes({item_view_display: value});
@@ -70,6 +100,8 @@ const DisplayTab = (props) => {
                         },
                     ]}
                 />
+            </Grid>
+            <Grid columns={2}>
                 <SelectControl
                     label="Load More Type"
                     onChange={(value) => {
@@ -92,8 +124,6 @@ const DisplayTab = (props) => {
                         },
                     ]}
                 />
-            </Grid>
-            <Grid columns={2}>
                 <RangeControl
                     label="Posts Per Page"
                     initialPosition={50}

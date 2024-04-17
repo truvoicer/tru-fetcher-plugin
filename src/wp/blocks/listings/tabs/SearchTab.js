@@ -46,7 +46,7 @@ const SearchTab = (props) => {
                             }}
                         />
                         <h5>Search Params</h5>
-                        {attributes.initial_load_search_params.map((param, index) => {
+                        {Array.isArray(attributes?.initial_load_search_params) && attributes.initial_load_search_params.map((param, index) => {
                             return (
                                 <div style={{display: 'flex'}}>
                                     <TextControl
@@ -110,7 +110,7 @@ const SearchTab = (props) => {
                             onChange={(value) => setAttributes({initial_load_request_limit: value})}
                         />
                         <h5>Request Params</h5>
-                        {attributes.initial_load_request_params.map((param, index) => {
+                        {Array.isArray(attributes?.initial_load_request_params) && attributes.initial_load_request_params.map((param, index) => {
                             return (
                                 <div style={{display: 'flex'}}>
                                     <TextControl
@@ -151,7 +151,11 @@ const SearchTab = (props) => {
                             variant="primary"
                             onClick={ (e) => {
                                 e.preventDefault()
-                                addParam('initial_load_request_params')
+                                addParam({
+                                    attr: 'initial_load_request_params',
+                                    attributes,
+                                    setAttributes
+                                })
                             }}
                         >
                             Add New

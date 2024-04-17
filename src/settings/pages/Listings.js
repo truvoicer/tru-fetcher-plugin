@@ -12,7 +12,7 @@ const Listings = () => {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [currentRecord, setCurrentRecord] = useState(null);
-    const [tabPresets, setTabPresets] = useState([]);
+    const [listings, setListings] = useState([]);
     const [attributes, setAttributes] = useState({});
     const openNotificationWithIcon = (type, title, message) => {
         api[type]({
@@ -60,38 +60,40 @@ const Listings = () => {
         return {...defaultTabData, ...data.config_data};
     }
 
-    async function fetchTabPresets() {
+    async function fetchListings() {
         const results = await fetchRequest({
             config: config,
-            endpoint: config.endpoints.tabPresets,
+            endpoint: config.endpoints.listings,
             params: {
                 build_config_data: true
             }
         });
-        const tabPresets = results?.data?.tabPreset;
-        if (Array.isArray(tabPresets)) {
-            setTabPresets(tabPresets);
+        const listings = results?.data?.listings;
+        console.log({listings})
+        if (Array.isArray(listings)) {
+            setListings(listings);
         }
     }
 
-    async function createTabPresetRequest(data) {
+    async function createListingRequest(data) {
         const results = await sendRequest({
             config: config,
             method: 'post',
-            endpoint: `${config.endpoints.tabPresets}/create`,
+            endpoint: `${config.endpoints.listings}/create`,
             data
         });
-        const tabPresets = results?.data?.tabPreset;
+        const listings = results?.data?.listings;
         if (results?.data?.status !== 'success') {
-            openNotificationWithIcon('error', 'Error', 'Failed to create tab preset');
+            openNotificationWithIcon('error', 'Error', 'Failed to create listing');
             return;
         }
-        openNotificationWithIcon('success', 'Success', 'Tab preset created successfully');
-        if (Array.isArray(tabPresets)) {
-            setTabPresets(tabPresets);
+        openNotificationWithIcon('success', 'Success', 'Listing created successfully');
+        if (Array.isArray(listings)) {
+            setListings(listings);
         }
     }
-    async function updateTabPresetRequest(data) {
+
+    async function updateListingRequest(data) {
         if (!data?.id) {
             console.error('Id not set in data')
             return;
@@ -100,22 +102,22 @@ const Listings = () => {
         const results = await sendRequest({
             config: config,
             method: 'post',
-            endpoint: `${config.endpoints.tabPresets}/${id}/update`,
+            endpoint: `${config.endpoints.listings}/${id}/update`,
             data
         });
-        const tabPresets = results?.data?.tabPreset;
+        const listings = results?.data?.listings;
         if (results?.data?.status !== 'success') {
-            openNotificationWithIcon('error', 'Error', 'Failed to update tab preset');
+            openNotificationWithIcon('error', 'Error', 'Failed to update listing');
             return;
         }
-        openNotificationWithIcon('success', 'Success', 'Tab preset updated successfully');
-        if (Array.isArray(tabPresets)) {
-            setTabPresets(tabPresets);
+        openNotificationWithIcon('success', 'Success', 'Listing updated successfully');
+        if (Array.isArray(listings)) {
+            setListings(listings);
         }
     }
 
     useEffect(() => {
-        fetchTabPresets();
+        fetchListings();
     }, []);
     const columns = [
         {
@@ -131,12 +133,6 @@ const Listings = () => {
                 <>
                     <Button
                         onClick={() => {
-                            // console.log({_, a, b})
-                            // const data = buildTabData(record);
-                            // if (!data) {
-                            //     console.warn(`No data found for tab preset: ${record.name}`);
-                            //     return;
-                            // }
                             setCurrentRecord(record);
                             setIsEditModalOpen(true);
                         }}
@@ -160,7 +156,7 @@ const Listings = () => {
                 style={{marginBottom: 16}}>
                 Add Listing Config
             </Button>
-            {/*<Table columns={columns} dataSource={tabPresets}/>*/}
+            <Table columns={columns} dataSource={listings}/>
             <Modal title={'Edit Tab Preset'}
                    open={isEditModalOpen}
                    onOk={() => {
@@ -168,19 +164,35 @@ const Listings = () => {
                            console.error('Id not set in currentRecord')
                            return;
                        }
-                       updateTabPresetRequest(currentRecord);
+                       updateListingRequest(currentRecord);
                    }}
                    onCancel={() => {
                        setCurrentRecord(null);
                        setIsEditModalOpen(false);
                    }}>
 
-                <ListingsBlockEdit source={'api'} name={'listings'} attributes={attributes} setAttributes={setAttributes}/>
+                <ListingsBlockEdit
+                    source={'api'}
+                    name={'listings'}
+                    apiConfig={tru_fetcher_react.api}
+                    attributes={currentRecord?.config_data || {}}
+                    setAttributes={(data) => {
+                        setCurrentRecord((prevState) => {
+                            let cloneState = {...prevState};
+                            let cloneConfigData = {...cloneState?.config_data || {}};
+                            cloneState.config_data = {
+                                ...cloneConfigData,
+                                ...data
+                            };
+                            return cloneState;
+                        });
+                    }}
+                />
             </Modal>
             <Modal title={'Add Listing Config'}
                    open={isAddModalOpen}
                    onOk={() => {
-                       createTabPresetRequest(values)
+                       createListingRequest(values)
                    }}
                    onCancel={() => {
                        setCurrentRecord(null);
@@ -191,7 +203,7 @@ const Listings = () => {
                     style={{maxWidth: 600}}
                     initialValues={{name: '', value: ''}}
                     onFinish={(values) => {
-                        createTabPresetRequest(values)
+                        createListingRequest(values)
                     }}
                     onFinishFailed={errorInfo => {
                         console.log('Failed:', errorInfo);

@@ -207,7 +207,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         $localizedScriptData['api'] = [];
         $localizedScriptData['api'] = array_merge($localizedScriptData['api'], $this->buildWordpressApiLocalizedScriptData());
         $localizedScriptData['api'] = array_merge($localizedScriptData['api'], $this->buildTruFetcherApiLocalizedScriptData());
-        $localizedScriptData = array_merge($localizedScriptData, $this->buildAdminReactBlocksLocalizedScriptData());
+        $localizedScriptData = array_merge($localizedScriptData, $this->buildBlocksLocalizedScriptData());
         $localizedScriptData = array_merge($localizedScriptData, $this->buildFormPresetsLocalizedScriptData());
         wp_localize_script(
             "{$this->plugin_name}-{$this->adminReactScriptName}",
@@ -297,9 +297,11 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
             if (!$saveMeta) {
                 throw new Exception(
                     sprintf(
-                        'Error saving nonce user meta | user_id: %s | user_email: %s',
+                        'Error saving nonce user meta | user_id: %s | user_email: %s | saveVal: %s | nonce: %s',
                         $getCurrentUser->ID,
-                        $getCurrentUser->user_email
+                        $getCurrentUser->user_email,
+                        $saveMeta,
+                        $encodeNonce
                     )
                 );
             }

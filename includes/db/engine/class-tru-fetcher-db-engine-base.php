@@ -18,6 +18,7 @@ use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Device;
 
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Form_Presets;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Keymap;
+use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Listings;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Locale;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Post_Meta;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Ratings;
@@ -79,7 +80,8 @@ class Tru_Fetcher_DB_Engine_Base
             new Tru_Fetcher_DB_Model_Skill(),
             new Tru_Fetcher_DB_Model_User_Skill(),
             new Tru_Fetcher_DB_Model_Locale(),
-            new Tru_Fetcher_DB_Model_Keymap()
+            new Tru_Fetcher_DB_Model_Keymap(),
+            new Tru_Fetcher_DB_Model_Listings(),
         ];
     }
 

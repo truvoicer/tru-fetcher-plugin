@@ -104,6 +104,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'default' => 'list',
             ],
             [
+                'id' => 'grid_layout',
+                'type' => 'string',
+                'default' => 'list',
+            ],
+            [
                 'id' => 'item_view_display',
                 'type' => 'string',
                 'default' => 'page',

@@ -12,7 +12,6 @@ import SidebarTab from "./tabs/SidebarTab";
 import GlobalOptionsTabConfig from "../components/global/tabs/GlobalOptionsTabConfig";
 
 const ListingsBlockEdit = (props) => {
-
     function getTabComponent(tab) {
         if (!tab?.component) {
             return null;
@@ -66,7 +65,6 @@ const ListingsBlockEdit = (props) => {
         return tabConfig;
     }
     function getContainerProps() {
-        console.log(props)
         if (props?.source === 'api') {
             return {
                 className: 'listings-block-container listings-block-container-api'
@@ -74,6 +72,7 @@ const ListingsBlockEdit = (props) => {
         }
         return useBlockProps();
     }
+
     return (
         <div {...getContainerProps()}>
             <Panel>
