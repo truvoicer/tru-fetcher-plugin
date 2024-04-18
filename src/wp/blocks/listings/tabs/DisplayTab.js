@@ -44,6 +44,14 @@ const DisplayTab = (props) => {
                             label: 'Tiles',
                             value: 'tiles'
                         },
+                        {
+                            label: 'Sidebar Posts',
+                            value: 'sidebar_posts'
+                        },
+                        {
+                            label: 'Sidebar List',
+                            value: 'sidebar_list'
+                        },
                     ]}
                 />
             </Grid>
@@ -71,10 +79,6 @@ const DisplayTab = (props) => {
                         {
                             label: 'Detailed',
                             value: 'detailed'
-                        },
-                        {
-                            label: 'Sidebar',
-                            value: 'sidebar'
                         },
                     ]}
                 />

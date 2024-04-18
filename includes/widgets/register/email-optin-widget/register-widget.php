@@ -1,8 +1,12 @@
 <?php
+
+use TruFetcher\Includes\Widgets\Tru_Fetcher_Widgets;
+
 if(!class_exists('Tru_Fetcher_Email_Optin_Widget')) {
 
     class Tru_Fetcher_Email_Optin_Widget extends WP_Widget {
 
+        private Tru_Fetcher_Widgets $widgets;
         /**
          * Sets up the widgets name etc
          */
@@ -12,6 +16,8 @@ if(!class_exists('Tru_Fetcher_Email_Optin_Widget')) {
                 'description' => 'Email Optin Widget',
             );
             parent::__construct( 'email_optin_widget', 'Email Optin Widget', $widget_ops );
+            $this->widgets = new Tru_Fetcher_Widgets();
+            $this->widgets->setWidget($this);
         }
 
         /**
@@ -31,6 +37,7 @@ if(!class_exists('Tru_Fetcher_Email_Optin_Widget')) {
          */
         public function form( $instance ) {
             // outputs the options form on admin
+            $this->widgets->renderWidgetTextInput('title', 'Title', $instance);
         }
 
         /**

@@ -140,7 +140,7 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 	}
 
 	private function define_widgets() {
-		$this->directoryIncludes( 'includes/widgets', 'register-widget.php' );
+		$this->directoryIncludes( 'includes/widgets/register', 'register-widget.php' );
 	}
 
 	private function define_sidebars() {
