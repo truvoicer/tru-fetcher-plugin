@@ -26,6 +26,7 @@ use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_View_Tpl;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Post_Tpl;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Single_Item;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy_Trf_Listings_Category;
+use TruFetcher\Includes\Widgets\Tru_Fetcher_Widgets;
 
 /**
  * The core plugin class.
@@ -140,7 +141,8 @@ class Tru_Fetcher extends Tru_Fetcher_Base {
 	}
 
 	private function define_widgets() {
-		$this->directoryIncludes( 'includes/widgets/register', 'register-widget.php' );
+        $widgets = new Tru_Fetcher_Widgets();
+        $widgets->init();
 	}
 
 	private function define_sidebars() {
