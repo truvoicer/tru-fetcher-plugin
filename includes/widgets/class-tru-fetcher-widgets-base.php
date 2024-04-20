@@ -34,7 +34,7 @@ class Tru_Fetcher_Widgets_Base extends \WP_Widget
     public function widget( $args, $instance ) {
         extract( $args );
         echo $before_widget;
-        echo $before_title . apply_filters( 'widget_title', $this->config['title'] ) . $after_title;
+        echo $before_title . apply_filters( 'widget_title', $this->config['name'] ) . $after_title;
         $this->renderContent($args, $instance);
         echo $after_widget;
     }
@@ -72,6 +72,13 @@ class Tru_Fetcher_Widgets_Base extends \WP_Widget
         // processes widget options to be saved
         $instance          = array();
         foreach ($this->config['fields'] as $field) {
+            error_log(json_encode(
+                [
+                    'field' => $field,
+                    'new_instance' => $new_instance
+                ]
+
+            ));
             $instance[$field['id']] = ( ! empty( $new_instance[$field['id']] ) ) ?  $new_instance[$field['id']] : null;
         }
         return $instance;
@@ -79,10 +86,13 @@ class Tru_Fetcher_Widgets_Base extends \WP_Widget
 
     public function renderContent($args, $instance): void
     {
-        echo '<h2>' . $this->config['name'] . '</h2>';
-        echo '<ul>';
+        echo '<ul style="list-style: none">';
         foreach ($this->config['fields'] as $field) {
-            echo "<li>{$field['label']} :  {$instance[$field['id']]} </li>";
+            $value = $instance[$field['id']] ?? '';
+            if (is_array($value)) {
+                $value = implode(', ', $value);
+            }
+            echo "<li>{$field['label']} :  {$value} </li>";
         }
         echo '</ul>';
     }

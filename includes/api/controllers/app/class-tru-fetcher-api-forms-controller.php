@@ -66,7 +66,7 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/redirect', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => [ $this, "providerAction"],
-			'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
+			'permission_callback' => [$this->apiAuthApp, 'publicTokenRequestHandler']
 		) );
         register_rest_route( $this->apiConfigEndpoints->protectedEndpoint, '/user/metadata/save', array(
             'methods'  => WP_REST_Server::CREATABLE,

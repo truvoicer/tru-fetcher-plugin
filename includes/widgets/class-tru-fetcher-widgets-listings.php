@@ -67,10 +67,18 @@ class Tru_Fetcher_Widgets_Listings extends Tru_Fetcher_Widgets_Base
         $listing = $listingsHelpers->getListingsRepository()->findById((int)$instance['listing']);
 
         $content = '';
-        parent::renderContent($args, $instance);
+
+        echo '<ul style="list-style: none">';
+        foreach ($this->config['fields'] as $field) {
+            if ($field['id'] === 'listing') {
+                continue;
+            }
+            echo "<li>{$field['label']} :  {$instance[$field['id']]} </li>";
+        }
+        echo '</ul>';
         if ( ! empty( $listing['name'] ) ) {
             $content .= "<h4>Selected listing: </h4>";
-            $content .= "<ul><li>id: {$listing['id']}</li><li>Name: {$listing['name']}</li></ul>";
+            $content .= "<ul style=\"list-style: none\"><li>id: {$listing['id']}</li><li>Name: {$listing['name']}</li></ul>";
         } else {
             $content .= "<p>No listing selected/found</p>";
         }

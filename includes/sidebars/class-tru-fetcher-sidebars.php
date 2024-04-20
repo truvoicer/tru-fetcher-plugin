@@ -82,13 +82,14 @@ class Tru_Fetcher_Sidebars {
                     $array[ $widgetInstanceName ]["menu_slug"] = $menuObject->slug;
                     $array[ $widgetInstanceName ]["menu_items"] = $this->menuClass->getMenu( $menuObject );
                     break;
-                case 'listings_widget':
+                case 'tru_fetcher_listings':
                     $listingId = $widgetData['listing'];
                     $listing = $this->listingsHelpers->getListingById((int)$listingId);
                     if (!$listing) {
                         break;
                     }
-                    $array[ $widgetInstanceName ] = $listing['config_data'];
+                    $widgetData['data'] = $listing['config_data'];
+                    $array[ $widgetInstanceName ] = $widgetData;
                     break;
                 case 'block':
                     $blockItem = $this->buildSidebarBlockItem($widgetData['content']);

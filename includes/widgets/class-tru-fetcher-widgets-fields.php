@@ -59,6 +59,9 @@ class Tru_Fetcher_Widgets_Fields
             case 'select':
                 $this->renderWidgetSelectInput($options);
                 break;
+            case 'multi-select':
+                $this->renderWidgetSelectInput($options, true);
+                break;
             case 'image':
                 $this->renderWidgetImageInput();
                 break;
@@ -91,7 +94,8 @@ class Tru_Fetcher_Widgets_Fields
         ?>
         <p>
             <label for="<?php echo $this->fieldId; ?>"><?php _e($this->fieldLabel); ?></label>
-            <input class="widefat" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>" type="text" value="<?php echo $this->fieldValue; ?>">
+            <input class="widefat" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>" type="text"
+                   value="<?php echo $this->fieldValue; ?>">
         </p>
         <?php
     }
@@ -101,7 +105,8 @@ class Tru_Fetcher_Widgets_Fields
         ?>
         <p>
             <label for="<?php echo $this->fieldId; ?>"><?php _e($this->fieldLabel); ?></label>
-            <textarea class="widefat" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>"><?php echo $this->fieldValue; ?></textarea>
+            <textarea class="widefat" id="<?php echo $this->fieldId; ?>"
+                      name="<?php echo $this->fieldName; ?>"><?php echo $this->fieldValue; ?></textarea>
         </p>
         <?php
     }
@@ -110,18 +115,23 @@ class Tru_Fetcher_Widgets_Fields
     {
         ?>
         <p>
-            <input class="checkbox" type="checkbox" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>" <?php checked($this->fieldValue, 'on'); ?>>
+            <input class="checkbox" type="checkbox" id="<?php echo $this->fieldId; ?>"
+                   name="<?php echo $this->fieldName; ?>" <?php checked($this->fieldValue, 'on'); ?>>
             <label for="<?php echo $this->fieldId; ?>"><?php _e($this->fieldLabel); ?></label>
         </p>
         <?php
     }
 
-    public function renderWidgetSelectInput(array $options)
+    public function renderWidgetSelectInput(array $options, ?bool $multiple = false)
     {
         ?>
         <p>
             <label for="<?php echo $this->fieldId; ?>"><?php _e($this->fieldLabel); ?></label>
-            <select class="widefat" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>">
+            <select
+                    <?php if ($multiple) : ?> multiple <?php endif; ?>
+                    class="widefat"
+                    id="<?php echo $this->fieldId; ?>"
+                    name="<?php echo ($multiple)? "{$this->fieldName}[]" : $this->fieldName; ?>">
                 <?php foreach ($options as $item) : ?>
                     <option value="<?php echo $item['value']; ?>" <?php selected($this->fieldValue, $item['value']); ?>><?php echo $item['label']; ?></option>
                 <?php endforeach; ?>
@@ -135,7 +145,8 @@ class Tru_Fetcher_Widgets_Fields
         ?>
         <p>
             <label for="<?php echo $this->fieldId; ?>"><?php _e($this->fieldLabel); ?></label>
-            <input class="widefat" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>" type="text" value="<?php echo $this->fieldValue; ?>">
+            <input class="widefat" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>" type="text"
+                   value="<?php echo $this->fieldValue; ?>">
             <button class="button button-primary js-image-upload">Upload Image</button>
         </p>
         <?php
@@ -146,7 +157,8 @@ class Tru_Fetcher_Widgets_Fields
         ?>
         <p>
             <label for="<?php echo $this->fieldId; ?>"><?php _e($this->fieldLabel); ?></label>
-            <input class="widefat js-color-picker" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>" type="text" value="<?php echo $this->fieldValue; ?>">
+            <input class="widefat js-color-picker" id="<?php echo $this->fieldId; ?>"
+                   name="<?php echo $this->fieldName; ?>" type="text" value="<?php echo $this->fieldValue; ?>">
         </p>
         <?php
     }
@@ -156,7 +168,8 @@ class Tru_Fetcher_Widgets_Fields
         ?>
         <p>
             <label for="<?php echo $this->fieldId; ?>"><?php _e($this->fieldLabel); ?></label>
-            <input class="widefat" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>" type="number" value="<?php echo $this->fieldValue; ?>">
+            <input class="widefat" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>"
+                   type="number" value="<?php echo $this->fieldValue; ?>">
         </p>
         <?php
     }
@@ -166,17 +179,19 @@ class Tru_Fetcher_Widgets_Fields
         ?>
         <p>
             <label for="<?php echo $this->fieldId; ?>"><?php _e($this->fieldLabel); ?></label>
-            <input class="widefat" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>" type="url" value="<?php echo $this->fieldValue; ?>">
+            <input class="widefat" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>" type="url"
+                   value="<?php echo $this->fieldValue; ?>">
         </p>
         <?php
     }
 
-public function renderWidgetEmailInput()
+    public function renderWidgetEmailInput()
     {
         ?>
         <p>
             <label for="<?php echo $this->fieldId; ?>"><?php _e($this->fieldLabel); ?></label>
-            <input class="widefat" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>" type="email" value="<?php echo $this->fieldValue; ?>">
+            <input class="widefat" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>"
+                   type="email" value="<?php echo $this->fieldValue; ?>">
         </p>
         <?php
     }
@@ -186,17 +201,19 @@ public function renderWidgetEmailInput()
         ?>
         <p>
             <label for="<?php echo $this->fieldId; ?>"><?php _e($this->fieldLabel); ?></label>
-            <input class="widefat js-date-picker" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>" type="text" value="<?php echo $this->fieldValue; ?>">
+            <input class="widefat js-date-picker" id="<?php echo $this->fieldId; ?>"
+                   name="<?php echo $this->fieldName; ?>" type="text" value="<?php echo $this->fieldValue; ?>">
         </p>
         <?php
     }
 
-public function renderWidgetTimeInput()
+    public function renderWidgetTimeInput()
     {
         ?>
         <p>
             <label for="<?php echo $this->fieldId; ?>"><?php _e($this->fieldLabel); ?></label>
-            <input class="widefat js-time-picker" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>" type="text" value="<?php echo $this->fieldValue; ?>">
+            <input class="widefat js-time-picker" id="<?php echo $this->fieldId; ?>"
+                   name="<?php echo $this->fieldName; ?>" type="text" value="<?php echo $this->fieldValue; ?>">
         </p>
         <?php
     }
@@ -206,13 +223,11 @@ public function renderWidgetTimeInput()
         ?>
         <p>
             <label for="<?php echo $this->fieldId; ?>"><?php _e($this->fieldLabel); ?></label>
-            <input class="widefat js-date-time-picker" id="<?php echo $this->fieldId; ?>" name="<?php echo $this->fieldName; ?>" type="text" value="<?php echo $this->fieldValue; ?>">
+            <input class="widefat js-date-time-picker" id="<?php echo $this->fieldId; ?>"
+                   name="<?php echo $this->fieldName; ?>" type="text" value="<?php echo $this->fieldValue; ?>">
         </p>
         <?php
     }
-
-
-
 
 
 }
