@@ -39,7 +39,7 @@ class Tru_Fetcher_Widgets_Email_Optin extends Tru_Fetcher_Widgets_Base
                 'type' => 'text',
                 'label' => 'Email Placeholder',
                 'default' => 'Enter your email address'
-                ],
+            ],
             [
                 'id' => 'endpoint_providers',
                 'type' => 'multi-select',
@@ -51,6 +51,40 @@ class Tru_Fetcher_Widgets_Email_Optin extends Tru_Fetcher_Widgets_Base
                         'label' => 'Hubspot'
                     ],
                 ]
+            ],
+            [
+                'id' => 'response_type',
+                'type' => 'select',
+                'label' => 'Response Type',
+                'default' => 'message',
+                'options' => [
+                    [
+                        'value' => 'message',
+                        'label' => 'Message'
+                    ],
+                    [
+                        'value' => 'redirect',
+                        'label' => 'Redirect'
+                    ]
+                ]
+            ],
+            [
+                'id' => 'success_message',
+                'type' => 'text',
+                'label' => 'Success Message',
+                'default' => 'Thank you for subscribing!'
+            ],
+            [
+                'id' => 'error_message',
+                'type' => 'text',
+                'label' => 'Error Message',
+                'default' => 'An error occurred. Please try again.'
+            ],
+            [
+                'id' => 'redirect_url',
+                'type' => 'text',
+                'label' => 'Redirect URL',
+                'default' => ''
             ]
         ]
     ];
