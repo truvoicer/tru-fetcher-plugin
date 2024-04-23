@@ -513,6 +513,7 @@ class Tru_Fetcher_Posts
         $pagination->setTotalItems($total);
         $pagination->setCurrentPerPage($perPage);
         $pagination->setTotalPages($pageCount);
+        $pagination->setLastPage($pageCount);
         return $pagination;
     }
 
