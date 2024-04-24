@@ -70,6 +70,14 @@ class Tru_Fetcher_Api_Helpers_Setting
         return $formattedSettings;
     }
 
+    public function getSettingsByNames(?array $names = [])
+    {
+        foreach ($names as $key) {
+            $this->settingsRepository->addWhere($this->settingsModel->getNameColumn(), $key);
+        }
+        return $this->settingsRepository->findMany();
+    }
+
     public function getSettings(?array $exclude = [])
     {
         foreach ($exclude as $key) {

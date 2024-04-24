@@ -1,6 +1,7 @@
 import React from 'react';
 import {TextControl, SelectControl, ToggleControl, RangeControl} from "@wordpress/components";
 import Grid from "../../components/wp/Grid";
+import {findSetting} from "../../../helpers/wp-helpers";
 
 const DisplayTab = (props) => {
     const {
@@ -8,6 +9,21 @@ const DisplayTab = (props) => {
         setAttributes,
         className,
     } = props;
+
+    function getComparisonTemplateOptions() {
+        const comparisonTemplates = findSetting('comparison_templates')?.value;
+        if (!Array.isArray(comparisonTemplates)) {
+            return [];
+        }
+
+        return comparisonTemplates.map((template) => {
+            return {
+                label: template.name,
+                value: template.value
+            }
+        });
+    }
+
     return (
         <div>
             <Grid columns={2}>
@@ -17,11 +33,11 @@ const DisplayTab = (props) => {
                     onChange={(value) => setAttributes({heading: value})}
                 />
                 <SelectControl
-                    label="Display As"
+                    label="Load More Type"
                     onChange={(value) => {
-                        setAttributes({display_as: value});
+                        setAttributes({load_more_type: value});
                     }}
-                    value={attributes?.display_as}
+                    value={attributes?.load_more_type}
                     options={[
                         {
                             disabled: true,
@@ -29,28 +45,12 @@ const DisplayTab = (props) => {
                             value: ''
                         },
                         {
-                            label: 'List',
-                            value: 'list'
+                            label: 'Pagination',
+                            value: 'pagination'
                         },
                         {
-                            label: 'Posts List',
-                            value: 'post_list'
-                        },
-                        {
-                            label: 'Comparisons',
-                            value: 'comparisons'
-                        },
-                        {
-                            label: 'Tiles',
-                            value: 'tiles'
-                        },
-                        {
-                            label: 'Sidebar Posts',
-                            value: 'sidebar_posts'
-                        },
-                        {
-                            label: 'Sidebar List',
-                            value: 'sidebar_list'
+                            label: 'Infinite Scroll',
+                            value: 'infinite_scroll'
                         },
                     ]}
                 />
@@ -106,28 +106,6 @@ const DisplayTab = (props) => {
                 />
             </Grid>
             <Grid columns={2}>
-                <SelectControl
-                    label="Load More Type"
-                    onChange={(value) => {
-                        setAttributes({load_more_type: value});
-                    }}
-                    value={attributes?.load_more_type}
-                    options={[
-                        {
-                            disabled: true,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                        {
-                            label: 'Pagination',
-                            value: 'pagination'
-                        },
-                        {
-                            label: 'Infinite Scroll',
-                            value: 'infinite_scroll'
-                        },
-                    ]}
-                />
                 <RangeControl
                     label="Posts Per Page"
                     initialPosition={50}
@@ -136,7 +114,64 @@ const DisplayTab = (props) => {
                     value={attributes?.posts_per_page}
                     onChange={(value) => setAttributes({posts_per_page: value})}
                 />
+                <SelectControl
+                    label="Display As"
+                    onChange={(value) => {
+                        setAttributes({display_as: value});
+                    }}
+                    value={attributes?.display_as}
+                    options={[
+                        {
+                            disabled: true,
+                            label: 'Select an Option',
+                            value: ''
+                        },
+                        {
+                            label: 'List',
+                            value: 'list'
+                        },
+                        {
+                            label: 'Posts List',
+                            value: 'post_list'
+                        },
+                        {
+                            label: 'Comparisons',
+                            value: 'comparisons'
+                        },
+                        {
+                            label: 'Tiles',
+                            value: 'tiles'
+                        },
+                        {
+                            label: 'Sidebar Posts',
+                            value: 'sidebar_posts'
+                        },
+                        {
+                            label: 'Sidebar List',
+                            value: 'sidebar_list'
+                        },
+                    ]}
+                />
             </Grid>
+            {attributes?.display_as === 'comparisons' && (
+                <Grid columns={2}>
+                    <SelectControl
+                        label="Comparison Template"
+                        onChange={(value) => {
+                            setAttributes({comparison_template: value});
+                        }}
+                        value={attributes?.comparison_template}
+                        options={[
+                            {
+                                label: 'Select template',
+                                value: ''
+                            },
+                            ...getComparisonTemplateOptions()
+                        ]
+                        }
+                    />
+                </Grid>
+            )}
         </div>
     );
 };

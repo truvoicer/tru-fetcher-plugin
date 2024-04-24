@@ -165,6 +165,11 @@ const GeneralSettings = () => {
                     label: 'Profile Menu Register Text',
                     type: 'text'
                 },
+                {
+                    name: 'comparison_templates',
+                    label: 'Comparison Templates',
+                    type: 'list'
+                },
             ]
         },
         {

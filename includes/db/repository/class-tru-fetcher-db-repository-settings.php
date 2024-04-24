@@ -32,13 +32,33 @@ class Tru_Fetcher_DB_Repository_Settings extends Tru_Fetcher_DB_Repository_Base 
         parent::__construct(new Tru_Fetcher_DB_Model_Settings());
     }
 
+    public function findMany()
+    {
+        return $this->buildData(
+            parent::findMany()
+        );
+    }
     public function findSettings(?array $conditions = [])
     {
         $results = $this->db->getAllResults(
             $this->model,
             ARRAY_A
         );
-        return $this->model->buildModelDataBatch($results);
+        return $this->buildData(
+            $this->model->buildModelDataBatch($results)
+        );
+    }
+
+    private function buildData(array $data)
+    {
+        foreach ($data as $index => $value) {
+            if (is_serialized($value[$this->model->getValueColumn()])) {
+                $data[$index][$this->model->getValueColumn()] = unserialize(
+                    str_replace('\\', '', $value[$this->model->getValueColumn()])
+                );
+            }
+        }
+        return $data;
     }
     public function findSettingByName(string $settingName)
     {
@@ -72,6 +92,11 @@ class Tru_Fetcher_DB_Repository_Settings extends Tru_Fetcher_DB_Repository_Base 
 
     private function buildInsertSettingItem(array $requestData)
     {
+        foreach ($requestData as $key => $value) {
+            if (is_array($value)) {
+                $requestData[$key] = serialize($value);
+            }
+        }
         return $requestData;
     }
 

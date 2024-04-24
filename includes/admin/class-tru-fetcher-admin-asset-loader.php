@@ -182,6 +182,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         $localizedScriptData = array_merge($localizedScriptData, $this->buildMetaFieldsLocalizedScriptData());
         $localizedScriptData = array_merge($localizedScriptData, $this->buildBlocksLocalizedScriptData());
         $localizedScriptData = array_merge($localizedScriptData, $this->buildFormPresetsLocalizedScriptData());
+        $localizedScriptData = array_merge($localizedScriptData, $this->buildSettingsLocalizedScriptData());
         wp_localize_script(
             "{$this->plugin_name}-{$this->gutenbergReactScriptName}",
             str_replace('-', '_', "{$this->plugin_name}_react"),
@@ -244,6 +245,12 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         return [
             'form_presets' => (new Tru_Fetcher_Api_Helpers_Form_Presets())->getFormPresetsRepository()->findFormPresets(),
             'tab_presets' => (new Tru_Fetcher_Api_Helpers_Tab_Presets())->getTabPresetsRepository()->findTabPresets(),
+        ];
+    }
+    public function buildSettingsLocalizedScriptData(): array
+    {
+        return [
+            'settings' => (new Tru_Fetcher_Api_Helpers_Setting())->getSettingsByNames(['comparison_templates']),
         ];
     }
     /**

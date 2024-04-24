@@ -146,3 +146,11 @@ export function getTermsSelectData({select, taxonomy}) {
         };
     });
 }
+
+export function findSetting(key) {
+    const settings = tru_fetcher_react?.settings;
+    if (!Array.isArray(settings)) {
+        return false;
+    }
+    return settings.find((setting) => setting?.name === key);
+}
