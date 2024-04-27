@@ -10,7 +10,10 @@ const DisplayTab = (props) => {
         className,
     } = props;
 
-    function getComparisonTemplateOptions() {
+    function getComparisonTemplateOptions(show) {
+        if (!show) {
+            return [];
+        }
         const comparisonTemplates = findSetting('comparison_templates')?.value;
         if (!Array.isArray(comparisonTemplates)) {
             return [];
@@ -153,25 +156,40 @@ const DisplayTab = (props) => {
                     ]}
                 />
             </Grid>
-            {attributes?.display_as === 'comparisons' && (
-                <Grid columns={2}>
-                    <SelectControl
-                        label="Comparison Template"
-                        onChange={(value) => {
-                            setAttributes({comparison_template: value});
-                        }}
-                        value={attributes?.comparison_template}
-                        options={[
-                            {
-                                label: 'Select template',
-                                value: ''
-                            },
-                            ...getComparisonTemplateOptions()
-                        ]
-                        }
-                    />
-                </Grid>
-            )}
+            <Grid columns={2}>
+                <SelectControl
+                    label="Template"
+                    onChange={(value) => {
+                        setAttributes({template: value});
+                    }}
+                    value={attributes?.template}
+                    options={[
+                        {
+                            label: 'Select template',
+                            value: 'default'
+                        },
+                        ...getComparisonTemplateOptions(attributes?.display_as === 'comparisons')
+                    ]
+                    }
+                />
+                <SelectControl
+                    label="Template Layout"
+                    onChange={(value) => {
+                        setAttributes({template_layout: value});
+                    }}
+                    value={attributes?.template_layout}
+                    options={[
+                        {
+                            label: 'Listings Grid',
+                            value: 'listings_grid'
+                        },
+                        {
+                            label: 'Custom Grid',
+                            value: 'custom_grid'
+                        },
+                    ]}
+                />
+            </Grid>
         </div>
     );
 };

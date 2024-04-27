@@ -104,9 +104,14 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'default' => 'list',
             ],
             [
-                'id' => 'comparison_template',
+                'id' => 'template',
                 'type' => 'string',
-                'default' => null,
+                'default' => 'default',
+            ],
+            [
+                'id' => 'template_layout',
+                'type' => 'string',
+                'default' => 'listings_grid',
             ],
             [
                 'id' => 'grid_layout',
