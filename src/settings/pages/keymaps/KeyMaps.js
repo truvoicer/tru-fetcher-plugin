@@ -25,12 +25,14 @@ const Keymaps = () => {
             dataIndex: 'post_key',
             editable: true,
             type: 'select',
+            required: false,
         },
         {
             title: 'Label',
             dataIndex: 'label',
             editable: true,
             type: 'text',
+            required: false,
         },
     ];
 
@@ -70,6 +72,17 @@ const Keymaps = () => {
             }
         })
     }
+    function getPostKeysSelectOptions() {
+        if (!Array.isArray(postKeys)) {
+            return [];
+        }
+        return postKeys.map((item) => {
+            return {
+                label: item,
+                value: item,
+            }
+        })
+    }
     function getServicesOptions() {
         if (!Array.isArray(services)) {
             return [];
@@ -83,7 +96,18 @@ const Keymaps = () => {
     }
 
     function getKeyMapData() {
-        return keymapData;
+
+        if (!Array.isArray(dataKeysOptions)) {
+            return [];
+        }
+        return dataKeysOptions.map((item) => {
+            const find = keymapData.find((keymap) => keymap.key === item.name);
+            return {
+                key: item.name,
+                post_key: find?.post_key || '',
+                label: find?.label || '',
+            }
+        });
     }
 
     function fetchKeyMapData() {
@@ -111,7 +135,6 @@ const Keymaps = () => {
                 setPostKeys(results.data.keys);
             }
         })
-
     }
 
     async function saveKeymap(data) {
@@ -170,9 +193,9 @@ const Keymaps = () => {
                 <Col>
                     <NameValueDatatable
                         showAddButton={true}
-                        selectOptions={getDataKeysSelectOptions()}
+                        selectOptions={getPostKeysSelectOptions()}
                         columns={columns}
-                        dataSource={[]}
+                        dataSource={getKeyMapData()}
                         onDelete={({newData, key}) => {
                             console.log({newData, key})
                         }}

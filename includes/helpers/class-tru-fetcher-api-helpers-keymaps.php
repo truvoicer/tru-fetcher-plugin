@@ -49,19 +49,27 @@ class Tru_Fetcher_Api_Helpers_Keymaps {
         $this->db = new Tru_Fetcher_DB_Engine();
     }
 
+    public function getLabelData(array $keymapData) {
+        $data = [];
+        foreach ($keymapData as $item) {
+            $data[$item['key']] = $item['label'];
+        }
+        return $data;
+    }
     public function flattenKeymap(array $keymapData) {
-        return array_combine(
-            array_column($keymapData, 'key'),
-            array_column($keymapData, 'keymap')
-        );
+        $data = [];
+        foreach ($keymapData as $item) {
+            $data[$item['post_key']] = $item['key'];
+        }
+        return $data;
     }
     public function mapDataKeysWithKeymap(array $dataKeys, array $keymapData) {
         $data = [];
         foreach ($keymapData as $item) {
-            if (array_key_exists($item['keymap'], $dataKeys)) {
-                $data[$item['key']] = $dataKeys[$item['keymap']];
+            if (array_key_exists($item['key'], $dataKeys)) {
+                $data[$item['post_key']] = $dataKeys[$item['key']];
             } else {
-                $data[$item['key']] = '';
+                $data[$item['post_key']] = '';
             }
         }
         return $data;
@@ -73,33 +81,13 @@ class Tru_Fetcher_Api_Helpers_Keymaps {
         }, $rc->getProperties());
     }
 
-    public function buildKeymapData(?array $keymapData = [])
-    {
-        $rc = new \ReflectionClass(\WP_Post::class);
-        $data = [];
-        foreach ($rc->getProperties() as $property) {
-            $item = [
-                'key' => $property->getName()
-            ];
-            $findIndex = array_search($property->getName(), array_column($keymapData, 'key'));
-            if ($findIndex !== false) {
-                $item['keymap'] = $keymapData[$findIndex]['keymap'];
-            } else {
-                $item['keymap'] = '';
-            }
-            $data[] = $item;
-        }
-        return $data;
-    }
     public function getKeymap(int $serviceId) {
         $keymap = $this->keymapRepository->findKeymapByServiceId($serviceId);
-        if (!$keymap) {
-            return $this->buildKeymapData();
+        if (empty($keymap['keymap']) || !is_array($keymap['keymap'])) {
+            return [];
         }
 
-        return $this->buildKeymapData(
-            $keymap[$this->keymapModel->getKeymapColumn()]
-        );
+        return $keymap['keymap'];
     }
 
     public function saveKeymapFromRequest(\WP_REST_Request $request)

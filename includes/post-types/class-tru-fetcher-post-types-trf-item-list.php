@@ -3,6 +3,7 @@
 namespace TruFetcher\Includes\PostTypes;
 
 use TruFetcher\Includes\Admin\Meta\Box\Tru_Fetcher_Admin_Meta_Box_Single_Item;
+use TruFetcher\Includes\DB\Model\Constants\Tru_Fetcher_DB_Model_Constants;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Keymaps;
 
 /**
@@ -66,7 +67,7 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
             ]
         );
     }
-    public function renderSingleItem(\WP_Post $post) {
+    public function renderSingleItem(\WP_Post $post, ?array $keymap = null) {
         if (!property_exists($post, Tru_Fetcher_Post_Types_Trf_Single_Item::API_ID_IDENTIFIER)) {
             return null;
         }
@@ -82,9 +83,11 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
         if (!is_array($data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID])) {
             return null;
         }
+        if (empty($keymap)) {
+            $keymap = $this->keymapHelpers->getKeymap((int)$data[self::SERVICE_ID]);
+        }
         switch ($this->displayAs) {
             case 'post_list':
-                $keymap = $this->keymapHelpers->getKeymap((int)$data[self::SERVICE_ID]);
                 $data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID] = $this->keymapHelpers->mapDataKeysWithKeymap(
                     $data[Tru_Fetcher_Admin_Meta_Box_Single_Item::DATA_KEYS_ID],
                     $keymap
@@ -110,20 +113,51 @@ class Tru_Fetcher_Post_Types_Trf_Item_List extends Tru_Fetcher_Post_Types_Base
     {
         $buildPost = parent::renderPost($post);
 
-        $buildData = array_map(function ($item) {
+        $serviceIds = [];
+        foreach ($buildPost->{self::API_ID_IDENTIFIER}[self::API_ID_IDENTIFIER] as $item) {
+
+            switch ($item->type) {
+                case 'single_item':
+                    if (!property_exists($item, Tru_Fetcher_Post_Types_Trf_Single_Item::ID_IDENTIFIER)) {
+                        break;
+                    }
+                    $postData = $item->{Tru_Fetcher_Post_Types_Trf_Single_Item::ID_IDENTIFIER};
+                    if (!property_exists($postData, Tru_Fetcher_Post_Types_Trf_Single_Item::API_ID_IDENTIFIER)) {
+                        break;
+                    }
+                    $data = $postData->{Tru_Fetcher_Post_Types_Trf_Single_Item::API_ID_IDENTIFIER};
+
+                    if (empty($data[self::SERVICE_ID])) {
+                        break;
+                    }
+                    $serviceId = (int)$data[self::SERVICE_ID];
+                    if (!in_array($serviceId, $serviceIds)) {
+                        $serviceIds[] = $serviceId;
+                    }
+                    break;
+            }
+        }
+
+        $keymap = $this->keymapHelpers->getKeymap($serviceIds[array_key_first($serviceIds)]);
+        $labelData = $this->keymapHelpers->getLabelData($keymap);
+
+        $buildData = array_map(function ($item) use($keymap) {
             switch ($item->type) {
                 case 'single_item':
                     if (!property_exists($item, Tru_Fetcher_Post_Types_Trf_Single_Item::ID_IDENTIFIER)) {
                         return null;
                     }
-                    return $this->renderSingleItem($item->{Tru_Fetcher_Post_Types_Trf_Single_Item::ID_IDENTIFIER});
+                    return $this->renderSingleItem($item->{Tru_Fetcher_Post_Types_Trf_Single_Item::ID_IDENTIFIER}, $keymap);
                 default:
                     return $item;
             }
         }, $buildPost->{self::API_ID_IDENTIFIER}[self::API_ID_IDENTIFIER]);
-        return array_values(
-            array_filter($buildData)
-        );
+        return [
+            'labels' => $labelData,
+            'data' => array_values(
+                array_filter($buildData)
+            ),
+        ];
     }
 
 }

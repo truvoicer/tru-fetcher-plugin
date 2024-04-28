@@ -61,7 +61,8 @@ class Tru_Fetcher_DB_Repository_Keymap extends Tru_Fetcher_DB_Repository_Base {
         ) {
             return [
                 'key' => $data['key'],
-                'keymap' => array_key_exists('keymap', $data) ? $data['keymap'] : ''
+                'post_key' => array_key_exists('post_key', $data) ? $data['post_key'] : '',
+                'label' => array_key_exists('label', $data) ? $data['label'] : ''
             ];
         }
         return false;

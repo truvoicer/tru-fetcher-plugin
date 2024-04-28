@@ -107,9 +107,11 @@ class Tru_Fetcher_Api_List_Controller extends Tru_Fetcher_Api_Controller_Base
 //            $keymap
 //        );
 //        var_dump($buildDataKeys); die;
-        $buildItemList = (new Tru_Fetcher_Post_Types_Trf_Item_List())
+        $buildItemListData = (new Tru_Fetcher_Post_Types_Trf_Item_List())
             ->setDisplayAs($displayAs)
             ->renderPost($post);
+        $buildItemList = $buildItemListData['data'];
+        $buildItemListLabels = $buildItemListData['labels'];
         $postsPerPage = $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['POST_PER_PAGE']];
         $pageNumber = $paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['PAGE_NUMBER']];
         $pagination = Tru_Fetcher_Posts::getPagination(
@@ -125,6 +127,7 @@ class Tru_Fetcher_Api_List_Controller extends Tru_Fetcher_Api_Controller_Base
             $postsPerPage
         );
         $this->listResponse->setList($sliceList);
+        $this->listResponse->setLabels($buildItemListLabels);
         $pagination->setPaginationType($paginationRequestData[Tru_Fetcher_Constants_Api::REQUEST_KEYS['PAGINATION_TYPE']]);
         $pagination->setCurrentPerPage(count($sliceList));
         $this->listResponse->setPagination($pagination);

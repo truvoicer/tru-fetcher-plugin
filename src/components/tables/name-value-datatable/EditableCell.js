@@ -151,7 +151,7 @@ const EditableCell = ({
                         name={col.dataIndex}
                         rules={[
                             {
-                                required: true,
+                                required: (col?.required !== false),
                                 message: `${col.title} is required.`,
                             },
                         ]}
