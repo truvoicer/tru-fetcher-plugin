@@ -166,27 +166,13 @@ const DisplayTab = (props) => {
                     options={[
                         {
                             label: 'Select template',
+                            value: ''
+                        },
+                        {
+                            label: 'Default',
                             value: 'default'
                         },
                         ...getComparisonTemplateOptions(attributes?.display_as === 'comparisons')
-                    ]
-                    }
-                />
-                <SelectControl
-                    label="Template Layout"
-                    onChange={(value) => {
-                        setAttributes({template_layout: value});
-                    }}
-                    value={attributes?.template_layout}
-                    options={[
-                        {
-                            label: 'Listings Grid',
-                            value: 'listings_grid'
-                        },
-                        {
-                            label: 'Custom Grid',
-                            value: 'custom_grid'
-                        },
                     ]}
                 />
             </Grid>

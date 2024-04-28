@@ -11,6 +11,7 @@ const Keymaps = () => {
     const [services, setServices] = useState([]);
     const [selectedService, setSelectedService] = useState(null);
     const [keymapData, setKeymapData] = useState([]);
+    const [postKeys, setPostKeys] = useState([]);
     const [dataKeysOptions, setDataKeysOptions] = useState([]);
 
     const columns = [
@@ -20,10 +21,16 @@ const Keymaps = () => {
             width: '30%',
         },
         {
-            title: 'Map To',
-            dataIndex: 'keymap',
+            title: 'Map To Post Key',
+            dataIndex: 'post_key',
             editable: true,
             type: 'select',
+        },
+        {
+            title: 'Label',
+            dataIndex: 'label',
+            editable: true,
+            type: 'text',
         },
     ];
 
@@ -94,6 +101,18 @@ const Keymaps = () => {
         })
 
     }
+    function fetchPostKeys() {
+        fetchRequest({
+            config: config,
+            endpoint: `${config.endpoints.keymap}/keys/post`,
+        }).then((results) => {
+            console.log(results)
+            if (Array.isArray(results?.data?.keys)) {
+                setPostKeys(results.data.keys);
+            }
+        })
+
+    }
 
     async function saveKeymap(data) {
         const results = await sendRequest({
@@ -112,6 +131,7 @@ const Keymaps = () => {
 
     useEffect(() => {
         serviceListRequest();
+        fetchPostKeys();
     }, []);
 
     useEffect(() => {
@@ -149,10 +169,10 @@ const Keymaps = () => {
             <Row>
                 <Col>
                     <NameValueDatatable
-                        showAddButton={false}
+                        showAddButton={true}
                         selectOptions={getDataKeysSelectOptions()}
                         columns={columns}
-                        dataSource={getKeyMapData()}
+                        dataSource={[]}
                         onDelete={({newData, key}) => {
                             console.log({newData, key})
                         }}
@@ -160,6 +180,29 @@ const Keymaps = () => {
                             console.log({row, col})
                             saveKeymap(row);
                         }}
+                        onAdd={({values}) => {
+                            console.log({values})
+                        }}
+                        addFormComponent={(
+                            <>
+                                <Form.Item
+                                    label="Data key"
+                                    name="data_key"
+                                    rules={[{required: true, message: 'Please input your username!'}]}
+                                >
+                                    <Select
+                                        placeholder={'Please Select'}
+                                        style={{minWidth: 180}}
+                                        options={getDataKeysSelectOptions()}
+                                    />
+                                </Form.Item>
+                                <Form.Item>
+                                    <Button type="primary" htmlType="submit">
+                                        Submit
+                                    </Button>
+                                </Form.Item>
+                            </>
+                        )}
                     />
                 </Col>
             </Row>

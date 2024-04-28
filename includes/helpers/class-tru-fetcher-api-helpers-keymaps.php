@@ -66,6 +66,13 @@ class Tru_Fetcher_Api_Helpers_Keymaps {
         }
         return $data;
     }
+    public function getPostKeys() {
+        $rc = new \ReflectionClass(\WP_Post::class);
+        return array_map(function ($property) {
+            return $property->getName();
+        }, $rc->getProperties());
+    }
+
     public function buildKeymapData(?array $keymapData = [])
     {
         $rc = new \ReflectionClass(\WP_Post::class);

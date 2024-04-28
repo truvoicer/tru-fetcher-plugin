@@ -9,6 +9,7 @@ class Tru_Fetcher_Api_Admin_Keymap_Response extends Tru_Fetcher_Api_Response
     public const API_RESPONSE_ERROR_CODE_PREFIX = parent::BASE_API_RESPONSE_ERROR_CODE_PREFIX . '_keymap';
     public int $serviceId;
     public array $keymaps = [];
+    public array $keys = [];
 
     public function getServiceId(): int
     {
@@ -28,6 +29,16 @@ class Tru_Fetcher_Api_Admin_Keymap_Response extends Tru_Fetcher_Api_Response
     public function setKeymaps(array $keymaps): void
     {
         $this->keymaps = $keymaps;
+    }
+
+    public function getKeys(): array
+    {
+        return $this->keys;
+    }
+
+    public function setKeys(array $keys): void
+    {
+        $this->keys = $keys;
     }
 
 }

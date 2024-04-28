@@ -45,6 +45,11 @@ class Tru_Fetcher_Api_Admin_Keymap_Controller extends Tru_Fetcher_Api_Admin_Base
 	}
 
 	public function register_routes() {
+        register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/keymap/keys/post', array(
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [ $this, "fetchPostKeys" ],
+            'permission_callback' => [$this->apiAuth, 'tokenRequestHandler'],
+        ) );
         register_rest_route( $this->apiConfigEndpoints->adminNamespace, '/keymap/service/(?<service_id>[\d]+)', array(
             'methods'             => \WP_REST_Server::READABLE,
             'callback'            => [ $this, "fetchKeymap" ],
@@ -63,6 +68,13 @@ class Tru_Fetcher_Api_Admin_Keymap_Controller extends Tru_Fetcher_Api_Admin_Base
 		) );
 	}
 
+    public function fetchPostKeys(\WP_REST_Request $request) {
+        $this->keymapResponse->setKeys($this->keymapHelpers->getPostKeys());
+        return $this->controllerHelpers->sendSuccessResponse(
+            "Fetched Post keys",
+            $this->keymapResponse
+        );
+    }
     public function fetchKeymap(\WP_REST_Request $request) {
         $serviceId = $request->get_param('service_id');
         if (empty($serviceId)) {

@@ -11,7 +11,8 @@ const NameValueDatatable = ({
     onDelete,
     onSave,
     onAdd,
-    showAddButton = true
+    showAddButton = true,
+    addFormComponent = null
 }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -169,25 +170,31 @@ const NameValueDatatable = ({
                         }}
                         autoComplete="off"
                     >
-                        <Form.Item
-                            label="Name"
-                            name="name"
-                            rules={[{required: true, message: 'Please input your username!'}]}
-                        >
-                            <Input/>
-                        </Form.Item>
-                        <Form.Item
-                            label="Value"
-                            name="value"
-                            rules={[{required: true, message: 'Please input your username!'}]}
-                        >
-                            <Input/>
-                        </Form.Item>
-                        <Form.Item>
-                            <Button type="primary" htmlType="submit">
-                                Submit
-                            </Button>
-                        </Form.Item>
+                        {addFormComponent
+                            ? addFormComponent
+                            : (
+                                <>
+                                    <Form.Item
+                                        label="Name"
+                                        name="name"
+                                        rules={[{required: true, message: 'Please input your username!'}]}
+                                    >
+                                        <Input/>
+                                    </Form.Item>
+                                    <Form.Item
+                                        label="Value"
+                                        name="value"
+                                        rules={[{required: true, message: 'Please input your username!'}]}
+                                    >
+                                        <Input/>
+                                    </Form.Item>
+                                    <Form.Item>
+                                        <Button type="primary" htmlType="submit">
+                                            Submit
+                                        </Button>
+                                    </Form.Item>
+                                </>
+                            )}
                     </Form>
                 </Modal>
             )}
