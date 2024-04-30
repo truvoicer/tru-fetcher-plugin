@@ -66,11 +66,11 @@ class Tru_Fetcher_Api_Settings_Controller extends Tru_Fetcher_Api_Controller_Bas
 	}
 
 	private function getSiteConfig() {
-        
+
 //        $keymaps = $this->keymapHelpers->getKeymapRepository()->findMany();
 //        var_dump($keymaps);
         return array_merge(
-            $this->settingHelpers->getFormattedSettings(['api_key', 'api_url', 'docker_api_url', 'docker_api_key', 'docker']),
+            $this->settingHelpers->getFormattedSettings(['api_key', 'docker_api_url', 'docker_api_key', 'docker']),
             $this->settingHelpers->getWordpressSettings()
         );
 

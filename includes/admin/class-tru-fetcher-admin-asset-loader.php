@@ -192,6 +192,8 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
 
     public function loadAdminReactAssets()
     {
+
+        wp_enqueue_media();
         $asset_file = include TRU_FETCHER_PLUGIN_DIR . "build/{$this->gutenbergReactScriptName}.asset.php";
         wp_enqueue_style(
             "{$this->plugin_name}-{$this->adminReactScriptName}",

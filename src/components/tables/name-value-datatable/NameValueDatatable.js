@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {Table, Button, Form, Input, Modal} from 'antd';
 import EditableRow from "./EditableRow";
 import EditableCell from "./EditableCell";
+import TableContext, {tableContextData} from "./contexts/TableContext";
 
 const NameValueDatatable = ({
     columns = [],
@@ -74,16 +75,19 @@ const NameValueDatatable = ({
         let groupDataSource = [];
         groups.forEach((group) => {
             const groupData = group.names.map((groupNameData) => {
-                const defaultData = {
+                let defaultData = {
                     type: groupNameData?.type,
                     name: groupNameData?.name,
                     value: '',
                 }
-                const find = cloneDataSource.find((item) => item?.name === groupNameData?.name);
-                if (find) {
-                    return {...defaultData, ...find};
-                }
-                return defaultData
+                // if (typeof groupNameData?.render === 'function') {
+                //     delete defaultData.value;
+                //     defaultData.render = groupNameData.render;
+                // }
+                // console.log({defaultData})
+                const find = cloneDataSource.find((item) => item?.name === groupNameData?.name) || {};
+
+                return {...defaultData, ...find};
             });
             groupDataSource.push({
                 title: group.title,
@@ -123,8 +127,45 @@ const NameValueDatatable = ({
         }
     }, [groups]);
 
+    function closeModal() {
+        setTableContextState(prevState => {
+            let cloneState = {...prevState};
+            let cloneModal = {...cloneState.modal};
+            cloneModal.show = false;
+            return {...cloneState, modal: cloneModal};
+        })
+    }
+    function handelModalOk() {
+        if (typeof tableContextState.modal.onOk === 'function') {
+            tableContextState?.modal?.onOk();
+        }
+
+    }
+    function handelModalCancel() {
+        if (typeof tableContextState.modal.onCancel === 'function') {
+            tableContextState?.modal?.onCancel();
+        }
+        closeModal();
+    }
+
+    const [tableContextState, setTableContextState] = useState({
+        ...tableContextData,
+        renderModal: ({title = '', component = null, onOk = () => {}, onCancel = () => {}}) => {
+            setTableContextState(prevState => {
+                let cloneState = {...prevState};
+                let cloneModal = {...cloneState.modal};
+                cloneModal.show = true;
+                cloneModal.title = title;
+                cloneModal.component = component;
+                cloneModal.onOk = onOk;
+                cloneModal.onCancel = onCancel;
+                return {...cloneState, modal: cloneModal};
+            })
+        },
+        closeModal: closeModal
+    });
     return (
-        <>
+        <TableContext.Provider value={tableContextState}>
             {showAddButton && (
                 <Button onClick={showModal} type="primary" style={{marginBottom: 16}}>
                     Add a row
@@ -198,7 +239,15 @@ const NameValueDatatable = ({
                     </Form>
                 </Modal>
             )}
-        </>
+            <Modal
+                title={tableContextState?.modal?.title || ''}
+                open={tableContextState?.modal?.show}
+                onOk={handelModalOk}
+                onCancel={handelModalCancel}
+            >
+                {tableContextState?.modal?.component || null}
+            </Modal>
+        </TableContext.Provider>
     );
 };
 

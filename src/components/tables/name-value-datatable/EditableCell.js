@@ -1,8 +1,10 @@
 import React, {useState, useEffect, useRef, useContext} from 'react';
-import {Form, Input, Checkbox, Select} from 'antd';
+import {Form, Input, Checkbox, Select, Button} from 'antd';
 import EditableContext from "./contexts/EditableContext";
 import {isNotEmpty} from "../../../library/helpers/utils-helpers";
 import ListComponent from "../../../wp/blocks/components/list/ListComponent";
+import MediaPicker from "../../../wp/components/media/MediaPicker";
+import TableContext from "./contexts/TableContext";
 
 const EditableCell = ({
     col,
@@ -16,6 +18,7 @@ const EditableCell = ({
     const [editing, setEditing] = useState(false);
     const inputRef = useRef(null);
     const form = useContext(EditableContext);
+    const tableContext = useContext(TableContext);
 
     function getSelectOptions() {
         if (hasGroups && Array.isArray(record?.options)) {
@@ -70,8 +73,9 @@ const EditableCell = ({
 
     function getFormComponent() {
         switch (getColType()) {
-            case 'list':
+            case 'image':
                 return (
+
                     <Form.Item
                         style={{margin: 0}}
                         name={col.dataIndex}
@@ -81,18 +85,44 @@ const EditableCell = ({
                             },
                         ]}
                     >
-                        <ListComponent
-                            heading={col.label}
-                            data={form.getFieldValue(col.dataIndex) || []}
-                            showSaveButton={true}
-                            onSave={(data) => {
+                        <MediaPicker
+                            text="Select Image"
+                            onSelect={(media) => {
+                                console.log('media', col.dataIndex, media);
+                                form.setFieldValue(col.dataIndex, media?.url);
                                 save();
                             }}
-                            onChange={(data) => {
-                                console.log('data', data);
-                                form.setFieldValue(col.dataIndex, data);
-                            }}/>
+                        />
                     </Form.Item>
+                );
+            case 'list':
+                return (
+                    <Button
+                        onClick={() => {
+                            tableContext.renderModal({
+                                title: 'Media Picker',
+                                component: (
+                                    <ListComponent
+                                        heading={col.label}
+                                        data={form.getFieldValue(col.dataIndex) || []}
+                                        showSaveButton={true}
+                                        onSave={(data) => {
+                                            save();
+                                        }}
+                                        onChange={(data) => {
+                                            console.log('data', data);
+                                            form.setFieldValue(col.dataIndex, data);
+                                        }}/>
+                                ),
+                                onOk: () => {
+                                    save();
+                                    tableContext.closeModal();
+                                }
+                            })
+                        }}
+                    >
+                        Update List
+                    </Button>
                 );
             case 'checkbox':
                 return (
@@ -163,27 +193,49 @@ const EditableCell = ({
                 return null;
         }
     }
+
     let childNode = children;
+
     function getDisplay(data) {
+        let Component = data;
+        let styles = {paddingRight: 24, height: 20};
         switch (record?.type) {
             case 'list':
-                if (Array.isArray(data) && data.length === 2 && Array.isArray(data[1])) {
-                    data[1] = data[1].map((item, index) => {
+                if (Array.isArray(Component) && Component.length === 2 && Array.isArray(Component[1])) {
+                    Component[1] = Component[1].map((item, index) => {
                         return `[${item?.name}: ${item?.value}]`;
                     }).join(' | ');
                 }
+                break;
+            case 'image':
+                if (!record?.[col.dataIndex]) {
+                    Component = null;
+                }
+                styles.height = 80;
+                Component = (
+                    <img src={record?.[col.dataIndex]} style={{width: 80, height: 80}}/>
+                );
+                break;
+
         }
-        return data;
+        return (
+            <div className="editable-cell-value-wrap" style={styles} onClick={toggleEdit}>
+                {Component}
+            </div>
+        );
     }
 
     if (col?.editable) {
         childNode = editing ? (
-            getFormComponent(col)
-        ) : (
-            <div className="editable-cell-value-wrap" style={{paddingRight: 24, height: 20}} onClick={toggleEdit}>
-                {getDisplay(children)}
+            <div
+                onMouseLeave={() => {
+                    console.log('mouse leave')
+                    setEditing(false)
+                }}
+            >
+                {getFormComponent(col)}
             </div>
-        );
+        ) : getDisplay(children);
     }
 
     return <td {...restProps}>{childNode}</td>;

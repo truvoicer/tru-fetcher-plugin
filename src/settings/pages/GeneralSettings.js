@@ -21,6 +21,30 @@ const GeneralSettings = () => {
             title: 'General Settings',
             names: [
                 {
+                    name: 'logo',
+                    label: 'Logo',
+                    type: 'image',
+                    render: (text, record, index) => {
+                        console.log({text, record, index})
+                        return null;
+                        return (
+                            <img src={text} style={{width: 50, height: 50}}/>
+                        )
+                    }
+                },
+                {
+                    name: 'favicon',
+                    label: 'Favicon',
+                    type: 'image',
+                    render: (text, record, index) => {
+                        console.log({text, record, index})
+                        return null;
+                            return (
+                                <img src={text} style={{width: 50, height: 50}}/>
+                            )
+                    }
+                },
+                {
                     name: 'frontend_url',
                     label: 'Frontend URL',
                     type: 'url'
