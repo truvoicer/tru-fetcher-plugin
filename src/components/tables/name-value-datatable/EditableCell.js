@@ -75,7 +75,8 @@ const EditableCell = ({
         switch (getColType()) {
             case 'image':
                 return (
-
+                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                    <img src={form.getFieldValue(col.dataIndex)} style={{width: 80, height: 80}}/>
                     <Form.Item
                         style={{margin: 0}}
                         name={col.dataIndex}
@@ -93,6 +94,7 @@ const EditableCell = ({
                             }}
                         />
                     </Form.Item>
+                    </div>
                 );
             case 'list':
                 return (
@@ -221,12 +223,21 @@ const EditableCell = ({
     if (col?.editable) {
         childNode = editing ? (
             <div
-                onMouseLeave={() => {
-                    console.log('mouse leave')
-                    setEditing(false)
-                }}
+                style={{display: 'flex', alignItems: 'flex-end'}}
+                // onMouseLeave={() => {
+                //     console.log('mouse leave')
+                //     setEditing(false)
+                // }}
             >
                 {getFormComponent(col)}
+                <a
+                    style={{alignSelf: 'flex-end'}}
+                    onClick={(e) => {
+                    e.preventDefault();
+                    setEditing(false);
+                }} style={{marginLeft: 8, fontSize: 11}}>
+                    Cancel
+                </a>
             </div>
         ) : getDisplay(children);
     }
