@@ -122,7 +122,7 @@ class Tru_Fetcher_DB_Repository_Tab_Presets extends Tru_Fetcher_DB_Repository_Ba
             return $data;
         }
         $configData = $this->escapeString(serialize($requestData[$this->model->getConfigDataColumn()]));
-
+        error_log('configData: ' . $configData);
 
         $data[$this->model->getConfigDataColumn()] = $configData;
         return $data;

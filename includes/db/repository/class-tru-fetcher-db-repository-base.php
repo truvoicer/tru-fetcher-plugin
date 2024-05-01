@@ -46,8 +46,7 @@ class Tru_Fetcher_DB_Repository_Base
 
     protected function escapeString(string $string): string
     {
-        global $wpdb;
-        return $wpdb->_real_escape($string);
+        return $string;
     }
 
     protected function defaultWhereConditions()
