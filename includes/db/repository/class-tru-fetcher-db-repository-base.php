@@ -44,6 +44,11 @@ class Tru_Fetcher_DB_Repository_Base
         $this->initialise();
     }
 
+    protected function escapeString(string $string): string
+    {
+        global $wpdb;
+        return $wpdb->_real_escape($string);
+    }
 
     protected function defaultWhereConditions()
     {

@@ -114,7 +114,7 @@ class Tru_Fetcher_DB_Repository_Keymap extends Tru_Fetcher_DB_Repository_Base {
         if (!$buildKeymapData) {
             return false;
         }
-        $insertData[$this->model->getKeymapColumn()] = serialize($buildKeymapData);
+        $insertData[$this->model->getKeymapColumn()] = $this->escapeString(serialize($buildKeymapData));
         return $insertData;
     }
 
