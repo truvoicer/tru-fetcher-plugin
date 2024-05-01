@@ -88,7 +88,6 @@ const EditableCell = ({
                         <MediaPicker
                             text="Select Image"
                             onSelect={(media) => {
-                                console.log('media', col.dataIndex, media);
                                 form.setFieldValue(col.dataIndex, media?.url);
                                 save();
                             }}
@@ -97,32 +96,27 @@ const EditableCell = ({
                 );
             case 'list':
                 return (
-                    <Button
-                        onClick={() => {
-                            tableContext.renderModal({
-                                title: 'Media Picker',
-                                component: (
-                                    <ListComponent
-                                        heading={col.label}
-                                        data={form.getFieldValue(col.dataIndex) || []}
-                                        showSaveButton={true}
-                                        onSave={(data) => {
-                                            save();
-                                        }}
-                                        onChange={(data) => {
-                                            console.log('data', data);
-                                            form.setFieldValue(col.dataIndex, data);
-                                        }}/>
-                                ),
-                                onOk: () => {
-                                    save();
-                                    tableContext.closeModal();
-                                }
-                            })
-                        }}
+                    <Form.Item
+                        style={{margin: 0}}
+                        name={col.dataIndex}
+                        rules={[
+                            {
+                                required: false,
+                            },
+                        ]}
                     >
-                        Update List
-                    </Button>
+                        <ListComponent
+                            heading={col.label}
+                            data={form.getFieldValue(col.dataIndex) || []}
+                            showSaveButton={true}
+                            onSave={(data) => {
+                                save();
+                            }}
+                            onChange={(data) => {
+                                form.setFieldValue(col.dataIndex, data);
+                                save();
+                            }}/>
+                    </Form.Item>
                 );
             case 'checkbox':
                 return (
@@ -193,7 +187,6 @@ const EditableCell = ({
                 return null;
         }
     }
-
     let childNode = children;
 
     function getDisplay(data) {
