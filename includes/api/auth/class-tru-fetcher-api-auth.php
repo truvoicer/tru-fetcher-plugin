@@ -171,7 +171,6 @@ class Tru_Fetcher_Api_Auth extends Tru_Fetcher_Base
     {
         $token = $this->getTokenFromHeader($request->get_header('Authorization'));
         if (is_wp_error($token)) {
-            error_log(json_encode($request->get_headers()));
             return $token;
         }
         $this->setBearerToken($token);
