@@ -94,7 +94,7 @@ class Tru_Fetcher_DB_Repository_Settings extends Tru_Fetcher_DB_Repository_Base 
     {
         foreach ($requestData as $key => $value) {
             if (is_array($value)) {
-                $requestData[$key] = $this->escapeString(serialize($value));
+                $requestData[$key] = $this->escapeString($value);
             }
         }
         return $requestData;

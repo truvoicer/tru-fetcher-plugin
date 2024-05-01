@@ -50,7 +50,7 @@ class Tru_Fetcher_DB_Data_Form_Preset extends Tru_Fetcher_DB_Data
             $this->formPresetRepository->setSite($this->site);
         }
         foreach ($this->data as $index => $setting) {
-            $insertSetting = $this->formPresetRepository->insertFormPreset($setting);
+            $insertSetting = $this->formPresetRepository->insertFormPreset($setting, false);
             if (!$insertSetting) {
                 $this->errors[] = "Error inserting form preset ({$setting['name']}) at position {$index}";
             }

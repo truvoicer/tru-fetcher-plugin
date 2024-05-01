@@ -121,15 +121,17 @@ class Tru_Fetcher_DB_Repository_Tab_Presets extends Tru_Fetcher_DB_Repository_Ba
         if (empty($requestData[$this->model->getConfigDataColumn()])) {
             return $data;
         }
-        $configData = $this->escapeString(serialize($requestData[$this->model->getConfigDataColumn()]));
-        error_log('configData: ' . $configData);
+        $configData = $this->escapeString($requestData[$this->model->getConfigDataColumn()]);
 
         $data[$this->model->getConfigDataColumn()] = $configData;
         return $data;
     }
 
-    public function insertTabPreset($data)
+    public function insertTabPreset($data, $validate = true)
     {
+        if (!$validate) {
+            return $this->insert($data);
+        }
         $tabPreset = $this->buildTabPresetInsertData($data);
         if (!$tabPreset) {
             return false;

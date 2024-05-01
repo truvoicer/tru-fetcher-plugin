@@ -44,9 +44,9 @@ class Tru_Fetcher_DB_Repository_Base
         $this->initialise();
     }
 
-    protected function escapeString(string $string): string
+    protected function escapeString($data): string
     {
-        return $string;
+        return serialize($data);
     }
 
     protected function defaultWhereConditions()

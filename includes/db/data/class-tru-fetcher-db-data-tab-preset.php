@@ -35,7 +35,7 @@ class Tru_Fetcher_DB_Data_Tab_Preset extends Tru_Fetcher_DB_Data
             $this->tabPresetRepository->setSite($this->site);
         }
         foreach ($this->data as $index => $setting) {
-            $insertSetting = $this->tabPresetRepository->insertTabPreset($setting);
+            $insertSetting = $this->tabPresetRepository->insertTabPreset($setting, false);
             if (!$insertSetting) {
                 $this->errors[] = "Error inserting tab preset at position {$index}";
             }

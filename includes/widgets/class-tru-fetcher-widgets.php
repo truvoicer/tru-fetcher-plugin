@@ -3,6 +3,8 @@
 namespace TruFetcher\Includes\Widgets;
 
 
+use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Listings;
+
 /**
  * Fired during plugin activation
  *
@@ -36,6 +38,12 @@ class Tru_Fetcher_Widgets
 
     public function init()
     {
+        global $wpdb;
+        $listingsTable = Tru_Fetcher_DB_Model_Listings::TABLE_NAME;
+        $tableExists = $wpdb->get_var("SHOW TABLES LIKE '{$wpdb->prefix}{$listingsTable}'");
+        if (!$tableExists) {
+            return;
+        }
         add_action('widgets_init', [$this, 'registerWidgets']);
     }
 
