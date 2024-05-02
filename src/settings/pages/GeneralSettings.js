@@ -49,11 +49,6 @@ const GeneralSettings = () => {
                     label: 'Frontend URL',
                     type: 'url'
                 },
-                {
-                    name: 'default_api_service',
-                    label: 'Default API Service',
-                    type: 'fetcher_api_service'
-                },
             ]
         },
         {

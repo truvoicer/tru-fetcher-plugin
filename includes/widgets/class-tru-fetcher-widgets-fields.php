@@ -57,7 +57,7 @@ class Tru_Fetcher_Widgets_Fields
                 $this->renderWidgetCheckboxInput();
                 break;
             case 'select':
-                $this->renderWidgetSelectInput($options);
+                $this->renderWidgetSelectInput($options ?? []);
                 break;
             case 'multi-select':
                 $this->renderWidgetSelectInput($options, true);
