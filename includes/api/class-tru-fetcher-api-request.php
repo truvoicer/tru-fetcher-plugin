@@ -62,7 +62,7 @@ class Tru_Fetcher_Api_Request extends Tru_Fetcher_Base
         return [
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
-            "Authorization" => sprintf("Bearer %s", $this->settingHelper->getSetting('api_token'))
+            "Authorization" => sprintf("Bearer %s", $this->settingHelper->getSetting('admin_api_token'))
         ];
     }
 

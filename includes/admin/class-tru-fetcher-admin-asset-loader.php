@@ -335,7 +335,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         $data = [
             'tru_fetcher' => [
                 'baseUrl' => $settingsHelpers->getSetting('api_url'),
-                'token' => $settingsHelpers->getSetting('api_token'),
+                'token' => $settingsHelpers->getSetting('admin_api_token'),
                 'app_key' => $appKey,
             ]
         ];

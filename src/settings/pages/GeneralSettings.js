@@ -70,8 +70,13 @@ const GeneralSettings = () => {
                     type: 'url'
                 },
                 {
-                    name: 'api_token',
-                    label: 'API Token',
+                    name: 'admin_api_token',
+                    label: 'Admin API Token',
+                    type: 'text'
+                },
+                {
+                    name: 'frontend_api_token',
+                    label: 'Frontend API Token',
                     type: 'text'
                 },
             ]
