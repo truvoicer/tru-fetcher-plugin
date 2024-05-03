@@ -176,9 +176,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
                 if (!is_array($termId)) {
                     $termId = [$termId];
                 }
+
                 $attributes[$findAttributeKey] = get_terms([
                     'taxonomy' => $taxonomy->getName(),
-                    'include' => $termId,
+                    'include' => array_map('intval', $termId),
+                    'hide_empty' => false,
                 ]);
             }
         }
