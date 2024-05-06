@@ -2,16 +2,19 @@ import React, {useState, useEffect, useContext} from 'react';
 import {connect} from 'react-redux';
 import {Col, Row, Select, Button, Modal, Card, Space, Form} from 'antd';
 import PostMetaBoxContext from "../../../contexts/PostMetaBoxContext";
-import {fetchRequest} from "../../../../../library/api/state-middleware";
 import fetcherApiConfig from "../../../../../library/api/fetcher-api/fetcherApiConfig";
 import {isNotEmpty} from "../../../../../library/helpers/utils-helpers";
 import buildFormField, {FIELDS} from "../../../components/comparisons/fields/field-selector";
 import {APP_STATE} from "../../../../../library/redux/constants/app-constants";
 import {SESSION_STATE} from "../../../../../library/redux/constants/session-constants";
 import {CONFIG} from "../../../components/item/CustomItemFormFields";
+import {StateMiddleware} from "../../../../../library/api/StateMiddleware";
 
 
-const ItemDataKeysTab = ({session}) => {
+const ItemDataKeysTab = ({app, session}) => {
+    const stateMiddleware = new StateMiddleware();
+    stateMiddleware.setAppState(app);
+    stateMiddleware.setSessionState(session);
     const [services, setServices] = useState([]);
     const [selectedService, setSelectedService] = useState('');
     const [dataKeysOptions, setDataKeysOptions] = useState([]);
@@ -28,7 +31,7 @@ const ItemDataKeysTab = ({session}) => {
     }
 
     async function serviceListRequest() {
-        const results = await fetchRequest({
+        const results = await stateMiddleware.fetchRequest({
             config: fetcherApiConfig,
             endpoint: `${fetcherApiConfig.endpoints.service}/list`,
         });
@@ -151,7 +154,7 @@ const ItemDataKeysTab = ({session}) => {
         if (!isNotEmpty(postMetaBoxContext.formData?.service)) {
             return;
         }
-        const results = await fetchRequest({
+        const results = await stateMiddleware.fetchRequest({
             config: fetcherApiConfig,
             endpoint: `${fetcherApiConfig.endpoints.service}/${postMetaBoxContext.formData?.service}/response-key/list`,
             params: {

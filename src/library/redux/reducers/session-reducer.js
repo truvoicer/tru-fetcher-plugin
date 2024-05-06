@@ -11,7 +11,7 @@ import {
     SESSION_USER_TOKEN, SESSION_USER_TOKEN_EXPIRES_AT
 } from "../constants/session-constants";
 
-const defaultState = {
+export const defaultState = {
     [SESSION_HAS_LOADED]: false,
     [SESSION_USER]: {
         [SESSION_USER_TOKEN]: null,

@@ -1,8 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import FormBuilder from "../../FormBuilder";
-import categoryOptions from "../../configs/category-options";
-import {fetchRequest} from "../../../../library/api/state-middleware";
-import {fetchTermsRequest} from "../../../../library/api/wp/requests/term-requests";
 import {isNotEmpty, isObject, isObjectEmpty} from "../../../../library/helpers/utils-helpers";
 import {
 	fetchAllOptionGroupsRequest,

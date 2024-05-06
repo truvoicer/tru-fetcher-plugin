@@ -3,10 +3,16 @@ import FormBuilder from "../FormBuilder";
 import sendToDevice from "../configs/messaging/send-to-device";
 import {fetchDevicesRequest, getDevicesSelectData} from "../../../library/api/wp/requests/device-requests";
 import {setFormConfigItemField} from "../helpers/form-helpers";
-import {isNotEmpty} from "../../../library/helpers/utils-helpers";
-import {sendRequest} from "../../../library/api/state-middleware";
+import {APP_STATE} from "../../../library/redux/constants/app-constants";
+import {SESSION_STATE} from "../../../library/redux/constants/session-constants";
+import {StateMiddleware} from "../../../library/api/StateMiddleware";
+import {connect} from "react-redux";
 
-const SendToDeviceForm = () => {
+const SendToDeviceForm = ({app, session}) => {
+
+    const stateMiddleware = new StateMiddleware();
+    stateMiddleware.setAppState(app);
+    stateMiddleware.setSessionState(session);
 
     const [formFields, setFormFields] = useState([]);
     const [devices, setDevices] = useState([]);
@@ -35,7 +41,7 @@ const SendToDeviceForm = () => {
     }, [devices])
 
     async function formRequest({formData}) {
-        const results = await sendRequest({
+        const results = await stateMiddleware.sendRequest({
             endpoint: 'firebase/messaging/device/send',
             method: 'POST',
             data: formData,
@@ -72,4 +78,12 @@ const SendToDeviceForm = () => {
     );
 };
 
-export default SendToDeviceForm;
+export default connect(
+    (state) => {
+        return {
+            app: state[APP_STATE],
+            session: state[SESSION_STATE],
+        }
+    },
+    null
+)(SendToDeviceForm);

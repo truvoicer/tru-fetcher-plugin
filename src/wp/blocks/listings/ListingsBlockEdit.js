@@ -10,8 +10,17 @@ import SearchTab from "./tabs/SearchTab";
 import CustomItemsTab from "./tabs/CustomItemsTab";
 import SidebarTab from "./tabs/SidebarTab";
 import GlobalOptionsTabConfig from "../components/global/tabs/GlobalOptionsTabConfig";
+import {StateMiddleware} from "../../../library/api/StateMiddleware";
+import {
+    setIsAuthenticatingAction,
+    setSessionAuthenticatedAction,
+    setSessionUserTokenAction, setSessionUserTokenExpiresAtAction
+} from "../../../library/redux/actions/session-actions";
 
 const ListingsBlockEdit = (props) => {
+    const stateMiddleware = new StateMiddleware();
+    stateMiddleware.setAppState(props?.reducers?.app);
+    stateMiddleware.setSessionState(props?.reducers?.session);
     function getTabComponent(tab) {
         if (!tab?.component) {
             return null;

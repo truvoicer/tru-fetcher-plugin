@@ -8,7 +8,7 @@ import {
     APP_STATE
 } from "../constants/app-constants";
 
-const defaultState = {
+export const defaultState = {
     [APP_HAS_LOADED]: false,
     [APP_NAME]: null,
     [APP_ACTIVE_MENU_ITEM]: 'dashboard',

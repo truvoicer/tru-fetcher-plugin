@@ -10,6 +10,7 @@ export default {
         tokenRefresh: '/backend/session/api-token/generate',
         service: '/backend/service',
         categories: '/backend/category/list',
+        provider: '/backend/provider',
         serviceResponseKeyList: '/backend/service/response-key/list',
     },
     tokenResponseHandler: (results, appKey) => {

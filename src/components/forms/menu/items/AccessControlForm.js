@@ -1,18 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import FormBuilder from "../../FormBuilder";
-import categoryOptions from "../../configs/category-options";
-import {fetchRequest} from "../../../../library/api/state-middleware";
-import {fetchTermsRequest} from "../../../../library/api/wp/requests/term-requests";
 import {isNotEmpty, isObject, isObjectEmpty} from "../../../../library/helpers/utils-helpers";
-import {
-	fetchAllOptionGroupsRequest,
-	getOptionGroupSelectData
-} from "../../../../library/api/wp/requests/option-group-requests";
-import screenOptions from "../../configs/screen-options";
 import {buildFormFieldsData, setDatatableFormValues} from "../../../../library/helpers/datatable/formik-helpers";
 import {fetchRolesRequest, getRolesSelectData} from "../../../../library/api/wp/requests/auth-requests";
 import accessControlOptions from "../../configs/access-control-options";
-import {updateMenuItemRolesRequest} from "../../../../library/api/wp/requests/menu-requests";
 import {isFunction} from "underscore";
 
 const AccessControlForm = ({

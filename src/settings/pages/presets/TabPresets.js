@@ -1,12 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Form, Input, Modal, Table, notification} from 'antd';
-import {fetchRequest, sendRequest} from "../../../library/api/state-middleware";
 import config from "../../../library/api/wp/config";
 import TabComponent from "../../../wp/blocks/components/tabs/Tabs";
 import {isObject} from "../../../library/helpers/utils-helpers";
 import {getBlockAttributesById} from "../../../wp/helpers/wp-helpers";
+import {APP_STATE} from "../../../library/redux/constants/app-constants";
+import {SESSION_STATE} from "../../../library/redux/constants/session-constants";
+import {connect} from "react-redux";
+import {StateMiddleware} from "../../../library/api/StateMiddleware";
 
-const TabPresets = () => {
+const TabPresets = ({app, session}) => {
+    const stateMiddleware = new StateMiddleware();
+    stateMiddleware.setAppState(app);
+    stateMiddleware.setSessionState(session);
+
     const [api, contextHolder] = notification.useNotification();
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -59,7 +66,7 @@ const TabPresets = () => {
     }
 
     async function fetchTabPresets() {
-        const results = await fetchRequest({
+        const results = await stateMiddleware.fetchRequest({
             config: config,
             endpoint: config.endpoints.tabPresets,
             params: {
@@ -73,7 +80,7 @@ const TabPresets = () => {
     }
 
     async function createTabPresetRequest(data) {
-        const results = await sendRequest({
+        const results = await stateMiddleware.sendRequest({
             config: config,
             method: 'post',
             endpoint: `${config.endpoints.tabPresets}/create`,
@@ -95,7 +102,7 @@ const TabPresets = () => {
             return;
         }
         const id = data.id;
-        const results = await sendRequest({
+        const results = await stateMiddleware.sendRequest({
             config: config,
             method: 'post',
             endpoint: `${config.endpoints.tabPresets}/${id}/update`,
@@ -220,4 +227,12 @@ const TabPresets = () => {
     );
 };
 
-export default TabPresets;
+export default connect(
+    (state) => {
+        return {
+            app: state[APP_STATE],
+            session: state[SESSION_STATE],
+        }
+    },
+    null
+)(TabPresets);

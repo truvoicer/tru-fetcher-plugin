@@ -5,11 +5,7 @@ import {APP_STATE} from "../../../../library/redux/constants/app-constants";
 import {SESSION_STATE} from "../../../../library/redux/constants/session-constants";
 import {connect} from "react-redux";
 import Auth from "../../../../components/auth/Auth";
-import CustomItemFormFields from "../../components/item/CustomItemFormFields";
-import ItemListSingleItem from "./types/ItemListSingleItem";
 import {updateInitialValues, updateMetaHiddenFields} from "../helpers/metaboxes-helpers";
-import {fetchRequest} from "../../../../library/api/state-middleware";
-import config from "../../../../library/api/wp/config";
 
 const selectOptions = [
     {

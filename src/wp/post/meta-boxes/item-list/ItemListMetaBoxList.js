@@ -6,13 +6,16 @@ import {SESSION_STATE} from "../../../../library/redux/constants/session-constan
 import {connect} from "react-redux";
 import Auth from "../../../../components/auth/Auth";
 import {findMetaBoxConfig, updateInitialValues, updateMetaHiddenFields} from "../helpers/metaboxes-helpers";
-import {fetchRequest} from "../../../../library/api/state-middleware";
 import config from "../../../../library/api/wp/config";
 import GeneralTab from "./tabs/GeneralTab";
 import SingleItemTab from "./tabs/SingleItemTab";
 import SingleItemOverrideTab from "./tabs/SingleItemOverrideTab";
+import {StateMiddleware} from "../../../../library/api/StateMiddleware";
 
-const ItemListMetaBoxList = ({session}) => {
+const ItemListMetaBoxList = ({app, session}) => {
+    const stateMiddleware = new StateMiddleware();
+    stateMiddleware.setAppState(app);
+    stateMiddleware.setSessionState(session);
     const [showModal, setShowModal] = useState(false);
     const [modalComponent, setModalComponent] = useState(null);
     const [modalHeader, setModalHeader] = useState(null);
@@ -107,7 +110,7 @@ const ItemListMetaBoxList = ({session}) => {
             }} />;
     }
     async function fetchSingleItemPostData() {
-        const results = await fetchRequest({
+        const results = await stateMiddleware.fetchRequest({
             config: config,
             endpoint: config.endpoints.posts,
             params: {

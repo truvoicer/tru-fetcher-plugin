@@ -1,12 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Form, Input, Modal, Table, notification} from 'antd';
-import {fetchRequest, sendRequest} from "../../../library/api/state-middleware";
 import config from "../../../library/api/wp/config";
 import FormComponent from "../../../wp/blocks/components/form/FormComponent";
 import {isObject} from "../../../library/helpers/utils-helpers";
 import {getBlockAttributesById} from "../../../wp/helpers/wp-helpers";
+import {StateMiddleware} from "../../../library/api/StateMiddleware";
+import {connect} from "react-redux";
+import {APP_STATE} from "../../../library/redux/constants/app-constants";
+import {SESSION_STATE} from "../../../library/redux/constants/session-constants";
 
-const FormPresets = () => {
+const FormPresets = ({app, session}) => {
+    const stateMiddleware = new StateMiddleware();
+    stateMiddleware.setAppState(app);
+    stateMiddleware.setSessionState(session);
     const [api, contextHolder] = notification.useNotification();
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -69,7 +75,7 @@ const FormPresets = () => {
     }
 
     async function fetchFormPresets() {
-        const results = await fetchRequest({
+        const results = await stateMiddleware.fetchRequest({
             config: config,
             endpoint: config.endpoints.formPresets,
         });
@@ -80,7 +86,7 @@ const FormPresets = () => {
     }
 
     async function createFormPresetRequest(data) {
-        const results = await sendRequest({
+        const results = await stateMiddleware.sendRequest({
             config: config,
             method: 'post',
             endpoint: `${config.endpoints.formPresets}/create`,
@@ -102,7 +108,7 @@ const FormPresets = () => {
             return;
         }
         const id = data.id;
-        const results = await sendRequest({
+        const results = await stateMiddleware.sendRequest({
             config: config,
             method: 'post',
             endpoint: `${config.endpoints.formPresets}/${id}/update`,
@@ -227,4 +233,12 @@ const FormPresets = () => {
     );
 };
 
-export default FormPresets;
+export default connect(
+    (state) => {
+        return {
+            app: state[APP_STATE],
+            session: state[SESSION_STATE],
+        }
+    },
+    null
+)(FormPresets);

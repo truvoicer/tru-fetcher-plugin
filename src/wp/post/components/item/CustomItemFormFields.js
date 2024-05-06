@@ -1,9 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {Col, Row, Select, Button, Modal, Card, Space, Form} from 'antd';
 import PostMetaBoxContext from "../../contexts/PostMetaBoxContext";
-import {fetchRequest} from "../../../../library/api/state-middleware";
-import fetcherApiConfig from "../../../../library/api/fetcher-api/fetcherApiConfig";
-import {isNotEmpty} from "../../../../library/helpers/utils-helpers";
 import buildFormField, {FIELDS} from "../comparisons/fields/field-selector";
 
 export const CONFIG = [

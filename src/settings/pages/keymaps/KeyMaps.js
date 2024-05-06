@@ -1,12 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import {Col, Row, Select, Button, Modal, Card, Space, Form} from 'antd';
-import {fetchRequest, sendRequest} from "../../../library/api/state-middleware";
 import fetcherApiConfig from "../../../library/api/fetcher-api/fetcherApiConfig";
 import NameValueDatatable from "../../../components/tables/name-value-datatable/NameValueDatatable";
 import {isNotEmpty} from "../../../library/helpers/utils-helpers";
 import config from "../../../library/api/wp/config";
+import {APP_STATE} from "../../../library/redux/constants/app-constants";
+import {SESSION_STATE} from "../../../library/redux/constants/session-constants";
+import {connect} from "react-redux";
+import {StateMiddleware} from "../../../library/api/StateMiddleware";
 
-const Keymaps = () => {
+const Keymaps = ({app, session}) => {
+
+    const stateMiddleware = new StateMiddleware();
+    stateMiddleware.setAppState(app);
+    stateMiddleware.setSessionState(session);
 
     const [services, setServices] = useState([]);
     const [selectedService, setSelectedService] = useState(null);
@@ -40,7 +47,7 @@ const Keymaps = () => {
         if (!isNotEmpty(selectedService)) {
             return;
         }
-        const results = await fetchRequest({
+        const results = await stateMiddleware.fetchRequest({
             config: fetcherApiConfig,
             endpoint: `${fetcherApiConfig.endpoints.service}/${selectedService}/response-key/list`,
             params: {
@@ -52,7 +59,7 @@ const Keymaps = () => {
         }
     }
     async function serviceListRequest() {
-        const results = await fetchRequest({
+        const results = await stateMiddleware.fetchRequest({
             config: fetcherApiConfig,
             endpoint: `${fetcherApiConfig.endpoints.service}/list`,
         });
@@ -114,7 +121,7 @@ const Keymaps = () => {
         if (!selectedService) {
             return;
         }
-        fetchRequest({
+        stateMiddleware.fetchRequest({
             config: config,
             endpoint: `${config.endpoints.keymap}/service/${selectedService}`,
         }).then((results) => {
@@ -126,7 +133,7 @@ const Keymaps = () => {
 
     }
     function fetchPostKeys() {
-        fetchRequest({
+        stateMiddleware.fetchRequest({
             config: config,
             endpoint: `${config.endpoints.keymap}/keys/post`,
         }).then((results) => {
@@ -138,7 +145,7 @@ const Keymaps = () => {
     }
 
     async function saveKeymap(data) {
-        const results = await sendRequest({
+        const results = await stateMiddleware.sendRequest({
             config: config,
             method: 'post',
             endpoint: `${config.endpoints.keymap}/service/${selectedService}/save`,
@@ -233,4 +240,12 @@ const Keymaps = () => {
     );
 };
 
-export default Keymaps;
+export default connect(
+    (state) => {
+        return {
+            app: state[APP_STATE],
+            session: state[SESSION_STATE],
+        }
+    },
+    null
+)(Keymaps);

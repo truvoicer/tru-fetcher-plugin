@@ -1,16 +1,15 @@
-import {fetchRequest} from "../../state-middleware";
 
 export async function fetchAllOptionGroupsRequest() {
-    const results = await fetchRequest({
-        endpoint: 'option-group/list'
-    });
-
-    const optionGroupsRes = results?.data?.optionGroups;
-    if (!Array.isArray(optionGroupsRes)) {
-        console.error('Option Groups invalid response')
-        return false;
-    }
-    return optionGroupsRes;
+    // const results = await fetchRequest({
+    //     endpoint: 'option-group/list'
+    // });
+    //
+    // const optionGroupsRes = results?.data?.optionGroups;
+    // if (!Array.isArray(optionGroupsRes)) {
+    //     console.error('Option Groups invalid response')
+    //     return false;
+    // }
+    // return optionGroupsRes;
 }
 
 export function getOptionGroupByName(name, optionGroups) {

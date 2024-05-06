@@ -1,12 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import SettingsContext from "./contexts/SettingsContext";
-import {fetchRequest, sendRequest} from "../library/api/state-middleware";
 import config from "../library/api/wp/config";
+import {APP_STATE} from "../library/redux/constants/app-constants";
+import {SESSION_STATE} from "../library/redux/constants/session-constants";
+import {connect} from "react-redux";
+import {StateMiddleware} from "../library/api/StateMiddleware";
 
-const SettingsContainer = ({children}) => {
-
+const SettingsContainer = ({children, app, session}) => {
+    console.log('SettingsContainer', app, session)
+    const stateMiddleware = new StateMiddleware();
+    stateMiddleware.setAppState(app);
+    stateMiddleware.setSessionState(session);
     async function fetchSettings() {
-        const results = await fetchRequest({
+        const results = await stateMiddleware.fetchRequest({
             config: config,
             endpoint: config.endpoints.settings,
         });
@@ -18,7 +24,7 @@ const SettingsContainer = ({children}) => {
     }
 
     async function saveSetting(setting) {
-        const results = await sendRequest({
+        const results = await stateMiddleware.sendRequest({
             config: config,
             method: 'post',
             endpoint: `${config.endpoints.settings}/create`,
@@ -32,7 +38,7 @@ const SettingsContainer = ({children}) => {
     }
 
     async function createSetting(setting) {
-        const results = await sendRequest({
+        const results = await stateMiddleware.sendRequest({
             config: config,
             method: 'post',
             endpoint: `${config.endpoints.settings}/create`,
@@ -45,7 +51,7 @@ const SettingsContainer = ({children}) => {
         }
     }
     async function updateSetting(setting) {
-        const results = await sendRequest({
+        const results = await stateMiddleware.sendRequest({
             config: config,
             method: 'post',
             endpoint: `${config.endpoints.settings}/${setting.id}/update`,
@@ -111,4 +117,12 @@ const SettingsContainer = ({children}) => {
     );
 };
 
-export default SettingsContainer;
+export default connect(
+    (state) => {
+        return {
+            app: state[APP_STATE],
+            session: state[SESSION_STATE],
+        }
+    },
+    null
+)(SettingsContainer);

@@ -1,11 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import FormBuilder from "../FormBuilder";
 import {setFormConfigItemField} from "../helpers/form-helpers";
-import {sendRequest} from "../../../library/api/state-middleware";
 import {fetchTopicsRequest, getTopicsSelectData} from "../../../library/api/wp/requests/topic-requests";
 import sendToTopic from "../configs/messaging/send-to-topic";
+import {connect} from "react-redux";
+import {StateMiddleware} from "../../../library/api/StateMiddleware";
+import {APP_STATE} from "../../../library/redux/constants/app-constants";
+import {SESSION_STATE} from "../../../library/redux/constants/session-constants";
 
-const SendToTopicForm = () => {
+const SendToTopicForm = ({app, session}) => {
+
+    const stateMiddleware = new StateMiddleware();
+    stateMiddleware.setAppState(app);
+    stateMiddleware.setSessionState(session);
 
     const [formFields, setFormFields] = useState([]);
     const [topics, setTopics] = useState([]);
@@ -34,7 +41,7 @@ const SendToTopicForm = () => {
     }, [topics])
 
     async function formRequest({formData}) {
-        const results = await sendRequest({
+        const results = await stateMiddleware.sendRequest({
             endpoint: 'firebase/messaging/topic/send',
             method: 'POST',
             data: formData,
@@ -71,4 +78,12 @@ const SendToTopicForm = () => {
     );
 };
 
-export default SendToTopicForm;
+export default connect(
+    (state) => {
+        return {
+            app: state[APP_STATE],
+            session: state[SESSION_STATE],
+        }
+    },
+    null
+)(SendToTopicForm);
