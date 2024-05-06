@@ -64,6 +64,7 @@ class Tru_Fetcher_Sidebars {
 	}
 
 	public function buildSidebarArray($sidebarArray) {
+//        var_dump($sidebarArray); die;
 	    return array_map( function ( $item ) {
             $array              = [];
             $splitItem = explode("-", $item);
@@ -75,7 +76,6 @@ class Tru_Fetcher_Sidebars {
                 return false;
             }
             $widgetData                   = $widget_instances[ $instanceNumber ];
-//            var_dump($widgetData);
             switch ($widgetInstanceName) {
                 case 'nav_menu':
                     $menuObject = wp_get_nav_menu_object($widgetData['nav_menu']);

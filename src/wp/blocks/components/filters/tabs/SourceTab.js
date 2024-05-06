@@ -33,6 +33,10 @@ const SourceTab = (props) => {
                         label: 'Api',
                         value: 'api'
                     },
+                    {
+                        label: 'Providers',
+                        value: 'providers'
+                    },
                 ]}
             />
             {data?.source === 'api' &&

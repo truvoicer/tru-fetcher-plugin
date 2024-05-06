@@ -48,6 +48,16 @@ const SidebarTab = (props) => {
                                     setAttributes({show_filters_in_sidebar: value});
                                 }}
                             />
+                        </Grid>
+                        <Grid columns={2}>
+                            <TextControl
+                                label="Filter Heading"
+                                placeholder="Filter Heading"
+                                value={attributes.filter_heading}
+                                onChange={(value) => {
+                                    setAttributes({filter_heading: value});
+                                }}
+                            />
                             <SelectControl
                                 label="Filters Position"
                                 onChange={(value) => {
@@ -64,16 +74,6 @@ const SidebarTab = (props) => {
                                         value: 'right'
                                     },
                                 ]}
-                            />
-                        </Grid>
-                        <Grid columns={2}>
-                            <TextControl
-                                label="Filter Heading"
-                                placeholder="Filter Heading"
-                                value={attributes.filter_heading}
-                                onChange={(value) => {
-                                    setAttributes({filter_heading: value});
-                                }}
                             />
                         </Grid>
                         <Grid columns={1}>
