@@ -52,13 +52,13 @@ const ApiTab = (props) => {
         }
     }
 
-    async function providerListRequest() {
-        if (!providerRequestState?.selectedService?.id) {
+    async function providerListRequest(serviceName) {
+        if (!serviceName) {
             return;
         }
         const results = await stateMiddleware.fetchRequest({
             config: fetcherApiConfig,
-            endpoint: `${fetcherApiConfig.endpoints.service}/${providerRequestState.selectedService.id}/provider/list`,
+            endpoint: `${fetcherApiConfig.endpoints.service}/${serviceName}/providers`,
         });
         if (Array.isArray(results?.data?.data?.providers)) {
             updateProviderRequestData({providers: results.data.data.providers})
@@ -66,8 +66,11 @@ const ApiTab = (props) => {
     }
 
     useEffect(() => {
-        providerListRequest();
+        providerListRequest(providerRequestState.selectedService);
     }, [providerRequestState.selectedService]);
+    useEffect(() => {
+        providerListRequest(attributes?.api_listings_service);
+    }, [attributes?.api_listings_service]);
 
     useEffect(() => {
         if (!Array.isArray(providerRequestState.services) || providerRequestState.services.length === 0) {
@@ -153,7 +156,7 @@ const ApiTab = (props) => {
                             value: ''
                         },
                     ],
-                    ...buildSelectOptions(providerRequestState.services, 'label', 'id')
+                    ...buildSelectOptions(providerRequestState.services, 'label', 'name')
                 ]}
             />
             {Array.isArray(providerRequestState?.providers) && providerRequestState.providers.length > 0 &&
