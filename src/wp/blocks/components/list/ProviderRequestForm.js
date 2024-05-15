@@ -59,6 +59,7 @@ const ProviderRequestForm = (props) => {
                         <SelectControl
                             label="Providers"
                             onChange={(value) => {
+                                console.log('provider_name', value)
                                 formChangeHandler({key: 'provider_name', value});
                             }}
                             value={data?.provider_name}

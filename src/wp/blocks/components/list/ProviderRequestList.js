@@ -21,7 +21,13 @@ const ProviderRequestList = (props) => {
     }
 
     function formChangeHandler({key, value, index}) {
-        const cloneTabs = [...data];
+        let cloneTabs = [...data];
+        if (cloneTabs.length && typeof cloneTabs[0] !== 'object') {
+            cloneTabs = [];
+        }
+        if (typeof cloneTabs[index] !== 'object') {
+            cloneTabs[index] = {};
+        }
         cloneTabs[index][key] = value;
         if (typeof onChange === 'function') {
             onChange(cloneTabs);
