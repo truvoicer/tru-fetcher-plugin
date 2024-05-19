@@ -65,25 +65,24 @@ const GeneralTab = (props) => {
                         setAttributes({listing_block_id: value})
                     }}
                 />
-                {attributes?.source === 'api' &&
-                    <SelectControl
-                        label="Listings Category"
-                        onChange={(value) => {
-                            setAttributes({[listingsCategoryId]: value});
-                        }}
-                        value={attributes?.[listingsCategoryId]}
-                        options={[
-                            ...[
-                                {
-                                    disabled: true,
-                                    label: 'Select an Option',
-                                    value: ''
-                                },
-                            ],
-                            ...findTaxonomySelectOptions('trf_listings_category')
-                        ]}
-                    />
-                }
+                <SelectControl
+                    label="Listings Category"
+                    onChange={(value) => {
+                        setAttributes({[listingsCategoryId]: value});
+                    }}
+                    value={attributes?.[listingsCategoryId]}
+                    options={[
+                        ...[
+                            {
+                                disabled: true,
+                                label: 'Select an Option',
+                                value: ''
+                            },
+                        ],
+                        ...findTaxonomySelectOptions('trf_listings_category')
+                    ]}
+                />
+
             </Grid>
         </div>
     );
