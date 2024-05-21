@@ -40,11 +40,11 @@ const ProviderRequestForm = (props) => {
         if (!providerName) {
             return;
         }
-        const provider = providerRequestContext?.providers.find((provider) => provider.name === providerName);
-        if (!provider) {
-            return;
-        }
-        setServiceRequests(provider?.service_request);
+        // const provider = providerRequestContext?.providers.find((provider) => provider.name === providerName);
+        // if (!provider) {
+        //     return;
+        // }
+        // setServiceRequests(provider?.service_request);
     }
 
     useEffect(() => {
