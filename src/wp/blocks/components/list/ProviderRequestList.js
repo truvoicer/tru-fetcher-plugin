@@ -1,6 +1,8 @@
 import React from 'react';
-import {Button, PanelBody, TabPanel} from "@wordpress/components";
+import {Button, Modal, Panel, PanelBody, SelectControl} from "@wordpress/components";
+import {Icon, chevronDown, chevronUp, trash} from "@wordpress/icons";
 import ProviderRequestForm from "./ProviderRequestForm";
+import {useContext, useEffect, useState} from "@wordpress/element";
 
 const ProviderRequestList = (props) => {
 
@@ -8,6 +10,9 @@ const ProviderRequestList = (props) => {
         data = [],
         onChange
     } = props;
+
+    const [isOpen, setOpen] = useState(false);
+    const [modalComponent, setModalComponent] = useState(null);
 
     function addFilter() {
         const cloneTabs = [...data];
@@ -33,6 +38,7 @@ const ProviderRequestList = (props) => {
             onChange(cloneTabs);
         }
     }
+
     function deleteTab({index}) {
         const cloneTabs = [...data];
         cloneTabs.splice(index, 1);
@@ -56,7 +62,7 @@ const ProviderRequestList = (props) => {
             onChange(cloneTabs);
         }
     }
-    function getSingleFilterComponent(item, index) {
+    function getModalComponent(item, index) {
         ProviderRequestForm.defaultProps = {
             index,
             data: item,
@@ -73,8 +79,48 @@ const ProviderRequestList = (props) => {
                 deleteTab({index});
             }
         }
-        return <ProviderRequestForm />;
+        return <ProviderRequestForm reducers={props?.reducers}/>;
     }
+    function getSingleFilterComponent(item, index) {
+        return (
+
+            <div className="tf--list--item tf--list--item--no-header">
+                <div className="tf--list--item--content">
+                    <Panel>
+                        <PanelBody title={`Provider Request (${index + 1})`} initialOpen={true}>
+                            <Button variant="secondary" onClick={() => {
+                                setModalComponent(getModalComponent(item, index));
+                                openModal();
+                            }}>
+                                Edit Provider Request
+                            </Button>
+                        </PanelBody>
+                    </Panel>
+                </div>
+                <div className={'tf--list--item--actions'}>
+                    <a onClick={() => {
+                        moveUp()
+                    }}>
+                        <Icon icon={chevronUp}/>
+                    </a>
+                    <a onClick={() => {
+                        moveDown()
+                    }}>
+                        <Icon icon={chevronDown}/>
+                    </a>
+                    <a onClick={(e) => {
+                        e.preventDefault()
+                        deleteTab();
+                    }}>
+                        <Icon icon={trash}/>
+                    </a>
+                </div>
+            </div>
+        )
+    }
+
+    const openModal = () => setOpen(true);
+    const closeModal = () => setOpen(false);
 
     return (
         <div>
@@ -91,6 +137,11 @@ const ProviderRequestList = (props) => {
             >
                 Add Provider Request
             </Button>
+            {isOpen && (
+                <Modal title="This is my modal" onRequestClose={closeModal} size={'large'}>
+                    {modalComponent}
+                </Modal>
+            )}
         </div>
     );
 };

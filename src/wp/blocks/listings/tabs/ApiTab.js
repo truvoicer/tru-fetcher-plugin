@@ -170,6 +170,7 @@ const ApiTab = (props) => {
                     />
                     {attributes?.select_providers &&
                         <ProviderRequestList
+                            reducers={props?.reducers}
                             data={attributes?.providers_list || []}
                             onChange={(value) => {
                                 setAttributes({providers_list: value});
