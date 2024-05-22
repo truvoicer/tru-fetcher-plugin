@@ -101,6 +101,9 @@ const ProviderRequestForm = (props) => {
         const results = await stateMiddleware.fetchRequest({
             config: fetcherApiConfig,
             endpoint: `${fetcherApiConfig.endpoints.provider}/${providerId}/service-request/list`,
+            params: {
+                include_children: true
+            }
         });
         console.log(results)
         if (!Array.isArray(results?.data?.data?.service_requests)) {
