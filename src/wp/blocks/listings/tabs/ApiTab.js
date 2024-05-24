@@ -42,16 +42,6 @@ const ApiTab = (props) => {
         }
     }
 
-    async function categoryListRequest() {
-        const results = await stateMiddleware.fetchRequest({
-            config: fetcherApiConfig,
-            endpoint: `${fetcherApiConfig.endpoints.categories}`,
-        });
-        if (Array.isArray(results?.data?.data?.categories)) {
-            updateProviderRequestData({categories: results.data.data.categories})
-        }
-    }
-
     async function providerListRequest(serviceName) {
         if (!serviceName) {
             return;
@@ -83,7 +73,6 @@ const ApiTab = (props) => {
 
     useEffect(() => {
         serviceListRequest();
-        categoryListRequest();
     }, []);
 
     function buildSelectOptions(data, labelKey = 'label', valueKey = 'id') {
@@ -120,23 +109,6 @@ const ApiTab = (props) => {
                         label: 'Blog',
                         value: 'blog'
                     },
-                ]}
-            />
-            <SelectControl
-                label="Api Listings Category"
-                onChange={(value) => {
-                    setAttributes({api_listings_category: value});
-                }}
-                value={attributes?.api_listings_category}
-                options={[
-                    ...[
-                        {
-                            disabled: false,
-                            label: 'Select a category',
-                            value: ''
-                        },
-                    ],
-                    ...buildSelectOptions(providerRequestState.categories, 'label', 'name')
                 ]}
             />
             <SelectControl

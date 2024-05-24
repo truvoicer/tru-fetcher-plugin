@@ -1,16 +1,15 @@
 import React from 'react';
 import {useContext, useEffect, useState} from "@wordpress/element";
-import {ToggleControl, Modal, TreeSelect} from "@wordpress/components";
+import {ToggleControl, TreeSelect} from "@wordpress/components";
+import Grid from "../../components/wp/Grid";
 import fetcherApiConfig from "../../../../library/api/fetcher-api/fetcherApiConfig";
 import ProviderRequestContext from "./ProviderRequestContext";
 import {StateMiddleware} from "../../../../library/api/StateMiddleware";
 
-function ProviderRequestTreeGrid({providerName, reducers}) {
+function ProviderRequestTreeGrid({providerName, reducers, serviceRequest = null, onChange = null}) {
     const [treeData, setTreeData] = useState([]);
     const [selectedSrId, setSelectedSrId] = useState(false);
     const [srs, setSrs] = useState([]);
-    const [isOpen, setOpen] = useState(false);
-    const [modalComponent, setModalComponent] = useState(null);
 
     const providerRequestContext = useContext(ProviderRequestContext);
     const stateMiddleware = new StateMiddleware();
@@ -21,35 +20,50 @@ function ProviderRequestTreeGrid({providerName, reducers}) {
 
     function buildOptions(srs) {
        return srs.map((sr) => {
+           let label = sr.name;
+
             let data = {
                 hasChildren: sr?.hasChildren || false,
-                name: sr.name,
                 id: sr.id
             }
+           if (sr.hasOwnProperty('include_children')) {
+               data.include_children = sr.include_children;
+           }
             if (Array.isArray(sr?.children)) {
                 data.children = buildOptions(sr.children)
             }
+            data.name = label;
             return data;
         })
     }
 
     function findSr(srId, data) {
-        let foundSr = null;
-        data.forEach((sr) => {
+        for (let i = 0; i < data.length; i++) {
+            const sr = data[i];
             if (parseInt(sr.id) === parseInt(srId)) {
-                foundSr = sr;
-            } else if (Array.isArray(sr.children)) {
-                foundSr = findSr(srId, sr.children)
+                return  sr;
+            } else if (Array.isArray(sr?.children)) {
+                const find = findSr(srId, sr.children);
+                if (find) {
+                    return find;
+                }
             }
-        });
-        return foundSr;
+        }
+        return null;
     }
-    function addChildren(srId, children, data) {
+    function updateTreeItemState(key, value) {
+        setTreeData(prevState => {
+            let newState = [...prevState];
+            newState = updateTreeItem(key, value, selectedSrId, newState);
+            return buildOptions(newState);
+        })
+    }
+    function updateTreeItem(key, value, srId, data) {
         return data.map((sr) => {
             if (parseInt(sr.id) === parseInt(srId)) {
-                sr.children = buildOptions(children);
+                sr[key] = value;
             } else if (Array.isArray(sr.children)) {
-                sr.children = addChildren(srId, children, sr.children)
+                sr.children = updateTreeItem(key, value, srId, sr.children)
             }
             return sr;
         });
@@ -87,18 +101,46 @@ function ProviderRequestTreeGrid({providerName, reducers}) {
         srRequest(provider.id)
     }
 
+    function buildSaveData() {
+        return findSr(selectedSrId, treeData);
+    }
+
     useEffect(() => {
         buildServiceRequests(providerName)
     }, [providerName]);
+
+    useEffect(() => {
+        if (!Array.isArray(treeData) || treeData.length === 0) {
+            return;
+        }
+        if (serviceRequest?.id) {
+            setSelectedSrId(serviceRequest.id);
+            if (serviceRequest.hasOwnProperty('include_children')) {
+                updateTreeItemState('include_children', serviceRequest.include_children);
+            }
+        }
+    }, [serviceRequest, treeData]);
+
+    useEffect(() => {
+        if (!selectedSrId || selectedSrId === '') {
+            return;
+        }
+        if (typeof onChange !== 'function') {
+            return;
+        }
+        onChange(buildSaveData());
+    }, [selectedSrId, treeData]);
 
     useEffect(() => {
         setTreeData(
             buildOptions(srs)
         )
     }, [srs]);
+    const selectedSrData = findSr(selectedSrId, treeData);
     return (
         <>
             {Array.isArray(treeData) && treeData.length > 0 && (
+                <Grid columns={1}>
                 <TreeSelect
                     label="Service Request"
                     noOptionLabel="Select a Service Request"
@@ -108,18 +150,14 @@ function ProviderRequestTreeGrid({providerName, reducers}) {
                     selectedId={selectedSrId}
                     tree={treeData}
                 />
-            )}
-
-            {isOpen && (
-                <Modal title="This is my modal" onRequestClose={closeModal} size={'large'}>
-                    <ToggleControl
-                        label="Include children?"
-                        checked={attributes?.select_providers}
-                        onChange={(value) => {
-                            setAttributes({select_providers: value});
-                        }}
-                    />
-                </Modal>
+                <ToggleControl
+                    label="Include children?"
+                    checked={selectedSrData?.include_children || false}
+                    onChange={(value) => {
+                        updateTreeItemState('include_children', value);
+                    }}
+                />
+                </Grid>
             )}
         </>
     );

@@ -3,6 +3,8 @@ import {Button, Modal, Panel, PanelBody, SelectControl} from "@wordpress/compone
 import {Icon, chevronDown, chevronUp, trash} from "@wordpress/icons";
 import ProviderRequestForm from "./ProviderRequestForm";
 import {useContext, useEffect, useState} from "@wordpress/element";
+import ProviderRequestContext from "./ProviderRequestContext";
+import Grid from "../wp/Grid";
 
 const ProviderRequestList = (props) => {
 
@@ -13,6 +15,7 @@ const ProviderRequestList = (props) => {
 
     const [isOpen, setOpen] = useState(false);
     const [modalComponent, setModalComponent] = useState(null);
+    const providerRequestContext = useContext(ProviderRequestContext);
 
     function addFilter() {
         const cloneTabs = [...data];
@@ -25,7 +28,7 @@ const ProviderRequestList = (props) => {
         }
     }
 
-    function formChangeHandler({key, value, index}) {
+    function formChangeHandler({value, index}) {
         let cloneTabs = [...data];
         if (cloneTabs.length && typeof cloneTabs[0] !== 'object') {
             cloneTabs = [];
@@ -33,7 +36,7 @@ const ProviderRequestList = (props) => {
         if (typeof cloneTabs[index] !== 'object') {
             cloneTabs[index] = {};
         }
-        cloneTabs[index][key] = value;
+        cloneTabs[index] = value;
         if (typeof onChange === 'function') {
             onChange(cloneTabs);
         }
@@ -41,6 +44,7 @@ const ProviderRequestList = (props) => {
 
     function deleteTab({index}) {
         const cloneTabs = [...data];
+        console.log({index, cloneTabs})
         cloneTabs.splice(index, 1);
         if (typeof onChange === 'function') {
             onChange(cloneTabs);
@@ -62,32 +66,39 @@ const ProviderRequestList = (props) => {
             onChange(cloneTabs);
         }
     }
+
     function getModalComponent(item, index) {
-        ProviderRequestForm.defaultProps = {
-            index,
-            data: item,
-            moveUp: () => {
-                moveFilterItem({index, item, direction: -1});
-            },
-            moveDown: () => {
-                moveFilterItem({index, item, direction: 1});
-            },
-            onChange: ({key, value}) => {
-                formChangeHandler({key, value, index});
-            },
-            deleteTab: () => {
-                deleteTab({index});
-            }
-        }
-        return <ProviderRequestForm reducers={props?.reducers}/>;
+        return (
+            <ProviderRequestForm
+                data={item}
+                reducers={props?.reducers}
+                onSave={(value) => {
+                    formChangeHandler({value, index});
+                    closeModal();
+                }}
+            />
+        );
     }
+
     function getSingleFilterComponent(item, index) {
+        const provider = providerRequestContext?.providers.find((provider) => provider.name === item?.provider_name);
+        console.log({item, provider})
+        const name = provider?.label || item?.provider_name;
+        let serviceRequests;
+        if (Array.isArray(item?.service_request)) {
+            serviceRequests = item.service_request.map((serviceRequest) => {
+                return serviceRequest?.name || 'name_error';
+            }).join(', ');
+        } else {
+            serviceRequests = 'service_request_error';
+        }
         return (
 
             <div className="tf--list--item tf--list--item--no-header">
                 <div className="tf--list--item--content">
                     <Panel>
-                        <PanelBody title={`Provider Request (${index + 1})`} initialOpen={true}>
+                        <PanelBody title={`Provider Request (${name})`} initialOpen={true}>
+                            <p>Service Requests: {serviceRequests}</p>
                             <Button variant="secondary" onClick={() => {
                                 setModalComponent(getModalComponent(item, index));
                                 openModal();
@@ -97,20 +108,22 @@ const ProviderRequestList = (props) => {
                         </PanelBody>
                     </Panel>
                 </div>
+
                 <div className={'tf--list--item--actions'}>
                     <a onClick={() => {
-                        moveUp()
+
+                        moveFilterItem({index, item, direction: -1});
                     }}>
                         <Icon icon={chevronUp}/>
                     </a>
                     <a onClick={() => {
-                        moveDown()
+                        moveFilterItem({index, item, direction: 1});
                     }}>
                         <Icon icon={chevronDown}/>
                     </a>
                     <a onClick={(e) => {
-                        e.preventDefault()
-                        deleteTab();
+                        e.preventDefault();
+                        deleteTab({index});
                     }}>
                         <Icon icon={trash}/>
                     </a>
@@ -124,9 +137,11 @@ const ProviderRequestList = (props) => {
 
     return (
         <div>
-            {Array.isArray(data) && data.map((item, index) => {
-                return getSingleFilterComponent(item, index)
-            })}
+            <Grid columns={2}>
+                {Array.isArray(data) && data.map((item, index) => {
+                    return getSingleFilterComponent(item, index)
+                })}
+            </Grid>
 
             <Button
                 variant="primary"
@@ -138,7 +153,7 @@ const ProviderRequestList = (props) => {
                 Add Provider Request
             </Button>
             {isOpen && (
-                <Modal title="This is my modal" onRequestClose={closeModal} size={'large'}>
+                <Modal title="Add a Provider Request" onRequestClose={closeModal} size={'large'}>
                     {modalComponent}
                 </Modal>
             )}

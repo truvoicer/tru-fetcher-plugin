@@ -4,6 +4,7 @@ export const providerRequestData = {
     services: [],
     categories: [],
     selectedService: null,
+    saveData: [],
     update: () => {}
 }
 export default createContext(providerRequestData);

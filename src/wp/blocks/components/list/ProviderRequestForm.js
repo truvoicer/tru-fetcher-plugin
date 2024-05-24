@@ -11,11 +11,7 @@ import ProviderRequestTreeGrid from "./ProviderRequestTreeGrid";
 const ProviderRequestForm = (props) => {
     const {
         data,
-        onChange,
-        index,
-        moveUp,
-        moveDown,
-        deleteTab,
+        onSave,
     } = props;
 
     const [requestData, setRequestData] = useState({});
@@ -41,6 +37,7 @@ const ProviderRequestForm = (props) => {
             return newState;
         });
     }
+
     function formChangeHandler({key, value}) {
         setRequestData(prevState => {
             let newState = {...prevState};
@@ -61,56 +58,80 @@ const ProviderRequestForm = (props) => {
             }
         })
     }
+
     useEffect(() => {
         setRequestData(data);
     }, [data?.provider_name]);
 
-    console.log({data})
+
     return (
-        <div className="">
+        <Grid columns={1}>
             <Grid columns={2}>
 
-            <SelectControl
-                label="Providers"
-                onChange={(value) => {
-                    console.log('provider_name', value)
-                    formChangeHandler({key: 'provider_name', value});
-                }}
-                value={requestData?.provider_name}
-                options={[
-                    ...[
-                        {
-                            label: 'Select a provider',
-                            value: ''
-                        },
-                    ],
-                    ...buildOptions(providerRequestContext?.providers)
-                ]}
-            />
+                <SelectControl
+                    label="Providers"
+                    onChange={(value) => {
+                        console.log('provider_name', value)
+                        formChangeHandler({key: 'provider_name', value});
+                    }}
+                    value={requestData?.provider_name}
+                    options={[
+                        ...[
+                            {
+                                label: 'Select a provider',
+                                value: ''
+                            },
+                        ],
+                        ...buildOptions(providerRequestContext?.providers)
+                    ]}
+                />
             </Grid>
-            {requestData?.provider_name && (
-            <Button
-                variant="primary"
-                onClick={(e) => {
-                    e.preventDefault()
-                    addServiceRequest();
-                }}
-            >
-                Add Service Request
-            </Button>
-            )}
-            <Grid columns={
-                Array.isArray(requestData?.service_request)? requestData?.service_request.length : 1
-            }>
-            {Array.isArray(requestData?.service_request) && requestData?.service_request.map((serviceRequest, index) => {
-                return (
-                    <Grid columns={1}>
-                        <ProviderRequestTreeGrid providerName={requestData?.provider_name}  reducers={props?.reducers} />
-                    </Grid>
-                );
-            })}
+            <Grid columns={3}>
+                {requestData?.provider_name && (
+                    <Button
+                        variant="primary"
+                        onClick={(e) => {
+                            e.preventDefault()
+                            addServiceRequest();
+                        }}
+                    >
+                        Add Service Request
+                    </Button>
+                )}
             </Grid>
-        </div>
+            <Grid columns={3} style={{marginTop: 10}}>
+                {Array.isArray(requestData?.service_request) && requestData?.service_request.map((serviceRequest, index) => {
+                    return (
+                        <ProviderRequestTreeGrid
+                            key={index}
+                            providerName={requestData?.provider_name}
+                            serviceRequest={serviceRequest}
+                            reducers={props?.reducers}
+                            onChange={(value) => {
+                                setRequestData(prevState => {
+                                    let newState = {...prevState};
+                                    newState.service_request[index] = value;
+                                    return newState;
+                                });
+                            }}
+                        />
+                    );
+                })}
+            </Grid>
+            <Grid columns={4}>
+                <Button
+                    variant="primary"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        if (typeof onSave === 'function') {
+                            onSave(requestData);
+                        }
+                    }}
+                >
+                    Save
+                </Button>
+            </Grid>
+        </Grid>
     );
 };
 
