@@ -180,6 +180,9 @@ const Listings = ({app, session}) => {
                 <ListingsBlockEdit
                     source={'api'}
                     name={'listings'}
+                    reducers={{
+                        app, session
+                    }}
                     apiConfig={tru_fetcher_react.api}
                     attributes={currentRecord?.config_data || {}}
                     setAttributes={(data) => {

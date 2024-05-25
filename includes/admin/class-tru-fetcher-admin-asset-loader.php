@@ -195,9 +195,15 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
 
         wp_enqueue_media();
         $asset_file = include TRU_FETCHER_PLUGIN_DIR . "build/{$this->gutenbergReactScriptName}.asset.php";
+
         wp_enqueue_style(
             "{$this->plugin_name}-{$this->adminReactScriptName}",
             TRU_FETCHER_PLUGIN_URL . "build/{$this->adminReactScriptName}.css",
+            $asset_file['dependencies'],
+        );
+        wp_enqueue_style(
+            "{$this->plugin_name}-{$this->adminReactScriptName}-wp-components",
+            TRU_FETCHER_PLUGIN_URL . "node_modules/@wordpress/components/build-style/style.css",
         );
         wp_enqueue_script(
             "{$this->plugin_name}-{$this->adminReactScriptName}",
