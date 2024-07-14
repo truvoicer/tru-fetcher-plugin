@@ -69,11 +69,18 @@ class Tru_Fetcher_Posts
         $buildPost = $postTypes->buildPostTypeData($post);
 
         $buildPost->post_content = apply_filters("the_content", $post->post_content);
+        self::isHomePage($post->ID) ? $buildPost->is_home = true : $buildPost->is_home = false;
+
+        if ($buildPost->is_home) {
+            $buildPost->url = "/";
+        } else {
+            $buildPost->url = get_page_uri($post);
+            if(!str_starts_with($buildPost->url, "/")) {
+                $buildPost->url = "/" . $buildPost->url;
+            }
+        }
         if (count($fields) > 0) {
             $buildPost = (object)array_intersect_key((array)$post, array_flip($fields));
-            if (in_array('url', $fields)) {
-                $buildPost->url = get_page_uri($post);
-            }
         }
         if (!count($fields) || in_array("post_category", $fields)) {
             $buildPost->categories = Tru_Fetcher_Taxonomy::getPostCategories($post, ["term_id", "name", "slug"]);
@@ -293,9 +300,9 @@ class Tru_Fetcher_Posts
         return $uncategorisedTemplate;
     }
 
-    public static function isHomePage($pageId)
+    public static function isHomePage(int $pageId)
     {
-        return $pageId === get_option("page_on_front");
+        return $pageId === (int)get_option("page_on_front");
     }
 
     public function getPageBySlug(?string $slug = 'home')
