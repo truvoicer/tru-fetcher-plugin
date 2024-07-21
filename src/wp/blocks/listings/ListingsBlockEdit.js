@@ -1,4 +1,5 @@
 import React from 'react';
+import {useState, useEffect} from "@wordpress/element";
 import {TabPanel, Panel, PanelBody, PanelRow} from "@wordpress/components";
 import {InnerBlocks, useBlockProps} from '@wordpress/block-editor';
 
@@ -11,16 +12,69 @@ import CustomItemsTab from "./tabs/CustomItemsTab";
 import SidebarTab from "./tabs/SidebarTab";
 import GlobalOptionsTabConfig from "../components/global/tabs/GlobalOptionsTabConfig";
 import {StateMiddleware} from "../../../library/api/StateMiddleware";
-import {
-    setIsAuthenticatingAction,
-    setSessionAuthenticatedAction,
-    setSessionUserTokenAction, setSessionUserTokenExpiresAtAction
-} from "../../../library/redux/actions/session-actions";
+import ProviderRequestContext, {providerRequestData} from "../components/list/ProviderRequestContext";
+import fetcherApiConfig from "../../../library/api/fetcher-api/fetcherApiConfig";
 
 const ListingsBlockEdit = (props) => {
+    const {
+        attributes,
+        setAttributes,
+        className,
+    } = props;
     const stateMiddleware = new StateMiddleware();
     stateMiddleware.setAppState(props?.reducers?.app);
     stateMiddleware.setSessionState(props?.reducers?.session);
+
+    function updateProviderRequestData(updateData) {
+        setProviderRequestState(prevState => {
+            let cloneState = {...prevState};
+            Object.keys(updateData).forEach((key) => {
+                cloneState[key] = updateData[key];
+            });
+            return cloneState;
+        })
+    }
+
+    const [providerRequestState, setProviderRequestState] = useState({
+        ...providerRequestData,
+        update: updateProviderRequestData
+    });
+
+    async function serviceListRequest() {
+        const results = await stateMiddleware.fetchRequest({
+            config: fetcherApiConfig,
+            endpoint: `${fetcherApiConfig.endpoints.service}/list`,
+        });
+        if (Array.isArray(results?.data?.data?.services)) {
+            updateProviderRequestData({services: results.data.data.services})
+        }
+    }
+
+    async function providerListRequest(serviceName) {
+        if (!serviceName) {
+            return;
+        }
+        const results = await stateMiddleware.fetchRequest({
+            config: fetcherApiConfig,
+            endpoint: `${fetcherApiConfig.endpoints.service}/${serviceName}/providers`,
+        });
+        if (Array.isArray(results?.data?.data?.providers)) {
+            updateProviderRequestData({providers: results.data.data.providers})
+        }
+    }
+
+    useEffect(() => {
+        providerListRequest(providerRequestState.selectedService);
+    }, [providerRequestState.selectedService]);
+
+    useEffect(() => {
+        providerListRequest(attributes?.api_listings_service);
+    }, [attributes?.api_listings_service]);
+
+    useEffect(() => {
+        serviceListRequest();
+    }, []);
+
     function getTabComponent(tab) {
         if (!tab?.component) {
             return null;
@@ -84,6 +138,7 @@ const ListingsBlockEdit = (props) => {
 
     return (
         <div {...getContainerProps()}>
+            <ProviderRequestContext.Provider value={providerRequestState}>
             <Panel>
                 <PanelBody title="Listings Block" initialOpen={true}>
                     <TabPanel
@@ -116,6 +171,7 @@ const ListingsBlockEdit = (props) => {
                     </TabPanel>
                 </PanelBody>
             </Panel>
+            </ProviderRequestContext.Provider>
         </div>
     );
 };

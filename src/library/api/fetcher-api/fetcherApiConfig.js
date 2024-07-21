@@ -11,7 +11,6 @@ export default {
         service: '/backend/service',
         categories: '/backend/category/list',
         provider: '/backend/provider',
-        serviceResponseKeyList: '/backend/service/response-key/list',
     },
     tokenResponseHandler: (results, appKey) => {
         console.log('tokenResponseHandler', {results, appKey})
