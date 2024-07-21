@@ -499,7 +499,10 @@ class Tru_Fetcher_Posts
     public static function getPagination(int $total, int $offset, int $perPage, ?int $pageNumber = null)
     {
         $pagination = new Tru_Fetcher_Api_Pagination();
-        $pageCount = ceil($total / $perPage);
+        $pageCount = 0;
+        if ($perPage > 0) {
+            $pageCount = ceil($total / $perPage);
+        }
         if ($offset > $total) {
             $offset = $total;
         }
@@ -509,7 +512,7 @@ class Tru_Fetcher_Posts
                 $pageNumber = 1;
             } else {
                 $offsetPageCount = floor($total - $offset);
-                $pageNumber = floor($pageCount - floor($offsetPageCount / $perPage));
+                $pageNumber = floor($pageCount - floor(($perPage > 0)? $offsetPageCount / $perPage : 0));
             }
         }
 
