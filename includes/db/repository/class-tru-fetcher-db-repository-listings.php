@@ -107,6 +107,7 @@ class Tru_Fetcher_DB_Repository_Listings extends Tru_Fetcher_DB_Repository_Base 
         $configData = $this->escapeString($requestData[$this->model->getConfigDataColumn()]);
 
         $data[$this->model->getConfigDataColumn()] = $configData;
+        error_log(json_encode($requestData[$this->model->getConfigDataColumn()]));
         return $data;
     }
     public function updateListing(int $id, array $data)

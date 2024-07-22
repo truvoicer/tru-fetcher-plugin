@@ -27,7 +27,6 @@ const SidebarTab = (props) => {
                             setAttributes({show_filters: value});
                         }}
                     />
-                    {attributes?.show_filters &&
                         <ToggleControl
                             label="Show Sidebar widgets in filters"
                             checked={attributes?.show_sidebar_widgets_in_filters}
@@ -35,10 +34,7 @@ const SidebarTab = (props) => {
                                 setAttributes({show_sidebar_widgets_in_filters: value});
                             }}
                         />
-                    }
                 </Grid>
-
-                {attributes?.show_filters &&
                     <>
                         <Grid columns={2}>
                             <ToggleControl
@@ -80,11 +76,8 @@ const SidebarTab = (props) => {
                             <Filters data={attributes.filters} onChange={formChangeHandler}/>
                         </Grid>
                     </>
-                }
             </>
-        )
-            ;
-    }
-;
+        );
+    };
 
 export default SidebarTab;

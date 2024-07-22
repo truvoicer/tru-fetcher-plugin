@@ -135,19 +135,22 @@ const Listings = ({app, session}) => {
         {
             title: 'Config',
             key: 'config',
-            render: (_, record, index) => (
-                <>
-                    <Button
-                        onClick={() => {
-                            setCurrentRecord(record);
-                            setIsEditModalOpen(true);
-                        }}
-                        type="primary"
-                        style={{marginBottom: 16}}>
-                        Edit
-                    </Button>
-                </>
-            ),
+            render: (_, record, index) => {
+                console.log({record})
+                return (
+                    <>
+                        <Button
+                            onClick={() => {
+                                setCurrentRecord(record);
+                                setIsEditModalOpen(true);
+                            }}
+                            type="primary"
+                            style={{marginBottom: 16}}>
+                            Edit
+                        </Button>
+                    </>
+                )
+            },
         },
     ];
 
