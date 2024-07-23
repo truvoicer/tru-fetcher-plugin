@@ -75,7 +75,6 @@ const Listings = ({app, session}) => {
             }
         });
         const listings = results?.data?.listings;
-        console.log({listings})
         if (Array.isArray(listings)) {
             setListings(listings);
         }
@@ -136,7 +135,6 @@ const Listings = ({app, session}) => {
             title: 'Config',
             key: 'config',
             render: (_, record, index) => {
-                console.log({record})
                 return (
                     <>
                         <Button
@@ -218,7 +216,7 @@ const Listings = ({app, session}) => {
                         createListingRequest(values)
                     }}
                     onFinishFailed={errorInfo => {
-                        console.log('Failed:', errorInfo);
+                        console.error(errorInfo);
                     }}
                     autoComplete="off"
                 >

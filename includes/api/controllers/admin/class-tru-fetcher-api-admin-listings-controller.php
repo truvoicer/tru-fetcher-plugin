@@ -69,7 +69,7 @@ class Tru_Fetcher_Api_Admin_Listings_Controller extends Tru_Fetcher_Api_Admin_Ba
 
     public function fetchListings(\WP_REST_Request $request) {
         $this->listingsResponse->setListings(
-            $this->listingsHelpers->getListings()
+            $this->listingsHelpers->getListingsRepository()->findListings()
         );
         return $this->controllerHelpers->sendSuccessResponse(
             "Fetched listings",
