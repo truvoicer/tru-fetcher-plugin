@@ -71,9 +71,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'default' => 'api',
             ],
             [
-                'id' => 'listing_block_type',
+                'id' => 'api_fetch_type',
                 'type' => 'string',
-                'default' => 'search',
+                'default' => 'database',
             ],
             [
                 'id' => Tru_Fetcher_Taxonomy_Trf_Listings_Category::ID_IDENTIFIER,

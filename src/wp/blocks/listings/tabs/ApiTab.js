@@ -34,22 +34,17 @@ const ApiTab = (props) => {
             <SelectControl
                 label="Api Fetch Type"
                 onChange={(value) => {
-                    setAttributes({listing_block_type: value});
+                    setAttributes({api_fetch_type: value});
                 }}
-                value={attributes?.listing_block_type}
+                value={attributes?.api_fetch_type}
                 options={[
                     {
-                        disabled: true,
-                        label: 'Select an Option',
-                        value: ''
+                        label: 'Database',
+                        value: 'database'
                     },
                     {
-                        label: 'Search',
-                        value: 'search'
-                    },
-                    {
-                        label: 'Blog',
-                        value: 'blog'
+                        label: 'API Direct',
+                        value: 'api_direct'
                     },
                 ]}
             />
