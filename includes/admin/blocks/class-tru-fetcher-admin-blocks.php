@@ -2,6 +2,7 @@
 
 namespace TruFetcher\Includes\Admin\Blocks;
 
+use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Base;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Carousel;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Form;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Form_Progress_Widget;
@@ -113,7 +114,17 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
             }
         }
     }
-
+    public static function findBlockClassById(string $id): ?Tru_Fetcher_Admin_Blocks_Resources_Base
+    {
+        foreach (self::BLOCKS as $block) {
+            $blockClass = new $block();
+            $config = $blockClass->getConfig();
+            if ($config['id'] === $id) {
+                return $blockClass;
+            }
+        }
+        return null;
+    }
     public function getSingleBlock($block)
     {
         $blockClass = new $block();

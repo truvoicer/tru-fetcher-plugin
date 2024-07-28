@@ -90,6 +90,16 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
 			'callback' => [ $this, "getSidebar" ],
 			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
 		) );
+		register_rest_route( $this->apiConfigEndpoints->protectedEndpoint, '/menu/(?<menu_name>[\w-]+)', array(
+			'methods'  => \WP_REST_Server::READABLE,
+			'callback' => [ $this, "getMenuByName" ],
+			'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
+		) );
+		register_rest_route( $this->apiConfigEndpoints->protectedEndpoint, '/sidebar/(?<sidebar_name>[\w-]+)', array(
+			'methods'  => \WP_REST_Server::READABLE,
+			'callback' => [ $this, "getSidebar" ],
+			'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
+		) );
 		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/site/config', array(
 			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $this, "getSiteConfig" ],
@@ -114,13 +124,20 @@ class Tru_Fetcher_Api_Page_Controller extends Tru_Fetcher_Api_Controller_Base {
         );
 	}
 
-	public function getMenuByName( $request ) {
+	public function getMenuByName(\WP_REST_Request $request) {
 		$menuName = (string) $request["menu_name"];
 		if ( ! isset( $menuName ) ) {
 			return $this->showError( 'request_missing_parameters', "Menu name doesn't exist in request" );
 		}
-
-		$menuArray = $this->menuClass->getMenu( $menuName );
+        $blocks = $request->get_param('blocks');
+        if (!empty($blocks)) {
+            $blocks = array_map(function ($val) {
+                return strtolower(trim($val));
+            }, explode(',', $blocks));
+        } else {
+            $blocks = [];
+        }
+		$menuArray = $this->menuClass->getMenu($menuName, $blocks);
 
 		return rest_ensure_response( $menuArray );
 	}

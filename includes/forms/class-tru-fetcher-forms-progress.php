@@ -52,7 +52,6 @@ class Tru_Fetcher_Forms_Progress
         $progressFieldGroups = apply_filters("tfr_form_progress_field_groups", $formFieldGroups, $this->getUser());
         $buildFieldsGroupArray = $this->buildFieldsGroupArray($request["form_field_groups"], $progressFieldGroups);
 
-
         $this->groups = $this->buildFormsProgressData($buildFieldsGroupArray);
 
         $this->overallProgressPercentage = $this->calculateOverallProgressPercent($this->groups);
@@ -63,24 +62,29 @@ class Tru_Fetcher_Forms_Progress
     private function buildFormsProgressData(array $fieldGroups)
     {
         return array_map(function ($group) {
-            $emptyFields = $this->buildEmptyFieldsArray($group["fields"]);
+            $fields = (!empty($group["fields"]) && is_array($group["fields"]))
+                ? $group["fields"]
+                : [];
+            $emptyFields = $this->buildEmptyFieldsArray(
+                $fields
+            );
             $group["empty_fields"] = $emptyFields;
             $group["fields_complete_percent"] = $this->calculateCompletedFieldsPercent(
                 count($group["empty_fields"]),
-                count($group["fields"])
+                count($fields)
             );
             $group["fields_incomplete_percent"] = $this->calculateIncompleteFieldsPercent(
                 count($group["empty_fields"]),
-                count($group["fields"])
+                count($fields)
             );
             $group["group_complete_percent"] = $this->calculateGroupCompletePercent(
                 count($group["empty_fields"]),
-                count($group["fields"]),
+                count($fields),
                 $group["percentage"]
             );
             $group["group_incomplete_percent"] = $this->calculateGroupIncompletePercent(
                 count($group["empty_fields"]),
-                count($group["fields"]),
+                count($fields),
                 $group["percentage"]
             );
             unset($group["fields"]);
@@ -113,12 +117,18 @@ class Tru_Fetcher_Forms_Progress
 
     private function calculateCompletedFieldsPercent(int $emptyCount, int $totalFields)
     {
+        if ($totalFields === 0) {
+            return 0;
+        }
         $completed = ($totalFields - $emptyCount) / $totalFields;
         return $completed * 100;
     }
 
     private function calculateIncompleteFieldsPercent(int $emptyCount, int $totalFields)
     {
+        if ($totalFields === 0) {
+            return 0;
+        }
         $incomplete = $emptyCount / $totalFields;
         return $incomplete * 100;
     }

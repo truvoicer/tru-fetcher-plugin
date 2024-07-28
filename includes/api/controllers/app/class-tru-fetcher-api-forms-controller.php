@@ -87,7 +87,7 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 
     public function formsProgressRequest($request)
     {
-        $getUser = get_userdata($request["user_id"]);
+        $getUser = $this->apiAuthApp->getUser();
         if (!$getUser) {
             return $this->showError("user_not_exist", "Sorry, this user does not exist.");
         }
@@ -102,7 +102,7 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
     }
 
     public function userMetaDataRequest($request) {
-        $getUser = get_userdata($request["user_id"]);
+        $getUser = $this->apiAuthApp->getUser();
         if (!$getUser) {
             return $this->showError("user_not_exist", "Sorry, this user does not exist.");
         }

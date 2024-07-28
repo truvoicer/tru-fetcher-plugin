@@ -2,6 +2,7 @@
 namespace TruFetcher\Includes\Menus;
 
 use stdClass;
+use TruFetcher\Includes\Admin\Blocks\Tru_Fetcher_Admin_Blocks;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields;
 use TruFetcher\Includes\Admin\Meta\PostMeta\Gutenberg\MetaFields\Tru_Fetcher_Meta_Fields_Page_Options;
 use TruFetcher\Includes\Listings\Tru_Fetcher_Listings;
@@ -35,8 +36,8 @@ class Tru_Fetcher_Menu {
 		$this->listingsClass = new Tru_Fetcher_Listings();
 	}
 
-	public function getMenu( $menu ) {
-		$getMenu = wp_get_nav_menu_items( $menu );
+	public function getMenu(string $menu, ?array $blocks = []) {
+		$getMenu = wp_get_nav_menu_items($menu);
 
 		if ( ! $getMenu ) {
 			return null;
@@ -47,12 +48,12 @@ class Tru_Fetcher_Menu {
 		    $menuItems = [];
 		    $menuItem = null;
 			if ( (int) $item->menu_item_parent === 0 ) {
-				$menuItem = $this->getPostFromMenuItem( $item );
+				$menuItem = $this->getPostFromMenuItem($item, $blocks);
 			}
 			$subItems = [];
 			foreach ( $getMenu as $subItem ) {
 				if ( (int) $subItem->menu_item_parent == (int) $item->ID ) {
-					$subItems[] = $this->getPostFromMenuItem($subItem);
+					$subItems[] = $this->getPostFromMenuItem($subItem, $blocks);
 				}
 			}
 
@@ -71,7 +72,7 @@ class Tru_Fetcher_Menu {
 		return $menuArray;
 	}
 
-	public function getPostFromMenuItem( $menuItem ) {
+	public function getPostFromMenuItem(\WP_Post $menuItem, ?array $blocks = []) {
 		$getPost = get_post( (int) get_post_meta( (int) $menuItem->ID, "_menu_item_object_id" )[0] );
 		$pageUrl = rtrim(str_replace(get_site_url(), "", get_page_link($getPost)), "/");
 		if ($getPost->ID === (int) get_option( 'page_on_front' )) {
@@ -90,18 +91,33 @@ class Tru_Fetcher_Menu {
         $pageTypeId = Tru_Fetcher_Meta_Fields::getMetaFieldIdByMetaKey(
             Tru_Fetcher_Meta_Fields_Page_Options::META_KEY_PAGE_TYPE
         );
-
+        foreach ($blocks as $block) {
+            $blockClass = Tru_Fetcher_Admin_Blocks::findBlockClassById($block);
+            if (!$blockClass) {
+                continue;
+            }
+            $blockData = $blockClass->getBlockDataFromPost($getPost);
+            if (!$blockData) {
+                continue;
+            }
+            if (empty($blockData['attrs'])) {
+                continue;
+            }
+            $blockAttributes = $blockClass->buildBlockAttributes($blockData['attrs']);
+            if (!property_exists($post, 'blocks_data') || !is_array($post->blocks_data)) {
+                $post->blocks_data = [];
+            }
+            $post->blocks_data[] = [
+                'id' => $blockClass->getConfig()['id'],
+                'attributes' => $blockAttributes,
+            ];
+        }
         if (isset($pageOptions[$pageTypeId])) {
             $post->post_type = $pageOptions[$pageTypeId];
         } else {
             $post->post_type = null;
         }
 
-//		$getBlocksData = $this->listingsClass->buildListingsBlock( parse_blocks($getPost->post_content), false );
-//		if (isset($getBlocksData["tru_fetcher_user_area"])) {
-//			$post->blocks_data = new stdClass();
-//			$post->blocks_data->tru_fetcher_user_area = $getBlocksData["tru_fetcher_user_area"];
-//		}
 		unset($post->post_content);
 		return $post;
 	}
