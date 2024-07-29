@@ -37,6 +37,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
             'type' => 'string',
             'default' => 'default',
         ],
+        [
+            'id' => 'block_style',
+            'type' => 'string',
+            'default' => 'contained',
+        ],
     ];
 
     public static function getSidebarConfig() {

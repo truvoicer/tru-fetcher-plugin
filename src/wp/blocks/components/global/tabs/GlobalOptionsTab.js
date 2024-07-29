@@ -21,7 +21,6 @@ const GlobalOptionsTab = (props) => {
                 value={attributes?.sidebar_layout_position}
                 options={[
                     {
-                        disabled: true,
                         label: 'Default',
                         value: 'default'
                     },
@@ -32,6 +31,23 @@ const GlobalOptionsTab = (props) => {
                     {
                         label: 'Outside Sidebar Bottom',
                         value: 'outside_bottom'
+                    },
+                ]}
+            />
+            <SelectControl
+                label="Block style"
+                onChange={(value) => {
+                    setAttributes({block_style: value});
+                }}
+                value={attributes?.block_style}
+                options={[
+                    {
+                        label: 'Contained',
+                        value: 'contained'
+                    },
+                    {
+                        label: 'Full width',
+                        value: 'full_width'
                     },
                 ]}
             />
