@@ -47,12 +47,6 @@ class Tru_Fetcher_Admin_Blocks_Resources_Sidebar_Widgets extends Tru_Fetcher_Adm
             ['name' => Tru_Fetcher_Post_Types_Page::NAME],
         ],
         'taxonomies' => [],
-        'attributes' => [
-            [
-                'id' => 'widgets',
-                'type' => 'array',
-                'default' => [],
-            ]
-        ]
+        'container' => 'widgets'
     ];
 }

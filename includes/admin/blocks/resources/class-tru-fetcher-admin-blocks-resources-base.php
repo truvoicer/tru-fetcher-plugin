@@ -238,7 +238,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
     public function getConfig(): array
     {
         $config = $this->config;
-        $config['attributes'] = array_merge($this->defaultAttributes, $config['attributes']);
+        if (isset($config['attributes']) && is_array($config['attributes'])) {
+            $config['attributes'] = array_merge($this->defaultAttributes, $config['attributes']);
+        } else {
+            $config['attributes'] = $this->defaultAttributes;
+        }
         return $config;
     }
 

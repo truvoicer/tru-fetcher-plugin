@@ -44,13 +44,7 @@ if (!getPlugin('trf-fetcher-plugin')) {
  * WordPress dependencies
  */
 
-
-// Export this so we can use it in the edit and save files
-export const blockStyle = {
-    backgroundColor: '#900',
-    color: '#fff',
-    padding: '20px',
-};
+console.log('tru_fetcher_react', tru_fetcher_react);
 if (
     typeof tru_fetcher_react !== 'undefined' &&
     typeof tru_fetcher_react.blocks !== 'undefined' &&

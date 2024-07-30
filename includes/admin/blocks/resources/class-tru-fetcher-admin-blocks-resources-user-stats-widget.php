@@ -48,25 +48,25 @@ class Tru_Fetcher_Admin_Blocks_Resources_User_Stats_Widget extends Tru_Fetcher_A
                 'type' => 'boolean',
                 'default' => false,
             ],
-            'show_item_stats' => [
+            [
                 'id' => 'show_item_stats',
                 'type' => 'boolean',
                 'default' => false,
             ],
-            'show_saved_items_stats' => [
+            [
                 'id' => 'show_saved_items_stats',
                 'type' => 'boolean',
                 'default' => false,
             ],
-            'provider_heading' => [
+            [
                 'id' => 'provider_heading',
                 'type' => 'text',
             ],
-            'item_heading' => [
+            [
                 'id' => 'item_heading',
                 'type' => 'text',
             ],
-            'saved_items_heading' => [
+            [
                 'id' => 'saved_items_heading',
                 'type' => 'text',
             ],

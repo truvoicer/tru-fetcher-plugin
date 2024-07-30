@@ -58,16 +58,10 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         Tru_Fetcher_Admin_Blocks_Resources_Carousel::class,
         Tru_Fetcher_Admin_Blocks_Resources_Opt_In::class,
         Tru_Fetcher_Admin_Blocks_Resources_Post::class,
-        Tru_Fetcher_Admin_Blocks_Resources_Form_Progress_Widget::class,
-        Tru_Fetcher_Admin_Blocks_Resources_User_Stats_Widget::class,
-        Tru_Fetcher_Admin_Blocks_Resources_User_Profile_Widget::class,
-        Tru_Fetcher_Admin_Blocks_Resources_User_Social_Widget::class,
         Tru_Fetcher_Admin_Blocks_Resources_Widget_Board::class,
         Tru_Fetcher_Admin_Blocks_Resources_Tabs::class,
         Tru_Fetcher_Admin_Blocks_Resources_Item_View::class,
         Tru_Fetcher_Admin_Blocks_Resources_Search::class,
-//        Tru_Fetcher_Admin_Blocks_Resources_Sidebar_Widgets::class,
-//        Tru_Fetcher_Admin_Blocks_Resources_Content_Widgets::class,
     ];
 
     public function init()
@@ -140,6 +134,34 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
                     'id' => $child::BLOCK_ID,
                     'type' => 'object',
                 ];
+            }
+        }
+        if (isset($config['attributes']) && is_array($config['attributes'])) {
+            foreach ($config['attributes'] as $index => $attribute) {
+                if (!empty($attribute['class'])) {
+                    if (!class_exists($attribute['class'])) {
+                        continue;
+                    }
+                    $attClass = new $attribute['class']();
+                    $attConfig = $attClass->getConfig();
+                    if (isset($attConfig['children'])) {
+                        foreach ($attConfig['children'] as $attChild) {
+                            if (empty($attChild)) {
+                                continue;
+                            }
+                            if (!class_exists($attChild)) {
+                                continue;
+                            }
+                            $attChildClass = new $attChild();
+                            $attChildConfig = $attChildClass->getConfig();
+                            if (empty($config['attributes'][$index]['avail']) || !is_array($config['attributes'][$index]['avail'])) {
+                                $config['attributes'][$index]['avail'] = [];
+                            }
+                            $config['attributes'][$index]['avail'][$attChildConfig['id']] = $attChildConfig['attributes'];
+                            unset($config['attributes'][$index]['class']);
+                        }
+                    }
+                }
             }
         }
         return $config;

@@ -1,5 +1,5 @@
 import React from 'react';
-import {DropdownMenu, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import {DropdownMenu, Panel, PanelBody} from "@wordpress/components";
 import UserStats from "../components/user-stats/UserStats";
 import UserSocial from "../components/user-social/UserSocial";
 import UserProfile from "../components/user-profile/UserProfile";
@@ -72,11 +72,22 @@ const Widgets = (props) => {
             default:
                 return null;
         }
-
+        const widgetData = getWidgetProps(block_id, index);
         Component.defaultProps = {
-            data: getWidgetProps(block_id, index),
+            attributes: widgetData,
+            data: widgetData,
             onChange: ({key, value}) => {
                 formChangeHandler({key, value, widget, index});
+            },
+            setAttributes: (dataObj) => {
+                Object.keys(dataObj).forEach((key) => {
+                    formChangeHandler({
+                        key,
+                        value: dataObj[key],
+                        widget,
+                        index
+                    });
+                })
             }
         }
         return <Component/>;

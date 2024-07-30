@@ -55,12 +55,12 @@ class Tru_Fetcher_Admin_Blocks_Resources_Widget_Board extends Tru_Fetcher_Admin_
             [
                 'id' => 'content_widgets',
                 'type' => 'array',
-                'default' => [],
+                'class' => Tru_Fetcher_Admin_Blocks_Resources_Content_Widgets::class,
             ],
             [
                 'id' => 'sidebar_widgets',
                 'type' => 'array',
-                'default' => [],
+                'class' => Tru_Fetcher_Admin_Blocks_Resources_Sidebar_Widgets::class,
             ],
         ]
     ];

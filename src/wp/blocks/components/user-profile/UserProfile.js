@@ -22,7 +22,9 @@ const UserProfile = (props) => {
             return null;
         }
         let TabComponent = tab.component;
-        return <TabComponent {...props} />;
+        return <TabComponent
+            {...props}
+        />;
     }
 
     return (
