@@ -42,6 +42,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Content_Widgets extends Tru_Fetcher_Adm
             Tru_Fetcher_Admin_Blocks_Resources_User_Profile_Widget::class,
             Tru_Fetcher_Admin_Blocks_Resources_User_Social_Widget::class,
             Tru_Fetcher_Admin_Blocks_Resources_User_Stats_Widget::class,
+            Tru_Fetcher_Admin_Blocks_Resources_Tabs::class,
         ],
         'post_types' => [
             ['name' => Tru_Fetcher_Post_Types_Page::NAME],

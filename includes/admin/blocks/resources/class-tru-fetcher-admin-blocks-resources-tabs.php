@@ -97,12 +97,16 @@ class Tru_Fetcher_Admin_Blocks_Resources_Tabs extends Tru_Fetcher_Admin_Blocks_R
     public function buildBlockAttributes(array $attributes, ?bool $includeDefaults = true)
     {
         $buildAttributes = parent::buildBlockAttributes($attributes);
+
         if (!empty($buildAttributes['presets']) && $buildAttributes['presets'] !== 'custom') {
             $preset = (new Tru_Fetcher_Api_Helpers_Tab_Presets())
                 ->getTabPresetsRepository()
                 ->findById((int)$buildAttributes['presets']);
             if (!empty($preset['config_data'])) {
-                $buildAttributes = $this->tabPresetsRepository->buildTabPresetConfigData($preset['config_data']);
+                $buildAttributes = [
+                    ...$buildAttributes,
+                    ...$this->tabPresetsRepository->buildTabPresetConfigData($preset['config_data'])
+                ];
             }
             return $buildAttributes;
         }

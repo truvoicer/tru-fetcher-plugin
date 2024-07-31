@@ -6,27 +6,27 @@ import Tabs from "../components/tabs/Tabs";
 
 export default [
     {
-        id: 'user-stats',
+        id: 'user_stats_widget_block',
         title: 'User Stats',
         component: UserStats,
     },
     {
-        id: 'user-social',
+        id: 'user_social_widget_block',
         title: 'User Social',
         component: UserSocial,
     },
     {
-        id: 'user-profile',
+        id: 'user_profile_widget_block',
         title: 'User Profile',
         component: UserProfile,
     },
     {
-        id: 'form-progress',
+        id: 'form_progress_widget_block',
         title: 'Form Progress',
         component: FormProgress,
     },
     {
-        id: 'tab-block',
+        id: 'tabs_block',
         block_id: 'tabs_block',
         title: 'Tabs',
         component: Tabs,

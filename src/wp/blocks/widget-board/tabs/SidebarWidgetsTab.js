@@ -1,16 +1,5 @@
 import React from 'react';
 import {DropdownMenu, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
-import UserStats from "../../components/user-stats/UserStats";
-import UserSocial from "../../components/user-social/UserSocial";
-import UserProfile from "../../components/user-profile/UserProfile";
-import FormProgress from "../../components/form-progress/FormProgress";
-import {
-    plusCircleFilled,
-    more,
-    Icon, chevronDown, chevronUp, trash
-} from '@wordpress/icons';
-import widgetConfig from "../../configs/widget-config";
-import {getBlockAttributesById} from "../../../helpers/wp-helpers";
 import Widgets from "../../widgets/Widgets";
 
 const SidebarWidgetsTab = (props) => {
@@ -18,9 +7,9 @@ const SidebarWidgetsTab = (props) => {
         attributes,
         setAttributes,
         className,
-        apiConfig
+        apiConfig,
+        childConfigs
     } = props;
-
     function formChangeHandler({widgets}) {
         setAttributes({
             ...attributes,
@@ -32,6 +21,7 @@ const SidebarWidgetsTab = (props) => {
         <Panel>
             <PanelBody title={'Sidebar Widgets'} initialOpen={true}>
                 <Widgets
+                    childConfigs={childConfigs['sidebar_widgets']}
                     data={attributes?.sidebar_widgets}
                     onChange={formChangeHandler}
                 />

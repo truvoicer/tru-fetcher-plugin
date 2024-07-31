@@ -9,15 +9,15 @@ import {
     more,
     Icon, chevronDown, chevronUp, trash
 } from '@wordpress/icons';
-import widgetConfig from "../configs/widget-config";
 import {getBlockAttributesById} from "../../helpers/wp-helpers";
 import {isObjectEmpty, isObject} from "../../../library/helpers/utils-helpers";
-import Tabs from "../components/tabs/Tabs";
+import widgetConfig from "../configs/widget-config";
 
 const Widgets = (props) => {
     const {
         data = [],
         onChange,
+        childConfigs,
     } = props;
 
     function formChangeHandler({key, value, widget, index}) {
@@ -35,7 +35,7 @@ const Widgets = (props) => {
 
     function getWidgetProps(block_id, index) {
         let dataProps = {};
-        const blockAtts = getBlockAttributesById(block_id);
+        const blockAtts = childConfigs[block_id]
         if (isObject(blockAtts) && !isObjectEmpty(blockAtts)) {
             dataProps = {...dataProps, ...blockAtts};
         }
@@ -46,33 +46,18 @@ const Widgets = (props) => {
     }
 
     function getWidgetComponent(widget, index) {
-        let Component;
-        let block_id;
-        switch (widget?.id) {
-            case 'user-stats':
-                Component = UserStats;
-                block_id = 'user_stats_widget_block';
-                break;
-            case 'user-social':
-                Component = UserSocial;
-                block_id = 'user_social_widget_block';
-                break;
-            case 'user-profile':
-                Component = UserProfile;
-                block_id = 'user_profile_widget_block';
-                break;
-            case 'form-progress':
-                Component = FormProgress;
-                block_id = 'form_progress_widget_block';
-                break;
-            case 'tab-block':
-                Component = Tabs;
-                block_id = 'tabs_block';
-                break;
-            default:
-                return null;
+        if (!widget?.id) {
+            return null;
         }
-        const widgetData = getWidgetProps(block_id, index);
+
+        let Component = widgetConfig.find((config) => config.id === widget.id)?.component;
+        if (!Component) {
+            return null;
+        }
+        if (!childConfigs?.[widget.id]) {
+            return null;
+        }
+        const widgetData = getWidgetProps(widget.id, index);
         Component.defaultProps = {
             attributes: widgetData,
             data: widgetData,

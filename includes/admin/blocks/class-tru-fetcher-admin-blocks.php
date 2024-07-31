@@ -119,6 +119,7 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         }
         return null;
     }
+
     public function getSingleBlock($block)
     {
         $blockClass = new $block();
@@ -137,32 +138,7 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
             }
         }
         if (isset($config['attributes']) && is_array($config['attributes'])) {
-            foreach ($config['attributes'] as $index => $attribute) {
-                if (!empty($attribute['class'])) {
-                    if (!class_exists($attribute['class'])) {
-                        continue;
-                    }
-                    $attClass = new $attribute['class']();
-                    $attConfig = $attClass->getConfig();
-                    if (isset($attConfig['children'])) {
-                        foreach ($attConfig['children'] as $attChild) {
-                            if (empty($attChild)) {
-                                continue;
-                            }
-                            if (!class_exists($attChild)) {
-                                continue;
-                            }
-                            $attChildClass = new $attChild();
-                            $attChildConfig = $attChildClass->getConfig();
-                            if (empty($config['attributes'][$index]['avail']) || !is_array($config['attributes'][$index]['avail'])) {
-                                $config['attributes'][$index]['avail'] = [];
-                            }
-                            $config['attributes'][$index]['avail'][$attChildConfig['id']] = $attChildConfig['attributes'];
-                            unset($config['attributes'][$index]['class']);
-                        }
-                    }
-                }
-            }
+            $config['attributes'] = $blockClass->buildClassAttributes($config['attributes']);
         }
         return $config;
     }

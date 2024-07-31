@@ -38,9 +38,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
             'default' => 'default',
         ],
         [
-            'id' => 'block_style',
-            'type' => 'string',
-            'default' => 'contained',
+            'id' => 'block_width',
+            'type' => 'integer',
+            'default' => 12,
         ],
     ];
 
@@ -59,7 +59,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         ];
     }
 
-    public function renderBlock( $blockAttributes, $content ) {
+    public function renderBlock( $blockAttributes, ?string $content = null ) {
         $config = $this->getConfig();
         $id = $config['id'];
         $blockAttributes = $this->buildBlockAttributes($blockAttributes);
@@ -152,14 +152,45 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         $config = $this->getConfig();
         $configAttributes = $config['attributes'];
         $attributeDefaults = [];
+
         foreach ($configAttributes as $configAttribute) {
+            $children = $this->getClassAttributeChildren($configAttribute);
+            $classAttribute = $this->buildClassAttribute($configAttribute);
+
+            if ($classAttribute && $children && !empty($classAttribute['id']) && !empty($attributes[$classAttribute['id']])) {
+                foreach ($children as $attChild) {
+                    if (empty($attChild)) {
+                        continue;
+                    }
+                    if (!class_exists($attChild)) {
+                        continue;
+                    }
+
+                    $attChildClass = new $attChild();
+                    $findIndex = array_search($attChildClass::BLOCK_ID, array_column($attributes[$classAttribute['id']], 'id'));
+                    if ($findIndex === false) {
+                        continue;
+                    }
+                    $classAttributeData = $attributes[$classAttribute['id']][$findIndex];
+                    if (is_array($classAttributeData)) {
+                        $attributes[$classAttribute['id']][$findIndex] = $attChildClass->buildBlockAttributes($classAttributeData);
+                    }
+                }
+            }
+
+
             $attributeDefaults[$configAttribute['id']] = $this->getAttributeDefaultValue($configAttribute);
         }
-       $attributes = $this->buildTaxonomyBlockAttributes($attributes);
-       $attributes = $this->buildPostTypeBlockAttributes($attributes);
-       if ($includeDefaults) {
-           $attributes = array_merge($attributeDefaults, $attributes);
-       }
+        return $this->buildAttributePostData($attributes, $includeDefaults, $attributeDefaults);
+    }
+
+    private function buildAttributePostData(array $attributes, ?bool $includeDefaults = true, ?array $attributeDefaults = []) {
+
+        $attributes = $this->buildTaxonomyBlockAttributes($attributes);
+        $attributes = $this->buildPostTypeBlockAttributes($attributes);
+        if ($includeDefaults) {
+            $attributes = array_merge($attributeDefaults, $attributes);
+        }
         return $attributes;
     }
 
@@ -228,6 +259,61 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
                     });
                 }
             }
+        }
+        return $attributes;
+    }
+
+    public function getClassAttributeChildren(array $attribute): bool|array {
+        if (empty($attribute['class'])) {
+            return false;
+        }
+        if (!class_exists($attribute['class'])) {
+            return false;
+        }
+        $attClass = new $attribute['class']();
+        $attConfig = $attClass->getConfig();
+        if (!isset($attConfig['children'])) {
+            return false;
+        }
+        if (!is_array($attConfig['children'])) {
+            return false;
+        }
+        return $attConfig['children'];
+    }
+
+    public function buildClassAttribute(array $attribute) {
+        $children = $this->getClassAttributeChildren($attribute);
+        if (!$children) {
+            return false;
+        }
+        foreach ($children as $attChild) {
+            if (empty($attChild)) {
+                continue;
+            }
+            if (!class_exists($attChild)) {
+                continue;
+            }
+            $attChildClass = new $attChild();
+            $attChildConfig = $attChildClass->getConfig();
+            if (empty($attribute['child_configs']) || !is_array($attribute['child_configs'])) {
+                $attribute['child_configs'] = [];
+            }
+            $attribute['child_configs'][$attChildConfig['id']] = $attChildConfig['attributes'];
+            $attribute['default'] = [];
+            unset($attribute['class']);
+        }
+
+        return $attribute;
+    }
+
+    public function buildClassAttributes(array $attributes)
+    {
+        foreach ($attributes as $index => $attribute) {
+            $classAttribute = $this->buildClassAttribute($attribute);
+            if (!$classAttribute) {
+                continue;
+            }
+            $attributes[$index] = $classAttribute;
         }
         return $attributes;
     }

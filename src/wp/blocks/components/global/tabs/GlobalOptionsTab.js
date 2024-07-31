@@ -37,19 +37,15 @@ const GlobalOptionsTab = (props) => {
             <SelectControl
                 label="Block style"
                 onChange={(value) => {
-                    setAttributes({block_style: value});
+                    setAttributes({block_width: value});
                 }}
-                value={attributes?.block_style}
-                options={[
-                    {
-                        label: 'Contained',
-                        value: 'contained'
-                    },
-                    {
-                        label: 'Full width',
-                        value: 'full_width'
-                    },
-                ]}
+                value={attributes?.block_width}
+                options={Array.from({length: 12}, (v, i) => {
+                    return {
+                        label: `${i + 1}/12`,
+                        value: `${i + 1}`
+                    }
+                }).reverse()}
             />
         </Grid>
     );

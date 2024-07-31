@@ -8,7 +8,7 @@ import SidebarWidgetsTab from "./tabs/SidebarWidgetsTab";
 import GlobalOptionsTabConfig from "../components/global/tabs/GlobalOptionsTabConfig";
 
 const WidgetBoardBlockEdit = (props) => {
-    const {attributes, setAttributes} = props;
+    const {attributes, setAttributes, childConfigs} = props;
     function getTabConfig() {
         let tabConfig = [
             {

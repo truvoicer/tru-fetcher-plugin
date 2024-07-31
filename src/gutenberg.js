@@ -1,6 +1,5 @@
 import { registerPlugin, getPlugin } from '@wordpress/plugins';
 import { registerBlockType } from '@wordpress/blocks';
-import { useeffect } from '@wordpress/element';
 import 'antd/dist/reset.css';
 import '../assets/sass/tru-fetcher-admin.scss';
 import SidebarMetaBoxLoader from "./wp/sidebar/SidebarMetaBoxLoader";
@@ -34,6 +33,7 @@ import {
     SESSION_USER_TOKEN,
     SESSION_USER_TOKEN_EXPIRES_AT
 } from "./library/redux/constants/session-constants";
+import {isNotEmpty, isObjectEmpty, isObject} from "./library/helpers/utils-helpers";
 
 if (!getPlugin('trf-fetcher-plugin')) {
     registerPlugin( 'trf-metadata-plugin', {
@@ -53,12 +53,53 @@ if (
     tru_fetcher_react.blocks.forEach((block) => {
         let attData = {};
         let examplesAttData = {};
+        let childConfigs = {};
         if (typeof block.attributes !== 'undefined' && Array.isArray(block.attributes)) {
             block.attributes.forEach((attribute) => {
                 attData[attribute.id] = {
                     type: attribute.type,
                     default: attribute.default,
                 };
+                if (isObject(attribute?.child_configs) && !isObjectEmpty(attribute.child_configs)) {
+                    let data = {};
+                    Object.keys(attribute?.child_configs).forEach((key) => {
+                        attribute?.child_configs[key].forEach((item) => {
+                            if (!isNotEmpty(item?.type)) {
+                                console.warn(`Missing type for ${key} in ${attribute.id}`);
+                                return;
+                            }
+                            if (typeof data[key] === 'undefined') {
+                                data[key] = {};
+                            }
+
+                            if (typeof item?.default !== 'undefined') {
+                                data[key][item.id] = item.default;
+                            } else {
+                                switch (item.type) {
+                                    case 'string':
+                                        data[key][item.id] = '';
+                                        break;
+                                    case 'number':
+                                        data[key][item.id] = 0;
+                                        break;
+                                    case 'boolean':
+                                        data[key][item.id] = false;
+                                        break;
+                                    case 'array':
+                                        data[key][item.id] = [];
+                                        break;
+                                    case 'object':
+                                        data[key][item.id] = {};
+                                        break;
+                                    default:
+                                        data[key][item.id] = '';
+                                        break;
+                                }
+                            }
+                       })
+                    });
+                    childConfigs[attribute.id] = data;
+                }
                 examplesAttData[attribute.id] = attribute.default;
             });
         }
@@ -121,6 +162,7 @@ if (
         blockComponent.defaultProps = {
             config: block,
             apiConfig: tru_fetcher_react.api,
+            childConfigs: childConfigs,
             reducers: {
                 app: {
                     ...defaultState,
