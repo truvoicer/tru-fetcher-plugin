@@ -39,9 +39,20 @@ const PageOptionsMetaBox = ({config, postType, sidebars, metaFields, setMetaFiel
                         {value: 'login', label: 'Login Page'},
                         {value: 'register', label: 'Register Page'},
                         {value: 'logout', label: 'Logout Page'},
-                        {value: 'user_account', label: 'User Account Page'},
                     ]}
                     onChange={(value) => setMetaFields({trf_gut_pmf_page_options_page_type: value})}
+                    __nextHasNoMarginBottom
+                />
+            </PanelRow>
+            <PanelRow>
+                <SelectControl
+                    label={__("Access Control")}
+                    value={metaFields.trf_gut_pmf_page_options_access_control}
+                    options={[
+                        {value: 'public', label: 'Public'},
+                        {value: 'protected', label: 'Protected'},
+                    ]}
+                    onChange={(value) => setMetaFields({trf_gut_pmf_page_options_access_control: value})}
                     __nextHasNoMarginBottom
                 />
             </PanelRow>
@@ -58,14 +69,29 @@ const PageOptionsMetaBox = ({config, postType, sidebars, metaFields, setMetaFiel
                 />
             </PanelRow>
             {metaFields.trf_gut_pmf_page_options_layout === 'sidebar' && (
-                <PanelRow>
-                    <SelectControl
-                        label="Select Sidebar"
-                        onChange={(value) => setMetaFields({trf_gut_pmf_page_options_sidebar: value})}
-                        value={metaFields.trf_gut_pmf_page_options_sidebar}
-                        options={buildSidebarSelectOptions()}
-                    />
-                </PanelRow>
+                <>
+                    <PanelRow>
+                        <SelectControl
+                            label="Select Sidebar"
+                            onChange={(value) => setMetaFields({trf_gut_pmf_page_options_sidebar: value})}
+                            value={metaFields.trf_gut_pmf_page_options_sidebar}
+                            options={buildSidebarSelectOptions()}
+                        />
+                    </PanelRow>
+                    <PanelRow>
+                        <SelectControl
+                            label="Sidebar position"
+                            onChange={(value) => setMetaFields({trf_gut_pmf_page_options_sidebar_position: value})}
+                            value={metaFields.trf_gut_pmf_page_options_sidebar_position}
+                            options={[
+                                {value: 'left', label: 'Left'},
+                                {value: 'right', label: 'Right'},
+                                {value: 'top', label: 'Top'},
+                                {value: 'bottom', label: 'Bottom'},
+                            ]}
+                        />
+                    </PanelRow>
+                </>
             )}
             <PanelRow>
                 <TabPanel

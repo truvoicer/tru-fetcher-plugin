@@ -76,28 +76,24 @@ class Tru_Fetcher_Sidebars {
                 return false;
             }
             $widgetData                   = $widget_instances[ $instanceNumber ];
-            switch ($widgetInstanceName) {
-                case 'nav_menu':
-                    $menuObject = wp_get_nav_menu_object($widgetData['nav_menu']);
-                    $array[ $widgetInstanceName ]["menu_slug"] = $menuObject->slug;
-                    $array[ $widgetInstanceName ]["menu_items"] = $this->menuClass->getMenu( $menuObject );
-                    break;
-                case 'tru_fetcher_listings':
-                    $listingId = $widgetData['listing'];
-                    $listing = $this->listingsHelpers->getListingById((int)$listingId);
-                    if (!$listing) {
-                        break;
-                    }
+            $menuObject = wp_get_nav_menu_object($widgetData['nav_menu']);
+            if ($menuObject) {
+                $array[ $widgetInstanceName ]["menu_slug"] = $menuObject->slug;
+                $array[ $widgetInstanceName ]["menu_items"] = $this->menuClass->getMenu( $menuObject );
+            } else if ($widgetInstanceName === 'tru_fetcher_listings') {
+                $listingId = $widgetData['listing'];
+                $listing = $this->listingsHelpers->getListingById((int)$listingId);
+                if ($listing) {
                     $widgetData['data'] = $listing['config_data'];
-                    $array[ $widgetInstanceName ] = $widgetData;
-                    break;
-                case 'block':
-                    $blockItem = $this->buildSidebarBlockItem($widgetData['content']);
-                    $array[ $blockItem['name'] ] = $blockItem['data'];
-                    break;
-                default:
-                    $array[ $widgetInstanceName ] = $widgetData;
-                    break;
+                } else {
+                    $widgetData['data'] = [];
+                }
+                $array[ $widgetInstanceName ] = $widgetData;
+            } else if ($widgetInstanceName === 'block') {
+                $blockItem = $this->buildSidebarBlockItem($widgetData['content']);
+                $array[ $blockItem['name'] ] = $blockItem['data'];
+            } else {
+                $array[ $widgetInstanceName ] = $widgetData;
             }
 
             return $array;

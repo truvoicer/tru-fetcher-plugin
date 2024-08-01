@@ -36,7 +36,7 @@ class Tru_Fetcher_Menu {
 		$this->listingsClass = new Tru_Fetcher_Listings();
 	}
 
-	public function getMenu(string $menu, ?array $blocks = []) {
+	public function getMenu(int|string|\WP_Term $menu, ?array $blocks = []) {
 		$getMenu = wp_get_nav_menu_items($menu);
 
 		if ( ! $getMenu ) {
