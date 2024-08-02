@@ -4,6 +4,7 @@ import GeneralTab from "./tabs/GeneralTab";
 import CustomTabs from "./CustomTabs";
 import RequestOptions from "../request-options/RequestOptions";
 import GlobalOptionsTabConfig from "../global/tabs/GlobalOptionsTabConfig";
+import PresetTab from "./tabs/PresetTab";
 
 const Tabs = (props) => {
     const {
@@ -13,13 +14,18 @@ const Tabs = (props) => {
     } = props;
 
     function getTabConfig() {
-        let tabConfig = [
-            {
+        let tabConfig = [{
+            name: 'preset',
+            title: 'Presets',
+            component: PresetTab
+        }];
+        if (data?.presets === 'custom') {
+            tabConfig.push({
                 name: 'general',
                 title: 'General',
                 component: GeneralTab
-            },
-        ];
+            });
+        }
         if (data?.tabs_block_type === 'custom_tabs') {
             tabConfig.push({
                 name: 'custom_tabs',
@@ -43,8 +49,15 @@ const Tabs = (props) => {
             return null;
         }
         let componentProps = {
+            showPresets,
             data: data,
-            onChange: onChange
+            onChange: onChange,
+            attributes: data,
+            setAttributes: (dataObj) => {
+                Object.keys(dataObj).forEach((key) => {
+                    onChange({key, value: dataObj[key]});
+                })
+            }
         };
         switch (tab.name) {
             case 'custom_tabs':
@@ -64,92 +77,36 @@ const Tabs = (props) => {
         return <TabComponent {...componentProps} />;
     }
 
-    function getPresets() {
-        const tabPresets = tru_fetcher_react?.tab_presets;
-        if (!Array.isArray(tabPresets)) {
-            console.warn('Tab presets not found')
-            return [];
-        }
-        return tabPresets.map(preset => {
-            return {
-                label: preset.name,
-                value: preset.id
-            }
-        });
-    }
 
     return (
-        <Panel>
-            <PanelBody title="Tabs Block" initialOpen={true}>
-                {showPresets && (
-                    <SelectControl
-                        label="Presets"
-                        onChange={(value) => {
-                            if (typeof onChange === 'function') {
-                                onChange({key: 'presets', value: value});
+        <TabPanel
+            className="my-tab-panel"
+            activeClass="active-tab"
+            onSelect={(tabName) => {
+                // setTabName(tabName);
+            }}
+            tabs={
+                getTabConfig().map((tab) => {
+                    return {
+                        name: tab.name,
+                        title: tab.title,
+                    }
+                })
+            }>
+            {(tab) => {
+                return (
+                    <>
+                        {getTabConfig().map((item) => {
+                            if (item.name === tab.name) {
+                                return getTabComponent(item);
                             }
-                        }}
-                        value={data?.presets}
-                        options={[
-                            {
-                                label: 'Custom',
-                                value: 'custom'
-                            },
-                            ...getPresets()
-                        ]}
-                    />
-                )}
-                <SelectControl
-                    label="Access Control"
-                    onChange={(value) => {
-                        if (typeof onChange === 'function') {
-                            onChange({key: 'access_control', value: value});
-                        }
-                    }}
-                    value={data?.access_control}
-                    options={[
-                        {
-                            label: 'Public',
-                            value: 'public'
-                        },
-                        {
-                            label: 'Protected',
-                            value: 'protected'
-                        },
-                    ]}
-                />
-                {data?.presets === 'custom' && (
-                    <TabPanel
-                        className="my-tab-panel"
-                        activeClass="active-tab"
-                        onSelect={(tabName) => {
-                            // setTabName(tabName);
-                        }}
-                        tabs={
-                            getTabConfig().map((tab) => {
-                                return {
-                                    name: tab.name,
-                                    title: tab.title,
-                                }
-                            })
-                        }>
-                        {(tab) => {
-                            return (
-                                <>
-                                    {getTabConfig().map((item) => {
-                                        if (item.name === tab.name) {
-                                            return getTabComponent(item);
-                                        }
-                                        return null;
-                                    })}
-                                </>
-                            )
+                            return null;
+                        })}
+                    </>
+                )
 
-                        }}
-                    </TabPanel>
-                )}
-            </PanelBody>
-        </Panel>
+            }}
+        </TabPanel>
     );
 };
 

@@ -2,8 +2,15 @@ import {__} from '@wordpress/i18n';
 import {compose} from '@wordpress/compose';
 import {withSelect, withDispatch} from '@wordpress/data';
 import {PluginDocumentSettingPanel} from '@wordpress/edit-post';
-import {PanelRow, TextareaControl, ToggleControl, SelectControl, TabPanel} from '@wordpress/components';
-import {useState} from '@wordpress/element';
+import {
+    Panel,
+    PanelBody,
+    PanelRow,
+    TextareaControl,
+    ToggleControl,
+    SelectControl,
+    TabPanel
+} from '@wordpress/components';
 
 const POST_TYPES = ['item_view_templates', 'page'];
 const PageOptionsMetaBox = ({config, postType, sidebars, metaFields, setMetaFields}) => {
@@ -22,6 +29,27 @@ const PageOptionsMetaBox = ({config, postType, sidebars, metaFields, setMetaFiel
             })
         });
         return sidebarSelectOptions;
+    }
+
+    function updateSidebar({key, value}, index) {
+        const newSidebars = [...metaFields.trf_gut_pmf_page_options_sidebars];
+        newSidebars[index][key] = value;
+        setMetaFields({
+            trf_gut_pmf_page_options_sidebar: newSidebars,
+            trf_gut_pmf_page_options_sidebar_updated: (metaFields?.trf_gut_pmf_page_options_sidebar_updated || 0) + 1
+        });
+    }
+
+    function addSidebar() {
+        const newSidebars = [...metaFields.trf_gut_pmf_page_options_sidebars];
+        newSidebars.push({name: '', position: 'left'});
+        setMetaFields({trf_gut_pmf_page_options_sidebars: newSidebars});
+    }
+
+    function removeSidebar(index) {
+        const newSidebars = [...metaFields.trf_gut_pmf_page_options_sidebars];
+        newSidebars.splice(index, 1);
+        setMetaFields({trf_gut_pmf_page_options_sidebars: newSidebars});
     }
 
     return (
@@ -69,29 +97,61 @@ const PageOptionsMetaBox = ({config, postType, sidebars, metaFields, setMetaFiel
                 />
             </PanelRow>
             {metaFields.trf_gut_pmf_page_options_layout === 'sidebar' && (
-                <>
-                    <PanelRow>
-                        <SelectControl
-                            label="Select Sidebar"
-                            onChange={(value) => setMetaFields({trf_gut_pmf_page_options_sidebar: value})}
-                            value={metaFields.trf_gut_pmf_page_options_sidebar}
-                            options={buildSidebarSelectOptions()}
-                        />
-                    </PanelRow>
-                    <PanelRow>
-                        <SelectControl
-                            label="Sidebar position"
-                            onChange={(value) => setMetaFields({trf_gut_pmf_page_options_sidebar_position: value})}
-                            value={metaFields.trf_gut_pmf_page_options_sidebar_position}
-                            options={[
-                                {value: 'left', label: 'Left'},
-                                {value: 'right', label: 'Right'},
-                                {value: 'top', label: 'Top'},
-                                {value: 'bottom', label: 'Bottom'},
-                            ]}
-                        />
-                    </PanelRow>
-                </>
+                <div style={{'margin-top': 10}}>
+                    <Panel style={{'margin-top': 10}}>
+                        <PanelBody title="Sidebar" initialOpen={false}>
+                            <>
+                                {Array.isArray(metaFields.trf_gut_pmf_page_options_sidebars) && metaFields.trf_gut_pmf_page_options_sidebars.map((sidebar, index) => {
+                                    return (
+                                        <Panel key={index}>
+                                            <PanelBody
+                                                title={`${index + 1}. ${sidebar?.name || 'sidebar'} (${sidebar?.position || ''})`}
+                                                initialOpen={false}>
+                                                <PanelRow>
+                                                    <SelectControl
+                                                        label="Select Sidebar"
+                                                        onChange={(value) => updateSidebar({
+                                                            key: 'name',
+                                                            value: value
+                                                        }, index)}
+                                                        value={sidebar.name}
+                                                        options={buildSidebarSelectOptions()}
+                                                    />
+                                                </PanelRow>
+                                                <PanelRow>
+                                                    <SelectControl
+                                                        label="Sidebar position"
+                                                        onChange={(value) => updateSidebar({
+                                                            key: 'position',
+                                                            value: value
+                                                        }, index)}
+                                                        value={sidebar.position}
+                                                        options={[
+                                                            {value: 'left', label: 'Left'},
+                                                            {value: 'right', label: 'Right'},
+                                                            {value: 'top', label: 'Top'},
+                                                            {value: 'bottom', label: 'Bottom'},
+                                                        ]}
+                                                    />
+                                                </PanelRow>
+                                                <PanelRow>
+
+                                                    <button className="button button-secondary" onClick={e => removeSidebar(index)}>
+                                                        Delete
+                                                    </button>
+                                                </PanelRow>
+                                            </PanelBody>
+                                        </Panel>
+                                    )
+                                })}
+                                <PanelRow>
+                                    <button className="button button-secondary" onClick={addSidebar}>Add Sidebar
+                                    </button>
+                                </PanelRow>
+                            </>
+                        </PanelBody>
+                    </Panel>
+                </div>
             )}
             <PanelRow>
                 <TabPanel

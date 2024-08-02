@@ -42,6 +42,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
             'type' => 'integer',
             'default' => 12,
         ],
+        [
+            'id' => 'access_control',
+            'type' => 'string',
+            'default' => 'public',
+        ],
     ];
 
     public static function getSidebarConfig() {

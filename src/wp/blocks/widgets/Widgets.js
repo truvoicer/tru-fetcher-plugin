@@ -59,11 +59,11 @@ const Widgets = (props) => {
         }
         const widgetData = getWidgetProps(widget.id, index);
         Component.defaultProps = {
-            attributes: widgetData,
             data: widgetData,
             onChange: ({key, value}) => {
                 formChangeHandler({key, value, widget, index});
             },
+            attributes: widgetData,
             setAttributes: (dataObj) => {
                 Object.keys(dataObj).forEach((key) => {
                     formChangeHandler({

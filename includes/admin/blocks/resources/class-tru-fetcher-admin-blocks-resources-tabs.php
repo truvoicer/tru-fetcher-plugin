@@ -45,11 +45,6 @@ class Tru_Fetcher_Admin_Blocks_Resources_Tabs extends Tru_Fetcher_Admin_Blocks_R
         'taxonomies' => [],
         'attributes' => [
             [
-                'id' => 'access_control',
-                'type' => 'string',
-                'default' => 'public',
-            ],
-            [
                 'id' => 'presets',
                 'type' => 'string',
                 'default' => 'custom',

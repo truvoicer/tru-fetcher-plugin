@@ -6,6 +6,7 @@ const TabsBlockEdit = (props) => {
     const {attributes, setAttributes} = props;
 
     function formChangeHandler({key, value}) {
+        console.log(key, value);
         setAttributes({
             ...attributes,
             [key]: value
