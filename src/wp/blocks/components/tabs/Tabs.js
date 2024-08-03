@@ -14,11 +14,14 @@ const Tabs = (props) => {
     } = props;
 
     function getTabConfig() {
-        let tabConfig = [{
-            name: 'preset',
-            title: 'Presets',
-            component: PresetTab
-        }];
+        let tabConfig = [];
+        if (showPresets) {
+            tabConfig.push({
+                name: 'preset',
+                title: 'Presets',
+                component: PresetTab
+            });
+        }
         if (data?.presets === 'custom') {
             tabConfig.push({
                 name: 'general',

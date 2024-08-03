@@ -191,7 +191,18 @@ class Tru_Fetcher_DB_Model
                 continue;
 			}
 			if ($this->isDataType($this->stringDataTypes, $columnDataType)) {
-				$buildData[$key] = (in_array($key, $this->serializedFields)) ? unserialize(str_replace('\\', '', $value)) : (string)$value;
+                if (in_array($key, $this->serializedFields)) {
+                    if (!is_string($value)) {
+                        $buildData[$key] = $value;
+                        continue;
+                    }
+                    $buildData[$key] = unserialize(str_replace('\\', '', $value));
+                    if (!is_array($buildData[$key])) {
+                        $buildData[$key] = [];
+                    }
+                } else {
+                    $buildData[$key] = (string)$value;
+                }
                 continue;
 			}
 			if (
