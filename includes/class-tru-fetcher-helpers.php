@@ -244,4 +244,16 @@ class Tru_Fetcher_Helpers {
         }
         return array_keys($arr) === range(0, count($arr) - 1);
     }
+
+
+    public static function getClassProperties(array $classNames) {
+        $data = [];
+        foreach ($classNames as $className) {
+            $rc = new \ReflectionClass($className);
+            $data[$className] = array_map(function ($property) {
+                return $property->getName();
+            }, $rc->getProperties());
+        }
+        return $data;
+    }
 }

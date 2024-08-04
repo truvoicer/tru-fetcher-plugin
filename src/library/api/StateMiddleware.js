@@ -189,7 +189,7 @@ export class StateMiddleware {
 
     getSessionApiUrlsAction() {
         const sessionState = this.sessionState;
-        console.log('getSessionApiUrlsAction', sessionState)
+
         if (
             typeof sessionState[SESSION_API_URLS] === 'undefined' ||
             !isNotEmpty(sessionState[SESSION_API_URLS]) ||
@@ -415,13 +415,12 @@ export class StateMiddleware {
             requestParams = {...requestParams, ...apiRequestAuthData};
         }
         const urlBase = this.getSessionApiUrlBaseAction(config);
-        console.log({urlBase})
+
         if (!urlBase) {
             return false;
         }
         let headers = this.getAuthHeader(appKey);
 
-        console.log({headers})
         if (!headers && config?.wpRequest) {
             return false;
         }

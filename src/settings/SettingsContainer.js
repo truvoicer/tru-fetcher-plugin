@@ -7,7 +7,7 @@ import {connect} from "react-redux";
 import {StateMiddleware} from "../library/api/StateMiddleware";
 
 const SettingsContainer = ({children, app, session}) => {
-    console.log('SettingsContainer', app, session)
+
     const stateMiddleware = new StateMiddleware();
     stateMiddleware.setAppState(app);
     stateMiddleware.setSessionState(session);

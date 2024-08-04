@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Form, Input, Modal, Table, notification} from 'antd';
+import {Button, Form, Input, Table, notification} from 'antd';
+import {Modal} from '@wordpress/components'
 import config from "../../library/api/wp/config";
 import {isObject} from "../../library/helpers/utils-helpers";
 import {getBlockAttributesById} from "../../wp/helpers/wp-helpers";
@@ -164,8 +165,8 @@ const Listings = ({app, session}) => {
                 Add Listing Config
             </Button>
             <Table columns={columns} dataSource={listings}/>
+            {isEditModalOpen &&
             <Modal title={'Edit Tab Preset'}
-                   open={isEditModalOpen}
                    onOk={() => {
                        if (!currentRecord?.id) {
                            console.error('Id not set in currentRecord')
@@ -173,7 +174,21 @@ const Listings = ({app, session}) => {
                        }
                        updateListingRequest(currentRecord);
                    }}
-                   onCancel={() => {
+                   headerActions={
+                       <div>
+                           <Button variant="secondary"
+                                   onClick={() => {
+                                       if (!currentRecord?.id) {
+                                           console.error('Id not set in currentRecord')
+                                           return;
+                                       }
+                                       updateListingRequest(currentRecord);
+                                   }}>
+                               Save
+                           </Button>
+                       </div>
+                   }
+                   onRequestClose={() => {
                        setCurrentRecord(null);
                        setIsEditModalOpen(false);
                    }}>
@@ -199,12 +214,13 @@ const Listings = ({app, session}) => {
                     }}
                 />
             </Modal>
+            }
+            {isAddModalOpen &&
             <Modal title={'Add Listing Config'}
-                   open={isAddModalOpen}
                    onOk={() => {
                        createListingRequest(values)
                    }}
-                   onCancel={() => {
+                   onRequestClose={() => {
                        setCurrentRecord(null);
                        setIsAddModalOpen(false);
                    }}>
@@ -234,6 +250,7 @@ const Listings = ({app, session}) => {
                     </Form.Item>
                 </Form>
             </Modal>
+            }
         </>
     );
 };

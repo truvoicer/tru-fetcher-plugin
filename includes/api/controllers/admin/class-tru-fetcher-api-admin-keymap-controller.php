@@ -8,6 +8,7 @@ use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Keymaps;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Tab_Presets;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Setting;
 use TruFetcher\Includes\Api\Response\Admin\Tru_Fetcher_Api_Admin_Settings_Response;
+use TruFetcher\Includes\Tru_Fetcher_Helpers;
 
 /**
  * Fired during plugin activation
@@ -69,7 +70,9 @@ class Tru_Fetcher_Api_Admin_Keymap_Controller extends Tru_Fetcher_Api_Admin_Base
 	}
 
     public function fetchPostKeys(\WP_REST_Request $request) {
-        $this->keymapResponse->setKeys($this->keymapHelpers->getPostKeys());
+        $this->keymapResponse->setKeys(
+            Tru_Fetcher_Helpers::getClassProperties([\WP_Post::class])[\WP_Post::class]
+        );
         return $this->controllerHelpers->sendSuccessResponse(
             "Fetched Post keys",
             $this->keymapResponse

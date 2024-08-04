@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Col, Row, Select, Button, Modal, Card, Space, Form} from 'antd';
+import {Col, Row, Select, Button, Form} from 'antd';
 import fetcherApiConfig from "../../../library/api/fetcher-api/fetcherApiConfig";
 import NameValueDatatable from "../../../components/tables/name-value-datatable/NameValueDatatable";
 import {isNotEmpty} from "../../../library/helpers/utils-helpers";
@@ -125,7 +125,6 @@ const Keymaps = ({app, session}) => {
             config: config,
             endpoint: `${config.endpoints.keymap}/service/${selectedService}`,
         }).then((results) => {
-            console.log(results)
             if (Array.isArray(results?.data?.keymaps)) {
                 setKeymapData(results.data.keymaps);
             }
@@ -137,7 +136,6 @@ const Keymaps = ({app, session}) => {
             config: config,
             endpoint: `${config.endpoints.keymap}/keys/post`,
         }).then((results) => {
-            console.log(results)
             if (Array.isArray(results?.data?.keys)) {
                 setPostKeys(results.data.keys);
             }
@@ -168,7 +166,6 @@ const Keymaps = ({app, session}) => {
         if (!isNotEmpty(selectedService) || isNaN(selectedService)) {
             return;
         }
-        console.log({selectedService})
         dataKeysRequest();
     }, [selectedService]);
 

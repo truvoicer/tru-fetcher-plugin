@@ -4,6 +4,7 @@ namespace TruFetcher\Includes\Api\Controllers\Admin;
 use TruFetcher\Includes\Api\Controllers\Admin\Tru_Fetcher_Api_Admin_Base_Controller;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Setting;
 use TruFetcher\Includes\Api\Response\Admin\Tru_Fetcher_Api_Admin_Settings_Response;
+use TruFetcher\Includes\Tru_Fetcher_Helpers;
 
 /**
  * Fired during plugin activation

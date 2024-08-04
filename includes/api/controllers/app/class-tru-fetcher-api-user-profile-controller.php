@@ -45,7 +45,7 @@ class Tru_Fetcher_Api_User_Profile_Controller extends Tru_Fetcher_Api_Controller
     ];
 
     const REQUEST_TEXT_FIELDS = [
-        "email", "display_name", "first_name", "surname", "telephone", "town", "short_description", "personal_statement", "country"
+        "user_email", "display_name", "first_name", "surname", "telephone", "town", "short_description", "personal_statement", "country"
     ];
 
     const REQUEST_FILE_UPLOAD_FIELDS = [

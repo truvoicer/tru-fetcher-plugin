@@ -93,7 +93,8 @@ const SingleTab = (props) => {
             return null;
         }
         let componentProps = {
-            onChange: formChangeHandler
+            onChange: formChangeHandler,
+            reducers: props?.reducers,
         };
         switch (tab.name) {
             case 'custom_carousel':

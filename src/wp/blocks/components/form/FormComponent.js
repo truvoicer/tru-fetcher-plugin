@@ -8,13 +8,13 @@ import ExternalProvidersTab from "./tabs/ExternalProvidersTab";
 import Grid from "../wp/Grid";
 import GlobalOptionsTabConfig from "../global/tabs/GlobalOptionsTabConfig";
 
-const FormComponent = ({data, onChange, showPresets = true}) => {
+const FormComponent = ({data, onChange, showPresets = true, reducers = null}) => {
     function getTabComponent(tab) {
         if (!tab?.component) {
             return null;
         }
         let TabComponent = tab.component;
-        return <TabComponent {...{data, onChange, showPresets}} />;
+        return <TabComponent {...{data, onChange, showPresets, reducers}} />;
     }
 
     function getTabs() {

@@ -1,9 +1,13 @@
 import React from 'react';
-import {TextControl, SelectControl, ToggleControl, Button} from "@wordpress/components";
+import {useState} from '@wordpress/element';
+import {TextControl, SelectControl, ToggleControl, Button, Modal} from "@wordpress/components";
 import {Icon, chevronDown, chevronUp, trash} from "@wordpress/icons";
 import Grid from "../../wp/Grid";
+import SystemNamesList from "../../../../../components/forms/SystemNamesList";
 
 const FormRowsTab = (props) => {
+    const [systemNamesModal, setSystemNamesModal] = useState(false);
+    const [selectedField, setSelectedField] = useState(null);
     const {
         data,
         onChange
@@ -239,19 +243,37 @@ const FormRowsTab = (props) => {
                                                 />
                                             </Grid>
                                             <Grid columns={2}>
-                                                <TextControl
-                                                    label="Name"
-                                                    placeholder="Name"
-                                                    value={formItem?.name}
-                                                    onChange={(value) => {
-                                                        updateFormItem({
-                                                            rowIndex,
-                                                            formItemIndex,
-                                                            field: 'name',
-                                                            value
-                                                        });
-                                                    }}
-                                                />
+                                                <div>
+                                                    <div style={{display: 'flex'}}>
+                                                        <label>Name</label>
+                                                        <a
+                                                            style={{marginLeft: 10}}
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                setSystemNamesModal(true);
+                                                                setSelectedField({
+                                                                    rowIndex,
+                                                                    formItemIndex,
+                                                                    field: 'name',
+                                                                    value: formItem?.name
+                                                                })
+                                                            }}>
+                                                            System names
+                                                        </a>
+                                                    </div>
+                                                    <TextControl
+                                                        placeholder="Name"
+                                                        value={formItem?.name}
+                                                        onChange={(value) => {
+                                                            updateFormItem({
+                                                                rowIndex,
+                                                                formItemIndex,
+                                                                field: 'name',
+                                                                value
+                                                            });
+                                                        }}
+                                                    />
+                                                </div>
                                                 <TextControl
                                                     label="Value"
                                                     placeholder="Value"
@@ -490,39 +512,39 @@ const FormRowsTab = (props) => {
                                                                 return (
                                                                     <div>
                                                                         <Grid columns={2}>
-                                                                        <TextControl
-                                                                            label="Extension"
-                                                                            placeholder="Extension"
-                                                                            value={fileType?.extension}
-                                                                            onChange={(value) => {
-                                                                                updateFormItem({
-                                                                                    rowIndex,
-                                                                                    formItemIndex,
-                                                                                    field: 'allowed_file_types',
-                                                                                    value,
-                                                                                    isArray: true,
-                                                                                    arrayIndex: index,
-                                                                                    arrayKey: 'extension'
-                                                                                });
-                                                                            }}
-                                                                        />
+                                                                            <TextControl
+                                                                                label="Extension"
+                                                                                placeholder="Extension"
+                                                                                value={fileType?.extension}
+                                                                                onChange={(value) => {
+                                                                                    updateFormItem({
+                                                                                        rowIndex,
+                                                                                        formItemIndex,
+                                                                                        field: 'allowed_file_types',
+                                                                                        value,
+                                                                                        isArray: true,
+                                                                                        arrayIndex: index,
+                                                                                        arrayKey: 'extension'
+                                                                                    });
+                                                                                }}
+                                                                            />
 
-                                                                        <TextControl
-                                                                            label="Mime Type"
-                                                                            placeholder="Mime Type"
-                                                                            value={fileType?.mime_type}
-                                                                            onChange={(value) => {
-                                                                                updateFormItem({
-                                                                                    rowIndex,
-                                                                                    formItemIndex,
-                                                                                    field: 'allowed_file_types',
-                                                                                    value,
-                                                                                    isArray: true,
-                                                                                    arrayIndex: index,
-                                                                                    arrayKey: 'mime_type'
-                                                                                });
-                                                                            }}
-                                                                        />
+                                                                            <TextControl
+                                                                                label="Mime Type"
+                                                                                placeholder="Mime Type"
+                                                                                value={fileType?.mime_type}
+                                                                                onChange={(value) => {
+                                                                                    updateFormItem({
+                                                                                        rowIndex,
+                                                                                        formItemIndex,
+                                                                                        field: 'allowed_file_types',
+                                                                                        value,
+                                                                                        isArray: true,
+                                                                                        arrayIndex: index,
+                                                                                        arrayKey: 'mime_type'
+                                                                                    });
+                                                                                }}
+                                                                            />
                                                                         </Grid>
                                                                         <Button
                                                                             variant="primary"
@@ -568,40 +590,40 @@ const FormRowsTab = (props) => {
                                                 <>
                                                     <h5>Button Settings</h5>
                                                     <Grid columns={2}>
-                                                    <SelectControl
-                                                        label="Button Type"
-                                                        onChange={(value) => {
-                                                            updateFormItem({
-                                                                rowIndex,
-                                                                formItemIndex,
-                                                                field: 'button_type',
-                                                                value
-                                                            });
-                                                        }}
-                                                        value={formItem?.button_type}
-                                                        options={[
-                                                            {
-                                                                disabled: true,
-                                                                label: 'Select an Option',
-                                                                value: ''
-                                                            },
-                                                            {value: 'submit', label: 'Submit'},
-                                                            {value: 'reset', label: 'Reset'},
-                                                        ]}
-                                                    />
-                                                    <TextControl
-                                                        label="Button Text"
-                                                        placeholder="Button Text"
-                                                        value={formItem?.button_text}
-                                                        onChange={(value) => {
-                                                            updateFormItem({
-                                                                rowIndex,
-                                                                formItemIndex,
-                                                                field: 'button_text',
-                                                                value
-                                                            });
-                                                        }}
-                                                    />
+                                                        <SelectControl
+                                                            label="Button Type"
+                                                            onChange={(value) => {
+                                                                updateFormItem({
+                                                                    rowIndex,
+                                                                    formItemIndex,
+                                                                    field: 'button_type',
+                                                                    value
+                                                                });
+                                                            }}
+                                                            value={formItem?.button_type}
+                                                            options={[
+                                                                {
+                                                                    disabled: true,
+                                                                    label: 'Select an Option',
+                                                                    value: ''
+                                                                },
+                                                                {value: 'submit', label: 'Submit'},
+                                                                {value: 'reset', label: 'Reset'},
+                                                            ]}
+                                                        />
+                                                        <TextControl
+                                                            label="Button Text"
+                                                            placeholder="Button Text"
+                                                            value={formItem?.button_text}
+                                                            onChange={(value) => {
+                                                                updateFormItem({
+                                                                    rowIndex,
+                                                                    formItemIndex,
+                                                                    field: 'button_text',
+                                                                    value
+                                                                });
+                                                            }}
+                                                        />
                                                     </Grid>
                                                 </>
                                             )}
@@ -632,6 +654,26 @@ const FormRowsTab = (props) => {
             >
                 Add Row
             </Button>
+            {systemNamesModal &&
+                <Modal title={'Select system name'}
+                       size={'large'}
+                       onRequestClose={() => {
+                           setSystemNamesModal(false);
+                       }}>
+                    <SystemNamesList
+                        onChange={(selectedName) => {
+                            updateFormItem({
+                                rowIndex: selectedField?.rowIndex,
+                                formItemIndex: selectedField?.formItemIndex,
+                                field: selectedField?.field,
+                                value: selectedName
+                            });
+                            setSystemNamesModal(false);
+                        }}
+                        reducers={props?.reducers}
+                    />
+                </Modal>
+            }
         </div>
     );
 };

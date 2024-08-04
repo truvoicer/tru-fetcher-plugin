@@ -2,10 +2,7 @@
 
 namespace TruFetcher\Includes\Api\Controllers\App\Protected;
 
-use TruFetcher\Includes\Admin\Taxonomies\Tru_Fetcher_Categories_Taxonomy;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Controller_Base;
-use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Posts_Response;
-use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Response;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_User_Response;
 use TruFetcher\Includes\Posts\Tru_Fetcher_Posts;
 

@@ -6,7 +6,8 @@ const CustomTabs = (props) => {
 
     const {
         data = [],
-        onChange
+        onChange,
+        reducers = null,
     } = props;
 
     function addTab() {
@@ -72,7 +73,7 @@ const CustomTabs = (props) => {
                 deleteTab({index});
             }
         }
-        return <SingleTab />;
+        return <SingleTab reducers={reducers} />;
     }
     return (
        <div>

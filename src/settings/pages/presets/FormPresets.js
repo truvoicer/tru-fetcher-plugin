@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Form, Input, Modal, Table, notification} from 'antd';
+import {Button, Form, Input, Table, notification} from 'antd';
+import {Modal} from '@wordpress/components'
 import config from "../../../library/api/wp/config";
 import FormComponent from "../../../wp/blocks/components/form/FormComponent";
 import {isObject} from "../../../library/helpers/utils-helpers";
@@ -172,8 +173,21 @@ const FormPresets = ({app, session}) => {
                 Add Form Preset
             </Button>
             <Table columns={columns} dataSource={formPresets}/>
+            {isEditModalOpen &&
             <Modal title={`Edit Form Preset: ${currentRecord?.name || ''}`}
-                   open={isEditModalOpen}
+                   size={'fill'}
+                   headerActions={
+                       <Button variant="secondary"
+                               onClick={() => {
+                                   if (!currentRecord?.id) {
+                                       console.error('Id not set in currentRecord')
+                                       return;
+                                   }
+                                   updateFormPresetRequest(currentRecord);
+                               } }>
+                           Save
+                       </Button>
+                   }
                    onOk={() => {
                        if (!currentRecord?.id) {
                            console.error('Id not set in currentRecord')
@@ -181,25 +195,29 @@ const FormPresets = ({app, session}) => {
                        }
                        updateFormPresetRequest(currentRecord);
                    }}
-                   onCancel={() => {
+                   onRequestClose={() => {
                        setCurrentRecord(null);
                        setIsEditModalOpen(false);
                    }}>
                 <FormComponent
+                    reducers={{
+                        app, session
+                    }}
                     data={buildFormData(currentRecord)}
                     onChange={({key, value}) => {
-                        // console.log({key, value, record})
                         formChangeHandler({key, value, record: currentRecord});
                     }}
                     showPresets={false}
                 />
             </Modal>
+            }
+            {isAddModalOpen &&
             <Modal title={'Add Form Preset'}
-                   open={isAddModalOpen}
+                   size={'fill'}
                    onOk={() => {
                        createFormPresetRequest(values)
                    }}
-                   onCancel={() => {
+                   onRequestClose={() => {
                        setCurrentRecord(null);
                        setIsAddModalOpen(false);
                    }}>
@@ -229,6 +247,7 @@ const FormPresets = ({app, session}) => {
                     </Form.Item>
                 </Form>
             </Modal>
+            }
         </>
     );
 };

@@ -56,6 +56,7 @@ const Tabs = (props) => {
             data: data,
             onChange: onChange,
             attributes: data,
+            reducers: props?.reducers,
             setAttributes: (dataObj) => {
                 Object.keys(dataObj).forEach((key) => {
                     onChange({key, value: dataObj[key]});
@@ -64,16 +65,10 @@ const Tabs = (props) => {
         };
         switch (tab.name) {
             case 'custom_tabs':
-                componentProps = {
-                    data: data?.tabs || [],
-                    onChange: onChange
-                };
+                componentProps.data = data?.tabs || [];
                 break;
             case 'request_options':
-                componentProps = {
-                    data: data?.request_options,
-                    onChange: onChange
-                };
+                componentProps.data = data?.request_options;
                 break;
         }
         let TabComponent = tab.component;

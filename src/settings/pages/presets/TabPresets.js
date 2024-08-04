@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Form, Input, Modal, Table, notification} from 'antd';
+import {Button, Form, Input, Table, notification} from 'antd';
 import config from "../../../library/api/wp/config";
 import TabComponent from "../../../wp/blocks/components/tabs/Tabs";
 import {isObject} from "../../../library/helpers/utils-helpers";
@@ -8,6 +8,7 @@ import {APP_STATE} from "../../../library/redux/constants/app-constants";
 import {SESSION_STATE} from "../../../library/redux/constants/session-constants";
 import {connect} from "react-redux";
 import {StateMiddleware} from "../../../library/api/StateMiddleware";
+import {Modal} from '@wordpress/components'
 
 const TabPresets = ({app, session}) => {
     const stateMiddleware = new StateMiddleware();
@@ -96,6 +97,7 @@ const TabPresets = ({app, session}) => {
             setTabPresets(tabPresets);
         }
     }
+
     async function updateTabPresetRequest(data) {
         if (!data?.id) {
             console.error('Id not set in data')
@@ -166,63 +168,77 @@ const TabPresets = ({app, session}) => {
                 Add Tab Preset
             </Button>
             <Table columns={columns} dataSource={tabPresets}/>
-            <Modal title={'Edit Tab Preset'}
-                   open={isEditModalOpen}
-                   onOk={() => {
-                       if (!currentRecord?.id) {
-                           console.error('Id not set in currentRecord')
-                           return;
+            {isEditModalOpen &&
+                <Modal title={'Edit Tab Preset'}
+                       size={'fill'}
+                       headerActions={
+                           <div>
+                               <Button variant="secondary"
+                                       onClick={() => {
+                                           if (!currentRecord?.id) {
+                                               console.error('Id not set in currentRecord')
+                                               return;
+                                           }
+                                           updateTabPresetRequest(currentRecord);
+                                       }}>
+                                   Save
+                               </Button>
+                           </div>
                        }
-                       updateTabPresetRequest(currentRecord);
-                   }}
-                   onCancel={() => {
-                       setCurrentRecord(null);
-                       setIsEditModalOpen(false);
-                   }}>
-                <TabComponent
-                    data={buildTabData(currentRecord)}
-                    onChange={({key, value}) => {
-                        // console.log({key, value, record})
-                        tabChangeHandler({key, value, record: currentRecord});
-                    }}
-                    showPresets={false}
-                />
-            </Modal>
-            <Modal title={'Add Tab Preset'}
-                   open={isAddModalOpen}
-                   onOk={() => {
-                       createTabPresetRequest(values)
-                   }}
-                   onCancel={() => {
-                       setCurrentRecord(null);
-                       setIsAddModalOpen(false);
-                   }}>
-                <Form
-                    name="basic"
-                    style={{maxWidth: 600}}
-                    initialValues={{name: '', value: ''}}
-                    onFinish={(values) => {
-                        createTabPresetRequest(values)
-                    }}
-                    onFinishFailed={errorInfo => {
-                        console.log('Failed:', errorInfo);
-                    }}
-                    autoComplete="off"
-                >
-                    <Form.Item
-                        label="Name"
-                        name="name"
-                        rules={[{required: true, message: 'Please input name!'}]}
+                       onRequestClose={() => {
+                           setCurrentRecord(null);
+                           setIsEditModalOpen(false);
+                       }}>
+
+                    <TabComponent
+                        reducers={{
+                            app, session
+                        }}
+                        data={buildTabData(currentRecord)}
+                        onChange={({key, value}) => {
+                            tabChangeHandler({key, value, record: currentRecord});
+                        }}
+                        showPresets={false}
+                    />
+                </Modal>
+            }
+            {isAddModalOpen &&
+                <Modal title={'Add Tab Preset'}
+                       size={'fill'}
+                       onOk={() => {
+                           createTabPresetRequest(values)
+                       }}
+                       onRequestClose={() => {
+                           setCurrentRecord(null);
+                           setIsAddModalOpen(false);
+                       }}>
+                    <Form
+                        name="basic"
+                        style={{maxWidth: 600}}
+                        initialValues={{name: '', value: ''}}
+                        onFinish={(values) => {
+                            createTabPresetRequest(values)
+                        }}
+                        onFinishFailed={errorInfo => {
+                            console.log('Failed:', errorInfo);
+                        }}
+                        autoComplete="off"
                     >
-                        <Input/>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit">
-                            Submit
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </Modal>
+                        <Form.Item
+                            label="Name"
+                            name="name"
+                            rules={[{required: true, message: 'Please input name!'}]}
+                        >
+                            <Input/>
+                        </Form.Item>
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit">
+                                Submit
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </Modal>
+            }
         </>
     );
 };

@@ -14,6 +14,7 @@ export default {
         tabPresets: '/tab/presets',
         listings: '/listings',
         keymap: '/keymap',
+        system: '/system',
     },
     tokenResponseHandler: (results, appKey) => {
 
