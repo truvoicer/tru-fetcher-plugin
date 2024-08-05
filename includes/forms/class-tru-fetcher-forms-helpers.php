@@ -62,4 +62,15 @@ class Tru_Fetcher_Forms_Helpers
         }
         return [];
     }
+
+    public function syncUserEntityData(\WP_User $user, \WP_REST_Request $request) {
+
+        $entityRequestData = apply_filters("tfr_form_user_entity_request_data", $request->get_params(), $user);
+        $entityRequestData = apply_filters("tfr_form_user_entity_find", $request->get_params(), $user);
+
+        array_filter($skillsArray, function ($skill) {
+            return !empty($skill['entity']) && $skill['entity'] === $this->skillModel->getAlias();
+        });
+        $updateUserSkills = $this->syncUserSkills($user, );
+    }
 }

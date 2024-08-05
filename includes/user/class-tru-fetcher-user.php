@@ -62,4 +62,11 @@ class Tru_Fetcher_User
             error_log(json_encode(['message' => 'Error deleting user api tokens', 'user_id' => $id]));
         }
     }
+
+    public static function getUserMetaData(\WP_User $user, array $data) {
+        foreach ($data as $key => $value) {
+            $data[$key] = get_user_meta($user->ID, $key, true);
+        }
+        return $data;
+    }
 }

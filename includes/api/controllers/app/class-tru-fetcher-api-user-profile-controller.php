@@ -1,4 +1,5 @@
 <?php
+
 namespace TruFetcher\Includes\Api\Controllers\App;
 
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_User_Profile_Response;
@@ -6,6 +7,7 @@ use TruFetcher\Includes\DB\Repository\Tru_Fetcher_DB_Repository_Skill;
 use TruFetcher\Includes\DB\Repository\Tru_Fetcher_DB_Repository_User_Skill;
 use TruFetcher\Includes\Forms\Tru_Fetcher_Api_Form_Handler;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Skill;
+use TruFetcher\Includes\User\Tru_Fetcher_User;
 
 /**
  * Fired during plugin activation
@@ -116,6 +118,7 @@ class Tru_Fetcher_Api_User_Profile_Controller extends Tru_Fetcher_Api_Controller
                 )
             );
         }
+        $this->apiUserProfileResponse->setData(Tru_Fetcher_User::getUserMetaData($getUser, $data));
         return $this->controllerHelpers->sendSuccessResponse(
             sprintf("User (%s) updated.", $getUser->display_name),
             $this->apiUserProfileResponse
@@ -141,4 +144,6 @@ class Tru_Fetcher_Api_User_Profile_Controller extends Tru_Fetcher_Api_Controller
             }, ARRAY_FILTER_USE_KEY)
         );
     }
+
+
 }

@@ -162,17 +162,22 @@ class Tru_Fetcher_Api_Helpers_Skill {
             return empty($skill['entity']);
         });
 
-        $updateUserSkills = $this->updateUserSkillBatch($user, $userSkills);
-        $updateSkills = $this->updateSkillBatch($user, $existingSkills);
-        $updateNewSkills = $this->updateNewSkillBatch($user, $newSkills);
+        $updateUserSkills = $this->syncUserSkills($user, array_filter($skillsArray, function ($skill) {
+            return !empty($skill['entity']) && $skill['entity'] === $this->skillModel->getAlias();
+        }));
+//        $updateSkills = $this->updateSkillBatch($user, $existingSkills);
+//        $updateNewSkills = $this->updateNewSkillBatch($user, $newSkills);
         $this->mergeErrors([
             $this->skillRepository,
             $this->userSkillRepository
         ]);
-        return $updateUserSkills && $updateSkills && $updateNewSkills;
+        return [];
     }
 
 
+    public function syncUserSkills(\WP_User $user, array $userSkills = []) {
+
+    }
     public function updateUserSkillBatch(\WP_User $user, array $userSkills = []) {
         $errors = [];
         foreach ($userSkills as $skill) {
