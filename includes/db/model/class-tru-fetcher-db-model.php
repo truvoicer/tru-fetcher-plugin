@@ -389,6 +389,17 @@ class Tru_Fetcher_DB_Model
 		return false;
 	}
 
+	public function getUniqueConstraints(): bool|array
+	{
+		if (
+            isset($this->getTableConfig()[Tru_Fetcher_DB_Model_Constants::UNIQUE_CONSTRAINT_FIELD]) &&
+            is_array($this->getTableConfig()[Tru_Fetcher_DB_Model_Constants::UNIQUE_CONSTRAINT_FIELD])
+        ) {
+			return $this->getTableConfig()[Tru_Fetcher_DB_Model_Constants::UNIQUE_CONSTRAINT_FIELD];
+		}
+		return false;
+	}
+
 	public function setForeignKeys(array $foreignKeys)
 	{
 		return $this->tableConfig[Tru_Fetcher_DB_Model_Constants::FOREIGN_KEYS_FIELD] = $foreignKeys;

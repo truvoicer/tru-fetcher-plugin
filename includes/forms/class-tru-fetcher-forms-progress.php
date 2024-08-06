@@ -6,6 +6,7 @@ use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Forms_Response;
 use TruFetcher\Includes\Database\Tru_Fetcher_Database;
 use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
 use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_User;
+use TruFetcher\Includes\Tru_Fetcher_Filters;
 use WP_REST_Request;
 use WP_User;
 
@@ -49,7 +50,7 @@ class Tru_Fetcher_Forms_Progress
         if (empty($formFieldGroups)) {
             return $this->showError("invalid_request", "(form_field_groups) fields does not exist in request");
         }
-        $progressFieldGroups = apply_filters("tfr_form_progress_field_groups", $formFieldGroups, $this->getUser());
+        $progressFieldGroups = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_FORM_PROGRESS_FIELD_GROUPS, $formFieldGroups, $this->getUser());
         $buildFieldsGroupArray = $this->buildFieldsGroupArray($request["form_field_groups"], $progressFieldGroups);
 
         $this->groups = $this->buildFormsProgressData($buildFieldsGroupArray);
@@ -159,7 +160,7 @@ class Tru_Fetcher_Forms_Progress
                 }
                 break;
             case "data_source":
-                $getData = apply_filters("tfr_data_source_data", ["name" => $name], $this->getUser());
+                $getData = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_DATA_SOURCE_DATA, ["name" => $name], $this->getUser());
                 if (is_array($getData) && count($getData) > 0) {
                     return true;
                 } elseif (is_object($getData)) {
@@ -243,7 +244,7 @@ class Tru_Fetcher_Forms_Progress
             case "image_upload":
                 return $this->getUserMetaAttachmentData($field);
             case "select_data_source":
-                return apply_filters("tfr_user_meta_select_data_source", $field, $this->getUser());
+                return apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_META_SELECT_DATA_SOURCE, $field, $this->getUser());
             case "saved_item_count":
                 return $this->getUserSavedItemCount($field);
             default:

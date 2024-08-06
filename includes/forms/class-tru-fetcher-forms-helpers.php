@@ -1,36 +1,25 @@
 <?php
 namespace TruFetcher\Includes\Forms;
-use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Skill;
-use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_User_Skill;
-use TruFetcher\Includes\DB\Repository\Tru_Fetcher_DB_Repository_Skill;
-use TruFetcher\Includes\DB\Repository\Tru_Fetcher_DB_Repository_User_Skill;
 use TruFetcher\Includes\Forms\ProgressGroups\Tru_Fetcher_Progress_Field_Groups;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Locale;
+use TruFetcher\Includes\Tru_Fetcher_Filters;
 
 class Tru_Fetcher_Forms_Helpers
 {
 
     private Tru_Fetcher_Api_Form_Handler $apiFormHandler;
-    private Tru_Fetcher_DB_Model_Skill $skillModel;
-    private Tru_Fetcher_DB_Model_User_Skill $userSkillModel;
-    private Tru_Fetcher_DB_Repository_Skill $skillsRepository;
-    private Tru_Fetcher_DB_Repository_User_Skill $userSkillsRepository;
     private Tru_Fetcher_Api_Helpers_Locale $localeHelpers;
 
     public function __construct()
     {
-        $this->skillsRepository = new Tru_Fetcher_DB_Repository_Skill();
-        $this->skillModel = new Tru_Fetcher_DB_Model_Skill();
-        $this->userSkillModel = new Tru_Fetcher_DB_Model_User_Skill();
-        $this->userSkillsRepository = new Tru_Fetcher_DB_Repository_User_Skill();
         $this->apiFormHandler = new Tru_Fetcher_Api_Form_Handler();
         $this->localeHelpers = new Tru_Fetcher_Api_Helpers_Locale();
     }
 
     public function init() {
-        add_filter("tfr_form_progress_field_groups", [$this, "getFormFieldGroupsArray"], 10, 2);
-        add_filter("tfr_data_source_data", [$this, "getDataSourceData"], 10, 2);
-        add_filter("tfr_user_meta_select_data_source", [$this, "filterUserMetaSelectData"], 10, 2);
+        add_filter(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_FORM_PROGRESS_FIELD_GROUPS, [$this, "getFormFieldGroupsArray"], 10, 2);
+        add_filter(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_DATA_SOURCE_DATA, [$this, "getDataSourceData"], 10, 2);
+        add_filter(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_META_SELECT_DATA_SOURCE, [$this, "filterUserMetaSelectData"], 10, 2);
     }
 
     public function getFormFieldGroupsArray($formFieldGroups, \WP_User $user) {
@@ -39,38 +28,38 @@ class Tru_Fetcher_Forms_Helpers
     }
 
     public function getDataSourceData($field, \WP_User $user) {
-        switch ($field["name"]) {
-            case "skills":
-                return $this->userSkillsRepository->findUserSkillsByUser($user);
-        }
+//        switch ($field["name"]) {
+//            case "skills":
+//                return $this->userSkillsRepository->findUserSkillsByUser($user);
+//        }
         return [];
     }
 
     public function filterUserMetaSelectData($field, \WP_User $user) {
-        switch ($field["name"]) {
-            case "skills":
-            case "skill":
-                return $this->apiFormHandler->buildSelectList(
-                    $this->userSkillModel->getAlias(),
-                    'id',
-                    "name",
-                    "label",
-                    $this->userSkillsRepository->findUserSkillsByUser($user)
-                );
-            case "country":
-                return get_user_meta($user->ID, 'country', true);
-        }
+//        switch ($field["name"]) {
+//            case "skills":
+//            case "skill":
+//                return $this->apiFormHandler->buildSelectList(
+//                    $this->userSkillModel->getAlias(),
+//                    'id',
+//                    "name",
+//                    "label",
+//                    $this->userSkillsRepository->findUserSkillsByUser($user)
+//                );
+//            case "country":
+//                return get_user_meta($user->ID, 'country', true);
+//        }
         return [];
     }
 
     public function syncUserEntityData(\WP_User $user, \WP_REST_Request $request) {
 
-        $entityRequestData = apply_filters("tfr_form_user_entity_request_data", $request->get_params(), $user);
-        $entityRequestData = apply_filters("tfr_form_user_entity_find", $request->get_params(), $user);
+        $entityRequestData = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_ENTITY_REQUEST_DATA, $request->get_params(), $user);
+        $entityRequestData = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_ENTITY_FIND, $request->get_params(), $user);
 
-        array_filter($skillsArray, function ($skill) {
-            return !empty($skill['entity']) && $skill['entity'] === $this->skillModel->getAlias();
-        });
-        $updateUserSkills = $this->syncUserSkills($user, );
+//        array_filter($skillsArray, function ($skill) {
+//            return !empty($skill['entity']) && $skill['entity'] === $this->skillModel->getAlias();
+//        });
+//        $updateUserSkills = $this->syncUserSkills($user, );
     }
 }

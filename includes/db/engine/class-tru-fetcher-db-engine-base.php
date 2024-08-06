@@ -8,14 +8,11 @@ use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Locale;
 use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Settings;
 use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Tab_Preset;
 use TruFetcher\Includes\DB\data\Tru_Fetcher_DB_Data_Topic;
-use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model;
 use TruFetcher\Includes\DB\Model\Constants\Tru_Fetcher_DB_Model_Constants;
+use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Api_Tokens;
-
-use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Device_Topic;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Device;
-
-
+use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Device_Topic;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Form_Presets;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Keymap;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Listings;
@@ -24,12 +21,12 @@ use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Post_Meta;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Ratings;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Saved_Items;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Settings;
-use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Skill;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Tab_Presets;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Topic;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_User_Device_Access;
-use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_User_Skill;
 use TruFetcher\Includes\DB\Traits\WP\Tru_Fetcher_DB_Traits_WP_Site;
+use TruFetcher\Includes\Tru_Fetcher_Filters;
+
 
 class Tru_Fetcher_DB_Engine_Base
 {
@@ -65,7 +62,7 @@ class Tru_Fetcher_DB_Engine_Base
      */
     public static function getTables(): array
     {
-        return [
+        $baseModels = [
             new Tru_Fetcher_DB_Model_Device(),
             new Tru_Fetcher_DB_Model_Topic(),
             new Tru_Fetcher_DB_Model_Device_Topic(),
@@ -77,12 +74,15 @@ class Tru_Fetcher_DB_Engine_Base
             new Tru_Fetcher_DB_Model_Ratings(),
             new Tru_Fetcher_DB_Model_Form_Presets(),
             new Tru_Fetcher_DB_Model_Tab_Presets(),
-            new Tru_Fetcher_DB_Model_Skill(),
-            new Tru_Fetcher_DB_Model_User_Skill(),
             new Tru_Fetcher_DB_Model_Locale(),
             new Tru_Fetcher_DB_Model_Keymap(),
             new Tru_Fetcher_DB_Model_Listings(),
         ];
+        $getModelFilters = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_DB_MODELS, []);
+        if (is_array($getModelFilters)) {
+            $baseModels = array_merge($baseModels, $getModelFilters);
+        }
+        return $baseModels;
     }
 
     /**
@@ -90,13 +90,18 @@ class Tru_Fetcher_DB_Engine_Base
      */
     public static function getInitialTableData(): array
     {
-        return [
+        $data = [
             new Tru_Fetcher_DB_Data_Settings(),
             new Tru_Fetcher_DB_Data_Topic(),
             new Tru_Fetcher_DB_Data_Tab_Preset(),
             new Tru_Fetcher_DB_Data_Form_Preset(),
             new Tru_Fetcher_DB_Data_Locale(),
         ];
+        $getDataFilters = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_DB_DATA, []);
+        if (is_array($getDataFilters)) {
+            $data = array_merge($data, $getDataFilters);
+        }
+        return $data;
     }
 
 
@@ -641,6 +646,7 @@ class Tru_Fetcher_DB_Engine_Base
 		$tableConfig = $model->getTableConfig();
 		$primaryKey = $model->getPrimaryKey();
 		$foreignKeys = $model->getForeignKeys();
+		$uniqueConstraints = $model->getUniqueConstraints();
 
 		$sql = "CREATE TABLE IF NOT EXISTS {$model->getTableName($this->site, $this->isNetworkWide)} (";
 
@@ -662,6 +668,13 @@ class Tru_Fetcher_DB_Engine_Base
                 }
 				$sql .= ", {$buildForeignKey}";
 			}
+		}
+		if (is_array($uniqueConstraints) && count($uniqueConstraints)) {
+            $sql .= sprintf(
+                ", CONSTRAINT UC_%s UNIQUE (%s)",
+                $model->getTableName($this->site, $this->isNetworkWide),
+                implode(', ', $uniqueConstraints)
+            );
 		}
 		$sql .= ") $this->charsetCollate;";
 

@@ -3,10 +3,7 @@
 namespace TruFetcher\Includes\Api\Controllers\App;
 
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_User_Profile_Response;
-use TruFetcher\Includes\DB\Repository\Tru_Fetcher_DB_Repository_Skill;
-use TruFetcher\Includes\DB\Repository\Tru_Fetcher_DB_Repository_User_Skill;
 use TruFetcher\Includes\Forms\Tru_Fetcher_Api_Form_Handler;
-use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Skill;
 use TruFetcher\Includes\User\Tru_Fetcher_User;
 
 /**
@@ -34,9 +31,6 @@ class Tru_Fetcher_Api_User_Profile_Controller extends Tru_Fetcher_Api_Controller
 
     private Tru_Fetcher_Api_User_Profile_Response $apiUserProfileResponse;
     private Tru_Fetcher_Api_Form_Handler $apiFormHandler;
-    private Tru_Fetcher_DB_Repository_Skill $skillsRepository;
-    private Tru_Fetcher_DB_Repository_User_Skill $userSkillsRepository;
-    private Tru_Fetcher_Api_Helpers_Skill $skillHelpers;
 
     const REQUEST_FORM_ARRAY_FIELDS = [
         "experiences", "education"
@@ -58,9 +52,6 @@ class Tru_Fetcher_Api_User_Profile_Controller extends Tru_Fetcher_Api_Controller
     {
         parent::__construct();
         $this->apiUserProfileResponse = new Tru_Fetcher_Api_User_Profile_Response();
-        $this->skillsRepository = new Tru_Fetcher_DB_Repository_Skill();
-        $this->userSkillsRepository = new Tru_Fetcher_DB_Repository_User_Skill();
-        $this->skillHelpers = new Tru_Fetcher_Api_Helpers_Skill();
         $this->apiFormHandler = new Tru_Fetcher_Api_Form_Handler();
         $this->apiConfigEndpoints->endpointsInit('/user/profile');
     }
@@ -91,25 +82,11 @@ class Tru_Fetcher_Api_User_Profile_Controller extends Tru_Fetcher_Api_Controller
             );
         }
 
-        $this->saveUserProfileTextFields($getUser, $data);
-        $this->saveUserProfileArrayFields($getUser, $data);
+        $this->apiFormHandler->saveUserProfileMeta($getUser, $data);
+//        if (count($request->get_file_params()) > 0) {
+//            $saveFiles = $this->apiFormHandler->saveUserProfileFileUploads($getUser, $request->get_file_params());
+//        }
 
-        if (array_key_exists("skills", $data)) {
-            $updateSkillBatch = $this->skillHelpers->updateUserProfileSkillsBatch($getUser, $data["skills"]);
-        }
-
-        if (count($request->get_file_params()) > 0) {
-            $saveFiles = $this->apiFormHandler->saveUserProfileFileUploads($getUser, $request->get_file_params());
-        }
-
-        if ($this->skillHelpers->hasErrors()) {
-            $this->apiUserProfileResponse->setErrors(
-                array_merge(
-                    $this->apiUserProfileResponse->getErrors(),
-                    $this->skillHelpers->getErrors()
-                )
-            );
-        }
         if (!count($this->apiFormHandler->getErrors())) {
             $this->apiUserProfileResponse->setErrors(
                 array_merge(
@@ -122,26 +99,6 @@ class Tru_Fetcher_Api_User_Profile_Controller extends Tru_Fetcher_Api_Controller
         return $this->controllerHelpers->sendSuccessResponse(
             sprintf("User (%s) updated.", $getUser->display_name),
             $this->apiUserProfileResponse
-        );
-    }
-
-    private function saveUserProfileArrayFields(\WP_User $user, array $data = [])
-    {
-        return $this->apiFormHandler->saveUserProfileMeta(
-            $user,
-            array_filter($data, function ($key) {
-                return in_array($key, self::REQUEST_FORM_ARRAY_FIELDS);
-            }, ARRAY_FILTER_USE_KEY)
-        );
-    }
-
-    private function saveUserProfileTextFields(\WP_User $user, array $data = [])
-    {
-        return $this->apiFormHandler->saveUserProfileMeta(
-            $user,
-            array_filter($data, function ($key) {
-                return in_array($key, self::REQUEST_TEXT_FIELDS);
-            }, ARRAY_FILTER_USE_KEY)
         );
     }
 

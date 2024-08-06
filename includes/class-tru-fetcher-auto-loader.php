@@ -5,6 +5,9 @@ class Tru_Fetcher_Auto_Loader
 
     const APP_NAME = 'TruFetcher';
 
+    private ?array $config = [];
+    private array $selectedConfig = [];
+
     private string $className;
     private string $classFilenamePrefix = 'class';
     private string $classFilenameExt = 'php';
@@ -17,10 +20,17 @@ class Tru_Fetcher_Auto_Loader
 
     public function init(string $className)
     {
-        if (strpos($className, self::APP_NAME) === false) {
+        if (!count($this->config)) {
             return;
         }
+        $selectedConfig = array_filter($this->config, function ($config) use ($className) {
+            return str_contains($className, $config['app_name']);
+        }, ARRAY_FILTER_USE_BOTH);
 
+        if (!count($selectedConfig)) {
+            return;
+        }
+        $this->selectedConfig = $selectedConfig[array_key_first($selectedConfig)];
         $this->className = $className;
         $this->loadClass();
     }
@@ -45,7 +55,7 @@ class Tru_Fetcher_Auto_Loader
         $classToArray = explode("\\", $this->className);
         $last = array_key_last($classToArray);
         foreach ($classToArray as $key => $val) {
-            if ($val === self::APP_NAME) {
+            if ($val === $this->selectedConfig['app_name']) {
                 continue;
             }
             if ($key !== $last) {
@@ -69,7 +79,7 @@ class Tru_Fetcher_Auto_Loader
         $extractClassname = $classToArray[array_key_last($classToArray)];
         $filename = $this->convertClassnameToFilename($extractClassname);
         $classToArray[array_key_last($classToArray)] = $filename;
-        return TRU_FETCHER_PLUGIN_DIR . implode('/', $classToArray);
+        return $this->selectedConfig['root_dir'] . implode('/', $classToArray);
     }
 
     private function convertClassnameToFilename(string $classname)
@@ -88,4 +98,9 @@ class Tru_Fetcher_Auto_Loader
         return preg_replace('/(?<!^)[A-Z]/', "$separator$0", $input);
     }
 
+    public function setConfig(array $config): self
+    {
+        $this->config = $config;
+        return $this;
+    }
 }

@@ -19,6 +19,7 @@ use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Posts_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Settings_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_User_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_User_Profile_Controller;
+use TruFetcher\Includes\Tru_Fetcher_Filters;
 
 /**
  * Fired during plugin activation
@@ -41,6 +42,29 @@ use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_User_Profile_Control
  * @author     Michael <michael@local.com>
  */
 class Tru_Fetcher_Api {
+    const PUBLIC_CONTROLLERS = [
+        Tru_Fetcher_Api_Auth_Controller::class,
+        Tru_Fetcher_Api_Settings_Controller::class,
+        Tru_Fetcher_Api_Page_Controller::class,
+        Tru_Fetcher_Api_Posts_Controller::class,
+        Tru_Fetcher_Api_User_Controller::class,
+        Tru_Fetcher_Api_Comments_Controller::class,
+        Tru_Fetcher_Api_Forms_Controller::class,
+        Tru_Fetcher_Api_General_Controller::class,
+        Tru_Fetcher_Api_User_Profile_Controller::class,
+        Tru_Fetcher_Api_List_Controller::class,
+    ];
+
+    const ADMIN_CONTROLLERS = [
+        Tru_Fetcher_Api_Admin_Token_Controller::class,
+        Tru_Fetcher_Api_Admin_Posts_Controller::class,
+        Tru_Fetcher_Api_Admin_Settings_Controller::class,
+        Tru_Fetcher_Api_Admin_Form_Preset_Controller::class,
+        Tru_Fetcher_Api_Admin_Tab_Preset_Controller::class,
+        Tru_Fetcher_Api_Admin_Keymap_Controller::class,
+        Tru_Fetcher_Api_Admin_Listings_Controller::class,
+        Tru_Fetcher_Api_Admin_System_Controller::class,
+    ];
 
 	public function init() {
 		$this->loadPublicApiControllers();
@@ -49,26 +73,24 @@ class Tru_Fetcher_Api {
 
 
 	public function loadPublicApiControllers() {
-        (new Tru_Fetcher_Api_Auth_Controller())->init();
-        (new Tru_Fetcher_Api_Settings_Controller())->init();
-        (new Tru_Fetcher_Api_Page_Controller())->init();
-        (new Tru_Fetcher_Api_Posts_Controller())->init();
-        (new Tru_Fetcher_Api_User_Controller())->init();
-        (new Tru_Fetcher_Api_Comments_Controller())->init();
-        (new Tru_Fetcher_Api_Forms_Controller())->init();
-        (new Tru_Fetcher_Api_General_Controller())->init();
-        (new Tru_Fetcher_Api_User_Profile_Controller())->init();
-        (new Tru_Fetcher_Api_List_Controller())->init();
+        $controllers = self::PUBLIC_CONTROLLERS;
+        $applyFilters = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_API_PUBLIC_CONTROLLERS, []);
+        if (is_array($applyFilters)) {
+            $controllers = array_merge(self::PUBLIC_CONTROLLERS, $applyFilters);
+        }
+        foreach ($controllers as $controller) {
+            (new $controller())->init();
+        }
 	}
 
 	public function loadAdminApiControllers() {
-		(new Tru_Fetcher_Api_Admin_Token_Controller())->init();
-		(new Tru_Fetcher_Api_Admin_Posts_Controller())->init();
-		(new Tru_Fetcher_Api_Admin_Settings_Controller())->init();
-		(new Tru_Fetcher_Api_Admin_Form_Preset_Controller())->init();
-		(new Tru_Fetcher_Api_Admin_Tab_Preset_Controller())->init();
-		(new Tru_Fetcher_Api_Admin_Keymap_Controller())->init();
-		(new Tru_Fetcher_Api_Admin_Listings_Controller())->init();
-		(new Tru_Fetcher_Api_Admin_System_Controller())->init();
+        $controllers = self::ADMIN_CONTROLLERS;
+        $applyFilters = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_API_PUBLIC_CONTROLLERS, []);
+        if (is_array($applyFilters)) {
+            $controllers = array_merge(self::ADMIN_CONTROLLERS, $applyFilters);
+        }
+        foreach ($controllers as $controller) {
+            (new $controller())->init();
+        }
 	}
 }

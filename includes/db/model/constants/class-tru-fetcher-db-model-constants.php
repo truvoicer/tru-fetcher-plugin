@@ -41,6 +41,7 @@ class Tru_Fetcher_DB_Model_Constants
 	public const DATA_KEY = 'data';
 	public const FOREIGN_KEYS_FIELD = 'foreign_keys';
 	public const PRIMARY_KEY_FIELD = 'primary_key';
+	public const UNIQUE_CONSTRAINT_FIELD = 'unique_constraint';
 
 	public const SORT_ORDER_ASC = 'asc';
 	public const SORT_ORDER_DESC = 'desc';

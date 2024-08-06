@@ -30,8 +30,8 @@ use TruFetcher\Includes\Tru_Fetcher;
 use TruFetcher\Includes\Tru_Fetcher_Activator;
 use TruFetcher\Includes\Tru_Fetcher_Deactivator;
 
-if ( ! defined( 'WPINC' ) ) {
-	die;
+if (!defined('WPINC')) {
+    die;
 }
 require_once __DIR__ . '/vendor/autoload.php';
 /**
@@ -42,37 +42,39 @@ require_once __DIR__ . '/vendor/autoload.php';
 const TRU_FETCHER_PLUGIN_NAME = 'tru-fetcher';
 const TRU_FETCHER_PLUGIN_NAME_ACRONYM = 'trf';
 const TRU_FETCHER_ERROR_PREFIX = 'tru_fetcher_error';
-define( 'TRU_FETCHER_VERSION', '1.0.0' );
-define( 'TRU_FETCHER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'TRU_FETCHER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'TRU_FETCHER_PLUGIN_ADMIN_URL', TRU_FETCHER_PLUGIN_URL . 'admin' );
-define( 'TRU_FETCHER_PLUGIN_ADMIN_DIR', plugin_dir_path( __FILE__ ) . 'includes/admin' );
-define( 'TRU_FETCHER_PLUGIN_ADMIN_RES_DIR', TRU_FETCHER_PLUGIN_ADMIN_DIR . '/resources' );
+define('TRU_FETCHER_VERSION', '1.0.0');
+define('TRU_FETCHER_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('TRU_FETCHER_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('TRU_FETCHER_PLUGIN_ADMIN_URL', TRU_FETCHER_PLUGIN_URL . 'admin');
+define('TRU_FETCHER_PLUGIN_ADMIN_DIR', plugin_dir_path(__FILE__) . 'includes/admin');
+define('TRU_FETCHER_PLUGIN_ADMIN_RES_DIR', TRU_FETCHER_PLUGIN_ADMIN_DIR . '/resources');
 
 
 function get_fields_clone()
 {
     return false;
 }
-//if (!function_exists('get_fields')) {
-//    function get_fields()
-//    {
-//        return false;
-//    }
-//}
-function class_loader_init() {
-    require_once plugin_dir_path( __FILE__ ) . 'includes/class-tru-fetcher-auto-loader.php';
-    spl_autoload_register(
-        [new Tru_Fetcher_Auto_Loader(), "init"]
-    );
-}
-class_loader_init();
+require_once plugin_dir_path(__FILE__) . 'includes/class-tru-fetcher-auto-loader.php';
+spl_autoload_register(
+    [
+        (new Tru_Fetcher_Auto_Loader())
+            ->setConfig([
+                [
+                    'app_name' => 'TruFetcher',
+                    'root_dir' => PARENT_PLUGIN_DIR
+                ],
+            ]),
+        "init"
+    ]
+);
+
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-tr-news-app-activator.php
  */
-function activate_tru_fetcher() {
+function activate_tru_fetcher()
+{
     (new Tru_Fetcher_Activator())->activate();
 }
 
@@ -80,18 +82,19 @@ function activate_tru_fetcher() {
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-tr-news-app-deactivator.php
  */
-function deactivate_tru_fetcher() {
+function deactivate_tru_fetcher()
+{
     (new Tru_Fetcher_Deactivator())->deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_tru_fetcher' );
-register_deactivation_hook( __FILE__, 'deactivate_tru_fetcher' );
+register_activation_hook(__FILE__, 'activate_tru_fetcher');
+register_deactivation_hook(__FILE__, 'deactivate_tru_fetcher');
 
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-tru-fetcher.php';
+require plugin_dir_path(__FILE__) . 'includes/class-tru-fetcher.php';
 
 /**
  * Begins execution of the plugin.
@@ -102,10 +105,12 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-tru-fetcher.php';
  *
  * @since    1.0.0
  */
-function run_tru_fetcher() {
+function run_tru_fetcher()
+{
 
-	$plugin = new Tru_Fetcher();
-	$plugin->run();
+    $plugin = new Tru_Fetcher();
+    $plugin->run();
 
 }
+
 run_tru_fetcher();

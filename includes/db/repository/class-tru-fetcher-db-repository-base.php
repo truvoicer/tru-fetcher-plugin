@@ -106,6 +106,10 @@ class Tru_Fetcher_DB_Repository_Base
         return $this->model->buildModelDataBatch($results);
     }
 
+    public function sync() {
+
+    }
+
     public function deleteById(int $id)
     {
         $this->addWhere($this->model->getIdColumn(), $id);

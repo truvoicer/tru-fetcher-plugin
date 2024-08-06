@@ -5,6 +5,7 @@ use TruFetcher\Includes\Api\Providers\Tru_Fetcher_Api_Providers_Hubspot;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Forms_Response;
 use TruFetcher\Includes\Database\Tru_Fetcher_Database;
 use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
+use TruFetcher\Includes\Tru_Fetcher_Filters;
 use WP_REST_Request;
 use WP_User;
 
@@ -31,6 +32,11 @@ use WP_User;
 class Tru_Fetcher_Api_Form_Handler
 {
     use Tru_Fetcher_Traits_Errors;
+
+    const REQUEST_TEXT_FIELDS = [
+        "user_email", "display_name", "first_name", "surname", "telephone", "town", "country"
+    ];
+    const REQUEST_FORM_ARRAY_FIELDS = [];
 
     const GROUP_KEY_APPENDIX = "_group";
 
@@ -187,7 +193,7 @@ class Tru_Fetcher_Api_Form_Handler
             case "image_upload":
                 return $this->getUserMetaAttachmentData($field);
             case "select_data_source":
-                return apply_filters("tfr_user_meta_select_data_source", $field, $this->getUser());
+                return apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_META_SELECT_DATA_SOURCE, $field, $this->getUser());
             case "saved_item_count":
                 return $this->getUserSavedItemCount($field);
             default:
@@ -303,6 +309,9 @@ class Tru_Fetcher_Api_Form_Handler
 
     public function saveUserProfileMeta(WP_User $user, array $profileData = [])
     {
+        $profileData = array_filter($profileData, function ($key) {
+            return in_array($key, [...self::REQUEST_TEXT_FIELDS, ...self::REQUEST_FORM_ARRAY_FIELDS]);
+        }, ARRAY_FILTER_USE_KEY);
         $errors = [];
         foreach ($profileData as $key => $value) {
             $updateUserMeta = update_user_meta(
@@ -321,6 +330,42 @@ class Tru_Fetcher_Api_Form_Handler
                 $errors[] = $key;
             }
         }
+        $applyFilter = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_PROFILE_SAVE, $user, $profileData);
+        if ($applyFilter === true) {
+            return count($errors) === 0;
+        }
+        if (!is_array($applyFilter)) {
+            $this->addError(
+                new \WP_Error(
+                    "user_meta_update_error",
+                    sprintf(
+                        'Invalid response format for filter: %s | expected WP_Error[] but got %s',
+                        Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_PROFILE_SAVE,
+                        gettype($applyFilter)
+                    ),
+                    $profileData
+                )
+            );
+            return false;
+        }
+        $validate = array_filter($applyFilter, function ($error) {
+            return !is_wp_error($error);
+        });
+        if (count($validate) > 0) {
+            $this->addError(
+                new \WP_Error(
+                    "user_meta_update_error",
+                    sprintf(
+                        'Some items in filter response are not WP_Error[]: filter: %s | %s',
+                        Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_PROFILE_SAVE,
+                        json_encode($validate)
+                    ),
+                    $profileData
+                )
+            );
+        }
+        $this->setErrors(array_merge($errors, $applyFilter));
+        $errors = array_merge($errors, $applyFilter);
         return count($errors) === 0;
     }
 

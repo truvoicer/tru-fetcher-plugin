@@ -315,7 +315,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
                         'Error saving nonce user meta | user_id: %s | user_email: %s | saveVal: %s | nonce: %s',
                         $getCurrentUser->ID,
                         $getCurrentUser->user_email,
-                        $saveMeta,
+                        json_encode($saveMeta),
                         $encodeNonce
                     )
                 );

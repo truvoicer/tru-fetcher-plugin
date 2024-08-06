@@ -74,7 +74,7 @@ class Tru_Fetcher_Admin extends Tru_Fetcher_Base {
      * @access   private
      */
     private function defineAdminHooks() {
-        add_action( 'activated_plugin', [$this, 'activate'], 10, 2 );
+//        add_action( 'activated_plugin', [$this, 'activate'], 10, 2 );
     }
 
     public function addUserActions()
