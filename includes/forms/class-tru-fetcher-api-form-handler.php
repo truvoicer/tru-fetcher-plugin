@@ -307,11 +307,15 @@ class Tru_Fetcher_Api_Form_Handler
         ];
     }
 
-    public function saveUserProfileMeta(WP_User $user, array $profileData = [])
+    public function saveUserProfileMeta(\WP_User $user, array $profileData = [])
     {
         $profileData = array_filter($profileData, function ($key) {
             return in_array($key, [...self::REQUEST_TEXT_FIELDS, ...self::REQUEST_FORM_ARRAY_FIELDS]);
         }, ARRAY_FILTER_USE_KEY);
+        $applyFilters = $this->applyUserProfileMetaUpdateFilters($user, $profileData);
+        if (!$applyFilters) {
+            return false;
+        }
         $errors = [];
         foreach ($profileData as $key => $value) {
             $updateUserMeta = update_user_meta(
@@ -330,9 +334,14 @@ class Tru_Fetcher_Api_Form_Handler
                 $errors[] = $key;
             }
         }
+        return count($errors) === 0;
+    }
+
+    private function applyUserProfileMetaUpdateFilters(\WP_User $user, array $profileData = []) {
+
         $applyFilter = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_PROFILE_SAVE, $user, $profileData);
         if ($applyFilter === true) {
-            return count($errors) === 0;
+            return true;
         }
         if (!is_array($applyFilter)) {
             $this->addError(
@@ -364,9 +373,8 @@ class Tru_Fetcher_Api_Form_Handler
                 )
             );
         }
-        $this->setErrors(array_merge($errors, $applyFilter));
-        $errors = array_merge($errors, $applyFilter);
-        return count($errors) === 0;
+        $this->setErrors(array_merge($this->getErrors(), $applyFilter));
+        return count($applyFilter) === 0;
     }
 
 

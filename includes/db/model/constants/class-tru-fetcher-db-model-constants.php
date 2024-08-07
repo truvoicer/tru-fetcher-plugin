@@ -9,6 +9,11 @@ class Tru_Fetcher_DB_Model_Constants
 	public const ALIAS = 'alias';
 	public const FOREIGN_KEY_WP_REFERENCE = 'foreign_key_wp_reference';
 
+	public const PIVOTS = 'pivots';
+	public const PIVOTS_TABLE = 'pivot_table';
+	public const PIVOT_FOREIGN_KEY = 'pivot_foreign_key';
+    public const PIVOT_FOREIGN_KEY_REFERENCE = 'pivot_foreign_key_reference';
+
 	public const FOREIGN_KEY_CASCADE_DELETE = 'foreign_key_cascade_delete';
 	public const FOREIGN_KEY_TARGET_COLUMN = 'foreign_key_target_column';
 	public const FOREIGN_KEY_REFERENCE = 'foreign_key_reference';

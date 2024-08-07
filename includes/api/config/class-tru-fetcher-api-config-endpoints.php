@@ -26,12 +26,10 @@ class Tru_Fetcher_Api_Config_Endpoints {
     public const ENDPOINT_USER_PROFILE = "ENDPOINT_USER_PROFILE";
     public const ENDPOINT_USER_META = "ENDPOINT_USER_META";
     public const ENDPOINT_EMAIL = "ENDPOINT_EMAIL";
-    public const ENDPOINT_GENERAL_SKILLS = "ENDPOINT_GENERAL_SKILLS";
     public const ENDPOINT_REDIRECT = "ENDPOINT_REDIRECT";
     public const ENDPOINTS = [
         self::ENDPOINT_USER_UPDATE => '/users/update',
         self::ENDPOINT_USER_PROFILE => '/user/profile/update',
-        self::ENDPOINT_GENERAL_SKILLS => '/general/skills',
         self::ENDPOINT_EMAIL => '/forms/email',
         self::ENDPOINT_USER_META => '/forms/user/metadata/save',
         self::ENDPOINT_REDIRECT => '/forms/redirect',
@@ -100,7 +98,7 @@ class Tru_Fetcher_Api_Config_Endpoints {
 
     public function buildEndpoint(string $endpoint): ?string {
         if (empty(self::ENDPOINTS[$endpoint])) {
-           return null;
+           return $endpoint;
         }
         return self::ENDPOINTS[$endpoint];
     }

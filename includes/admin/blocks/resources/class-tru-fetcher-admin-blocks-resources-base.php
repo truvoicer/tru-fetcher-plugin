@@ -2,10 +2,7 @@
 
 namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
-use TruFetcher\Includes\Admin\Blocks\Tru_Fetcher_Admin_Blocks;
-use TruFetcher\Includes\Api\Config\Tru_Fetcher_Api_Config_Endpoints;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types;
-use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_List;
 use TruFetcher\Includes\Taxonomy\Tru_Fetcher_Taxonomy;
 
 /**

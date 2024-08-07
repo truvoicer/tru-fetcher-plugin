@@ -51,10 +51,10 @@ class Tru_Fetcher_Api_General_Controller extends Tru_Fetcher_Api_Controller_Base
 
     public function register_routes()
     {
-        register_rest_route($this->apiConfigEndpoints->publicEndpoint, '/countries', array(
+        register_rest_route($this->apiConfigEndpoints->protectedEndpoint, '/countries', array(
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [$this, "countriesSelectData"],
-            'permission_callback' => [$this->apiAuthApp, 'allowRequest']
+            'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
         ));
     }
 

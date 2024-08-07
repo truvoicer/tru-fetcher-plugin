@@ -104,6 +104,8 @@ class Tru_Fetcher_DB_Model
         }
         return "{$this->tablePrefix}{$this->tableName}";
 	}
+
+
 	/**
 	 * @return string
 	 */
@@ -410,6 +412,16 @@ class Tru_Fetcher_DB_Model
 		return $this->getTableConfig()[Tru_Fetcher_DB_Model_Constants::PRIMARY_KEY_FIELD];
 	}
 
+	public function getPivots()
+	{
+		if (
+            !isset($this->getTableConfig()[Tru_Fetcher_DB_Model_Constants::PIVOTS]) ||
+            !is_array($this->getTableConfig()[Tru_Fetcher_DB_Model_Constants::PIVOTS])
+        ) {
+            return false;
+		}
+        return $this->getTableConfig()[Tru_Fetcher_DB_Model_Constants::PIVOTS];
+	}
 	public function getColumns()
 	{
 		if (!isset($this->getTableConfig()[Tru_Fetcher_DB_Model_Constants::COLUMNS])) {

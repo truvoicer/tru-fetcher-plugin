@@ -36,19 +36,19 @@ class Tru_Fetcher_Forms_Helpers
     }
 
     public function filterUserMetaSelectData($field, \WP_User $user) {
-//        switch ($field["name"]) {
-//            case "skills":
-//            case "skill":
-//                return $this->apiFormHandler->buildSelectList(
-//                    $this->userSkillModel->getAlias(),
-//                    'id',
-//                    "name",
-//                    "label",
-//                    $this->userSkillsRepository->findUserSkillsByUser($user)
-//                );
-//            case "country":
-//                return get_user_meta($user->ID, 'country', true);
-//        }
+        switch ($field["name"]) {
+            case "skills":
+            case "skill":
+                return $this->apiFormHandler->buildSelectList(
+                    $this->userSkillModel->getAlias(),
+                    'id',
+                    "name",
+                    "label",
+                    $this->userSkillsRepository->findUserSkillsByUser($user)
+                );
+            case "country":
+                return get_user_meta($user->ID, 'country', true);
+        }
         return [];
     }
 

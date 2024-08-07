@@ -44,6 +44,11 @@ class Tru_Fetcher_DB_Repository_Base
         $this->initialise();
     }
 
+    public static function getInstance(Tru_Fetcher_DB_Model $model)
+    {
+        return new static($model);
+    }
+
     protected function escapeString($data): string
     {
         return serialize($data);
@@ -106,7 +111,39 @@ class Tru_Fetcher_DB_Repository_Base
         return $this->model->buildModelDataBatch($results);
     }
 
-    public function sync() {
+    public function sync(Tru_Fetcher_DB_Model $pivotModel, array $data)
+    {
+        $pivots = $this->model->getPivots();
+        if (!$pivots || !count($pivots)) {
+            return false;
+        }
+        $findPivotIndex = array_search($pivotModel::class, array_column($pivots, Tru_Fetcher_DB_Model_Constants::PIVOTS_TABLE));
+        if ($findPivotIndex === false) {
+            return false;
+        }
+        $pivot = $pivots[$findPivotIndex];
+        $pivotForeignKey = $pivot[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY];
+        $pivotForeignKeyReference = $pivot[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY_REFERENCE];
+        $pivotForeignKeyReferenceModel = $pivot[Tru_Fetcher_DB_Model_Constants::PIVOTS_TABLE];
+        $pivotForeignKeyReferenceModelInstance = new $pivotForeignKeyReferenceModel();
+
+        foreach ($data as $key => $item) {
+            $compare = Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_EQUALS;
+            if (is_array($item)) {
+                $compare = Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_IN;
+            }
+            $instance->addWhere($key, $item, $compare);
+        }
+
+        $results = $instance->findMany();
+        if (count($results)) {
+            $instance->deleteMany($results);
+        }
+        $results = [];
+        foreach ($data as $item) {
+            $results[] = $instance->insert($item);
+        }
+        return $results;
 
     }
 

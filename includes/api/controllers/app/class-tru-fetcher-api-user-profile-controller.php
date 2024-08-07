@@ -82,7 +82,7 @@ class Tru_Fetcher_Api_User_Profile_Controller extends Tru_Fetcher_Api_Controller
             );
         }
 
-        $this->apiFormHandler->saveUserProfileMeta($getUser, $data);
+        $update = $this->apiFormHandler->saveUserProfileMeta($getUser, $data);
 //        if (count($request->get_file_params()) > 0) {
 //            $saveFiles = $this->apiFormHandler->saveUserProfileFileUploads($getUser, $request->get_file_params());
 //        }
