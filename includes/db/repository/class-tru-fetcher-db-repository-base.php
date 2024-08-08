@@ -48,7 +48,7 @@ class Tru_Fetcher_DB_Repository_Base
 
     public static function getInstance(Tru_Fetcher_DB_Model $model)
     {
-        return new static($model);
+        return new Tru_Fetcher_DB_Repository_Base($model);
     }
 
     protected function escapeString($data): string
@@ -164,10 +164,13 @@ class Tru_Fetcher_DB_Repository_Base
                 Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_EQUALS
             );
         }
+        $instance = self::getInstance($pivotForeignKeyReferenceModelInstance);
 
-        $pivotForeignKeyReferenceModelInstance->addWhereGroup($whereData);
+        $instance->addWhereGroup($whereData);
 
-        $results = $pivotForeignKeyReferenceModelInstance->findMany();
+        $results = $instance->findMany();
+
+        var_dump($results); die;
         if (count($results)) {
             $pivotForeignKeyReferenceModelInstance->deleteMany($results);
         }
@@ -183,9 +186,9 @@ class Tru_Fetcher_DB_Repository_Base
         }, ARRAY_FILTER_USE_BOTH);
 
         $results = [];
-        foreach ($data as $item) {
-            $results[] = $instance->insert($item);
-        }
+//        foreach ($data as $item) {
+//            $results[] = $instance->insert($item);
+//        }
         return $results;
 
     }

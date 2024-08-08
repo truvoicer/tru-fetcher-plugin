@@ -22,17 +22,6 @@ class Tru_Fetcher_DB_Model_WP_User extends Tru_Fetcher_DB_Model_WP
             ],
 			Tru_Fetcher_DB_Model_Constants::ALIAS => 'user',
 			parent::WP_RETURN_DATA_TYPE => \WP_Term::class,
-            Tru_Fetcher_DB_Model_Constants::PIVOTS => [
-                [
-                    Tru_Fetcher_DB_Model_Constants::PIVOTS_TABLE => Trf_Recruit_DB_Model_User_Skill::class,
-                    Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_TABLE => self::class,
-                    Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY => (new Trf_Recruit_DB_Model_User_Skill())->getSkillIdColumn(),
-                    Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY_REFERENCE => $this->getUserIdField(),
-                    Tru_Fetcher_DB_Model_Constants::PIVOT_RELATED_TABLE => Tru_Fetcher_DB_Model_WP_User::class,
-                    Tru_Fetcher_DB_Model_Constants::PIVOT_RELATED_KEY => (new Trf_Recruit_DB_Model_User_Skill())->getUserIdColumn(),
-                    Tru_Fetcher_DB_Model_Constants::PIVOT_RELATED_REF => (new Tru_Fetcher_DB_Model_WP_User())->getUserIdField()
-                ],
-            ]
         ]);
     }
 

@@ -2,6 +2,7 @@
 namespace TruFetcher\Includes;
 
 class Tru_Fetcher_Filters {
+    public const TRU_FETCHER_FILTER_ALLOWED_USER_PROFILE_FIELDS = 'tru_fetcher_allowed_user_profile_fields';
     public const TRU_FETCHER_FILTER_USER_PROFILE_SAVE = 'tru_fetcher_user_profile_save';
     public const TRU_FETCHER_FILTER_API_PUBLIC_CONTROLLERS = 'tru_fetcher_api_public_controllers';
     public const TRU_FETCHER_FILTER_API_ADMIN_CONTROLLERS = 'tru_fetcher_api_admin_controllers';

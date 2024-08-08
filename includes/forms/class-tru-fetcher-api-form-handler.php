@@ -309,9 +309,16 @@ class Tru_Fetcher_Api_Form_Handler
 
     public function saveUserProfileMeta(\WP_User $user, array $profileData = [])
     {
-        $profileData = array_filter($profileData, function ($key) {
-            return in_array($key, [...self::REQUEST_TEXT_FIELDS, ...self::REQUEST_FORM_ARRAY_FIELDS]);
+        $allowedUserProfileFields = [...self::REQUEST_TEXT_FIELDS, ...self::REQUEST_FORM_ARRAY_FIELDS];
+        $getAllowedFilter = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_ALLOWED_USER_PROFILE_FIELDS, $allowedUserProfileFields);
+        if (is_array($getAllowedFilter)) {
+            $allowedUserProfileFields = [...$allowedUserProfileFields, ...$getAllowedFilter];
+        }
+
+        $profileData = array_filter($profileData, function ($key) use($allowedUserProfileFields) {
+            return in_array($key, $allowedUserProfileFields);
         }, ARRAY_FILTER_USE_KEY);
+
         $applyFilters = $this->applyUserProfileMetaUpdateFilters($user, $profileData);
         if (!$applyFilters) {
             return false;
