@@ -150,7 +150,8 @@ class Tru_Fetcher_DB_Repository_Base
         $pivotForeignTableInstance = new $pivotForeignTable();
         $pivotRelatedTableInstance = new $pivotRelatedTable();
 
-        $whereData = [];
+
+        $instance = self::getInstance($pivotForeignKeyReferenceModelInstance);
         foreach ($data as $key => $item) {
             if (!isset($item[$pivotForeignKeyReference])) {
                 continue;
@@ -158,22 +159,28 @@ class Tru_Fetcher_DB_Repository_Base
             if (!isset($item[$pivotRelatedKey])) {
                 continue;
             }
+            $whereData = [];
             $whereData[] = $this->prepareWheredata(
-                $key,
-                $item,
+                $pivotRelatedKey,
+                $item[$pivotRelatedKey],
                 Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_EQUALS
             );
+            $whereData[] = $this->prepareWheredata(
+                $pivotForeignKeyReference,
+                $item[$pivotForeignKeyReference],
+                Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_EQUALS
+            );
+            $instance->addWhereGroup($whereData, 'OR');
         }
-        $instance = self::getInstance($pivotForeignKeyReferenceModelInstance);
 
-        $instance->addWhereGroup($whereData);
 
         $results = $instance->findMany();
 
-        var_dump($results); die;
         if (count($results)) {
-            $pivotForeignKeyReferenceModelInstance->deleteMany($results);
+            $instance->setWhereQueryConditions($instance->defaultWhereConditions());
+            $instance->deleteMany($results);
         }
+
         $data = array_filter($data, function ($item) use ($results, $pivotForeignKeyReference, $pivotRelatedKey) {
              return Tru_Fetcher_Helpers::findInArray(
                 [
@@ -314,7 +321,7 @@ class Tru_Fetcher_DB_Repository_Base
                 $query .= " {$join['type']} {$join['table']} ON {$join['on']}";
             }
         }
-        if (count($this->where)) {
+        if (count($this->where) || count($this->whereGroups)) {
             $whereData = $this->buildWhereData();
             $query .= " WHERE {$whereData}";
         }
