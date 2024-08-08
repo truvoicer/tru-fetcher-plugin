@@ -11,8 +11,12 @@ class Tru_Fetcher_DB_Model_Constants
 
 	public const PIVOTS = 'pivots';
 	public const PIVOTS_TABLE = 'pivot_table';
+	public const PIVOT_FOREIGN_TABLE = 'pivot_foreign_table';
 	public const PIVOT_FOREIGN_KEY = 'pivot_foreign_key';
     public const PIVOT_FOREIGN_KEY_REFERENCE = 'pivot_foreign_key_reference';
+    public const PIVOT_RELATED_TABLE = 'pivot_related_table';
+    public const PIVOT_RELATED_KEY = 'pivot_related_key';
+    public const PIVOT_RELATED_REF = 'pivot_related_ref';
 
 	public const FOREIGN_KEY_CASCADE_DELETE = 'foreign_key_cascade_delete';
 	public const FOREIGN_KEY_TARGET_COLUMN = 'foreign_key_target_column';

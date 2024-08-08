@@ -8,6 +8,7 @@ use TruFetcher\Includes\DB\Model\Constants\Tru_Fetcher_DB_Model_Constants;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model;
 use TruFetcher\Includes\DB\Traits\WP\Tru_Fetcher_DB_Traits_WP_Site;
 use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
+use TruFetcher\Includes\Tru_Fetcher_Helpers;
 
 class Tru_Fetcher_DB_Repository_Base
 {
@@ -21,6 +22,7 @@ class Tru_Fetcher_DB_Repository_Base
 
     protected array $select = [];
 
+    protected array $whereGroups = [];
     protected array $where = [];
 
     protected array $orderBy = [];
@@ -111,6 +113,16 @@ class Tru_Fetcher_DB_Repository_Base
         return $this->model->buildModelDataBatch($results);
     }
 
+    private function buildSyncDataIds(string $key, array $data)
+    {
+        $filter = array_filter($data, function ($item) use ($key) {
+            return isset($item[$key]);
+        }, ARRAY_FILTER_USE_BOTH);
+        return array_map(function ($item) use ($key) {
+            return $item[$key];
+        }, $filter);
+    }
+
     public function sync(Tru_Fetcher_DB_Model $pivotModel, array $data)
     {
         $pivots = $this->model->getPivots();
@@ -125,20 +137,51 @@ class Tru_Fetcher_DB_Repository_Base
         $pivotForeignKey = $pivot[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY];
         $pivotForeignKeyReference = $pivot[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY_REFERENCE];
         $pivotForeignKeyReferenceModel = $pivot[Tru_Fetcher_DB_Model_Constants::PIVOTS_TABLE];
+        $pivotForeignTable = $pivot[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_TABLE];
+        $pivotRelatedTable = $pivot[Tru_Fetcher_DB_Model_Constants::PIVOT_RELATED_TABLE];
+        $pivotRelatedKey = $pivot[Tru_Fetcher_DB_Model_Constants::PIVOT_RELATED_KEY];
+        $pivotRelatedRef = $pivot[Tru_Fetcher_DB_Model_Constants::PIVOT_RELATED_REF];
+
+
+        $foreignIds = $this->buildSyncDataIds($pivotForeignKey, $data);
+        $relatedIds = $this->buildSyncDataIds($pivotRelatedKey, $data);
+
         $pivotForeignKeyReferenceModelInstance = new $pivotForeignKeyReferenceModel();
+        $pivotForeignTableInstance = new $pivotForeignTable();
+        $pivotRelatedTableInstance = new $pivotRelatedTable();
 
+        $whereData = [];
         foreach ($data as $key => $item) {
-            $compare = Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_EQUALS;
-            if (is_array($item)) {
-                $compare = Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_IN;
+            if (!isset($item[$pivotForeignKeyReference])) {
+                continue;
             }
-            $instance->addWhere($key, $item, $compare);
+            if (!isset($item[$pivotRelatedKey])) {
+                continue;
+            }
+            $whereData[] = $this->prepareWheredata(
+                $key,
+                $item,
+                Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_EQUALS
+            );
         }
 
-        $results = $instance->findMany();
+        $pivotForeignKeyReferenceModelInstance->addWhereGroup($whereData);
+
+        $results = $pivotForeignKeyReferenceModelInstance->findMany();
         if (count($results)) {
-            $instance->deleteMany($results);
+            $pivotForeignKeyReferenceModelInstance->deleteMany($results);
         }
+        $data = array_filter($data, function ($item) use ($results, $pivotForeignKeyReference, $pivotRelatedKey) {
+             return Tru_Fetcher_Helpers::findInArray(
+                [
+                    $pivotRelatedKey => $item[$pivotRelatedKey],
+                    $pivotForeignKeyReference => $item[$pivotForeignKeyReference]
+                ],
+                $results,
+                true
+            ) === false;
+        }, ARRAY_FILTER_USE_BOTH);
+
         $results = [];
         foreach ($data as $item) {
             $results[] = $instance->insert($item);
@@ -189,11 +232,11 @@ class Tru_Fetcher_DB_Repository_Base
         return $results;
     }
 
-    private function buildWhereData()
+    private function singleWhereQueryData(array $data)
     {
         $query = '';
-        foreach ($this->where as $index => $whereData) {
-            if ($index > 0 && $index < count($this->where)) {
+        foreach ($data as $index => $whereData) {
+            if ($index > 0 && $index < count($data)) {
                 $query .= " {$whereData['operator']} ";
             }
             switch ($whereData['compare']) {
@@ -224,6 +267,24 @@ class Tru_Fetcher_DB_Repository_Base
                     }
                     break;
             }
+        }
+        return $query;
+    }
+
+    private function buildWhereData()
+    {
+        if (!count($this->whereGroups)) {
+            return $this->singleWhereQueryData($this->where);
+        }
+        $query = '';
+        foreach ($this->whereGroups as $index => $whereGroup) {
+            if ($index > 0 && $index < count($this->whereGroups)) {
+                $query .= " {$whereGroup['operator']} ";
+            }
+            $query .= sprintf(
+                '(%s)',
+                $this->singleWhereQueryData($whereGroup['where'])
+            );
         }
         return $query;
     }
@@ -717,6 +778,26 @@ class Tru_Fetcher_DB_Repository_Base
     {
         $this->offset = $offset;
         return $this;
+    }
+
+    public function addWhereGroup(array $whereData, ?string $op = 'AND'): self
+    {
+        $this->whereGroups[] = [
+            'where' => $whereData,
+            'operator' => $op
+        ];
+        return $this;
+    }
+
+    public function prepareWhereData(string $column, $value, string $compare = '=', string $operator = 'AND', ?Tru_Fetcher_DB_Model $model = null): array
+    {
+        return [
+            'column' => $column,
+            'value' => $value,
+            'model' => $model,
+            'compare' => $compare,
+            'operator' => $operator,
+        ];
     }
 
     public function addWhere(string $column, $value, string $compare = '=', string $operator = 'AND', ?Tru_Fetcher_DB_Model $model = null): self

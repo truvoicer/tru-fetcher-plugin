@@ -256,4 +256,28 @@ class Tru_Fetcher_Helpers {
         }
         return $data;
     }
+
+    public static function findInArray(array $conditions, array $data, ?bool $single = false) {
+        $result = [];
+        foreach ($data as $item) {
+            $match = true;
+            foreach ($conditions as $key => $value) {
+                if (!isset($item[$key]) || $item[$key] !== $value) {
+                    $match = false;
+                    break;
+                }
+            }
+            if (!$match) {
+                continue;
+            }
+            if ($single) {
+                return $item;
+            }
+            $result[] = $item;
+        }
+        if ($single) {
+            return false;
+        }
+        return $result;
+    }
 }
