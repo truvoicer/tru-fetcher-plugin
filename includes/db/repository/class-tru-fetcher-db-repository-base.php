@@ -201,11 +201,6 @@ class Tru_Fetcher_DB_Repository_Base
         }, ARRAY_FILTER_USE_BOTH);
     }
 
-    private function buildPivotInsertData(array $pivotRelations, array $item) {
-        $data = [];
-
-    }
-
     public function sync(Tru_Fetcher_DB_Model $pivotModel, array $data)
     {
         $pivotConfig = $this->model->getPivotConfigByModel($pivotModel);
@@ -222,7 +217,7 @@ class Tru_Fetcher_DB_Repository_Base
 //            $instance->deleteMany($results);
         }
 
-        $data = $this->removeExistingPivotItems($results, $pivotRelations, $data);
+        $filteredData = $this->removeExistingPivotItems($results, $pivotRelations, $data);
 
         $thisPivotConfig = $this->model->findPivotForeignKeyConfigByModel($pivotModel, $this->model);
         if (!$thisPivotConfig) {
@@ -230,7 +225,8 @@ class Tru_Fetcher_DB_Repository_Base
         }
         $thisPivotForeignKeyRef = $thisPivotConfig[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY_REFERENCE];
 
-        $whereValues = array_column($data, $thisPivotForeignKeyRef);
+        $whereValues = array_column($filteredData, $thisPivotForeignKeyRef);
+        $columns = $this->model->getTableColumns();
         if (count($whereValues)) {
             $this->addWhere(
                 $thisPivotForeignKeyRef,
@@ -238,30 +234,47 @@ class Tru_Fetcher_DB_Repository_Base
                 Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_IN
             );
             $findSkills = $this->findMany();
-            var_dump($findSkills);
-
-        } else {
-            foreach ($this->buildSyncInsertData($data) as $item) {
-                $insert = $this->insert($item);
-                if (!$insert) {
-                    return false;
-                }
-
-                $instance->insert($data);
+            foreach ($findSkills as $findSkill) {
+                $insertIntoPivot = $this->insertPivotTableItem($pivotModel, array_merge($item, $findSkill));
             }
 
+            $this->syncInsert($pivotModel, $filteredData);
+        } else {
+            $this->syncInsert($pivotModel, $filteredData);
         }
-//        foreach ($data as $item) {
-//            $results[] = $instance->insert($item);
-//        }
+
         return $results;
 
     }
+    private function syncInsert(Tru_Fetcher_DB_Model $pivotModel, array $data) {
 
-    private function buildSyncInsertData(array $data) {
         $columns = $this->model->getTableColumns();
+        foreach ($data as $item) {
+            $insertData = $this->buildSyncInsertDataItem($columns, $item);
+            $insert = $this->insert($insertData);
+            if (!$insert) {
+                return false;
+            }
+            $insertIntoPivot = $this->insertPivotTableItem($pivotModel, array_merge($item, $insert));
+        }
+    }
+    private function insertPivotTableItem(Tru_Fetcher_DB_Model $pivotModel, array $item) {
+        $instance = self::getInstance($pivotModel);
+        $pivotInsertData = $this->buildSyncInsertData($pivotModel, $item);
+        $insertPivot = $instance->insert($pivotInsertData);
+        if (!$insertPivot) {
+            return false;
+        }
+        return $insertPivot;
+    }
+
+    private function buildSyncInsertDataItem(array $columns, array $data) {
+        return array_intersect_key($data, array_flip($columns));
+    }
+    private function buildSyncInsertData(Tru_Fetcher_DB_Model $model, array $data) {
+        $columns = $model->getTableColumns();
         return array_map(function ($item) use ($columns) {
-            return array_intersect_key($item, array_flip($columns));
+            return $this->buildSyncInsertDataItem($columns, $item);
         }, $data);
     }
     public function deleteById(int $id)
