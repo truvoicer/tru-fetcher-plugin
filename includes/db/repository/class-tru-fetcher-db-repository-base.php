@@ -201,6 +201,11 @@ class Tru_Fetcher_DB_Repository_Base
         }, ARRAY_FILTER_USE_BOTH);
     }
 
+    private function buildPivotInsertData(array $pivotRelations, array $item) {
+        $data = [];
+
+    }
+
     public function sync(Tru_Fetcher_DB_Model $pivotModel, array $data)
     {
         $pivotConfig = $this->model->getPivotConfigByModel($pivotModel);
@@ -236,15 +241,12 @@ class Tru_Fetcher_DB_Repository_Base
             var_dump($findSkills);
 
         } else {
-            $columns = $this->model->getTableColumns();
-            $insertData = array_map(function ($item) use ($columns) {
-                return array_intersect_key($item, array_flip($columns));
-            }, $data);
-            foreach ($insertData as $item) {
+            foreach ($this->buildSyncInsertData($data) as $item) {
                 $insert = $this->insert($item);
                 if (!$insert) {
                     return false;
                 }
+
                 $instance->insert($data);
             }
 
@@ -256,6 +258,12 @@ class Tru_Fetcher_DB_Repository_Base
 
     }
 
+    private function buildSyncInsertData(array $data) {
+        $columns = $this->model->getTableColumns();
+        return array_map(function ($item) use ($columns) {
+            return array_intersect_key($item, array_flip($columns));
+        }, $data);
+    }
     public function deleteById(int $id)
     {
         $this->addWhere($this->model->getIdColumn(), $id);
