@@ -422,6 +422,52 @@ class Tru_Fetcher_DB_Model
 		}
         return $this->getTableConfig()[Tru_Fetcher_DB_Model_Constants::PIVOTS];
 	}
+
+    public function getPivotConfigByModel(Tru_Fetcher_DB_Model|Tru_Fetcher_DB_Model_WP $model)
+    {
+        $pivots = $this->getPivots();
+        if (!$pivots) {
+            return false;
+        }
+        foreach ($pivots as $pivot) {
+            if (get_class($model) === $pivot[Tru_Fetcher_DB_Model_Constants::PIVOT_TABLE]) {
+                return $pivot;
+            }
+        }
+        return false;
+    }
+    public function getPivotRelationsByModel(Tru_Fetcher_DB_Model|Tru_Fetcher_DB_Model_WP $pivotModel, Tru_Fetcher_DB_Model|Tru_Fetcher_DB_Model_WP $model)
+    {
+        $pivotConfig = $model->getPivotConfigByModel($pivotModel);
+        if (!$pivotConfig) {
+            return false;
+        }
+        if (!isset($pivotConfig[Tru_Fetcher_DB_Model_Constants::PIVOT_RELATIONS])) {
+            return false;
+        }
+        $pivotRelations = $pivotConfig[Tru_Fetcher_DB_Model_Constants::PIVOT_RELATIONS];
+        if (!is_array($pivotRelations)) {
+            return false;
+        }
+        return $pivotRelations;
+    }
+    public function findPivotForeignKeyConfigByModel(Tru_Fetcher_DB_Model|Tru_Fetcher_DB_Model_WP $pivotModel, Tru_Fetcher_DB_Model|Tru_Fetcher_DB_Model_WP $model)
+    {
+        $pivotRelations = $model->getPivotRelationsByModel($pivotModel, $model);
+        if (!$pivotRelations) {
+            return false;
+        }
+
+        $findThisPivotIndex = array_search($model::class, array_column($pivotRelations, Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_TABLE));
+        if ($findThisPivotIndex === false) {
+            return false;
+        }
+        $thisPivotConfig = $pivotRelations[$findThisPivotIndex];
+        if (!is_array($thisPivotConfig)) {
+            return false;
+        }
+        return $thisPivotConfig;
+    }
 	public function getColumns()
 	{
 		if (!isset($this->getTableConfig()[Tru_Fetcher_DB_Model_Constants::COLUMNS])) {

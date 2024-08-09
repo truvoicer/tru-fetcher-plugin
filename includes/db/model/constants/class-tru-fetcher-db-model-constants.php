@@ -10,7 +10,8 @@ class Tru_Fetcher_DB_Model_Constants
 	public const FOREIGN_KEY_WP_REFERENCE = 'foreign_key_wp_reference';
 
 	public const PIVOTS = 'pivots';
-	public const PIVOTS_TABLE = 'pivot_table';
+	public const PIVOT_TABLE = 'pivot_table';
+	public const PIVOT_RELATIONS = 'pivot_relations';
 	public const PIVOT_FOREIGN_TABLE = 'pivot_foreign_table';
 	public const PIVOT_FOREIGN_KEY = 'pivot_foreign_key';
     public const PIVOT_FOREIGN_KEY_REFERENCE = 'pivot_foreign_key_reference';
