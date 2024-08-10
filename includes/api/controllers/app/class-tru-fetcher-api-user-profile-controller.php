@@ -4,6 +4,7 @@ namespace TruFetcher\Includes\Api\Controllers\App;
 
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_User_Profile_Response;
 use TruFetcher\Includes\Forms\Tru_Fetcher_Api_Form_Handler;
+use TruFetcher\Includes\Tru_Fetcher_Filters;
 use TruFetcher\Includes\User\Tru_Fetcher_User;
 
 /**
@@ -95,7 +96,15 @@ class Tru_Fetcher_Api_User_Profile_Controller extends Tru_Fetcher_Api_Controller
                 )
             );
         }
-        $this->apiUserProfileResponse->setData(Tru_Fetcher_User::getUserMetaData($getUser, $data));
+        $userMeta =Tru_Fetcher_User::getUserMetaData($getUser, $data);
+        if (has_filter(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_PROFILE_FETCH)) {
+            $userMeta = apply_filters(
+                Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_PROFILE_FETCH,
+                $getUser,
+                $userMeta,
+            );
+        }
+        $this->apiUserProfileResponse->setData($userMeta);
         return $this->controllerHelpers->sendSuccessResponse(
             sprintf("User (%s) updated.", $getUser->display_name),
             $this->apiUserProfileResponse

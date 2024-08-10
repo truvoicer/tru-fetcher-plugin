@@ -4,30 +4,21 @@ namespace TruFetcher\Includes\Forms\ProgressGroups;
 
 class Tru_Fetcher_Progress_Field_Groups
 {
-    public array $personal_group;
-    public array $experiences_group;
-    public array $education_group;
-    public array $skills_group;
-    public array $cv_group;
+    public array $profile;
 
     /**
      * Tfr_Profile_Field_Group constructor.
      */
     public function __construct()
     {
-        $this->setPersonalGroup();
-        $this->setCvGroup();
-        $this->setEducationGroup();
-        $this->setExperiencesGroup();
-        $this->setSkillsGroup();
+        $this->setProfile();
     }
-
 
     /**
      */
-    public function setPersonalGroup(): void
+    public function setProfile(): void
     {
-        $this->personal_group = [
+        $this->profile = [
             [
                 "name" => "profile_picture",
                 "type" => "file",
@@ -76,60 +67,12 @@ class Tru_Fetcher_Progress_Field_Groups
             ],
         ];
     }
-
-    /**
-     */
-    public function setExperiencesGroup(): void
+    public function getFieldGroups(array $fieldNames): array
     {
-        $this->experiences_group = [
-            [
-                "name" => "form_experiences",
-                "label" => "Work Experiences",
-                "incomplete_text" => "Add some of your previous work experiences to your profile."
-            ],
-        ];
+        $fieldGroups = [];
+        foreach ($fieldNames as $fieldName) {
+            $fieldGroups[$fieldName] = $this->$fieldName;
+        }
+        return $fieldGroups;
     }
-
-    /**
-     */
-    public function setEducationGroup(): void
-    {
-        $this->education_group = [
-            [
-                "name" => "form_education",
-                "label" => "Education",
-                "incomplete_text" => "Add some of your education history to your profile."
-            ],
-        ];
-    }
-
-    /**
-     */
-    public function setSkillsGroup(): void
-    {
-        $this->skills_group = [
-            [
-                "type" => "data_source",
-                "name" => "skills",
-                "label" => "Skills",
-                "incomplete_text" => "Add some skills to your profile."
-            ]
-        ];
-    }
-
-    /**
-     */
-    public function setCvGroup(): void
-    {
-        $this->cv_group = [
-            [
-                "type" => "file",
-                "name" => "cv_file",
-                "label" => "CV/Resume",
-                "incomplete_text" => "Add your cv/resume to your profile."
-            ],
-        ];
-    }
-
-
 }

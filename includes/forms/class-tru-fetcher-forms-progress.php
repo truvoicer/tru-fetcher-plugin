@@ -1,9 +1,11 @@
 <?php
+
 namespace TruFetcher\Includes\Forms;
 
 use TruFetcher\Includes\Api\Providers\Tru_Fetcher_Api_Providers_Hubspot;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Forms_Response;
 use TruFetcher\Includes\Database\Tru_Fetcher_Database;
+use TruFetcher\Includes\Forms\ProgressGroups\Tru_Fetcher_Progress_Field_Groups;
 use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
 use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_User;
 use TruFetcher\Includes\Tru_Fetcher_Filters;
@@ -34,8 +36,6 @@ class Tru_Fetcher_Forms_Progress
 {
     use Tru_Fetcher_Traits_Errors, Tru_Fetcher_Traits_User;
 
-    const GROUP_KEY_APPENDIX = "_group";
-
     private ?int $overallProgressPercentage = null;
     private ?array $groups = null;
 
@@ -50,7 +50,8 @@ class Tru_Fetcher_Forms_Progress
         if (empty($formFieldGroups)) {
             return $this->showError("invalid_request", "(form_field_groups) fields does not exist in request");
         }
-        $progressFieldGroups = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_FORM_PROGRESS_FIELD_GROUPS, $formFieldGroups, $this->getUser());
+
+        $progressFieldGroups = $this->getFormFieldGroupsArray($formFieldGroups);
         $buildFieldsGroupArray = $this->buildFieldsGroupArray($request["form_field_groups"], $progressFieldGroups);
 
         $this->groups = $this->buildFormsProgressData($buildFieldsGroupArray);
@@ -58,6 +59,41 @@ class Tru_Fetcher_Forms_Progress
         $this->overallProgressPercentage = $this->calculateOverallProgressPercent($this->groups);
 
         return $this;
+    }
+
+    public function getFormFieldGroupsArray(?array $formFieldGroups = [])
+    {
+        $classes = [
+            Tru_Fetcher_Progress_Field_Groups::class,
+            ...$this->getFilteredFieldGroupClasses($formFieldGroups)
+        ];
+        $progressFieldGroups = [];
+        foreach ($classes as $class) {
+            $instance = new $class();
+            if (!$instance instanceof Tru_Fetcher_Progress_Field_Groups) {
+                continue;
+            }
+            if (!method_exists($instance, "getFieldGroups")) {
+                continue;
+            }
+            $progressFieldGroups = array_merge($progressFieldGroups, $instance->getFieldGroups(
+                array_column($formFieldGroups, "name")
+            ));
+        }
+        return $progressFieldGroups;
+    }
+
+    private function getFilteredFieldGroupClasses(?array $formFieldGroups = [])
+    {
+        if (!has_filter(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_FORM_PROGRESS_FIELD_GROUPS)) {
+            return [];
+        }
+        $progressFieldGroups = apply_filters(
+            Tru_Fetcher_Filters::TRU_FETCHER_FILTER_FORM_PROGRESS_FIELD_GROUPS
+        );
+        return array_filter($progressFieldGroups, function ($progressFieldGroup) {
+            return class_exists($progressFieldGroup) && is_subclass_of($progressFieldGroup, Tru_Fetcher_Progress_Field_Groups::class);
+        });
     }
 
     private function buildFormsProgressData(array $fieldGroups)
@@ -180,7 +216,7 @@ class Tru_Fetcher_Forms_Progress
     public function buildFieldsGroupArray(array $formFieldGroups, array $progressFieldGroups)
     {
         return array_map(function ($group) use ($progressFieldGroups) {
-            $groupName = $group["name"] . self::GROUP_KEY_APPENDIX;
+            $groupName = $group["name"];
             if (array_key_exists($groupName, $progressFieldGroups)) {
                 $group["fields"] = $progressFieldGroups[$groupName];
             }
@@ -189,98 +225,6 @@ class Tru_Fetcher_Forms_Progress
             }
             return $group;
         }, $formFieldGroups);
-    }
-
-    public function fetchUserMetaData(WP_REST_Request $request)
-    {
-        $data = $request->get_params();
-        return $this->getFormBuilderUserMetaData($data["form"]);
-    }
-
-    private function getFormBuilderUserMetaData(array $form = [])
-    {
-        switch ($form["type"]) {
-            case "single":
-                return $this->getSingleFormTypeUserMetaData($form);
-            case "list":
-                return $this->getListFormTypeUserMetaData($form);
-            default:
-                return false;
-        }
-    }
-
-    private function getListFormTypeUserMetaData(array $form = [])
-    {
-        $listFormMetaData = get_user_meta($this->getUser()->ID, $form["id"], true);
-        return [
-            $form["id"] => (!$listFormMetaData || $listFormMetaData === "") ? [] : $listFormMetaData
-        ];
-    }
-
-    private function getSingleFormTypeUserMetaData(array $form = [])
-    {
-        return $this->buildUserMetaDataArray($form["fields"]);
-    }
-
-    private function buildUserMetaDataArray(array $data = [])
-    {
-        $userData = [];
-        foreach ($data as $key => $field) {
-            if (array_key_exists("form_control", $field)) {
-                $userData[$field["name"]] = $this->getFormFieldUserMetaData($field);
-            }
-        }
-        return $userData;
-    }
-
-    private function getFormFieldUserMetaData(array $field)
-    {
-        if (property_exists($this->getUser()->data, $field["name"])) {
-            $name = $field["name"];
-            return $this->getUser()->data->$name;
-        }
-        switch ($field["form_control"]) {
-            case "file_upload":
-            case "image_upload":
-                return $this->getUserMetaAttachmentData($field);
-            case "select_data_source":
-                return apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_META_SELECT_DATA_SOURCE, $field, $this->getUser());
-            case "saved_item_count":
-                return $this->getUserSavedItemCount($field);
-            default:
-                return get_user_meta($this->getUser()->ID, $field["name"], true);
-        }
-    }
-
-    private function getUserMetaAttachmentData($field)
-    {
-
-        $attachmentId = get_user_meta($this->getUser()->ID, $field["name"] . "_attachment_id", true);
-        if (wp_attachment_is("image", (int)$attachmentId)) {
-            return wp_get_attachment_image_url($attachmentId);
-        } else {
-            return wp_get_attachment_url($attachmentId);
-        }
-    }
-
-    public function getUserSavedItemCount($field)
-    {
-        $dbClass = new Tru_Fetcher_Database();
-        $where = "user_id=%s";
-        $getCount = $dbClass->getCount(
-            Tru_Fetcher_Database::SAVED_ITEMS_TABLE_NAME,
-            $field["name"],
-            $where,
-            $this->getUser()->ID
-        );
-        if (is_array($getCount)) {
-            return $getCount[$field["name"]];
-        }
-        if (is_object($getCount)) {
-            $key = $field["name"];
-            return $getCount->$key;
-        }
-        return null;
     }
 
     /**

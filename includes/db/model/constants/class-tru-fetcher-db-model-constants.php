@@ -15,9 +15,7 @@ class Tru_Fetcher_DB_Model_Constants
 	public const PIVOT_FOREIGN_TABLE = 'pivot_foreign_table';
 	public const PIVOT_FOREIGN_KEY = 'pivot_foreign_key';
     public const PIVOT_FOREIGN_KEY_REFERENCE = 'pivot_foreign_key_reference';
-    public const PIVOT_RELATED_TABLE = 'pivot_related_table';
-    public const PIVOT_RELATED_KEY = 'pivot_related_key';
-    public const PIVOT_RELATED_REF = 'pivot_related_ref';
+
 
 	public const FOREIGN_KEY_CASCADE_DELETE = 'foreign_key_cascade_delete';
 	public const FOREIGN_KEY_TARGET_COLUMN = 'foreign_key_target_column';
@@ -41,6 +39,8 @@ class Tru_Fetcher_DB_Model_Constants
     public const DEFAULT_WHERE_COMPARE = '=';
     public const WHERE_COMPARE_EQUALS = self::DEFAULT_WHERE_COMPARE;
 	public const WHERE_COMPARE_IN = 'in';
+	public const WHERE_COMPARE_IS_NOT_NULL = 'is not null';
+	public const WHERE_COMPARE_IS_NULL = 'is null';
 
 	public const WHERE_COMPARE_NOT_IN = 'not in';
 	public const LOGICAL_OPERATOR_KEY = 'logical_operator';

@@ -193,12 +193,23 @@ class Tru_Fetcher_Api_Form_Handler
             case "image_upload":
                 return $this->getUserMetaAttachmentData($field);
             case "select_data_source":
-                return apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_META_SELECT_DATA_SOURCE, $field, $this->getUser());
+                return $this->getSelectDataSourceData($field);
             case "saved_item_count":
                 return $this->getUserSavedItemCount($field);
             default:
                 return get_user_meta($this->getUser()->ID, $field["name"], true);
         }
+    }
+
+    private function getSelectDataSourceData(array $field) {
+        switch ($field["name"]) {
+            case "country":
+                return get_user_meta($this->getUser()->ID, 'country', true);
+        }
+        if (has_filter(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_META_SELECT_DATA_SOURCE)) {
+            return apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_META_SELECT_DATA_SOURCE, $field, $this->getUser());
+        }
+        return [];
     }
 
     private function getUserMetaAttachmentData($field)
