@@ -317,7 +317,7 @@ class Tru_Fetcher_DB_Repository_Base
         if ($this->offset) {
             $query .= " OFFSET {$this->offset}";
         }
-        var_dump($query);
+//        var_dump($query);
         return $query;
     }
 
