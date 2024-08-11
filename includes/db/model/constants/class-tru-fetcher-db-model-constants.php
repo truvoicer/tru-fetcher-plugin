@@ -8,6 +8,8 @@ class Tru_Fetcher_DB_Model_Constants
 	public const COLUMNS = 'columns';
 	public const ALIAS = 'alias';
 	public const FOREIGN_KEY_WP_REFERENCE = 'foreign_key_wp_reference';
+	public const COLUMN = 'column';
+	public const COMPARE = 'compare';
 
 	public const PIVOTS = 'pivots';
 	public const PIVOT_TABLE = 'pivot_table';
@@ -23,7 +25,7 @@ class Tru_Fetcher_DB_Model_Constants
 	public const FOREIGN_KEY_REFERENCE_MODEL = 'foreign_key_reference_model';
 	public const FOREIGN_KEY_REFERENCE_COLUMN = 'foreign_key_reference_column';
 	public const FOREIGN_KEY_RELATION = 'foreign_key_relation';
-	public const VALUE_KEY = 'value';
+	public const VALUE = 'value';
 	public const ERROR_CODE_PREFIX = 'tru_fetcher';
 	public const MODEL_KEY = 'model';
 
@@ -36,17 +38,18 @@ class Tru_Fetcher_DB_Model_Constants
 	public const WHERE_GROUP_CONDITION_DEFAULT = 'OR';
 	public const WHERE_COLUMN_CONDITION_KEY = 'where_column_condition';
 	public const WHERE_COMPARE_KEY = 'where_compare';
-    public const DEFAULT_WHERE_COMPARE = '=';
-    public const WHERE_COMPARE_EQUALS = self::DEFAULT_WHERE_COMPARE;
+    public const WHERE_COMPARE_EQUALS = '=';
+    public const DEFAULT_WHERE_COMPARE = self::WHERE_COMPARE_EQUALS;
+    public const WHERE_COMPARE_NOT_EQUALS = '<>';
 	public const WHERE_COMPARE_IN = 'in';
 	public const WHERE_COMPARE_IS_NOT_NULL = 'is not null';
 	public const WHERE_COMPARE_IS_NULL = 'is null';
 
 	public const WHERE_COMPARE_NOT_IN = 'not in';
 	public const LOGICAL_OPERATOR_KEY = 'logical_operator';
-	public const DEFAULT_WHERE_LOGICAL_OPERATOR = 'AND';
-	public const WHERE_LOGICAL_OPERATOR_AND = self::DEFAULT_WHERE_LOGICAL_OPERATOR;
-	public const WHERE_LOGICAL_OPERATOR_OR = self::DEFAULT_WHERE_LOGICAL_OPERATOR;
+	public const WHERE_LOGICAL_OPERATOR_AND = 'AND';
+	public const WHERE_LOGICAL_OPERATOR_OR = 'OR';
+    public const DEFAULT_WHERE_LOGICAL_OPERATOR = self::WHERE_LOGICAL_OPERATOR_AND;
 	public const CONDITIONS_KEY = 'conditions';
 	public const DATA_KEY = 'data';
 	public const FOREIGN_KEYS_FIELD = 'foreign_keys';

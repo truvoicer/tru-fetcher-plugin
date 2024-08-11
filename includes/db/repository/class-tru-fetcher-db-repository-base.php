@@ -6,6 +6,7 @@ namespace TruFetcher\Includes\DB\Repository;
 use TruFetcher\Includes\DB\Engine\Tru_Fetcher_DB_Engine;
 use TruFetcher\Includes\DB\Model\Constants\Tru_Fetcher_DB_Model_Constants;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model;
+use TruFetcher\Includes\DB\Repository\Relations\Tru_Fetcher_DB_Repository_Relations;
 use TruFetcher\Includes\DB\Traits\WP\Tru_Fetcher_DB_Traits_WP_Site;
 use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
 use TruFetcher\Includes\Tru_Fetcher_Helpers;
@@ -19,6 +20,7 @@ class Tru_Fetcher_DB_Repository_Base
     protected Tru_Fetcher_DB_Engine $db;
 
     protected Tru_Fetcher_DB_Model $model;
+    private Tru_Fetcher_DB_Repository_Relations $relations;
 
     protected array $select = [];
 
@@ -42,9 +44,16 @@ class Tru_Fetcher_DB_Repository_Base
     public function __construct(Tru_Fetcher_DB_Model $model)
     {
         $this->db = new Tru_Fetcher_DB_Engine();
+        $this->relations = new Tru_Fetcher_DB_Repository_Relations($this);
         $this->model = $model;
         $this->initialise();
     }
+
+    public function getRelations(): Tru_Fetcher_DB_Repository_Relations
+    {
+        return $this->relations;
+    }
+
 
     public static function getInstance(Tru_Fetcher_DB_Model $model)
     {
@@ -71,6 +80,7 @@ class Tru_Fetcher_DB_Repository_Base
     {
         $this->select = [];
         $this->where = [];
+        $this->whereGroups = [];
         $this->orderBy = [];
         $this->orderByDir = 'desc';
         $this->groupBy = [];
@@ -112,242 +122,6 @@ class Tru_Fetcher_DB_Repository_Base
         }
         return $this->model->buildModelDataBatch($results);
     }
-
-    private function buildSyncDataIds(string $key, array $data)
-    {
-        $filter = array_filter($data, function ($item) use ($key) {
-            return isset($item[$key]);
-        }, ARRAY_FILTER_USE_BOTH);
-        return array_map(function ($item) use ($key) {
-            return $item[$key];
-        }, $filter);
-    }
-
-    private function doesItemMatchPivotRelation(array $pivotRelations, array $item)
-    {
-        foreach ($pivotRelations as $relation) {
-            $pivotForeignTable = $relation[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_TABLE];
-            $pivotForeignKey = $relation[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY];
-            $pivotForeignKeyReference = $relation[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY_REFERENCE];
-
-            if ($this->model::class === $pivotForeignTable) {
-                $keyCond = $pivotForeignKeyReference;
-            } else {
-                $keyCond = $pivotForeignKey;
-            }
-            if (!isset($item[$keyCond])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private function getItemPivotRelationData(array $relation, array $item)
-    {
-        $pivotForeignTable = $relation[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_TABLE];
-        $pivotForeignKey = $relation[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY];
-        $pivotForeignKeyReference = $relation[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY_REFERENCE];
-
-        if ($this->model::class === $pivotForeignTable) {
-            $value = $item[$pivotForeignKeyReference];
-        } else {
-            $value = $item[$pivotForeignKey];
-        }
-        return [
-            'key' => $pivotForeignKey,
-            'value' => $value
-        ];
-    }
-
-    private function findExistingPivotData(
-        Tru_Fetcher_DB_Model $pivotModel,
-        array                $pivotRelations,
-        array                $conditions,
-        array                $data
-    )
-    {
-        return $this->setExistingPivotDataWhereQuery(
-            self::getInstance($pivotModel),
-            $pivotRelations,
-            $conditions,
-            $data
-        )->findMany();
-    }
-    private function setExistingPivotDataWhereQuery(
-        Tru_Fetcher_DB_Repository_Base $repoInstance,
-        array                $pivotRelations,
-        array                $conditions,
-        array                $data
-    )
-    {
-        foreach ($data as $item) {
-            $item = [...$item, ...$conditions];
-            $whereData = [];
-            if (!$this->doesItemMatchPivotRelation($pivotRelations, $item)) {
-                continue;
-            }
-            foreach ($pivotRelations as $relation) {
-                $itemPivotRelData = $this->getItemPivotRelationData($relation, $item);
-
-                $whereData[] = $this->prepareWheredata(
-                    $itemPivotRelData['key'],
-                    $itemPivotRelData['value'],
-                    Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_EQUALS
-                );
-            }
-            var_dump($whereData);
-            $repoInstance->addWhereGroup($whereData, 'OR');
-        }
-        return $repoInstance;
-    }
-
-    private function removeExistingPivotItems(array $results, array $pivotRelations, array $conditions, array $data)
-    {
-        return array_filter($data, function ($item) use ($results, $pivotRelations, $conditions) {
-            $item = [...$item, ...$conditions];
-            if (!$this->doesItemMatchPivotRelation($pivotRelations, $item)) {
-                return true;
-            }
-            $whereConditions = [];
-            foreach ($pivotRelations as $relation) {
-                $itemPivotRelData = $this->getItemPivotRelationData($relation, $item);
-                $whereConditions[$itemPivotRelData['key']] = $itemPivotRelData['value'];
-            }
-            return Tru_Fetcher_Helpers::findInArray(
-                    $whereConditions,
-                    $results,
-                    true
-                ) === false;
-        }, ARRAY_FILTER_USE_BOTH);
-    }
-
-    public function sync(Tru_Fetcher_DB_Model $pivotModel, array $conditions, array $data)
-    {
-        $pivotConfig = $this->model->getPivotConfigByModel($pivotModel);
-        if (!$pivotConfig) {
-            return false;
-        }
-
-        $pivotRelations = $pivotConfig[Tru_Fetcher_DB_Model_Constants::PIVOT_RELATIONS];
-
-        $results = $this->findExistingPivotData($pivotModel, $pivotRelations, $conditions, $data);
-        if (count($results)) {
-            $this->setExistingPivotDataWhereQuery(
-                self::getInstance($pivotModel),
-                $pivotRelations,
-                $conditions,
-                $data
-            )->delete();
-        }
-
-        $filteredData = $this->removeExistingPivotItems($results, $pivotRelations, $conditions, $data);
-
-        $thisPivotConfig = $this->model->findPivotForeignKeyConfigByModel($pivotModel, $this->model);
-        if (!$thisPivotConfig) {
-            return false;
-        }
-        $thisPivotForeignKeyRef = $thisPivotConfig[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY_REFERENCE];
-
-        $whereValues = array_column($filteredData, $thisPivotForeignKeyRef);
-        if (count($whereValues)) {
-            $this->addWhere(
-                $thisPivotForeignKeyRef,
-                $whereValues,
-                Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_IN
-            );
-            $findSkills = $this->findMany();
-            foreach ($findSkills as $findSkill) {
-                $insertIntoPivot = $this->insertPivotTableItem($pivotModel, array_merge($findSkill, $conditions));
-                if (!$insertIntoPivot) {
-                    $this->addError(
-                        new \WP_Error(
-                            'tru_fetcher_db_sync_error',
-                            'Failed to insert into pivot table',
-                            $findSkill
-                        )
-                    );
-                    return false;
-                }
-            }
-            $filteredData = array_filter($filteredData, function ($item) use ($findSkills, $thisPivotForeignKeyRef) {
-                return Tru_Fetcher_Helpers::findInArray(
-                        [$thisPivotForeignKeyRef => $item[$thisPivotForeignKeyRef]],
-                        $findSkills,
-                        true
-                    ) === false;
-            });
-            $this->syncInsert($pivotModel, $conditions, $filteredData);
-        } else {
-            $this->syncInsert($pivotModel, $conditions, $filteredData);
-        }
-
-        return $this->hasErrors();
-
-    }
-
-    private function syncInsert(Tru_Fetcher_DB_Model $pivotModel, array $conditions, array $data)
-    {
-        $columns = $this->model->getTableColumns();
-        foreach ($data as $item) {
-            $item = [...$item, ...$conditions];
-            $insertData = $this->buildSyncInsertDataItem($columns, $item);
-            $validate = $this->model->validateFields($insertData, $this->model->getRequiredFields(), false);
-            if (is_wp_error($validate)) {
-                $this->addError($validate);
-                return false;
-            }
-
-            $insert = $this->insert($insertData);
-            if (!$insert) {
-                $this->addError(
-                    new \WP_Error(
-                        'tru_fetcher_db_sync_error',
-                        'Failed to insert into table',
-                        $insertData
-                    )
-                );
-                return false;
-            }
-            $insertIntoPivot = $this->insertPivotTableItem($pivotModel, array_merge($item, $insert));
-            if (!$insertIntoPivot) {
-                $this->addError(
-                    new \WP_Error(
-                        'tru_fetcher_db_sync_error',
-                        'Failed to insert into pivot table',
-                        $item
-                    )
-                );
-                return false;
-            }
-        }
-    }
-
-    private function insertPivotTableItem(Tru_Fetcher_DB_Model $pivotModel, array $item)
-    {
-        $thisPivotConfig = $this->model->findPivotForeignKeyConfigByModel($pivotModel, $this->model);
-        if (!$thisPivotConfig) {
-            return false;
-        }
-        $thisPivotForeignKeyRef = $thisPivotConfig[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY_REFERENCE];
-        $thisPivotForeignKey = $thisPivotConfig[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY];
-
-        $instance = self::getInstance($pivotModel);
-        $pivotInsertData = $this->buildSyncInsertDataItem($pivotModel->getTableColumns(), $item);
-        $pivotInsertData[$thisPivotForeignKey] = $item[$thisPivotForeignKeyRef];
-        unset($pivotInsertData[$thisPivotForeignKeyRef]);
-
-        $insertPivot = $instance->insert($pivotInsertData);
-        if (!$insertPivot) {
-            return false;
-        }
-        return $insertPivot;
-    }
-
-    private function buildSyncInsertDataItem(array $columns, array $data)
-    {
-        return array_intersect_key($data, array_flip($columns));
-    }
-
 
     public function deleteById(int $id)
     {
@@ -543,6 +317,7 @@ class Tru_Fetcher_DB_Repository_Base
         if ($this->offset) {
             $query .= " OFFSET {$this->offset}";
         }
+        var_dump($query);
         return $query;
     }
 
@@ -556,7 +331,7 @@ class Tru_Fetcher_DB_Repository_Base
     public function buildDeleteQuery()
     {
         $query = "DELETE FROM {$this->model->getTableName($this->site, $this->isNetworkWide)}";
-        if (count($this->where)) {
+        if (count($this->where) || count($this->whereGroups)) {
             $whereData = $this->buildWhereData();
             $query .= " WHERE {$whereData}";
         }
@@ -610,7 +385,7 @@ class Tru_Fetcher_DB_Repository_Base
                 Tru_Fetcher_DB_Model_Constants::LOGICAL_OPERATOR_KEY => $logicalOperator,
                 Tru_Fetcher_DB_Model_Constants::FIELD_KEY => $condition[Tru_Fetcher_DB_Model_Constants::FIELD_KEY],
                 Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_KEY => $whereCompare,
-                Tru_Fetcher_DB_Model_Constants::VALUE_KEY => $this->db->getDbValue($this->convertValueToType($value,
+                Tru_Fetcher_DB_Model_Constants::VALUE => $this->db->getDbValue($this->convertValueToType($value,
                     $condition))
             ];
         }
@@ -638,7 +413,7 @@ class Tru_Fetcher_DB_Repository_Base
             }
             $whereCompare = $condition[Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_KEY];
             $field = $condition[Tru_Fetcher_DB_Model_Constants::FIELD_KEY];
-            $value = $condition[Tru_Fetcher_DB_Model_Constants::VALUE_KEY];
+            $value = $condition[Tru_Fetcher_DB_Model_Constants::VALUE];
 
             if ($value === null) {
                 $placeholder = 'NULL';
@@ -755,7 +530,7 @@ class Tru_Fetcher_DB_Repository_Base
         }
         $buildWhereStrings = [];
         foreach ($whereConditions as $index => $condition) {
-            $buildWhereStrings[$condition[Tru_Fetcher_DB_Model_Constants::FIELD_KEY]] = $condition[Tru_Fetcher_DB_Model_Constants::VALUE_KEY];
+            $buildWhereStrings[$condition[Tru_Fetcher_DB_Model_Constants::FIELD_KEY]] = $condition[Tru_Fetcher_DB_Model_Constants::VALUE];
         }
         return $buildWhereStrings;
     }
