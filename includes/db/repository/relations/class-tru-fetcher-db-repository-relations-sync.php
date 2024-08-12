@@ -179,13 +179,24 @@ class Tru_Fetcher_DB_Repository_Relations_Sync extends Tru_Fetcher_DB_Repository
             }
             $whereConditions = [];
             foreach ($pivotRelations as $relation) {
-                $itemPivotRelData = $this->getItemPivotRelationData($this->repoBase->getModel(), $relation, $item);
-                $whereConditions[$itemPivotRelData['key']] = $itemPivotRelData['value'];
+                $pivotForeignTable = $relation[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_TABLE];
+                $pivotForeignKey = $relation[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY];
+                $pivotForeignKeyReference = $relation[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY_REFERENCE];
+
+                if ($this->repoBase->getModel()::class === $pivotForeignTable) {
+                    $column = $pivotForeignKeyReference;
+                    $value = $item[$pivotForeignKeyReference];
+                } else {
+                    $value = $item[$pivotForeignKey];
+                    $column = $pivotForeignKey;
+                }
+
+                $whereConditions[$column] = $value;
             }
 
             return Tru_Fetcher_Helpers::findInArray(
                     $whereConditions,
-                    $results,
+                    array_map(fn($result) => [...$result, ...$this->buildConditionKeyValueArray()], $results),
                     true
                 ) === false;
         }, ARRAY_FILTER_USE_BOTH);
@@ -231,7 +242,8 @@ class Tru_Fetcher_DB_Repository_Relations_Sync extends Tru_Fetcher_DB_Repository
                         $results,
                         true
                     );
-                    $instance->repoBase->delete();
+//                    $instance->repoBase->delete();
+                    $filteredData = $this->removeExistingPivotItems($results, $pivotRelations, $data);
                 }
                 break;
             case self::SYNC_MODE_REPLACE:
@@ -249,13 +261,14 @@ class Tru_Fetcher_DB_Repository_Relations_Sync extends Tru_Fetcher_DB_Repository
                         $results,
                         true
                     );
-                    $instance->repoBase->delete();
+//                    $instance->repoBase->delete();
+                    $filteredData = $this->removeExistingPivotItems($results, $pivotRelations, $data);
+
                 }
                 break;
         }
 
-        $filteredData = $this->removeExistingPivotItems($results, $pivotRelations, $data);
-        var_dump($filteredData);
+        var_dump($results, $filteredData); die;
         $thisPivotConfig = $this->repoBase->getModel()->findPivotForeignKeyConfigByModel($pivotModel, $this->repoBase->getModel());
         if (!$thisPivotConfig) {
             return false;
