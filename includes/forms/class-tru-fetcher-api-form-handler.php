@@ -33,6 +33,10 @@ class Tru_Fetcher_Api_Form_Handler
 {
     use Tru_Fetcher_Traits_Errors;
 
+    const REQUEST_FILE_UPLOAD_FIELDS = [
+        "profile_picture"
+    ];
+
     const REQUEST_TEXT_FIELDS = [
         "user_email", "display_name", "first_name", "surname", "telephone", "town", "country"
     ];
@@ -255,18 +259,63 @@ class Tru_Fetcher_Api_Form_Handler
         return null;
     }
 
-    public function saveUserMetaData(WP_REST_Request $request)
+    public function saveUserMetaData(\WP_User $user, WP_REST_Request $request)
     {
         $data = $request->get_params();
 
-        $getUser = get_userdata($request["user_id"]);
-        if (!$getUser) {
-            return $this->showError("user_not_exist", "Sorry, this user does not exist.");
-        }
         $this->saveUserProfileMeta(
-            $getUser,
+            $user,
             $data
         );
+
+        if (count($request->get_file_params()) > 0) {
+            $allowedUserProfileFields = self::REQUEST_FILE_UPLOAD_FIELDS;
+            $getAllowedFilter = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_ALLOWED_UPLOAD_FIELDS, $user);
+            if (is_array($getAllowedFilter)) {
+                $allowedUserProfileFields = [...$allowedUserProfileFields, ...$getAllowedFilter];
+            }
+
+            $filesArray = array_filter($request->get_file_params(), function ($key) use($allowedUserProfileFields) {
+                return in_array($key, $allowedUserProfileFields);
+            }, ARRAY_FILTER_USE_KEY);
+
+            $saveFilterFiles = [];
+            if (has_filter(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_UPLOADED_FILE_SAVE)) {
+                $saveFilterFiles = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_UPLOADED_FILE_SAVE, $user, $filesArray);
+                if (!$this->validateFileUploadResponse($saveFilterFiles)) {
+                    return false;
+                }
+            }
+            $saveFiles = $this->saveUserProfileFileUploads($user, $filesArray);
+            if (!$this->validateFileUploadResponse($saveFiles)) {
+                return (count($saveFilterFiles))? $saveFilterFiles : false;
+            }
+            return [...$saveFilterFiles, ...$saveFiles];
+        }
+        return true;
+    }
+
+    public function validateFileUploadResponse($response) {
+        if (!$response) {
+            $this->addError(
+                new \WP_Error(
+                    "file_upload_response_error",
+                    "Invalid file upload response",
+                    $response
+                )
+            );
+            return false;
+        }
+        if (!is_array($response)) {
+            $this->addError(
+                new \WP_Error(
+                    "file_upload_response_error",
+                    "Invalid file upload response | expected array but got " . gettype($response),
+                    $response
+                )
+            );
+            return false;
+        }
         return true;
     }
 
@@ -281,13 +330,12 @@ class Tru_Fetcher_Api_Form_Handler
         if (!function_exists('media_handle_upload')) {
             require_once(ABSPATH . 'wp-admin/includes/media.php');
         }
-        $errors = [];
+
         $attachments = [];
         foreach ($filesArray as $key => $file) {
             $mediaUpload = media_handle_upload($key, 0);
             if (is_wp_error($mediaUpload)) {
                 $this->addError($mediaUpload);
-                $errors[] = true;
                 continue;
             }
             $metaKey = "{$key}_attachment_id";
@@ -304,7 +352,6 @@ class Tru_Fetcher_Api_Form_Handler
                         ["value" => $mediaUpload]
                     )
                 );
-                $errors[] = true;
                 continue;
             }
             $attachments[] = [
@@ -312,16 +359,13 @@ class Tru_Fetcher_Api_Form_Handler
                 "file_name" => $key
             ];
         }
-        return [
-            "hasErrors" => (count($errors) > 0),
-            "attachments" => $attachments
-        ];
+        return $attachments;
     }
 
     public function saveUserProfileMeta(\WP_User $user, array $profileData = [])
     {
         $allowedUserProfileFields = [...self::REQUEST_TEXT_FIELDS, ...self::REQUEST_FORM_ARRAY_FIELDS];
-        $getAllowedFilter = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_ALLOWED_USER_PROFILE_FIELDS, $allowedUserProfileFields);
+        $getAllowedFilter = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_ALLOWED_USER_PROFILE_FIELDS, $user);
         if (is_array($getAllowedFilter)) {
             $allowedUserProfileFields = [...$allowedUserProfileFields, ...$getAllowedFilter];
         }
@@ -334,8 +378,13 @@ class Tru_Fetcher_Api_Form_Handler
         if (!$applyFilters) {
             return false;
         }
+        return $this->updateUserMetaData($user, $profileData);
+    }
+
+    public function updateUserMetaData(\WP_User $user, array $data)
+    {
         $errors = [];
-        foreach ($profileData as $key => $value) {
+        foreach ($data as $key => $value) {
             $updateUserMeta = update_user_meta(
                 $user->ID,
                 $key,

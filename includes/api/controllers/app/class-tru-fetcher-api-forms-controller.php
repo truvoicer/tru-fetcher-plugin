@@ -6,6 +6,8 @@ use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Forms_Response;
 use TruFetcher\Includes\Email\Tru_Fetcher_Email;
 use TruFetcher\Includes\Forms\Tru_Fetcher_Api_Form_Handler;
 use TruFetcher\Includes\Forms\Tru_Fetcher_Forms_Progress;
+use TruFetcher\Includes\Tru_Fetcher_Filters;
+use TruFetcher\Includes\User\Tru_Fetcher_User;
 use WP_REST_Request;
 use WP_REST_Server;
 
@@ -115,13 +117,39 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
         );
     }
 
-    public function userMetaEndpointHandler($request) {
-        $this->apiFormHandler->saveUserMetaData($request);
-        return $this->sendResponse(
-            sprintf("User (%s) updated.", $request["user_nicename"]),
-            [
-                "redirect_url" => isset($request["redirect_url"])? $request["redirect_url"] : false
-            ]
+    public function userMetaEndpointHandler(WP_REST_Request $request) {
+        $data = $request->get_params();
+        $getUser = $this->apiAuthApp->getUser();
+        if ($getUser === null) {
+            return $this->controllerHelpers->sendErrorResponse(
+                'user_not_found_error',
+                "User not found.",
+                $this->apiFormsResponse
+            );
+        }
+
+        $this->apiFormHandler->saveUserMetaData($getUser, $request);
+
+        if (!count($this->apiFormHandler->getErrors())) {
+            $this->apiFormsResponse->setErrors(
+                array_merge(
+                    $this->apiFormsResponse->getErrors(),
+                    $this->apiFormHandler->getErrors()
+                )
+            );
+        }
+        $userMeta = Tru_Fetcher_User::getUserMetaData($getUser, $data);
+        if (has_filter(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_PROFILE_FETCH)) {
+            $userMeta = apply_filters(
+                Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_PROFILE_FETCH,
+                $getUser,
+                $userMeta,
+            );
+        }
+        $this->apiFormsResponse->setData($userMeta);
+        return $this->controllerHelpers->sendSuccessResponse(
+            sprintf("User (%s) updated.", $getUser->display_name),
+            $this->apiFormsResponse
         );
     }
 

@@ -78,12 +78,12 @@ class Tru_Fetcher_DB_Repository_Relations_Sync extends Tru_Fetcher_DB_Repository
 
         if (!$pivotSourcedData) {
             if ($model::class === $pivotForeignTable) {
-                $value = $item[$pivotForeignKeyReference];
+                $value = (isset($item[$pivotForeignKeyReference])) ? $item[$pivotForeignKeyReference] : null;
             } else {
-                $value = $item[$pivotForeignKey];
+                $value = (isset($item[$pivotForeignKey])) ? $item[$pivotForeignKey] : null;
             }
         } else {
-            $value = $item[$pivotForeignKey];
+            $value = (isset($item[$pivotForeignKey])) ? $item[$pivotForeignKey] : null;
         }
         return [
             'key' => $pivotForeignKey,
@@ -124,6 +124,45 @@ class Tru_Fetcher_DB_Repository_Relations_Sync extends Tru_Fetcher_DB_Repository
                 $condition[Tru_Fetcher_DB_Model_Constants::COMPARE]
             );
         }
+
+        $this->repoBase->addWhereGroup($conditionsWhereData);
+    }
+
+    private function setExistingPivotDataDeleteQueryForReplace(
+        Tru_Fetcher_DB_Model $model,
+        array                $pivotRelations,
+        array                $data,
+        ?bool                $pivotSourcedData = false
+    )
+    {
+        foreach ($data as $item) {
+            $whereData = [];
+            if (!$this->doesItemMatchPivotRelation($model, $pivotRelations, $item, $pivotSourcedData)) {
+                continue;
+            }
+            foreach ($pivotRelations as $relation) {
+                $itemPivotRelData = $this->getItemPivotRelationData($model, $relation, $item, $pivotSourcedData);
+                if (in_array($itemPivotRelData['key'], array_column($this->conditions, Tru_Fetcher_DB_Model_Constants::COLUMN))) {
+                    continue;
+                }
+                $whereData[] = $this->repoBase->prepareWheredata(
+                    $itemPivotRelData['key'],
+                    $itemPivotRelData['value'],
+                    Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_EQUALS,
+                    Tru_Fetcher_DB_Model_Constants::WHERE_LOGICAL_OPERATOR_OR
+                );
+            }
+            $this->repoBase->addWhereGroup($whereData,Tru_Fetcher_DB_Model_Constants::WHERE_LOGICAL_OPERATOR_OR);
+        }
+        $conditionsWhereData = [];
+        foreach ($this->conditions as $condition) {
+            $conditionsWhereData[] = $this->repoBase->prepareWheredata(
+                $condition[Tru_Fetcher_DB_Model_Constants::COLUMN],
+                $condition[Tru_Fetcher_DB_Model_Constants::VALUE],
+                $condition[Tru_Fetcher_DB_Model_Constants::COMPARE]
+            );
+        }
+
         $this->repoBase->addWhereGroup($conditionsWhereData);
     }
 
@@ -242,7 +281,7 @@ class Tru_Fetcher_DB_Repository_Relations_Sync extends Tru_Fetcher_DB_Repository
                         $results,
                         true
                     );
-//                    $instance->repoBase->delete();
+                    $instance->repoBase->delete();
                     $filteredData = $this->removeExistingPivotItems($results, $pivotRelations, $data);
                 }
                 break;
@@ -253,38 +292,50 @@ class Tru_Fetcher_DB_Repository_Relations_Sync extends Tru_Fetcher_DB_Repository
                     $data
                 );
                 $results = $instance->repoBase->findMany();
-
+                $filteredData = $data;
                 if (count($results)) {
-                    $instance->setExistingPivotDataWhereQueryForReplace(
+                    $instance->setExistingPivotDataDeleteQueryForReplace(
                         $this->repoBase->getModel(),
                         $pivotRelations,
                         $results,
                         true
                     );
-//                    $instance->repoBase->delete();
+                    $instance->repoBase->delete();
                     $filteredData = $this->removeExistingPivotItems($results, $pivotRelations, $data);
-
                 }
                 break;
         }
 
-        var_dump($results, $filteredData); die;
         $thisPivotConfig = $this->repoBase->getModel()->findPivotForeignKeyConfigByModel($pivotModel, $this->repoBase->getModel());
         if (!$thisPivotConfig) {
             return false;
         }
         $thisPivotForeignKeyRef = $thisPivotConfig[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY_REFERENCE];
+        $thisPivotForeignKey = $thisPivotConfig[Tru_Fetcher_DB_Model_Constants::PIVOT_FOREIGN_KEY];
 
         $whereValues = array_column($filteredData, $thisPivotForeignKeyRef);
         if (count($whereValues)) {
+            $this->repoBase->setSelect([
+                "{$this->repoBase->getModel()->getTableName()}.*",
+                "{$pivotModel->getTableName()}.*",
+                "{$this->repoBase->getModel()->getTableName()}.{$thisPivotForeignKeyRef} as {$thisPivotForeignKeyRef}",
+            ]);
+            $this->repoBase->addJoin(
+                'left join',
+                $pivotModel->getTableName(),
+                "{$this->repoBase->getModel()->getTableName()}.{$thisPivotForeignKeyRef} = {$pivotModel->getTableName()}.{$thisPivotForeignKey}"
+            );
             $this->repoBase->addWhere(
-                $thisPivotForeignKeyRef,
+                "{$this->repoBase->getModel()->getTableName()}.{$thisPivotForeignKeyRef}",
                 $whereValues,
                 Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_IN
             );
             $findSkills = $this->repoBase->findMany();
             foreach ($findSkills as $findSkill) {
-                $insertIntoPivot = $this->insertPivotTableItem($pivotModel, array_merge($findSkill, $this->conditions));
+                if (!empty($findSkill[$thisPivotForeignKey])) {
+                    continue;
+                }
+                $insertIntoPivot = $this->insertPivotTableItem($pivotModel, array_merge($findSkill, $this->buildConditionKeyValueArray()));
                 if (!$insertIntoPivot) {
                     $this->repoBase->addError(
                         new \WP_Error(

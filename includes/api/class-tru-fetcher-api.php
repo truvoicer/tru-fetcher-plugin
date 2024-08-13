@@ -18,7 +18,6 @@ use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Page_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Posts_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_Settings_Controller;
 use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_User_Controller;
-use TruFetcher\Includes\Api\Controllers\App\Tru_Fetcher_Api_User_Profile_Controller;
 use TruFetcher\Includes\Tru_Fetcher_Filters;
 
 /**
@@ -51,7 +50,6 @@ class Tru_Fetcher_Api {
         Tru_Fetcher_Api_Comments_Controller::class,
         Tru_Fetcher_Api_Forms_Controller::class,
         Tru_Fetcher_Api_General_Controller::class,
-        Tru_Fetcher_Api_User_Profile_Controller::class,
         Tru_Fetcher_Api_List_Controller::class,
     ];
 

@@ -34,10 +34,6 @@ const EndpointSettingsTab = (props) => {
                             value: 'user_meta'
                         },
                         {
-                            label: 'User Profile',
-                            value: 'user_profile'
-                        },
-                        {
                             label: 'Account Details',
                             value: 'account_details'
                         },
