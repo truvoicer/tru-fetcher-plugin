@@ -130,7 +130,7 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 
         $this->apiFormHandler->saveUserMetaData($getUser, $request);
 
-        if (!count($this->apiFormHandler->getErrors())) {
+        if (count($this->apiFormHandler->getErrors())) {
             $this->apiFormsResponse->setErrors(
                 array_merge(
                     $this->apiFormsResponse->getErrors(),

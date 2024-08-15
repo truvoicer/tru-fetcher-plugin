@@ -38,7 +38,7 @@ class Tru_Fetcher_Api_Form_Handler
     ];
 
     const REQUEST_TEXT_FIELDS = [
-        "user_email", "display_name", "first_name", "surname", "telephone", "town", "country"
+        "user_email", "display_name", "first_name", "last_name", "telephone", "town", "country"
     ];
     const REQUEST_FORM_ARRAY_FIELDS = [];
 
@@ -267,7 +267,7 @@ class Tru_Fetcher_Api_Form_Handler
             $user,
             $data
         );
-
+        
         if (count($request->get_file_params()) > 0) {
             $allowedUserProfileFields = self::REQUEST_FILE_UPLOAD_FIELDS;
             $getAllowedFilter = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_ALLOWED_UPLOAD_FIELDS, $user);
@@ -373,29 +373,34 @@ class Tru_Fetcher_Api_Form_Handler
         $profileData = array_filter($profileData, function ($key) use($allowedUserProfileFields) {
             return in_array($key, $allowedUserProfileFields);
         }, ARRAY_FILTER_USE_KEY);
-
         $applyFilters = $this->applyUserProfileMetaUpdateFilters($user, $profileData);
         if (!$applyFilters) {
             return false;
         }
+
         return $this->updateUserMetaData($user, $profileData);
     }
 
     public function updateUserMetaData(\WP_User $user, array $data)
     {
+
         $errors = [];
         foreach ($data as $key => $value) {
+            $getUserMeta = get_user_meta($user->ID, $key, true);
+            if ($getUserMeta === $value) {
+                continue;
+            }
             $updateUserMeta = update_user_meta(
                 $user->ID,
                 $key,
                 $value
             );
-            if (!$updateUserMeta) {
+            if ($updateUserMeta === false) {
                 $this->addError(
                     new \WP_Error(
                         "user_meta_update_error",
                         "Error updating user profile | {$key}",
-                        ["value" => $value]
+                        ['key' => $key, "value" => $value,  "user_id" => $user->ID]
                     )
                 );
                 $errors[] = $key;
