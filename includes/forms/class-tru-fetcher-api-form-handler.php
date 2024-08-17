@@ -267,7 +267,7 @@ class Tru_Fetcher_Api_Form_Handler
             $user,
             $data
         );
-        
+
         if (count($request->get_file_params()) > 0) {
             $allowedUserProfileFields = self::REQUEST_FILE_UPLOAD_FIELDS;
             $getAllowedFilter = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_ALLOWED_UPLOAD_FIELDS, $user);
@@ -286,6 +286,7 @@ class Tru_Fetcher_Api_Form_Handler
                     return false;
                 }
             }
+
             $saveFiles = $this->saveUserProfileFileUploads($user, $filesArray);
             if (!$this->validateFileUploadResponse($saveFiles)) {
                 return (count($saveFilterFiles))? $saveFilterFiles : false;
@@ -296,7 +297,7 @@ class Tru_Fetcher_Api_Form_Handler
     }
 
     public function validateFileUploadResponse($response) {
-        if (!$response) {
+        if ($response === false) {
             $this->addError(
                 new \WP_Error(
                     "file_upload_response_error",
@@ -306,6 +307,7 @@ class Tru_Fetcher_Api_Form_Handler
             );
             return false;
         }
+
         if (!is_array($response)) {
             $this->addError(
                 new \WP_Error(

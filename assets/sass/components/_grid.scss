@@ -1,0 +1,9 @@
+.tf {
+  &--grid {
+    display: block;
+    @media (min-width: 768px) {
+      display: grid;
+      gap: calc(12px);
+    }
+  }
+}

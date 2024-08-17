@@ -16,8 +16,6 @@ import WidgetBoardBlockEdit from "./wp/blocks/widget-board/WidgetBoardBlockEdit"
 import UserStatsBlockEdit from "./wp/blocks/widgets/user-stats/UserStatsBlockEdit";
 import UserSocialBlockEdit from "./wp/blocks/widgets/user-social/UserSocialBlockEdit";
 import UserProfileBlockEdit from "./wp/blocks/widgets/user-profile/UserProfileBlockEdit";
-import SidebarWidgetBlockEdit from "./wp/blocks/widgets/groups/SidebarWidgetBlockEdit";
-import ContentWidgetBlockEdit from "./wp/blocks/widgets/groups/ContentWidgetBlockEdit";
 import TabsBlockEdit from "./wp/blocks/tabs-block/TabsBlockEdit";
 import ItemViewBlockEdit from "./wp/blocks/item-view/ItemViewBlockEdit";
 import SearchBlockEdit from "./wp/blocks/search/SearchBlockEdit";

@@ -4,6 +4,7 @@ namespace TruFetcher\Includes\Admin\Blocks\Resources;
 
 use TruFetcher\Includes\Api\Config\Tru_Fetcher_Api_Config_Endpoints;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Form_Presets;
+use TruFetcher\Includes\Media\Tru_Fetcher_Media;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Page;
 
 /**
@@ -150,6 +151,56 @@ class Tru_Fetcher_Admin_Blocks_Resources_Form extends Tru_Fetcher_Admin_Blocks_R
             ],
         ]
     ];
+    public static function buildFileTypes(array $buildAttributes) {
+        if (empty($buildAttributes['form_rows'])) {
+            return $buildAttributes;
+        }
+        if (!is_array($buildAttributes['form_rows'])) {
+            return $buildAttributes;
+        }
+        $allowedFileTypes = [];
+        foreach ($buildAttributes['form_rows'] as $key => $row) {
+            if (empty($row['form_items'])) {
+                continue;
+            }
+            if (!is_array($row['form_items'])) {
+                continue;
+            }
+            foreach ($row['form_items'] as $itemKey => $item) {
+                if (empty($item['allowed_file_types'])) {
+                    continue;
+                }
+                if (!is_array($item['allowed_file_types'])) {
+                    continue;
+                }
+                foreach ($item['allowed_file_types'] as $fileTypeKey => $fileType) {
+                    if (empty($fileType['type']['name'])) {
+                        continue;
+                    }
+                    if ($fileType['type']['name'] !== 'custom') {
+                        $getConfigs = Tru_Fetcher_Media::getConfigByName(
+                            [$fileType['type']['name']],
+                            $fileType['type']['parent'],
+                        );
+                        $allowedFileTypes = [...$allowedFileTypes, ...$getConfigs];
+                        continue;
+                    }
+                    if (empty($fileType['mime_type'])) {
+                        continue;
+                    }
+                    if (empty($fileType['extension'])) {
+                        continue;
+                    }
+                    $allowedFileTypes[] = [
+                        'mime_type' => $fileType['mime_type'],
+                        'extension' => $fileType['extension'],
+                    ];
+                }
+                $buildAttributes['form_rows'][$key]['form_items'][$itemKey]['allowed_file_types'] = $allowedFileTypes;
+            }
+        }
+        return $buildAttributes;
+    }
 
     public function buildBlockAttributes(array $attributes, ?bool $includeDefaults = true)
     {
@@ -163,6 +214,8 @@ class Tru_Fetcher_Admin_Blocks_Resources_Form extends Tru_Fetcher_Admin_Blocks_R
             }
         }
         $buildAttributes = self::buildEndpoint($buildAttributes);
+        $buildAttributes = self::buildFileTypes($buildAttributes);
+
         return $buildAttributes;
     }
     public static function buildEndpoint(array $buildAttributes) {

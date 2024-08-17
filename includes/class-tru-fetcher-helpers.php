@@ -1,8 +1,6 @@
 <?php
 namespace TruFetcher\Includes;
 
-use TruFetcher\Includes\Admin\AdminMenu\Tru_Fetcher_Admin_Menu_Constants;
-
 /**
  * The file that defines the core plugin class
  *

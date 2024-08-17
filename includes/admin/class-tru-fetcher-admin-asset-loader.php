@@ -12,6 +12,7 @@ use TruFetcher\Includes\Api\Tru_Fetcher_Api_Request;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Form_Presets;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Setting;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Tab_Presets;
+use TruFetcher\Includes\Media\Tru_Fetcher_Media;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Category_Tpl;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Item_View_Tpl;
 use TruFetcher\Includes\PostTypes\Tru_Fetcher_Post_Types_Trf_Post_Tpl;
@@ -373,6 +374,9 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
                 'id' => $getCurrentUser->ID
             ],
             'currentScreen' => get_current_screen(),
+            'media' => [
+                'file_types' => Tru_Fetcher_Media::FILE_TYPES
+            ]
         ];
     }
 

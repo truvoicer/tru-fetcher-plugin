@@ -1,10 +1,16 @@
 import React from 'react';
 import {useState} from '@wordpress/element';
-import {TextControl, SelectControl, ToggleControl, Button, Modal} from "@wordpress/components";
+import {TextControl, SelectControl, ToggleControl, Button, Modal, RangeControl} from "@wordpress/components";
 import {Icon, chevronDown, chevronUp, trash} from "@wordpress/icons";
 import Grid from "../../wp/Grid";
 import SystemNamesList from "../../../../../components/forms/SystemNamesList";
+import {isNotEmpty, isObject} from "../../../../../library/helpers/utils-helpers";
+import TreeSelectList from "../../../../../components/forms/TreeSelectList";
 
+const treeCustomConfig = {
+    name: 'custom',
+    id: 'custom'
+}
 const FormRowsTab = (props) => {
     const [systemNamesModal, setSystemNamesModal] = useState(false);
     const [selectedField, setSelectedField] = useState(null);
@@ -12,6 +18,62 @@ const FormRowsTab = (props) => {
         data,
         onChange
     } = props;
+
+    function getFileTypeTreeIdByName(name) {
+        if (!isNotEmpty(name)) {
+            return null;
+        }
+        if (!isObject(name)) {
+            return null;
+        }
+        if (name?.name === 'custom') {
+            return treeCustomConfig.id;
+        }
+        if (!Array.isArray(tru_fetcher_react?.media?.file_types)) {
+            return null;
+        }
+
+        for (let i = 0; i < tru_fetcher_react?.media?.file_types.length; i++) {
+            let type = tru_fetcher_react?.media?.file_types[i];
+            if (name?.parent && type?.name === name?.name) {
+                return `${type?.name}_${i}`;
+            }
+            if (Array.isArray(type?.types)) {
+                for (let j = 0; j < type?.types.length; j++) {
+                    let extension = type?.types[j];
+                    if (extension?.name === name?.name) {
+                        return `${type?.name}_${j}`;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    function buildFileTypeTree() {
+        if (!Array.isArray(tru_fetcher_react?.media?.file_types)) {
+            return [];
+        }
+        const fileTypes = tru_fetcher_react?.media?.file_types;
+        return [
+            ...fileTypes.map((type, index) => {
+                let treeItem = {
+                    name: type?.name,
+                    id: `${type?.name}_${index}`,
+                };
+                if (Array.isArray(type?.types)) {
+                    treeItem.children = type.types.map((extension, extIndex) => {
+                        return {
+                            name: extension?.name,
+                            id: `${type?.name}_${extIndex}`,
+                        }
+                    });
+                }
+                return treeItem;
+            }),
+            treeCustomConfig
+        ];
+    }
 
     function addFormRow() {
         let cloneAtts = {...data};
@@ -59,6 +121,7 @@ const FormRowsTab = (props) => {
         let cloneAtts = {...data};
         let cloneFormRows = [...cloneAtts.form_rows];
         let cloneFormRow = {...cloneFormRows[rowIndex]};
+
         if (isArray) {
             cloneFormRow.form_items[formItemIndex][field][arrayIndex][arrayKey] = value;
         } else {
@@ -458,20 +521,86 @@ const FormRowsTab = (props) => {
 
                                                     {['file_upload', 'image_upload'].includes(formItem?.form_control) && (
                                                         <>
-                                                            <Grid columns={2}>
-                                                                <ToggleControl
-                                                                    label="Show Dropzone"
-                                                                    checked={formItem?.show_dropzone}
-                                                                    onChange={(value) => {
-                                                                        updateFormItem({
-                                                                            rowIndex,
-                                                                            formItemIndex,
-                                                                            field: 'show_dropzone',
-                                                                            value
-                                                                        });
-                                                                    }}
-                                                                />
+                                                            <Grid columns={5}>
+                                                                <>
+                                                                    <ToggleControl
+                                                                        label="Show Dropzone"
+                                                                        checked={formItem?.show_dropzone}
+                                                                        onChange={(value) => {
+                                                                            updateFormItem({
+                                                                                rowIndex,
+                                                                                formItemIndex,
+                                                                                field: 'show_dropzone',
+                                                                                value
+                                                                            });
+                                                                        }}
+                                                                    />
+                                                                    {['image_upload'].includes(formItem?.form_control) && (
+                                                                        <>
+                                                                            <ToggleControl
+                                                                                label="Image cropper"
+                                                                                checked={formItem?.image_cropper}
+                                                                                onChange={(value) => {
+                                                                                    updateFormItem({
+                                                                                        rowIndex,
+                                                                                        formItemIndex,
+                                                                                        field: 'image_cropper',
+                                                                                        value
+                                                                                    });
+                                                                                }}
+                                                                            />
+                                                                            {formItem?.image_cropper && (
+                                                                                <>
+                                                                                    <ToggleControl
+                                                                                        label="Circular crop?"
+                                                                                        checked={formItem?.circular_crop}
+                                                                                        onChange={(value) => {
+                                                                                            updateFormItem({
+                                                                                                rowIndex,
+                                                                                                formItemIndex,
+                                                                                                field: 'circular_crop',
+                                                                                                value
+                                                                                            });
+                                                                                        }}
+                                                                                    />
+                                                                                    <RangeControl
+                                                                                        label="Crop width"
+                                                                                        initialPosition={100}
+                                                                                        max={500}
+                                                                                        min={0}
+                                                                                        value={formItem?.crop_width || 100}
+                                                                                        onChange={(value) => {
+                                                                                            updateFormItem({
+                                                                                                rowIndex,
+                                                                                                formItemIndex,
+                                                                                                field: 'crop_width',
+                                                                                                value
+                                                                                            });
+                                                                                        }}
+                                                                                    />
+                                                                                    <RangeControl
+                                                                                        label="Crop height"
+                                                                                        initialPosition={100}
+                                                                                        max={500}
+                                                                                        min={0}
+                                                                                        value={formItem?.crop_height || 100}
+                                                                                        onChange={(value) => {
+                                                                                            updateFormItem({
+                                                                                                rowIndex,
+                                                                                                formItemIndex,
+                                                                                                field: 'crop_height',
+                                                                                                value
+                                                                                            });
+                                                                                        }}
+                                                                                    />
+                                                                                </>
+                                                                            )}
+                                                                        </>
+                                                                    )}
 
+                                                                </>
+                                                            </Grid>
+                                                            <Grid columns={4}>
                                                                 <TextControl
                                                                     label="Dropzone Message"
                                                                     placeholder="Dropzone Message"
@@ -485,8 +614,6 @@ const FormRowsTab = (props) => {
                                                                         });
                                                                     }}
                                                                 />
-                                                            </Grid>
-                                                            <Grid columns={1}>
                                                                 <TextControl
                                                                     label="Accepted File Types Message"
                                                                     placeholder="Accepted File Types Message"
@@ -504,7 +631,6 @@ const FormRowsTab = (props) => {
                                                         </>
                                                     )}
 
-
                                                     {['image_upload', 'file_upload'].includes(formItem?.form_control) && (
                                                         <div>
                                                             <h5>Allowed File Types</h5>
@@ -512,39 +638,59 @@ const FormRowsTab = (props) => {
                                                                 return (
                                                                     <div>
                                                                         <Grid columns={2}>
-                                                                            <TextControl
-                                                                                label="Extension"
-                                                                                placeholder="Extension"
-                                                                                value={fileType?.extension}
-                                                                                onChange={(value) => {
+                                                                            <TreeSelectList
+                                                                                selectedId={getFileTypeTreeIdByName(fileType?.type)}
+                                                                                treeData={buildFileTypeTree()}
+                                                                                label={'Select File Type'}
+                                                                                onChange={(selectedName) => {
                                                                                     updateFormItem({
                                                                                         rowIndex,
                                                                                         formItemIndex,
                                                                                         field: 'allowed_file_types',
-                                                                                        value,
+                                                                                        value: selectedName,
                                                                                         isArray: true,
                                                                                         arrayIndex: index,
-                                                                                        arrayKey: 'extension'
+                                                                                        arrayKey: 'type'
                                                                                     });
                                                                                 }}
                                                                             />
+                                                                            {fileType?.type?.name === 'custom' && (
+                                                                                <>
+                                                                                    <TextControl
+                                                                                        label="Extension"
+                                                                                        placeholder="Extension"
+                                                                                        value={fileType?.extension}
+                                                                                        onChange={(value) => {
+                                                                                            updateFormItem({
+                                                                                                rowIndex,
+                                                                                                formItemIndex,
+                                                                                                field: 'allowed_file_types',
+                                                                                                value,
+                                                                                                isArray: true,
+                                                                                                arrayIndex: index,
+                                                                                                arrayKey: 'extension'
+                                                                                            });
+                                                                                        }}
+                                                                                    />
 
-                                                                            <TextControl
-                                                                                label="Mime Type"
-                                                                                placeholder="Mime Type"
-                                                                                value={fileType?.mime_type}
-                                                                                onChange={(value) => {
-                                                                                    updateFormItem({
-                                                                                        rowIndex,
-                                                                                        formItemIndex,
-                                                                                        field: 'allowed_file_types',
-                                                                                        value,
-                                                                                        isArray: true,
-                                                                                        arrayIndex: index,
-                                                                                        arrayKey: 'mime_type'
-                                                                                    });
-                                                                                }}
-                                                                            />
+                                                                                    <TextControl
+                                                                                        label="Mime Type"
+                                                                                        placeholder="Mime Type"
+                                                                                        value={fileType?.mime_type}
+                                                                                        onChange={(value) => {
+                                                                                            updateFormItem({
+                                                                                                rowIndex,
+                                                                                                formItemIndex,
+                                                                                                field: 'allowed_file_types',
+                                                                                                value,
+                                                                                                isArray: true,
+                                                                                                arrayIndex: index,
+                                                                                                arrayKey: 'mime_type'
+                                                                                            });
+                                                                                        }}
+                                                                                    />
+                                                                                </>
+                                                                            )}
                                                                         </Grid>
                                                                         <Button
                                                                             variant="primary"
