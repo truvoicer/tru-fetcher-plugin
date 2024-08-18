@@ -411,24 +411,36 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
         );
     }
 
-    public function getItemListData($request)
+    public function getItemListData(\WP_REST_Request $request)
     {
+        $savedItems = [];
+        $ratings = [];
+        $providers = $request->get_param("providers");
+        if (is_array($providers)) {
+            foreach ($providers as $provider) {
+                $getSavedItems = $this->getSavedItemsData(
+                    $provider["provider"],
+                    $provider["service"],
+                    $provider["ids"],
+                    $request["user_id"]
+                );
+                if (is_array($getSavedItems) && count($getSavedItems) > 0) {
+                    $savedItems = array_merge($savedItems, $getSavedItems);
+                }
+                $getRatings = $this->ratingsHelper->getRatingsData(
+                    [$provider["provider"]],
+                    $provider["service"],
+                    $provider["ids"],
+                    $request["user_id"]
+                );
+                if (is_array($getRatings) && count($getRatings) > 0) {
+                    $ratings = array_merge($ratings, $getRatings);
+                }
+            }
+        }
 
-        $getSavedItems = $this->getSavedItemsData(
-            $request["provider_name"],
-            $request["category"],
-            $request["id_list"],
-            $request["user_id"]
-        );
-        $getRatings = $this->ratingsHelper->getRatingsData(
-            $request["provider_name"],
-            $request["category"],
-            $request["id_list"],
-            $request["user_id"]
-        );
-
-        $this->apiItemsResponse->setSavedItems($getSavedItems);
-        $this->apiItemsResponse->setItemRatings($getRatings);
+        $this->apiItemsResponse->setSavedItems($savedItems);
+        $this->apiItemsResponse->setItemRatings($ratings);
         return $this->controllerHelpers->sendSuccessResponse(
             "Items fetch",
             $this->apiItemsResponse
@@ -442,7 +454,7 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
         }
         return $this->savedItemsHelper->getSavedItemsRepository()->fetchByItemIdBatch(
             $this->apiAuthApp->getUser(),
-            $providerName,
+            [$providerName],
             $category,
             $idList
         );

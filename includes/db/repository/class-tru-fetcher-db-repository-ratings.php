@@ -39,7 +39,7 @@ class Tru_Fetcher_DB_Repository_Ratings extends Tru_Fetcher_DB_Repository_Base {
         return $this->findMany();
     }
 
-    public function fetchRating(int $userId, int $itemId, array $providerName, string $category) {
+    public function fetchRating(int $userId, int|string $itemId, array $providerName, string $category) {
         $this->addWhere($this->ratingsModel->getItemIdColumn(), $itemId);
         $this->addWhere($this->ratingsModel->getProviderNameColumn(), $providerName, Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_IN);
         $this->addWhere($this->ratingsModel->getCategoryColumn(), $category);

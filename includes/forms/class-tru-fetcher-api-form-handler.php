@@ -269,19 +269,19 @@ class Tru_Fetcher_Api_Form_Handler
         );
 
         if (count($request->get_file_params()) > 0) {
-            $allowedUserProfileFields = self::REQUEST_FILE_UPLOAD_FIELDS;
             $getAllowedFilter = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_ALLOWED_UPLOAD_FIELDS, $user);
-            if (is_array($getAllowedFilter)) {
-                $allowedUserProfileFields = [...$allowedUserProfileFields, ...$getAllowedFilter];
-            }
 
-            $filesArray = array_filter($request->get_file_params(), function ($key) use($allowedUserProfileFields) {
-                return in_array($key, $allowedUserProfileFields);
+            $filesArray = array_filter($request->get_file_params(), function ($key) {
+                return in_array($key, self::REQUEST_FILE_UPLOAD_FIELDS);
+            }, ARRAY_FILTER_USE_KEY);
+
+            $filterFilesArray = array_filter($request->get_file_params(), function ($key) use($getAllowedFilter) {
+                return in_array($key, $getAllowedFilter);
             }, ARRAY_FILTER_USE_KEY);
 
             $saveFilterFiles = [];
             if (has_filter(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_UPLOADED_FILE_SAVE)) {
-                $saveFilterFiles = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_UPLOADED_FILE_SAVE, $user, $filesArray);
+                $saveFilterFiles = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_UPLOADED_FILE_SAVE, $user, $filterFilesArray);
                 if (!$this->validateFileUploadResponse($saveFilterFiles)) {
                     return false;
                 }
@@ -366,16 +366,18 @@ class Tru_Fetcher_Api_Form_Handler
 
     public function saveUserProfileMeta(\WP_User $user, array $profileData = [])
     {
-        $allowedUserProfileFields = [...self::REQUEST_TEXT_FIELDS, ...self::REQUEST_FORM_ARRAY_FIELDS];
         $getAllowedFilter = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_ALLOWED_USER_PROFILE_FIELDS, $user);
-        if (is_array($getAllowedFilter)) {
-            $allowedUserProfileFields = [...$allowedUserProfileFields, ...$getAllowedFilter];
-        }
+        $filterProfileData = array_filter($profileData, function ($key) use($getAllowedFilter) {
+            return in_array($key, $getAllowedFilter);
+        }, ARRAY_FILTER_USE_KEY);
 
+        $allowedUserProfileFields = [...self::REQUEST_TEXT_FIELDS, ...self::REQUEST_FORM_ARRAY_FIELDS];
         $profileData = array_filter($profileData, function ($key) use($allowedUserProfileFields) {
             return in_array($key, $allowedUserProfileFields);
         }, ARRAY_FILTER_USE_KEY);
-        $applyFilters = $this->applyUserProfileMetaUpdateFilters($user, $profileData);
+
+
+        $applyFilters = $this->applyUserProfileMetaUpdateFilters($user, $filterProfileData);
         if (!$applyFilters) {
             return false;
         }

@@ -33,7 +33,7 @@ class Tru_Fetcher_DB_Repository_Saved_Items extends Tru_Fetcher_DB_Repository_Ba
         $this->savedItemsModel = new Tru_Fetcher_DB_Model_Saved_Items();
     }
 
-    public function fetchByItemId(\WP_User $user, int $itemId, array $providerName, string $category)
+    public function fetchByItemId(\WP_User $user, string|int $itemId, array $providerName, string $category)
     {
         $this->addWhere($this->savedItemsModel->getUserIdColumn(), $user->ID);
         $this->addWhere($this->savedItemsModel->getProviderNameColumn(), $providerName, Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_IN);

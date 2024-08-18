@@ -36,20 +36,25 @@ const FormRowsTab = (props) => {
         for (let i = 0; i < tru_fetcher_react?.media?.file_types.length; i++) {
             let type = tru_fetcher_react?.media?.file_types[i];
             if (name?.parent && type?.name === name?.name) {
-                return `${type?.name}_${i}`;
+                return buildTypeId(type?.name, i);
             }
             if (Array.isArray(type?.types)) {
                 for (let j = 0; j < type?.types.length; j++) {
                     let extension = type?.types[j];
                     if (extension?.name === name?.name) {
-                        return `${type?.name}_${j}`;
+                        return buildExtensionId(type?.name, extension?.name, j);
                     }
                 }
             }
         }
         return null;
     }
-
+    function buildTypeId(typeName, index) {
+        return `${typeName}_${index}`;
+    }
+    function buildExtensionId(typeName, extensionName, index) {
+        return `${typeName}_${extensionName}_${index}`;
+    }
     function buildFileTypeTree() {
         if (!Array.isArray(tru_fetcher_react?.media?.file_types)) {
             return [];
@@ -59,13 +64,13 @@ const FormRowsTab = (props) => {
             ...fileTypes.map((type, index) => {
                 let treeItem = {
                     name: type?.name,
-                    id: `${type?.name}_${index}`,
+                    id: buildTypeId(type?.name, index),
                 };
                 if (Array.isArray(type?.types)) {
                     treeItem.children = type.types.map((extension, extIndex) => {
                         return {
                             name: extension?.name,
-                            id: `${type?.name}_${extIndex}`,
+                            id: buildExtensionId(type?.name, extension?.name, extIndex),
                         }
                     });
                 }
@@ -98,6 +103,10 @@ const FormRowsTab = (props) => {
             options: [],
             endpoint: '',
             show_dropzone: false,
+            image_cropper: false,
+            circular_crop: false,
+            crop_width: 150,
+            crop_height: 150,
             dropzone_message: 'Drop files here',
             accepted_file_types_message: '',
             allowed_file_types: [],
@@ -565,10 +574,10 @@ const FormRowsTab = (props) => {
                                                                                     />
                                                                                     <RangeControl
                                                                                         label="Crop width"
-                                                                                        initialPosition={100}
+                                                                                        initialPosition={150}
                                                                                         max={500}
                                                                                         min={0}
-                                                                                        value={formItem?.crop_width || 100}
+                                                                                        value={formItem?.crop_width || 150}
                                                                                         onChange={(value) => {
                                                                                             updateFormItem({
                                                                                                 rowIndex,
@@ -580,10 +589,10 @@ const FormRowsTab = (props) => {
                                                                                     />
                                                                                     <RangeControl
                                                                                         label="Crop height"
-                                                                                        initialPosition={100}
+                                                                                        initialPosition={150}
                                                                                         max={500}
                                                                                         min={0}
-                                                                                        value={formItem?.crop_height || 100}
+                                                                                        value={formItem?.crop_height || 150}
                                                                                         onChange={(value) => {
                                                                                             updateFormItem({
                                                                                                 rowIndex,
