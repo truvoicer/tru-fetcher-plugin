@@ -32,8 +32,12 @@ import {
     SESSION_USER_TOKEN_EXPIRES_AT
 } from "./library/redux/constants/session-constants";
 import {isNotEmpty, isObjectEmpty, isObject} from "./library/helpers/utils-helpers";
+import HtmlBlockEdit from "./wp/blocks/html/HtmlBlockEdit";
+import { registerFormatType } from '@wordpress/rich-text';
+import { RichTextToolbarButton } from '@wordpress/block-editor';
+import PlaceholdersButton from "./wp/editors/buttons/PlaceholdersButton";
 
-if (!getPlugin('trf-fetcher-plugin')) {
+if (tru_fetcher_react?.currentScreen?.base !== 'widgets' && getPlugin('trf-fetcher-plugin')) {
     registerPlugin( 'trf-metadata-plugin', {
         render: SidebarMetaBoxLoader
     } );
@@ -48,6 +52,40 @@ if (
     typeof tru_fetcher_react.blocks !== 'undefined' &&
     Array.isArray(tru_fetcher_react.blocks)
 ) {
+
+    let defaultProps = {
+        apiConfig: tru_fetcher_react.api,
+        reducers: {
+            app: {
+                ...defaultState,
+                [APP_NAME]: tru_fetcher_react?.app_name,
+                [APP_API]: tru_fetcher_react.api,
+                [APP_CURRENT_APP_KEY]: tru_fetcher_react.api?.tru_fetcher?.app_key,
+            },
+            session: {
+                ...defaultState,
+                [SESSION_AUTHENTICATED]: true,
+                [SESSION_IS_AUTHENTICATING]: false,
+                [SESSION_API_URLS]: {
+                    [SESSION_API_BASE_URL]: tru_fetcher_react.api?.tru_fetcher?.baseUrl,
+                },
+                [SESSION_USER]: {
+                    [SESSION_USER_TOKEN]: tru_fetcher_react.api?.tru_fetcher?.token,
+                    [SESSION_USER_TOKEN_EXPIRES_AT]: null,
+                    [SESSION_USER_ID]: null,
+                },
+            }
+        }
+    };
+    PlaceholdersButton.defaultProps = defaultProps;
+    registerFormatType('tru-fetcher-format/placeholder-button', {
+        /* ... */
+        title: 'Placeholders',
+        tagName: 'samp',
+        className: null,
+        edit: PlaceholdersButton,
+        /* ... */
+    } );
     tru_fetcher_react.blocks.forEach((block) => {
         let attData = {};
         let examplesAttData = {};
@@ -148,6 +186,9 @@ if (
             case "search_block":
                 blockComponent = SearchBlockEdit;
                 break;
+            case "html_block":
+                blockComponent = HtmlBlockEdit;
+                break;
             // case "sidebar_widgets_block":
             //     blockComponent = SidebarWidgetBlockEdit;
             //     break;
@@ -157,32 +198,11 @@ if (
             default:
                 return;
         }
-        blockComponent.defaultProps = {
-            config: block,
-            apiConfig: tru_fetcher_react.api,
-            childConfigs: childConfigs,
-            reducers: {
-                app: {
-                    ...defaultState,
-                    [APP_NAME]: tru_fetcher_react?.app_name,
-                    [APP_API]: tru_fetcher_react.api,
-                    [APP_CURRENT_APP_KEY]: tru_fetcher_react.api?.tru_fetcher?.app_key,
-                },
-                session: {
-                    ...defaultState,
-                    [SESSION_AUTHENTICATED]: true,
-                    [SESSION_IS_AUTHENTICATING]: false,
-                    [SESSION_API_URLS]: {
-                        [SESSION_API_BASE_URL]: tru_fetcher_react.api?.tru_fetcher?.baseUrl,
-                    },
-                    [SESSION_USER]: {
-                        [SESSION_USER_TOKEN]: tru_fetcher_react.api?.tru_fetcher?.token,
-                        [SESSION_USER_TOKEN_EXPIRES_AT]: null,
-                        [SESSION_USER_ID]: null,
-                    },
-                }
-            }
-        }
+
+        defaultProps.child = block;
+        defaultProps.childConfigs = childConfigs;
+        blockComponent.defaultProps = defaultProps;
+
         let blockOptions = {};
         blockOptions.title = block.title;
         blockOptions.attributes = attData;
@@ -198,4 +218,5 @@ if (
         }
         registerBlockType( block.name, blockOptions );
     });
+
 }

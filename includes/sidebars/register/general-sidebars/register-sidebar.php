@@ -98,9 +98,9 @@ function tru_fetcher_register_sidebars() {
     );
     register_sidebar( $accountAreaSidebar );
 
-    $comparisonSidebar = array(
-        'name'          =>  __( 'Comparisons Sidebar' ),
-        'id'            => "comparisons-sidebar",
+    $itemViewSidebar = array(
+        'name'          =>  __( 'Item View Sidebar' ),
+        'id'            => "item-view-sidebar",
         'description'   => '',
         'class'         => '',
         'before_widget' => '<li id="%1$s" class="widget %2$s">',
@@ -108,5 +108,5 @@ function tru_fetcher_register_sidebars() {
         'before_title'  => '<h2 class="widgettitle">',
         'after_title'   => "</h2>\n",
     );
-    register_sidebar( $comparisonSidebar );
+    register_sidebar( $itemViewSidebar );
 }

@@ -104,6 +104,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         $currentScreen = get_current_screen();
         switch ($currentScreen->base) {
             case 'post':
+            case 'widgets':
                 $this->loadAssetsByCurrentScreeId($currentScreen);
                 break;
             case "toplevel_page_tru-fetcher":
@@ -115,12 +116,34 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
     private function loadAssetsByCurrentScreeId(\WP_Screen $currentScreen)
     {
         switch ($currentScreen->id) {
+            case 'widgets':
+                $asset_file = include TRU_FETCHER_PLUGIN_DIR . "build/{$this->gutenbergReactScriptName}.asset.php";
+
+                $this->loadGutenbergAssets([
+                    'dependencies' => [
+                        'react',
+                        'wp-block-editor',
+                        'wp-blocks',
+                        'wp-components',
+                        'wp-compose',
+                        'wp-data',
+//                        'wp-edit-post',
+                        'wp-element',
+                        'wp-i18n',
+                        'wp-plugins',
+                        'wp-primitives',
+                    ],
+                    'version' => $asset_file['version']
+                ]);
+                return;
             case 'post':
             case 'page':
             case Tru_Fetcher_Post_Types_Trf_Post_Tpl::NAME:
             case Tru_Fetcher_Post_Types_Trf_Item_View_Tpl::NAME:
             case Tru_Fetcher_Post_Types_Trf_Category_Tpl::NAME:
-                $this->loadGutenbergAssets();
+
+                $asset_file = include TRU_FETCHER_PLUGIN_DIR . "build/{$this->gutenbergReactScriptName}.asset.php";
+                $this->loadGutenbergAssets($asset_file);
                 return;
             default:
                 $this->loadMetaBoxesAssets($currentScreen);
@@ -161,10 +184,8 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
     /**
      * @throws Exception
      */
-    public function loadGutenbergAssets()
+    public function loadGutenbergAssets(array $assets)
     {
-        // Automatically load imported dependencies and assets version.
-        $asset_file = include TRU_FETCHER_PLUGIN_DIR . "build/{$this->gutenbergReactScriptName}.asset.php";
 
         wp_enqueue_media();
         wp_enqueue_style(
@@ -174,8 +195,8 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         wp_enqueue_script(
             "{$this->plugin_name}-{$this->gutenbergReactScriptName}",
             TRU_FETCHER_PLUGIN_URL . "build/{$this->gutenbergReactScriptName}.js",
-            $asset_file['dependencies'],
-            $asset_file['version'],
+            $assets['dependencies'],
+            $assets['version'],
         );
         $localizedScriptData = $this->buildDefaultLocalizedScriptData();
         $localizedScriptData['api'] = [];
@@ -237,6 +258,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
             ],
         ];
     }
+
     /**
      * @throws Exception
      */
@@ -256,12 +278,14 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
             'tab_presets' => (new Tru_Fetcher_Api_Helpers_Tab_Presets())->getTabPresetsRepository()->findTabPresets(),
         ];
     }
+
     public function buildSettingsLocalizedScriptData(): array
     {
         return [
             'settings' => (new Tru_Fetcher_Api_Helpers_Setting())->getSettingsByNames(['comparison_templates']),
         ];
     }
+
     /**
      * @throws Exception
      */
@@ -275,6 +299,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
             ]),
         ];
     }
+
     /**
      * @throws Exception
      */
