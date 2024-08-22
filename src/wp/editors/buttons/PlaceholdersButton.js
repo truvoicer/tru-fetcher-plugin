@@ -79,29 +79,43 @@ const PlaceholdersButton = ({isActive, onChange, value, ...otherProps}) => {
             name: 'service',
             id: 'service',
             getId: (data) => {
-              return `${data.id}_${data.name}`;
+                return buildId('service', data.name);
             },
-            getData: async () => {
-                const services = await serviceListRequest();
-                return getServicesOptions(services, 'service')
+            // getData: async (data) => {
+            //     return await serviceListRequest();
+            // },
+            getOptions:  (data) => {
+                return getServicesOptions(data)
             },
             onSelect: async (data) => {
                 if (!data?.rawId) {
                     return;
                 }
-                const responseKeys = await dataKeysRequest(data?.rawId);
-                console.log('service onSelect', responseKeys);
-                setTreeData(
-                    addDataToTreeById(
-                        data.id,
-                        {children: responseKeys},
-                        treeData
-                    )
-                );
-                //     if (!isNotEmpty(selectedService) || isNaN(selectedService)) {
-                //         return;
-                //     }
-                //     dataKeysRequest();
+                // const responseKeys = await dataKeysRequest(data?.rawId);
+                // console.log('service onSelect', responseKeys);
+                // setTreeData(
+                //     addDataToTreeById(
+                //         data.id,
+                //         {children: responseKeys},
+                //         treeData
+                //     )
+                // );
+            },
+            child: {
+                name: 'responseKeys',
+                id: 'responseKeys',
+                getId: (data) => {
+                    return buildId('responseKeys', data.name);
+                },
+                // getData: async (data) => {
+                //     return await dataKeysRequest(data?.rawId);
+                // },
+                getOptions: (data) => {
+                    return getDataKeysSelectOptions(data, 'service');
+                },
+                onSelect: (data) => {
+                    console.log('responseKeys onSelect', data);
+                }
             }
         }
     ];
@@ -154,32 +168,40 @@ const PlaceholdersButton = ({isActive, onChange, value, ...otherProps}) => {
             findCategory.onSelect(getSelectedData);
         }
     }
+    async function buildTreeConfigItem(item) {
+        let data = {
+            name: item.name,
+            id: item.id,
+        };
+        if (typeof item?.getId !== 'function') {
+            return data;
+        }
+        if (typeof item?.getData === 'function') {
+            return data;
+        }
+        if (typeof item?.getOptions === 'function') {
+            return data;
+        }
+        const itemData = await item.getData();
+        if (!Array.isArray(itemData)) {
+            return data;
+        }
+        const buildOptions = item.getOptions(itemData);
+        data.children = buildOptions.map((child) => {
+            let cloneChild = {...child};
+            cloneChild.rawId = child.id;
+            cloneChild.id = item.getId(child);
+            if (typeof item?.child === 'object') {
+                cloneChild.children = buildTreeConfigItem(item.child);
+            }
+            return cloneChild;
+        });
 
+        return data;
+    }
     function buildTree() {
         return config.map(async (item) => {
-            let data = {
-                name: item.name,
-                id: item.id,
-            };
-            if (typeof item?.getId !== 'function') {
-                return data;
-            }
-            if (typeof item?.getData === 'function') {
-                return data;
-            }
-            const itemData = await item.getData();
-            if (!Array.isArray(itemData)) {
-                return data;
-            }
-
-            data.children = itemData.map((child) => {
-                let cloneChild = {...child};
-                cloneChild.rawId = child.id;
-                cloneChild.id = item.getId(child);
-                return cloneChild;
-            });
-
-            return data;
+            return buildTreeConfigItem(item);
         });
     }
 
