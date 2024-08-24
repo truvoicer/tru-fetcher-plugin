@@ -1,4 +1,4 @@
-import { registerPlugin, getPlugin } from '@wordpress/plugins';
+import { registerPlugin, getPlugin, getPlugins } from '@wordpress/plugins';
 import { registerBlockType } from '@wordpress/blocks';
 import 'antd/dist/reset.css';
 import '../assets/sass/tru-fetcher-admin.scss';
@@ -37,7 +37,7 @@ import { registerFormatType } from '@wordpress/rich-text';
 import { RichTextToolbarButton } from '@wordpress/block-editor';
 import PlaceholdersButton from "./wp/editors/buttons/PlaceholdersButton";
 
-if (tru_fetcher_react?.currentScreen?.base !== 'widgets' && getPlugin('trf-fetcher-plugin')) {
+if (tru_fetcher_react?.currentScreen?.base !== 'widgets') {
     registerPlugin( 'trf-metadata-plugin', {
         render: SidebarMetaBoxLoader
     } );

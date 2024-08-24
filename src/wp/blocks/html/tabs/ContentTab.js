@@ -1,125 +1,159 @@
 import React from 'react';
 
-import { useBlockProps, RichText } from '@wordpress/block-editor';
-import {TabPanel, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import {TextareaControl, Button, Modal} from "@wordpress/components";
+import ApiRequestTreeSelect from "../../../../components/ApiRequestTreeSelect";
+import fetcherApiConfig from "../../../../library/api/fetcher-api/fetcherApiConfig";
+import {useState, useEffect} from '@wordpress/element';
+import {StateMiddleware} from "../../../../library/api/StateMiddleware";
 import {isNotEmpty, isObject} from "../../../../library/helpers/utils-helpers";
-import TreeSelectList from "../../../../components/forms/TreeSelectList";
 
 const ContentTab = (props) => {
     const {
         attributes,
         setAttributes,
         className,
-        apiConfig
+        apiConfig,
+        reducers
     } = props;
 
-    const blockProps = useBlockProps();
+    const [placeholderModal, setPlaceholderModal] = useState(false);
+    const [selectedPlaceholder, setSelectedPlaceholder] = useState(null);
 
-    // function getFileTypeTreeIdByName(name) {
-    //     if (!isNotEmpty(name)) {
-    //         return null;
-    //     }
-    //     if (!isObject(name)) {
-    //         return null;
-    //     }
-    //
-    //     if (!Array.isArray(tru_fetcher_react?.media?.file_types)) {
-    //         return null;
-    //     }
-    //
-    //     for (let i = 0; i < tru_fetcher_react?.media?.file_types.length; i++) {
-    //         let type = tru_fetcher_react?.media?.file_types[i];
-    //         if (name?.parent && type?.name === name?.name) {
-    //             return buildTypeId(type?.name, i);
-    //         }
-    //         if (Array.isArray(type?.types)) {
-    //             for (let j = 0; j < type?.types.length; j++) {
-    //                 let extension = type?.types[j];
-    //                 if (extension?.name === name?.name) {
-    //                     return buildExtensionId(type?.name, extension?.name, j);
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     return null;
-    // }
-    // function buildTypeId(typeName, index) {
-    //     return `${typeName}_${index}`;
-    // }
-    // function buildExtensionId(typeName, extensionName, index) {
-    //     return `${typeName}_${extensionName}_${index}`;
-    // }
-    // function buildFileTypeTree() {
-    //     if (!Array.isArray(tru_fetcher_react?.media?.file_types)) {
-    //         return [];
-    //     }
-    //     const fileTypes = tru_fetcher_react?.media?.file_types;
-    //     return [
-    //         ...fileTypes.map((type, index) => {
-    //             let treeItem = {
-    //                 name: type?.name,
-    //                 id: buildTypeId(type?.name, index),
-    //             };
-    //             if (Array.isArray(type?.types)) {
-    //                 treeItem.children = type.types.map((extension, extIndex) => {
-    //                     return {
-    //                         name: extension?.name,
-    //                         id: buildExtensionId(type?.name, extension?.name, extIndex),
-    //                     }
-    //                 });
-    //             }
-    //             return treeItem;
-    //         })
-    //     ];
-    // }
+    const stateMiddleware = new StateMiddleware();
+    stateMiddleware.setAppState(reducers?.app);
+    stateMiddleware.setSessionState(reducers?.session);
+
+    async function dataKeysRequest(serviceId) {
+        if (!isNotEmpty(serviceId)) {
+            return;
+        }
+        const results = await stateMiddleware.fetchRequest({
+            config: fetcherApiConfig,
+            endpoint: `${fetcherApiConfig.endpoints.service}/${serviceId}/response-key/list`,
+            params: {
+                pagination: false,
+            }
+        });
+        if (Array.isArray(results?.data?.data?.service_response_keys)) {
+            return results.data.data.service_response_keys;
+        }
+        return [];
+    }
+
+    async function serviceListRequest() {
+        const results = await stateMiddleware.fetchRequest({
+            config: fetcherApiConfig,
+            endpoint: `${fetcherApiConfig.endpoints.service}/list`,
+        });
+
+        if (Array.isArray(results?.data?.data?.services)) {
+            return results.data.data.services;
+        }
+        return [];
+    }
+    function buildId(id, name) {
+        return `${id}_${name}`;
+    }
+    function getDataKeysSelectOptions(dataKeysOptions) {
+        if (!Array.isArray(dataKeysOptions)) {
+            return [];
+        }
+        return dataKeysOptions.map((item) => {
+            let cloneItem = {...item};
+            cloneItem.name = item.name;
+            return cloneItem;
+        })
+    }
+
+    function getServicesOptions(services, parent) {
+        return services.map((item) => {
+            let cloneItem = {...item};
+            cloneItem.name = item.label;
+            return cloneItem;
+        })
+    }
+
+    const config = [
+        {
+            root: true,
+            name: 'service',
+            label: 'Services',
+            returnValue: false,
+            getId: (data) => {
+                return buildId('service', data.name);
+            },
+            getData: async (data) => {
+                return await serviceListRequest();
+            },
+            getOptions:  (data) => {
+                return getServicesOptions(data)
+            },
+            onSelect: async (data) => {
+                if (!data?.rawId) {
+                    return;
+                }
+                return await dataKeysRequest(data?.rawId);
+            },
+            child: {
+                name: 'responseKeys',
+                getId: (data) => {
+                    return buildId('responseKeys', data.name);
+                },
+                getOptions: (data) => {
+                    return getDataKeysSelectOptions(data, 'service');
+                },
+            }
+        }
+    ];
     return (
         <div>
-            {/*<TreeSelectList*/}
-            {/*    selectedId={getFileTypeTreeIdByName(fileType?.type)}*/}
-            {/*    treeData={buildFileTypeTree()}*/}
-            {/*    label={'Select File Type'}*/}
-            {/*    onChange={(selectedName) => {*/}
-            {/*        updateFormItem({*/}
-            {/*            rowIndex,*/}
-            {/*            formItemIndex,*/}
-            {/*            field: 'allowed_file_types',*/}
-            {/*            value: selectedName,*/}
-            {/*            isArray: true,*/}
-            {/*            arrayIndex: index,*/}
-            {/*            arrayKey: 'type'*/}
-            {/*        });*/}
-            {/*    }}*/}
-            {/*/>*/}
-            <SelectControl
-                label="Hero Type"
-                onChange={(value) => {
-                    setAttributes({hero_type: value});
+            <Button
+                variant="primary"
+                onClick={ () => {
+                    setPlaceholderModal(true);
                 }}
-                value={attributes?.hero_type}
-                options={[
-                    {
-                        disabled: true,
-                        label: 'Select an Option',
-                        value: ''
-                    },
-                    {
-                        label: 'Full Hero',
-                        value: 'full_hero'
-                    },
-                    {
-                        label: 'Breadcrumb Hero',
-                        value: 'breadcrumb_hero'
-                    },
-                ]}
+            >
+                Insert Placeholder
+            </Button>
+            <TextareaControl
+                __nextHasNoMarginBottom
+                label="Text"
+                help="Enter some text"
+                value={ attributes.content }
+                onChange={ ( value ) => setAttributes( { content: value } ) }
             />
-            <RichText
-                { ...blockProps }
-                tagName="h2" // The tag here is the element output and editable in the admin
-                value={ attributes.content } // Any existing content, either from the database or an attribute default
-                allowedFormats={ [ 'core/bold', 'core/italic', 'tru-fetcher-format/placeholder-button' ] } // Allow the content to be made bold or italic, but do not allow other formatting options
-                onChange={ ( content ) => setAttributes( { content } ) } // Store updated content as a block attribute
-                placeholder={'Enter content here...'} // Display this text before any content has been added by the user
-            />
+            {placeholderModal && (
+                <Modal title={'Select placeholder'}
+                       size={'large'}
+                       onRequestClose={() => {
+                           setPlaceholderModal(false);
+                       }}>
+                    <ApiRequestTreeSelect
+                        config={config}
+                        label={'Placeholders'}
+                        // noOptionLabel="No parent page"
+                        onChange={ ( data ) => {
+                            if (!data?.name) {
+                                return;
+                            }
+                            setSelectedPlaceholder(data.name);
+                        } }
+                    />
+
+                    <Button
+                        variant="primary"
+                        onClick={ (e) => {
+                            e.preventDefault()
+                            if (!isNotEmpty(selectedPlaceholder)) {
+                                return;
+                            }
+                            setAttributes({content: `${attributes.content} [${selectedPlaceholder}]`});
+                        }}
+                    >
+                        Insert
+                    </Button>
+                </Modal>
+            )}
         </div>
     );
 };

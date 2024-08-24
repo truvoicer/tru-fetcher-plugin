@@ -217,10 +217,16 @@ const PageOptionsMetaBox = ({config, postType, sidebars, metaFields, setMetaFiel
 }
 
 const applyWithSelect = withSelect((select) => {
+    const itemViewSidebar = select('core').getSidebar('item-view-sidebar');
+    const sidebars = select('core').getSidebars();
+    let sideBarData = [];
+    if (Array.isArray(sidebars) && itemViewSidebar) {
+        sideBarData = [...sidebars, itemViewSidebar];
+    }
     return {
         metaFields: select('core/editor').getEditedPostAttribute('meta'),
         postType: select('core/editor').getCurrentPostType(),
-        sidebars: select('core').getSidebars()
+        sidebars: sideBarData
     };
 });
 

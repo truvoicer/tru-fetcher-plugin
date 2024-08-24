@@ -76,7 +76,10 @@ class Tru_Fetcher_Sidebars {
                 return false;
             }
             $widgetData                   = $widget_instances[ $instanceNumber ];
-            $menuObject = wp_get_nav_menu_object($widgetData['nav_menu']);
+            $menuObject = null;
+            if (!empty($widgetData['nav_menu'])) {
+                $menuObject = wp_get_nav_menu_object($widgetData['nav_menu']);
+            }
             if ($menuObject) {
                 $array[ $widgetInstanceName ]["menu_slug"] = $menuObject->slug;
                 $array[ $widgetInstanceName ]["menu_items"] = $this->menuClass->getMenu( $menuObject );

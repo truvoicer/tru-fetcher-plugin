@@ -1,25 +1,21 @@
 import React from 'react';
-import {toggleFormat} from '@wordpress/rich-text';
+import {insert} from '@wordpress/rich-text';
 import {RichTextToolbarButton} from '@wordpress/block-editor';
-import {Modal, TreeSelect} from "@wordpress/components";
+import {Modal, Button} from "@wordpress/components";
 import {useState, useEffect} from '@wordpress/element';
 import {StateMiddleware} from "../../../library/api/StateMiddleware";
 import {isNotEmpty, isObject} from "../../../library/helpers/utils-helpers";
 import fetcherApiConfig from "../../../library/api/fetcher-api/fetcherApiConfig";
-import config from "../../../library/api/wp/config";
+import ApiRequestTreeSelect from "../../../components/ApiRequestTreeSelect";
 
 const PlaceholdersButton = ({isActive, onChange, value, ...otherProps}) => {
     const {reducers} = otherProps;
     const [placeholderModal, setPlaceholderModal] = useState(false);
+    const [selectedPlaceholder, setSelectedPlaceholder] = useState(null);
 
     const stateMiddleware = new StateMiddleware();
     stateMiddleware.setAppState(reducers?.app);
     stateMiddleware.setSessionState(reducers?.session);
-
-    const [requestData, setRequestData] = useState({});
-    const [treeData, setTreeData] = useState([]);
-    const [selectedTreeId, setSelectedTreeId] = useState(null);
-    const [dataKeysOptions, setDataKeysOptions] = useState([]);
 
     async function dataKeysRequest(serviceId) {
         if (!isNotEmpty(serviceId)) {
@@ -52,15 +48,14 @@ const PlaceholdersButton = ({isActive, onChange, value, ...otherProps}) => {
     function buildId(id, name) {
         return `${id}_${name}`;
     }
-    function getDataKeysSelectOptions() {
+    function getDataKeysSelectOptions(dataKeysOptions) {
         if (!Array.isArray(dataKeysOptions)) {
             return [];
         }
         return dataKeysOptions.map((item) => {
-            return {
-                label: item.name,
-                value: item.name,
-            }
+            let cloneItem = {...item};
+            cloneItem.name = item.name;
+            return cloneItem;
         })
     }
 
@@ -68,7 +63,6 @@ const PlaceholdersButton = ({isActive, onChange, value, ...otherProps}) => {
         return services.map((item) => {
             let cloneItem = {...item};
             cloneItem.name = item.label;
-            cloneItem.parent = parent;
             return cloneItem;
         })
     }
@@ -77,13 +71,14 @@ const PlaceholdersButton = ({isActive, onChange, value, ...otherProps}) => {
         {
             root: true,
             name: 'service',
-            id: 'service',
+            label: 'Services',
+            returnValue: false,
             getId: (data) => {
                 return buildId('service', data.name);
             },
-            // getData: async (data) => {
-            //     return await serviceListRequest();
-            // },
+            getData: async (data) => {
+                return await serviceListRequest();
+            },
             getOptions:  (data) => {
                 return getServicesOptions(data)
             },
@@ -91,133 +86,20 @@ const PlaceholdersButton = ({isActive, onChange, value, ...otherProps}) => {
                 if (!data?.rawId) {
                     return;
                 }
-                // const responseKeys = await dataKeysRequest(data?.rawId);
-                // console.log('service onSelect', responseKeys);
-                // setTreeData(
-                //     addDataToTreeById(
-                //         data.id,
-                //         {children: responseKeys},
-                //         treeData
-                //     )
-                // );
+                return await dataKeysRequest(data?.rawId);
             },
             child: {
                 name: 'responseKeys',
-                id: 'responseKeys',
                 getId: (data) => {
                     return buildId('responseKeys', data.name);
                 },
-                // getData: async (data) => {
-                //     return await dataKeysRequest(data?.rawId);
-                // },
                 getOptions: (data) => {
                     return getDataKeysSelectOptions(data, 'service');
                 },
-                onSelect: (data) => {
-                    console.log('responseKeys onSelect', data);
-                }
             }
         }
     ];
-    function addDataToTreeById(id, data, tree) {
-        return tree.map((item) => {
-            let cloneItem = {...item};
-            if (cloneItem.id !== id) {
-                cloneItem.children = cloneItem.children.map((child) => {
-                    return addDataToTreeById(id, data, child);
-                });
-            } else {
-                cloneItem = {...cloneItem, ...data};
-            }
-            return cloneItem;
-        });
-    }
-    function findSelectedNameData(data, id) {
-        if (data?.id === id) {
-            return data;
-        }
-        if (Array.isArray(data.children)) {
-            for (const child of data.children) {
-                const selected = findSelectedNameData(child, id);
-                if (selected) {
-                    return selected;
-                }
-            }
-        }
-        return null;
-    }
-    function getSelectedNameData(data, id) {
-        for (const child of data) {
-            const findSelected = findSelectedNameData(child, id);
-            if (findSelected) {
-                return findSelected;
-            }
-        }
-        return null;
-    }
-    function selectHandler(id) {
-        console.log({id});
-        const getSelectedData = getSelectedNameData(treeData, id);
-        console.log({getSelectedData});
-        const findCategory = config.find((item) => item.id === getSelectedData?.parent);
-        console.log({findCategory});
-        if (!findCategory) {
-            return;
-        }
-        if (typeof findCategory?.onSelect === 'function') {
-            findCategory.onSelect(getSelectedData);
-        }
-    }
-    async function buildTreeConfigItem(item) {
-        let data = {
-            name: item.name,
-            id: item.id,
-        };
-        if (typeof item?.getId !== 'function') {
-            return data;
-        }
-        if (typeof item?.getData === 'function') {
-            return data;
-        }
-        if (typeof item?.getOptions === 'function') {
-            return data;
-        }
-        const itemData = await item.getData();
-        if (!Array.isArray(itemData)) {
-            return data;
-        }
-        const buildOptions = item.getOptions(itemData);
-        data.children = buildOptions.map((child) => {
-            let cloneChild = {...child};
-            cloneChild.rawId = child.id;
-            cloneChild.id = item.getId(child);
-            if (typeof item?.child === 'object') {
-                cloneChild.children = buildTreeConfigItem(item.child);
-            }
-            return cloneChild;
-        });
 
-        return data;
-    }
-    function buildTree() {
-        return config.map(async (item) => {
-            return buildTreeConfigItem(item);
-        });
-    }
-
-    useEffect(() => {
-        setTreeData(buildTree());
-    }, []);
-
-    useEffect(() => {
-        console.log({selectedTreeId});
-        if (selectedTreeId) {
-            selectHandler(selectedTreeId);
-        }
-    }, [selectedTreeId]);
-
-
-    console.log(buildTree());
     return (
         <>
             <RichTextToolbarButton
@@ -225,11 +107,7 @@ const PlaceholdersButton = ({isActive, onChange, value, ...otherProps}) => {
                 title="Placholders"
                 onClick={() => {
                     setPlaceholderModal(true);
-                    // onChange(
-                    //     toggleFormat( value, {
-                    //         type: 'tru-fetcher-format/placeholder-button',
-                    //     } )
-                    // );
+
                 }}
                 isActive={isActive}
             />
@@ -239,15 +117,32 @@ const PlaceholdersButton = ({isActive, onChange, value, ...otherProps}) => {
                        onRequestClose={() => {
                            setPlaceholderModal(false);
                        }}>
-                    <h1>sdsdds</h1>
-                    <TreeSelect
-                        __nextHasNoMarginBottom
+                    <ApiRequestTreeSelect
+                        config={config}
                         label={'Placeholders'}
                         // noOptionLabel="No parent page"
-                        onChange={ ( newPage ) => setSelectedTreeId( newPage ) }
-                        selectedId={ selectedTreeId }
-                        tree={treeData}
+                        onChange={ ( data ) => {
+                            if (!data?.name) {
+                                return;
+                            }
+                            setSelectedPlaceholder(data.name);
+                        } }
                     />
+
+                    <Button
+                        variant="primary"
+                        onClick={ (e) => {
+                            e.preventDefault()
+                            if (!isNotEmpty(selectedPlaceholder)) {
+                                return;
+                            }
+                            onChange(
+                                insert( value, `[${selectedPlaceholder}]`, value.start, value.end )
+                            );
+                        }}
+                    >
+                        Insert
+                    </Button>
                 </Modal>
             )}
         </>);
