@@ -1,5 +1,5 @@
 import React from 'react';
-import {SelectControl} from "@wordpress/components";
+import {SelectControl, TextControl} from "@wordpress/components";
 import Grid from "../../../components/wp/Grid";
 
 const GlobalOptionsTab = (props) => {
@@ -14,6 +14,14 @@ const GlobalOptionsTab = (props) => {
     return (
         <>
             <Grid columns={2}>
+                <TextControl
+                    label="Title"
+                    placeholder="Title"
+                    value={ attributes?.title }
+                    onChange={ ( value ) => {
+                        setAttributes({title: value});
+                    } }
+                />
                 <SelectControl
                     label="Access Control"
                     onChange={(value) => {

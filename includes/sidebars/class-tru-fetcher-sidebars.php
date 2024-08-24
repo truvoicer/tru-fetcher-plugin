@@ -109,7 +109,7 @@ class Tru_Fetcher_Sidebars {
         $blockName = $blockData[0]['blockName'];
         return [
             'name' => $blockName,
-            'data' => $blockData
+            'data' => $blockData[0]
         ];
     }
 }
