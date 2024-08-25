@@ -73,13 +73,18 @@ class Tru_Fetcher_Admin_Blocks_Resources_Opt_In extends Tru_Fetcher_Admin_Blocks
     }
     public function buildBlockAttributes(array $attributes, ?bool $includeDefaults = true) {
         $attributes = parent::buildBlockAttributes($attributes);
-        if (empty($attributes['carousel_block'])) {
-            return $attributes;
+
+        $blocks = [
+            Tru_Fetcher_Admin_Blocks_Resources_Carousel::class,
+            Tru_Fetcher_Admin_Blocks_Resources_Form::class,
+        ];
+        foreach ($blocks as $block) {
+            if (isset($attributes[$block::BLOCK_ID]) && is_array($attributes[$block::BLOCK_ID])) {
+                $blockInstance = new $block();
+                $build = $blockInstance->buildBlockAttributes($attributes[$block::BLOCK_ID]);
+                $attributes[$block::BLOCK_ID] = $build;
+            }
         }
-        if (!is_array($attributes['carousel_block'])) {
-            return $attributes;
-        }
-        $attributes['carousel_block'] = parent::buildBlockAttributes($attributes['carousel_block']);
         return $attributes;
     }
 }

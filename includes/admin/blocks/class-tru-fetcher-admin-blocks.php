@@ -117,6 +117,17 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         }
         return null;
     }
+    public static function findBlockClassByName(string $name): ?Tru_Fetcher_Admin_Blocks_Resources_Base
+    {
+        foreach (self::BLOCKS as $block) {
+            $blockClass = new $block();
+            $config = $blockClass->getConfig();
+            if ($config['name'] === $name) {
+                return $blockClass;
+            }
+        }
+        return null;
+    }
 
     public function getSingleBlock($block)
     {
@@ -205,5 +216,15 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
             }
         }
         return $taxonomies;
+    }
+
+
+    public static function buildBlockAttributesByName(string $name, array $attributes, ?bool $includeDefaults = true) {
+        $findBlock = self::findBlockClassByName($name);
+        if (!$findBlock) {
+            return $attributes;
+        }
+        $blockClass = new $findBlock();
+        return $blockClass->buildBlockAttributes($attributes, $includeDefaults);
     }
 }

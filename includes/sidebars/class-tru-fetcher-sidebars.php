@@ -1,6 +1,7 @@
 <?php
 namespace TruFetcher\Includes\Sidebars;
 
+use TruFetcher\Includes\Admin\Blocks\Tru_Fetcher_Admin_Blocks;
 use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Listings;
 use TruFetcher\Includes\Menus\Tru_Fetcher_Menu;
 
@@ -107,6 +108,8 @@ class Tru_Fetcher_Sidebars {
     private function buildSidebarBlockItem(string $content) {
         $blockData = parse_blocks($content);
         $blockName = $blockData[0]['blockName'];
+
+        $blockData[0]['attrs'] = Tru_Fetcher_Admin_Blocks::buildBlockAttributesByName($blockName, $blockData[0]['attrs']);
         return [
             'name' => $blockName,
             'data' => $blockData[0]
