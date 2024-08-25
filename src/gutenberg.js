@@ -36,6 +36,9 @@ import HtmlBlockEdit from "./wp/blocks/html/HtmlBlockEdit";
 import { registerFormatType } from '@wordpress/rich-text';
 import { RichTextToolbarButton } from '@wordpress/block-editor';
 import PlaceholdersButton from "./wp/editors/buttons/PlaceholdersButton";
+import ListingsFiltersBlockEdit from "./wp/blocks/listings-filters/ListingsFiltersBlockEdit";
+import SocialBlockEdit from "./wp/blocks/social/SocialBlockEdit";
+import SavedItemsBlockEdit from "./wp/blocks/saved-items/SavedItemsBlockEdit";
 
 if (tru_fetcher_react?.currentScreen?.base !== 'widgets') {
     registerPlugin( 'trf-metadata-plugin', {
@@ -189,12 +192,15 @@ if (
             case "html_block":
                 blockComponent = HtmlBlockEdit;
                 break;
-            // case "sidebar_widgets_block":
-            //     blockComponent = SidebarWidgetBlockEdit;
-            //     break;
-            // case "content_widgets_block":
-            //     blockComponent = ContentWidgetBlockEdit;
-            //     break;
+            case "listings_filters_block":
+                blockComponent = ListingsFiltersBlockEdit;
+                break;
+            case "social_block":
+                blockComponent = SocialBlockEdit;
+                break;
+            case "saved_items_block":
+                blockComponent = SavedItemsBlockEdit;
+                break;
             default:
                 return;
         }

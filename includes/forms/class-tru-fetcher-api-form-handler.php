@@ -1,9 +1,11 @@
 <?php
+
 namespace TruFetcher\Includes\Forms;
 
 use TruFetcher\Includes\Api\Providers\Tru_Fetcher_Api_Providers_Hubspot;
 use TruFetcher\Includes\Api\Response\Tru_Fetcher_Api_Forms_Response;
 use TruFetcher\Includes\Database\Tru_Fetcher_Database;
+use TruFetcher\Includes\Helpers\Tru_Fetcher_Api_Helpers_Setting;
 use TruFetcher\Includes\Traits\Tru_Fetcher_Traits_Errors;
 use TruFetcher\Includes\Tru_Fetcher_Filters;
 use WP_REST_Request;
@@ -42,14 +44,18 @@ class Tru_Fetcher_Api_Form_Handler
     ];
     const REQUEST_FORM_ARRAY_FIELDS = [];
 
-    const GROUP_KEY_APPENDIX = "_group";
+    const ENDPOINT_PROVIDERS = [
+        "hubspot"
+    ];
 
     private \WP_User $user;
 
     private Tru_Fetcher_Api_Forms_Response $apiFormsResponse;
+    private Tru_Fetcher_Api_Helpers_Setting $apiSettingHelpers;
 
     public function __construct()
     {
+        $this->apiSettingHelpers = new Tru_Fetcher_Api_Helpers_Setting();
         $this->loadResponseObjects();
         add_filter('mime_types', [$this, 'defineAllowedMimeTypes']);
     }
@@ -68,18 +74,60 @@ class Tru_Fetcher_Api_Form_Handler
     {
         $this->apiFormsResponse = new Tru_Fetcher_Api_Forms_Response();
     }
-    public function processEndpointProvidersByRequest(WP_REST_Request $request) {
+
+    public function processEndpointProvidersByRequest(WP_REST_Request $request, ?bool $protected = false)
+    {
         $formData = $request->get_params();
+        if (!isset($formData["external_providers"])) {
+            $this->addError(
+                new \WP_Error(
+                    "missing_external_providers",
+                    "No external providers found in request",
+                    $formData
+                )
+            );
+            return false;
+        }
         $endpointProviders = $formData["external_providers"];
         $processEndpointProviders = [];
         if (is_array($endpointProviders) && count($endpointProviders) > 0) {
-            $processEndpointProviders = $this->formEndpointProvidersHandler($endpointProviders, $formData);
+            $processEndpointProviders = $this->formEndpointProvidersHandler($endpointProviders, $formData, $protected);
         }
         return $processEndpointProviders;
     }
 
-    public function formEndpointProvidersHandler(array $providersArray = [], array $formData = [])
+    public function formEndpointProvidersHandler(array $providersArray = [], array $formData = [], ?bool $protected = false)
     {
+        if (has_filter(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_HANDLE_ENDPOINT_PROVIDER)) {
+            if ($protected) {
+                $applyFilters = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_HANDLE_ENDPOINT_PROVIDER, $providersArray, $formData, $this->getUser());
+            } else {
+                $applyFilters = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_HANDLE_ENDPOINT_PROVIDER, $providersArray, $formData, null);
+            }
+            if (!$applyFilters) {
+                return [];
+            }
+            if (!is_array($applyFilters) || count($applyFilters) === 0) {
+                return [];
+            }
+
+            $checkDefaults = array_filter(self::ENDPOINT_PROVIDERS, function ($provider) use ($applyFilters) {
+                return !in_array($provider, array_column($applyFilters, "provider"));
+            });
+
+            if (!count($checkDefaults)) {
+                return $applyFilters;
+            }
+        } else {
+            $checkDefaults = self::ENDPOINT_PROVIDERS;
+        }
+        $providersArray = array_filter($providersArray, function ($provider) use ($checkDefaults) {
+            return (
+                !empty($provider["provider"]) &&
+                in_array($provider["provider"], $checkDefaults)
+            );
+        });
+
         return array_map(function ($provider) use ($formData) {
             $result = [
                 "provider" => $provider["provider"],
@@ -105,13 +153,37 @@ class Tru_Fetcher_Api_Form_Handler
 
     private function createHubspotContact(array $provider = [], array $formData = [])
     {
-        $hubspotClient = new Tru_Fetcher_Api_Providers_Hubspot();
-        return $hubspotClient->newContact(
-            $this->buildEndpointProviderData($formData, $provider["form_field_mapping"])
-        );
+        $apiToken = $this->apiSettingHelpers->getSetting("hubspot_access_token");
+        if (!$apiToken) {
+            $this->addError(
+                new \WP_Error(
+                    "missing_hubspot_api_token",
+                    "No Hubspot API token found",
+                    $apiToken
+                )
+            );
+            return false;
+        }
+
+        try {
+            $hubspotClient = new Tru_Fetcher_Api_Providers_Hubspot();
+            $hubspotClient->setAccessToken($apiToken);
+            return $hubspotClient->newContact(
+                $this->buildEndpointProviderData($formData, $provider["form_field_mapping"])
+            );
+        } catch (\Exception $e) {
+            $this->addError(
+                new \WP_Error(
+                    "hubspot_api_error",
+                    $e->getMessage(),
+                )
+            );
+            return false;
+        }
     }
 
-    private function buildEndpointProviderData(array $formData = [], array $mappings = []) {
+    private function buildEndpointProviderData(array $formData = [], array $mappings = [])
+    {
         $dataArray = [];
         foreach ($mappings as $item) {
             if (!isset($item["provider_field_name"]) && !isset($item["form_field_name"])) {
@@ -125,7 +197,8 @@ class Tru_Fetcher_Api_Form_Handler
         return $this->endpointProvidersSpecialFieldsFilter($dataArray);
     }
 
-    private function endpointProvidersSpecialFieldsFilter(array $data = []) {
+    private function endpointProvidersSpecialFieldsFilter(array $data = [])
+    {
         $filteredData = $data;
         foreach ($data as $key => $value) {
             switch ($key) {
@@ -205,7 +278,8 @@ class Tru_Fetcher_Api_Form_Handler
         }
     }
 
-    private function getSelectDataSourceData(array $field) {
+    private function getSelectDataSourceData(array $field)
+    {
         switch ($field["name"]) {
             case "country":
                 return get_user_meta($this->getUser()->ID, 'country', true);
@@ -275,7 +349,7 @@ class Tru_Fetcher_Api_Form_Handler
                 return in_array($key, self::REQUEST_FILE_UPLOAD_FIELDS);
             }, ARRAY_FILTER_USE_KEY);
 
-            $filterFilesArray = array_filter($request->get_file_params(), function ($key) use($getAllowedFilter) {
+            $filterFilesArray = array_filter($request->get_file_params(), function ($key) use ($getAllowedFilter) {
                 return in_array($key, $getAllowedFilter);
             }, ARRAY_FILTER_USE_KEY);
 
@@ -289,14 +363,15 @@ class Tru_Fetcher_Api_Form_Handler
 
             $saveFiles = $this->saveUserProfileFileUploads($user, $filesArray);
             if (!$this->validateFileUploadResponse($saveFiles)) {
-                return (count($saveFilterFiles))? $saveFilterFiles : false;
+                return (count($saveFilterFiles)) ? $saveFilterFiles : false;
             }
             return [...$saveFilterFiles, ...$saveFiles];
         }
         return true;
     }
 
-    public function validateFileUploadResponse($response) {
+    public function validateFileUploadResponse($response)
+    {
         if ($response === false) {
             $this->addError(
                 new \WP_Error(
@@ -367,12 +442,12 @@ class Tru_Fetcher_Api_Form_Handler
     public function saveUserProfileMeta(\WP_User $user, array $profileData = [])
     {
         $getAllowedFilter = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_ALLOWED_USER_PROFILE_FIELDS, $user);
-        $filterProfileData = array_filter($profileData, function ($key) use($getAllowedFilter) {
+        $filterProfileData = array_filter($profileData, function ($key) use ($getAllowedFilter) {
             return in_array($key, $getAllowedFilter);
         }, ARRAY_FILTER_USE_KEY);
 
         $allowedUserProfileFields = [...self::REQUEST_TEXT_FIELDS, ...self::REQUEST_FORM_ARRAY_FIELDS];
-        $profileData = array_filter($profileData, function ($key) use($allowedUserProfileFields) {
+        $profileData = array_filter($profileData, function ($key) use ($allowedUserProfileFields) {
             return in_array($key, $allowedUserProfileFields);
         }, ARRAY_FILTER_USE_KEY);
 
@@ -404,7 +479,7 @@ class Tru_Fetcher_Api_Form_Handler
                     new \WP_Error(
                         "user_meta_update_error",
                         "Error updating user profile | {$key}",
-                        ['key' => $key, "value" => $value,  "user_id" => $user->ID]
+                        ['key' => $key, "value" => $value, "user_id" => $user->ID]
                     )
                 );
                 $errors[] = $key;
@@ -413,7 +488,8 @@ class Tru_Fetcher_Api_Form_Handler
         return count($errors) === 0;
     }
 
-    private function applyUserProfileMetaUpdateFilters(\WP_User $user, array $profileData = []) {
+    private function applyUserProfileMetaUpdateFilters(\WP_User $user, array $profileData = [])
+    {
 
         $applyFilter = apply_filters(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_PROFILE_SAVE, $user, $profileData);
         if ($applyFilter === true) {
@@ -454,10 +530,11 @@ class Tru_Fetcher_Api_Form_Handler
     }
 
 
-    protected function showError( $code, $message ) {
-        return new \WP_Error( $code,
-            esc_html__( $message, 'my-text-domain' ),
-            array( 'status' => 404 ) );
+    protected function showError($code, $message)
+    {
+        return new \WP_Error($code,
+            esc_html__($message, 'my-text-domain'),
+            array('status' => 404));
     }
 
 

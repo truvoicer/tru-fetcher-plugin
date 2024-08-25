@@ -9,9 +9,12 @@ use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resource
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Html;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Item_View;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Listings;
+use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Listings_Filters;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Opt_In;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Post;
+use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Saved_Items;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Search;
+use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Social;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Tabs;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_User_Account;
 use TruFetcher\Includes\Admin\Blocks\Resources\Tru_Fetcher_Admin_Blocks_Resources_Widget_Board;
@@ -59,7 +62,10 @@ class Tru_Fetcher_Admin_Blocks extends Tru_Fetcher_Base
         Tru_Fetcher_Admin_Blocks_Resources_Tabs::class,
         Tru_Fetcher_Admin_Blocks_Resources_Item_View::class,
         Tru_Fetcher_Admin_Blocks_Resources_Search::class,
-        Tru_Fetcher_Admin_Blocks_Resources_Html::class
+        Tru_Fetcher_Admin_Blocks_Resources_Html::class,
+        Tru_Fetcher_Admin_Blocks_Resources_Social::class,
+        Tru_Fetcher_Admin_Blocks_Resources_Saved_Items::class,
+        Tru_Fetcher_Admin_Blocks_Resources_Listings_Filters::class
     ];
 
     public function init()

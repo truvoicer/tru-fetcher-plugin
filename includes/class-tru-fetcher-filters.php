@@ -16,4 +16,5 @@ class Tru_Fetcher_Filters {
     public const TRU_FETCHER_FILTER_USER_ENTITY_FIND = 'tfr_form_user_entity_find';
     public const TRU_FETCHER_FILTER_FORM_PROGRESS_FIELD_GROUPS = 'tfr_form_progress_field_groups';
     public const TRU_FETCHER_FILTER_DATA_SOURCE_DATA = 'tfr_data_source_data';
+    public const TRU_FETCHER_FILTER_HANDLE_ENDPOINT_PROVIDER = 'tfr_handle_endpoint_provider';
 }

@@ -328,13 +328,18 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
     /**
      * @return array
      */
-    public function getConfig(): array
+    public function getConfig(?array $exclude = []): array
     {
         $config = $this->config;
         if (isset($config['attributes']) && is_array($config['attributes'])) {
             $config['attributes'] = array_merge($this->defaultAttributes, $config['attributes']);
         } else {
             $config['attributes'] = $this->defaultAttributes;
+        }
+        if (count($exclude)) {
+            return array_filter($config, function($key) use($exclude) {
+                return !in_array($key, $exclude);
+            }, ARRAY_FILTER_USE_KEY);
         }
         return $config;
     }

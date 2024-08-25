@@ -13,48 +13,27 @@ namespace TruFetcher\Includes\Api\Providers;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 use \HubsSpot\Factory;
 
-/**
- * Fired during plugin activation.
- *
- * This class defines all code necessary to run during the plugin's activation.
- *
- * @since      1.0.0
- * @package    Tru_Fetcher
- * @subpackage Tru_Fetcher/includes
- * @author     Michael <michael@local.com>
- */
-class Tru_Fetcher_Api_Providers_Hubspot extends Tru_Fetcher_Base
+class Tru_Fetcher_Api_Providers_Hubspot
 {
-    const HUBSPOT_CONFIG = "hubspot-config";
 
-    private $hubspotConfig;
+    private string $accessToken;
+
     private \HubSpot\Discovery\Discovery $hubspotApiClient;
 
     public function __construct()
     {
-        parent::__construct();
-        $this->hubspotConfig = $this->getHubspotConfig();
-        $this->initialiseApiClient();
     }
 
     private function initialiseApiClient()
     {
-        $this->hubspotApiClient = \HubSpot\Factory::createWithAccessToken($this->hubspotConfig->api_key);
-    }
-
-    private function getHubspotConfig() {
-        $config = parent::getConfig(self::HUBSPOT_CONFIG);
-            switch ($this->getAppEnv()) {
-                case "dev":
-                    return $config->hubspot_sdk->dev;
-                case "prod":
-                    return $config->hubspot_sdk->prod;
-                default:
-                    return false;
-            }
+        if (empty($this->accessToken)) {
+            throw new \Exception("Access token is required to initialise Hubspot API client");
+        }
+        $this->hubspotApiClient = \HubSpot\Factory::createWithAccessToken($this->accessToken);
     }
 
     public function newContact(array $data = []) {
+        $this->initialiseApiClient();
         try {
             $contactInput = new \HubSpot\Client\Crm\Contacts\Model\SimplePublicObjectInput();
             $contactInput->setProperties($data);
@@ -64,4 +43,11 @@ class Tru_Fetcher_Api_Providers_Hubspot extends Tru_Fetcher_Base
             return $e->getResponseObject()->getMessage();
         }
     }
+
+    public function setAccessToken(string $accessToken): self
+    {
+        $this->accessToken = $accessToken;
+        return $this;
+    }
+
 }

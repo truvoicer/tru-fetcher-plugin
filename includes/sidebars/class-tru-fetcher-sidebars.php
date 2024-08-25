@@ -108,8 +108,20 @@ class Tru_Fetcher_Sidebars {
     private function buildSidebarBlockItem(string $content) {
         $blockData = parse_blocks($content);
         $blockName = $blockData[0]['blockName'];
-
-        $blockData[0]['attrs'] = Tru_Fetcher_Admin_Blocks::buildBlockAttributesByName($blockName, $blockData[0]['attrs']);
+        $findBlock = Tru_Fetcher_Admin_Blocks::findBlockClassByName($blockName);
+        if (!$findBlock) {
+            return [
+                'name' => $blockName,
+                'data' => $blockData[0]
+            ];
+        }
+        $blockClass = new $findBlock();
+        $blockData[0]['config'] = $blockClass->getConfig([
+            'attributes',
+            'post_types',
+            'taxonomies'
+        ]);
+        $blockData[0]['attrs'] = $blockClass->buildBlockAttributes($blockData[0]['attrs']);
         return [
             'name' => $blockName,
             'data' => $blockData[0]

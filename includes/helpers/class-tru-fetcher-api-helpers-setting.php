@@ -32,7 +32,7 @@ class Tru_Fetcher_Api_Helpers_Setting
 
     use Tru_Fetcher_DB_Traits_WP_Site;
 
-    public const ERROR_PREFIX = TRU_FETCHER_ERROR_PREFIX . '_settings';
+    public const ERROR_PREFIX = 'tru_fetcher_error_settings';
 
     private Tru_Fetcher_DB_Engine $db;
     protected Tru_Fetcher_DB_Model_Settings $settingsModel;

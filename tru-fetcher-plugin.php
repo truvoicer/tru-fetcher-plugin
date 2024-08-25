@@ -40,9 +40,9 @@ require_once __DIR__ . '/vendor/autoload.php';
  * Rename this for your plugin and update it as you release new versions.
  */
 const TRU_FETCHER_PLUGIN_NAME = 'tru-fetcher';
-const TRU_FETCHER_PLUGIN_NAME_ACRONYM = 'trf';
-const TRU_FETCHER_ERROR_PREFIX = 'tru_fetcher_error';
+
 define('TRU_FETCHER_VERSION', '1.0.0');
+define('TRU_FETCHER_ERROR_PREFIX', 'tru_fetcher_error');
 define('TRU_FETCHER_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('TRU_FETCHER_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('TRU_FETCHER_PLUGIN_ADMIN_URL', TRU_FETCHER_PLUGIN_URL . 'admin');

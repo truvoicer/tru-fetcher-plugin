@@ -62,12 +62,17 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
 		) );
 		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/external-providers', array(
 			'methods'             => WP_REST_Server::CREATABLE,
-			'callback'            => [ $this, "providerAction" ],
+			'callback'            => [ $this, "publicProviderAction"],
 			'permission_callback' => [$this->apiAuthApp, 'allowRequest']
+		) );
+		register_rest_route( $this->apiConfigEndpoints->protectedEndpoint, '/external-providers', array(
+			'methods'             => WP_REST_Server::CREATABLE,
+			'callback'            => [ $this, "protectedProviderAction"],
+			'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
 		) );
 		register_rest_route( $this->apiConfigEndpoints->publicEndpoint, '/redirect', array(
 			'methods'             => WP_REST_Server::CREATABLE,
-			'callback'            => [ $this, "providerAction"],
+			'callback'            => [ $this, "publicProviderAction"],
 			'permission_callback' => [$this->apiAuthApp, 'publicTokenRequestHandler']
 		) );
         register_rest_route( $this->apiConfigEndpoints->protectedEndpoint, '/user/metadata/save', array(
@@ -129,15 +134,10 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
         }
 
         $this->apiFormHandler->saveUserMetaData($getUser, $request);
-
-        if (count($this->apiFormHandler->getErrors())) {
-            $this->apiFormsResponse->setErrors(
-                array_merge(
-                    $this->apiFormsResponse->getErrors(),
-                    $this->apiFormHandler->getErrors()
-                )
-            );
-        }
+        $this->apiFormsResponse = $this->controllerHelpers->handleErrors(
+            $this->apiFormsResponse,
+            [$this->apiFormHandler]
+        );
         $userMeta = Tru_Fetcher_User::getUserMetaData($getUser, $data);
         if (has_filter(Tru_Fetcher_Filters::TRU_FETCHER_FILTER_USER_PROFILE_FETCH)) {
             $userMeta = apply_filters(
@@ -184,13 +184,32 @@ class Tru_Fetcher_Api_Forms_Controller extends Tru_Fetcher_Api_Controller_Base {
         }
     }
 
-	public function providerAction(WP_REST_Request $request ) {
+	public function publicProviderAction(WP_REST_Request $request ) {
         $this->apiFormHandler->processEndpointProvidersByRequest($request);
-        return $this->sendResponse(
+        $this->apiFormsResponse = $this->controllerHelpers->handleErrors(
+            $this->apiFormsResponse,
+            [$this->apiFormHandler]
+        );
+        $this->apiFormsResponse->setData([
+            "redirect_url" => isset($request["redirect_url"])? $request["redirect_url"] : false
+        ]);
+        return $this->controllerHelpers->sendSuccessResponse(
             "The form has been successfully submitted.",
-            [
-                "redirect_url" => isset($request["redirect_url"])? $request["redirect_url"] : false
-            ]
+            $this->apiFormsResponse
+        );
+	}
+
+	public function protectedProviderAction(WP_REST_Request $request ) {
+        $this->apiFormHandler->setUser($this->apiAuthApp->getUser());
+        $this->apiFormHandler->processEndpointProvidersByRequest($request, true);
+        $this->apiFormsResponse = $this->controllerHelpers->handleErrors(
+            $this->apiFormsResponse,
+            [$this->apiFormHandler]
+        );
+
+        return $this->controllerHelpers->sendSuccessResponse(
+            "The form has been successfully submitted.",
+            $this->apiFormsResponse
         );
 	}
 

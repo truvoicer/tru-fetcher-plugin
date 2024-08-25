@@ -97,6 +97,16 @@ const GeneralSettings = () => {
             ]
         },
         {
+            title: 'Provider Settings',
+            names: [
+                {
+                    name: 'hubspot_access_token',
+                    label: 'Hubspot Access Token',
+                    type: 'text'
+                },
+            ]
+        },
+        {
             title: 'Facebook Settings',
             names: [
                 {

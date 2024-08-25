@@ -29,4 +29,23 @@ class Tru_Fetcher_Api_Helpers_Controller
         );
     }
 
+    public function handleErrors(Tru_Fetcher_Api_Response $responseObject, array $targetObjects) {
+        foreach ($targetObjects as $targetObject) {
+            if (!is_object($targetObject)) {
+                continue;
+            }
+            if (!method_exists($targetObject, 'getErrors')) {
+                continue;
+            }
+            if (count($targetObject->getErrors())) {
+                $responseObject->setErrors(
+                    array_merge(
+                        $responseObject->getErrors(),
+                        $targetObject->getErrors()
+                    )
+                );
+            }
+        }
+        return $responseObject;
+    }
 }
