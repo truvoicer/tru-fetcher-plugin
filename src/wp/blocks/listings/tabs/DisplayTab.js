@@ -1,7 +1,7 @@
 import React from 'react';
 import {TextControl, SelectControl, ToggleControl, RangeControl} from "@wordpress/components";
-import Grid from "../../components/wp/Grid";
 import {findSetting} from "../../../helpers/wp-helpers";
+import Grid from "../../../../components/Grid";
 
 const DisplayTab = (props) => {
     const {

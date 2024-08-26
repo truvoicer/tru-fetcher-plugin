@@ -1,12 +1,10 @@
 import React from 'react';
 import {Button, SelectControl, TreeSelect} from "@wordpress/components";
-import Grid from "../../components/wp/Grid";
-import {Icon, chevronDown, chevronUp, trash} from "@wordpress/icons";
 import ProviderRequestContext from "./ProviderRequestContext";
 import {useContext, useEffect, useState} from "@wordpress/element";
-import fetcherApiConfig from "../../../../library/api/fetcher-api/fetcherApiConfig";
 import {StateMiddleware} from "../../../../library/api/StateMiddleware";
 import ProviderRequestTreeGrid from "./ProviderRequestTreeGrid";
+import Grid from "../../../../components/Grid";
 
 const ProviderRequestForm = (props) => {
     const {

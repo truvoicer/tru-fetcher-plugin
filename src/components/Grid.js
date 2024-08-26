@@ -1,11 +1,15 @@
 import React from 'react';
-import {__experimentalGrid as EGrid} from "@wordpress/components";
 
-const Grid = ({children, ...otherProps}) => {
+const Grid = ({children, columns}) => {
+    function buildStyleObject() {
+        return {
+            gridTemplateColumns: `repeat(${columns}, 1fr)`
+        }
+    }
     return (
-        <EGrid {...otherProps}>
+        <div className={'tf--grid'} style={buildStyleObject()}>
             {children}
-        </EGrid>
+        </div>
     );
 };
 

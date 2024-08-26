@@ -1,6 +1,6 @@
 import React from 'react';
 import {SelectControl, TextControl} from "@wordpress/components";
-import Grid from "../../../components/wp/Grid";
+import Grid from "../../../../../components/Grid";
 
 const GlobalOptionsTab = (props) => {
     const {

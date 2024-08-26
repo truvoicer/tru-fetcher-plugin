@@ -36,11 +36,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Social extends Tru_Fetcher_Admin_Blocks
         'name' => self::BLOCK_NAME,
         'title' => self::BLOCK_TITLE,
         'attributes' => [
-//            [
-//                'id' => 'content',
-//                'type' => 'string',
-//                'default' => null,
-//            ],
+            [
+                'id' => 'types',
+                'type' => 'array',
+                'default' => [],
+            ],
         ]
     ];
 

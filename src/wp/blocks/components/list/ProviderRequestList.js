@@ -4,7 +4,7 @@ import {Icon, chevronDown, chevronUp, trash} from "@wordpress/icons";
 import ProviderRequestForm from "./ProviderRequestForm";
 import {useContext, useEffect, useState} from "@wordpress/element";
 import ProviderRequestContext from "./ProviderRequestContext";
-import Grid from "../wp/Grid";
+import Grid from "../../../../components/Grid";
 
 const ProviderRequestList = (props) => {
 

@@ -4,8 +4,8 @@ import {
     findPostTypeIdIdentifier,
     findPostTypeSelectOptions, findTaxonomyIdIdentifier, findTaxonomySelectOptions, getTermsSelectData,
 } from "../../../helpers/wp-helpers";
-import Grid from "../../components/wp/Grid";
 import {useSelect} from "@wordpress/data";
+import Grid from "../../../../components/Grid";
 
 const WordpressDataTab = (props) => {
     const {

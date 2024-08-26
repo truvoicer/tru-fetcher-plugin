@@ -1,7 +1,7 @@
 import React from 'react';
 import {TextControl, SelectControl, ToggleControl} from "@wordpress/components";
 import {useSelect} from "@wordpress/data";
-import Grid from "../components/wp/Grid";
+import Grid from "../../../components/Grid";
 
 const Sidebar = (props) => {
     const {

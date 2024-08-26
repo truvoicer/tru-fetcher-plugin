@@ -1,10 +1,10 @@
 import React from 'react';
 import {useContext, useEffect, useState} from "@wordpress/element";
 import {ToggleControl, TreeSelect} from "@wordpress/components";
-import Grid from "../../components/wp/Grid";
 import fetcherApiConfig from "../../../../library/api/fetcher-api/fetcherApiConfig";
 import ProviderRequestContext from "./ProviderRequestContext";
 import {StateMiddleware} from "../../../../library/api/StateMiddleware";
+import Grid from "../../../../components/Grid";
 
 function ProviderRequestTreeGrid({providerName, reducers, serviceRequest = null, onChange = null}) {
     const [treeData, setTreeData] = useState([]);
@@ -19,16 +19,16 @@ function ProviderRequestTreeGrid({providerName, reducers, serviceRequest = null,
     const provider = providerRequestContext?.providers.find((provider) => provider.name === providerName);
 
     function buildOptions(srs) {
-       return srs.map((sr) => {
-           let label = sr.name;
+        return srs.map((sr) => {
+            let label = sr.name;
 
             let data = {
                 hasChildren: sr?.hasChildren || false,
                 id: sr.id
             }
-           if (sr.hasOwnProperty('include_children')) {
-               data.include_children = sr.include_children;
-           }
+            if (sr.hasOwnProperty('include_children')) {
+                data.include_children = sr.include_children;
+            }
             if (Array.isArray(sr?.children)) {
                 data.children = buildOptions(sr.children)
             }
@@ -41,7 +41,7 @@ function ProviderRequestTreeGrid({providerName, reducers, serviceRequest = null,
         for (let i = 0; i < data.length; i++) {
             const sr = data[i];
             if (parseInt(sr.id) === parseInt(srId)) {
-                return  sr;
+                return sr;
             } else if (Array.isArray(sr?.children)) {
                 const find = findSr(srId, sr.children);
                 if (find) {
@@ -51,6 +51,7 @@ function ProviderRequestTreeGrid({providerName, reducers, serviceRequest = null,
         }
         return null;
     }
+
     function updateTreeItemState(key, value) {
         setTreeData(prevState => {
             let newState = [...prevState];
@@ -58,6 +59,7 @@ function ProviderRequestTreeGrid({providerName, reducers, serviceRequest = null,
             return buildOptions(newState);
         })
     }
+
     function updateTreeItem(key, value, srId, data) {
         return data.map((sr) => {
             if (parseInt(sr.id) === parseInt(srId)) {
@@ -141,22 +143,22 @@ function ProviderRequestTreeGrid({providerName, reducers, serviceRequest = null,
         <>
             {Array.isArray(treeData) && treeData.length > 0 && (
                 <Grid columns={1}>
-                <TreeSelect
-                    label="Service Request"
-                    noOptionLabel="Select a Service Request"
-                    onChange={(newPage) => {
-                        setSelectedSrId(newPage);
-                    }}
-                    selectedId={selectedSrId}
-                    tree={treeData}
-                />
-                <ToggleControl
-                    label="Include children?"
-                    checked={selectedSrData?.include_children || false}
-                    onChange={(value) => {
-                        updateTreeItemState('include_children', value);
-                    }}
-                />
+                    <TreeSelect
+                        label="Service Request"
+                        noOptionLabel="Select a Service Request"
+                        onChange={(newPage) => {
+                            setSelectedSrId(newPage);
+                        }}
+                        selectedId={selectedSrId}
+                        tree={treeData}
+                    />
+                    <ToggleControl
+                        label="Include children?"
+                        checked={selectedSrData?.include_children || false}
+                        onChange={(value) => {
+                            updateTreeItemState('include_children', value);
+                        }}
+                    />
                 </Grid>
             )}
         </>

@@ -7,7 +7,7 @@ import fetcherApiConfig from "../../../../library/api/fetcher-api/fetcherApiConf
 import {StateMiddleware} from "../../../../library/api/StateMiddleware";
 import {buildSelectOptions} from "../../../../library/helpers/form-helpers";
 import ProviderRequestContext from "../../components/list/ProviderRequestContext";
-import Grid from "../../components/wp/Grid";
+import Grid from "../../../../components/Grid";
 
 const SearchTab = (props) => {
     const {

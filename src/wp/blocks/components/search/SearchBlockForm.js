@@ -1,7 +1,7 @@
 import React from 'react';
 import {TextControl, SelectControl, ToggleControl} from "@wordpress/components";
 import {findPostTypeIdIdentifier, findPostTypeSelectOptions} from "../../../helpers/wp-helpers";
-import Grid from "../wp/Grid";
+import Grid from "../../../../components/Grid";
 
 const SearchBlockForm = (props) => {
         const {

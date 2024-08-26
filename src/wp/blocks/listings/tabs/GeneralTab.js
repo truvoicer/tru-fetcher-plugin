@@ -5,7 +5,7 @@ import {useSelect, useDispatch} from '@wordpress/data';
 import {useBlockProps, store as blockEditorStore} from '@wordpress/block-editor';
 import {isNotEmpty} from "../../../../library/helpers/utils-helpers";
 import {GutenbergBlockIdHelpers} from "../../../helpers/gutenberg/gutenberg-block-id-helpers";
-import Grid from "../../components/wp/Grid";
+import Grid from "../../../../components/Grid";
 
 
 const GeneralTab = (props) => {
@@ -32,7 +32,7 @@ const GeneralTab = (props) => {
         setAttributes({listing_block_id: blockIdHelpers?.buildBlockId(attributes?.listing_block_id)})
     }
     const listingsCategoryId = findTaxonomyIdIdentifier('trf_listings_category')
-    console.log({listingsCategoryId})
+
     return (
         <div>
             <Grid columns={2}>

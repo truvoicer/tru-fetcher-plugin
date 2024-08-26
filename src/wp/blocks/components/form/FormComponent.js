@@ -5,8 +5,8 @@ import EndpointSettingsTab from "./tabs/EndpointSettingsTab";
 import FormLayoutTab from "./tabs/FormLayoutTab";
 import FormRowsTab from "./tabs/FormRowsTab";
 import ExternalProvidersTab from "./tabs/ExternalProvidersTab";
-import Grid from "../wp/Grid";
 import GlobalOptionsTabConfig from "../global/tabs/GlobalOptionsTabConfig";
+import Grid from "../../../../components/Grid";
 
 const FormComponent = ({data, onChange, showPresets = true, reducers = null}) => {
     function getTabComponent(tab) {

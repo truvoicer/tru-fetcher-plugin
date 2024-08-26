@@ -2,10 +2,10 @@ import React from 'react';
 import {useState} from '@wordpress/element';
 import {TextControl, SelectControl, ToggleControl, Button, Modal, RangeControl} from "@wordpress/components";
 import {Icon, chevronDown, chevronUp, trash} from "@wordpress/icons";
-import Grid from "../../wp/Grid";
 import SystemNamesList from "../../../../../components/forms/SystemNamesList";
 import {isNotEmpty, isObject} from "../../../../../library/helpers/utils-helpers";
 import TreeSelectList from "../../../../../components/forms/TreeSelectList";
+import Grid from "../../../../../components/Grid";
 
 const treeCustomConfig = {
     name: 'custom',

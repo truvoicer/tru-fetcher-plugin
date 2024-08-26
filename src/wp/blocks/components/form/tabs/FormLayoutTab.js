@@ -1,6 +1,6 @@
 import React from 'react';
 import {TextControl, SelectControl} from "@wordpress/components";
-import Grid from "../../wp/Grid";
+import Grid from "../../../../../components/Grid";
 
 const FormLayoutTab = (props) => {
     const {
