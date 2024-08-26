@@ -3,6 +3,7 @@
 namespace TruFetcher\Includes\Helpers;
 
 use TruFetcher\Includes\DB\Engine\Tru_Fetcher_DB_Engine;
+use TruFetcher\Includes\DB\Model\Constants\Tru_Fetcher_DB_Model_Constants;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Ratings;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Settings;
 use TruFetcher\Includes\DB\Repository\Tru_Fetcher_DB_Repository_Ratings;
@@ -54,25 +55,46 @@ class Tru_Fetcher_Api_Helpers_Ratings {
         if (!is_array($idList) || count($idList) === 0) {
             return [];
         }
+        $ratingsRepository = $this->getRatingsRepository();
         $getRatings = [];
-        foreach ($idList as $item) {
-            $getItemRating = $this->getRatingsRepository()->fetchRating(
-                $user_id,
-                $item,
-                $providerName,
-                $category
+        foreach ($idList as $id) {
+            $ratingsRepository->addWhereGroup(
+                [
+                    $ratingsRepository->prepareWhereData(
+                        $this->ratingsModel->getItemIdColumn(),
+                        $id
+                    ),
+                    $ratingsRepository->prepareWhereData(
+                        $this->ratingsModel->getProviderNameColumn(),
+                        $providerName,
+                        Tru_Fetcher_DB_Model_Constants::WHERE_COMPARE_IN
+                    ),
+                    $ratingsRepository->prepareWhereData(
+                        $this->ratingsModel->getCategoryColumn(),
+                        $category
+                    ),
+                    $ratingsRepository->prepareWhereData(
+                        $this->ratingsModel->getUserIdColumn(),
+                        $user_id
+                    ),
+                ],
+                Tru_Fetcher_DB_Model_Constants::WHERE_LOGICAL_OPERATOR_OR
             );
-            if (!$getItemRating) {
+        }
+
+        $findExisting = $this->getRatingsRepository()->findMany();
+        foreach ($findExisting as $item) {
+            if (!$item) {
                 continue;
             }
 
-            $overallRating = $this->getOverallRatingForItem($getItemRating);
+            $overallRating = $this->getOverallRatingForItem($item);
             if (is_array($overallRating)) {
-                $getItemRating['overall_rating'] = $overallRating["overall_rating"];
-                $getItemRating['total_users_rated'] = $overallRating["total_users_rated"];
+                $item['overall_rating'] = $overallRating["overall_rating"];
+                $item['total_users_rated'] = $overallRating["total_users_rated"];
             }
 
-            $getRatings[] = $getItemRating;
+            $getRatings[] = $item;
 
         }
         return $getRatings;
