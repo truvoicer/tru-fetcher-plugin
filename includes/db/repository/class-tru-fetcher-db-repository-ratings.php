@@ -51,8 +51,8 @@ class Tru_Fetcher_DB_Repository_Ratings extends Tru_Fetcher_DB_Repository_Base {
         $this->setSelect([
             "SUM({$this->ratingsModel->getRatingColumn()}) AS {$this->ratingsModel->getRatingColumn()}",
             "(SELECT count({$this->ratingsModel->getIdColumn()}) 
-            FROM {$this->ratingsModel->getTableName()}) 
-            WHERE {$this->ratingsModel->getItemIdColumn()}=%s
+            FROM {$this->ratingsModel->getTableName()}
+            WHERE {$this->ratingsModel->getItemIdColumn()}=%s)
             AS total_users_rated",
         ]);
         $this->values[] = $itemId;
@@ -92,7 +92,7 @@ class Tru_Fetcher_DB_Repository_Ratings extends Tru_Fetcher_DB_Repository_Base {
         $this->addWhere($this->ratingsModel->getItemIdColumn(), $buildInsertData[$this->ratingsModel->getItemIdColumn()]);
         $findSavedItem = $this->findOne();
         if ($findSavedItem) {
-            return $this->updateRating($user, $findSavedItem->id, $data);
+            return $this->updateRating($user, $findSavedItem[$this->ratingsModel->getIdColumn()], $data);
         }
         return $this->insert($buildInsertData);
     }

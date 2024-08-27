@@ -16,6 +16,9 @@ class Tru_Fetcher_DB_Model_Device extends Tru_Fetcher_DB_Model
 
     protected array $tableConfig = [];
 
+    protected array $casts = [
+        'allow_notifications' => 'boolean',
+    ];
     public function __construct()
     {
         parent::__construct();

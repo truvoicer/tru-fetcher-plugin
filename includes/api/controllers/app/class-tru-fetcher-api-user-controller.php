@@ -358,7 +358,7 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
             );
         }
         $getRatings = $this->ratingsHelper->getRatingsData(
-            $request->get_param("provider_name"),
+            [$request->get_param("provider_name")],
             $request->get_param("category"),
             [$request->get_param("item_id")],
             $request->get_param("user_id")

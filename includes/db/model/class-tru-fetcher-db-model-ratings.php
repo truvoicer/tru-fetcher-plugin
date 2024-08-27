@@ -20,6 +20,10 @@ class Tru_Fetcher_DB_Model_Ratings extends Tru_Fetcher_DB_Model
 
     protected bool $dateInserts = true;
 
+    protected array $casts = [
+        'rating' => 'integer',
+    ];
+
     public function __construct()
     {
         parent::__construct();

@@ -83,6 +83,7 @@ class Tru_Fetcher_Api_Helpers_Ratings {
         }
 
         $findExisting = $this->getRatingsRepository()->findMany();
+
         foreach ($findExisting as $item) {
             if (!$item) {
                 continue;

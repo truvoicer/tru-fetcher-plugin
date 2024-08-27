@@ -22,19 +22,18 @@ class Tru_Fetcher_DB_Model
 	private array $integerDataTypes = [
 		'mediumint',
 		'int',
-		'bigint'
+		'bigint',
+		'tinyint'
 	];
 	private array $stringDataTypes = [
 		'varchar',
 		'longtext',
 		'mediumtext',
 	];
-	private array $booleanDataTypes = [
-		'tinyint',
-	];
 
     protected array $serializedFields = [];
     protected array $requiredFields = [];
+    protected array $casts = [];
 
 	private static array $reservedFieldKeys = [
 		Tru_Fetcher_DB_Model_Constants::CONDITIONS_KEY,
@@ -122,9 +121,6 @@ class Tru_Fetcher_DB_Model
             return false;
         }
         $columnDataType = $columns[$column];
-        if ($this->isDataType($this->booleanDataTypes, $columnDataType)) {
-            return '%d';
-        }
         if ($this->isDataType($this->integerDataTypes, $columnDataType)) {
             return '%d';
         }
@@ -184,9 +180,20 @@ class Tru_Fetcher_DB_Model
                 $buildData[$key] = null;
                 continue;
             }
-            if ($this->isDataType($this->booleanDataTypes, $columnDataType)) {
-                $buildData[$key] = (bool)$value;
-                continue;
+            if (count($this->casts) && array_key_exists($key, $this->casts)) {
+                $cast = $this->casts[$key];
+                if ($cast === 'integer') {
+                    $buildData[$key] = (int)$value;
+                    continue;
+                }
+                if ($cast === 'string') {
+                    $buildData[$key] = (string)$value;
+                    continue;
+                }
+                if ($cast === 'boolean') {
+                    $buildData[$key] = (bool)$value;
+                    continue;
+                }
             }
 			if ($this->isDataType($this->integerDataTypes, $columnDataType)) {
 				$buildData[$key] = (int)$value;
