@@ -363,7 +363,14 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
             [$request->get_param("item_id")],
             $request->get_param("user_id")
         );
-        $this->apiItemsResponse->setItemRatings($getRatings);
+        if (!is_array($getRatings) || count($getRatings) === 0) {
+            return $this->controllerHelpers->sendErrorResponse(
+                "get_ratings_error",
+                "There was an error fetching the ratings.",
+                $this->apiItemsResponse
+            );
+        }
+        $this->apiItemsResponse->setItemRatings($getRatings[array_key_first($getRatings)]);
         return $this->controllerHelpers->sendSuccessResponse(
             "Rating saved",
             $this->apiItemsResponse

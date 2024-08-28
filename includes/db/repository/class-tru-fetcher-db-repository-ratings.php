@@ -47,7 +47,7 @@ class Tru_Fetcher_DB_Repository_Ratings extends Tru_Fetcher_DB_Repository_Base {
         return $this->findOne();
     }
 
-    public function getTotalUserRating(int $itemId, string $providerName, string $category) {
+    public function getTotalUserRating(int|string $itemId, string $providerName, string $category) {
         $this->setSelect([
             "SUM({$this->ratingsModel->getRatingColumn()}) AS {$this->ratingsModel->getRatingColumn()}",
             "(SELECT count({$this->ratingsModel->getIdColumn()}) 
@@ -121,10 +121,12 @@ class Tru_Fetcher_DB_Repository_Ratings extends Tru_Fetcher_DB_Repository_Base {
         if (!$buildUpdateData) {
             return false;
         }
+
         $this->addWhere($this->ratingsModel->getIdColumn(), $id);
         $this->addWhere($this->ratingsModel->getUserIdColumn(), $user->ID);
         $findSavedItem = $this->findOne();
         if ($findSavedItem) {
+            $this->setWhereQueryConditions($this->defaultWhereConditions());
             return $this->update($buildUpdateData);
         }
         return false;
