@@ -1,9 +1,5 @@
 import React from 'react';
 import {DropdownMenu, Panel, PanelBody} from "@wordpress/components";
-import UserStats from "../components/user-stats/UserStats";
-import UserSocial from "../components/user-social/UserSocial";
-import UserProfile from "../components/user-profile/UserProfile";
-import FormProgress from "../components/form-progress/FormProgress";
 import {
     plusCircleFilled,
     more,

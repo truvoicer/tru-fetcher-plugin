@@ -3,6 +3,7 @@ import UserSocial from "../components/user-social/UserSocial";
 import UserProfile from "../components/user-profile/UserProfile";
 import FormProgress from "../components/form-progress/FormProgress";
 import Tabs from "../components/tabs/Tabs";
+import SavedItems from "../components/saved-items/SavedItems";
 
 export default [
     {
@@ -30,6 +31,11 @@ export default [
         block_id: 'tabs_block',
         title: 'Tabs',
         component: Tabs,
+    },
+    {
+        id: 'saved_items_widget_block',
+        title: 'Saved Items',
+        component: SavedItems,
     }
 
 ]

@@ -142,6 +142,7 @@ if (
                 examplesAttData[attribute.id] = attribute.default;
             });
         }
+
         let blockComponent;
         switch (block?.id) {
             case "listings_block":
@@ -205,9 +206,11 @@ if (
                 return;
         }
 
-        defaultProps.child = block;
-        defaultProps.childConfigs = childConfigs;
-        blockComponent.defaultProps = defaultProps;
+        blockComponent.defaultProps = {
+            ...defaultProps,
+            child: block,
+            childConfigs: childConfigs
+        };
 
         let blockOptions = {};
         blockOptions.title = block.title;

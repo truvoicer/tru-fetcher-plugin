@@ -89,7 +89,8 @@ class Tru_Fetcher_Forms_Progress
             return [];
         }
         $progressFieldGroups = apply_filters(
-            Tru_Fetcher_Filters::TRU_FETCHER_FILTER_FORM_PROGRESS_FIELD_GROUPS
+            Tru_Fetcher_Filters::TRU_FETCHER_FILTER_FORM_PROGRESS_FIELD_GROUPS,
+            $this->getUser()
         );
         return array_filter($progressFieldGroups, function ($progressFieldGroup) {
             return class_exists($progressFieldGroup) && is_subclass_of($progressFieldGroup, Tru_Fetcher_Progress_Field_Groups::class);
