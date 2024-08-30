@@ -14,6 +14,8 @@ const Widgets = (props) => {
         data = [],
         onChange,
         childConfigs,
+        apiConfig,
+        reducers,
     } = props;
 
     function formChangeHandler({key, value, widget, index}) {
@@ -45,8 +47,8 @@ const Widgets = (props) => {
         if (!widget?.id) {
             return null;
         }
-
-        let Component = widgetConfig.find((config) => config.id === widget.id)?.component;
+        const config = widgetConfig.find((config) => config.id === widget.id);
+        let Component = config?.component;
         if (!Component) {
             return null;
         }
@@ -54,7 +56,11 @@ const Widgets = (props) => {
             return null;
         }
         const widgetData = getWidgetProps(widget.id, index);
+        const widgetProps = config?.props || {};
         Component.defaultProps = {
+            ...widgetProps,
+            apiConfig,
+            reducers,
             data: widgetData,
             onChange: ({key, value}) => {
                 formChangeHandler({key, value, widget, index});
@@ -71,7 +77,16 @@ const Widgets = (props) => {
                 })
             }
         }
-        return <Component/>;
+        if (config.hasOwnProperty('panel') && config.panel === false) {
+            return <Component  />;
+        }
+        return (
+            <Panel>
+                <PanelBody title={widget?.title || ''} initialOpen={true}>
+                    <Component  />
+                </PanelBody>
+            </Panel>
+        );
     }
 
     function insertWidget(widget) {
@@ -128,11 +143,7 @@ const Widgets = (props) => {
                     return (
                         <div className="tf--list--item tf--list--item--no-header">
                             <div className="tf--list--item--content">
-                                <Panel>
-                                    <PanelBody title={widget?.title || ''} initialOpen={true}>
-                                        {getWidgetComponent(widget, index)}
-                                    </PanelBody>
-                                </Panel>
+                                {getWidgetComponent(widget, index)}
                             </div>
                             <div className={'tf--list--item--actions'}>
                                 <a onClick={() => {

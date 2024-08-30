@@ -8,6 +8,7 @@ const ContentWidgetsTab = (props) => {
         setAttributes,
         className,
         apiConfig,
+        reducers,
         childConfigs,
     } = props;
 
@@ -25,6 +26,8 @@ const ContentWidgetsTab = (props) => {
                     childConfigs={childConfigs['content_widgets']}
                     data={attributes?.content_widgets}
                     onChange={formChangeHandler}
+                    apiConfig={apiConfig}
+                    reducers={reducers}
                 />
             </PanelBody>
         </Panel>

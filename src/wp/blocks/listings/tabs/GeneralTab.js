@@ -56,6 +56,10 @@ const GeneralTab = (props) => {
                             label: 'Wordpress',
                             value: 'wordpress'
                         },
+                        {
+                            label: 'Saved Items',
+                            value: 'saved_items'
+                        },
                     ]}
                 />
                 <TextControl
