@@ -112,11 +112,6 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
             'callback' => [$this, "getItemListData"],
             'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
         ));
-        register_rest_route($this->apiConfigEndpoints->protectedEndpoint, '/item/list-by-user', array(
-            'methods' => \WP_REST_Server::CREATABLE,
-            'callback' => [$this, "getItemListDataByUser"],
-            'permission_callback' => [$this->apiAuthApp, 'protectedTokenRequestHandler']
-        ));
     }
 
     public function createUser($request)
@@ -318,17 +313,6 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
         return sprintf("%s/auth/password-reset/%s/%s", Tru_Fetcher::getFrontendUrl(), $userId, $passwordResetKey);
     }
 
-    private function getUserItemRequestData($request)
-    {
-        $date = new \DateTime();
-        $data = [];
-        $data["provider_name"] = $request["provider_name"];
-        $data["user_id"] = $request["user_id"];
-        $data["category"] = $request["category"];
-        $data["item_id"] = $request["item_id"];
-        return $data;
-    }
-
     public function saveItem($request)
     {
         $this->savedItemsHelper->setUser($this->apiAuthApp->getUser());
@@ -358,10 +342,10 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
             );
         }
         $getRatings = $this->ratingsHelper->getRatingsData(
+            $this->apiAuthApp->getUser(),
             [$request->get_param("provider_name")],
             $request->get_param("category"),
             [$request->get_param("item_id")],
-            $request->get_param("user_id")
         );
         if (!is_array($getRatings) || count($getRatings) === 0) {
             return $this->controllerHelpers->sendErrorResponse(
@@ -377,73 +361,36 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
         );
     }
 
-    private function getStringCount($array, $string)
-    {
-        $str = "";
-        foreach ($array as $value) {
-            $str .= sprintf("'%s',", $string);
-        }
-
-        return rtrim($str, ',');
-    }
-
-    public function getItemListDataByUser($request)
-    {
-        $data = [];
-        $data["user_id"] = $request["user_id"];
-
-        $dbClass = new Tru_Fetcher_Database();
-        $where = "user_id=%s";
-        $getResults = $dbClass->getResults(
-            Tru_Fetcher_Database::SAVED_ITEMS_TABLE_NAME,
-            $where,
-            $data["user_id"]
-        );
-
-        if (isset($request["internal_provider_name"])) {
-            $internalProviderName = $request["internal_provider_name"];
-            $getResults = array_map(function ($item) use ($internalProviderName) {
-                if ($internalProviderName !== $item->provider_name) {
-                    return $item;
-                }
-                $item->data = \get_fields_clone((int)$item->item_id);
-                return $item;
-            }, $getResults);
-        }
-
-        return $this->sendResponse(
-            $this->buildResponseObject(self::STATUS_SUCCESS,
-                "",
-                $getResults)
-        );
-    }
-
     public function getItemListData(\WP_REST_Request $request)
     {
+        $user = $this->apiAuthApp->getUser();
         $savedItems = [];
         $ratings = [];
         $providers = $request->get_param("providers");
+
         if (is_array($providers)) {
             foreach ($providers as $provider) {
                 $getSavedItems = $this->getSavedItemsData(
                     $provider["provider"],
                     $provider["service"],
                     $provider["ids"],
-                    $request["user_id"]
                 );
                 if (is_array($getSavedItems) && count($getSavedItems) > 0) {
                     $savedItems = array_merge($savedItems, $getSavedItems);
                 }
                 $getRatings = $this->ratingsHelper->getRatingsData(
+                    $user,
                     [$provider["provider"]],
                     $provider["service"],
                     $provider["ids"],
-                    $request["user_id"]
                 );
                 if (is_array($getRatings) && count($getRatings) > 0) {
                     $ratings = array_merge($ratings, $getRatings);
                 }
             }
+        } else {
+            $savedItems = $this->savedItemsHelper->findUserSavedItems($user, $request->get_params());
+            $ratings = $this->ratingsHelper->getRatingsDataBySavedItems($user, $savedItems);
         }
 
         $this->apiItemsResponse->setSavedItems($savedItems);
@@ -454,7 +401,7 @@ class Tru_Fetcher_Api_User_Controller extends Tru_Fetcher_Api_Controller_Base
         );
     }
 
-    private function getSavedItemsData($providerName, $category, $idList, $user_id)
+    private function getSavedItemsData($providerName, $category, $idList)
     {
         if (!is_array($idList) || count($idList) === 0) {
             return [];

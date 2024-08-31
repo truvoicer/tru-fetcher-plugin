@@ -5,6 +5,7 @@ namespace TruFetcher\Includes\Helpers;
 use TruFetcher\Includes\DB\Engine\Tru_Fetcher_DB_Engine;
 use TruFetcher\Includes\DB\Model\Constants\Tru_Fetcher_DB_Model_Constants;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Ratings;
+use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Saved_Items;
 use TruFetcher\Includes\DB\Model\Tru_Fetcher_DB_Model_Settings;
 use TruFetcher\Includes\DB\Repository\Tru_Fetcher_DB_Repository_Ratings;
 use TruFetcher\Includes\DB\Repository\Tru_Fetcher_DB_Repository_Settings;
@@ -49,14 +50,43 @@ class Tru_Fetcher_Api_Helpers_Ratings {
         $this->db = new Tru_Fetcher_DB_Engine();
     }
 
+    public function getRatingsDataBySavedItems(\WP_User $user, array $savedItems = []) {
+        $savedItemModel = new Tru_Fetcher_DB_Model_Saved_Items();
+        $ratingsRepository = $this->getRatingsRepository();
+        foreach ($savedItems as $savedItem) {
+            $ratingsRepository->addWhereGroup(
+                [
+                    $ratingsRepository->prepareWhereData(
+                        $this->ratingsModel->getItemIdColumn(),
+                        $savedItem[$savedItemModel->getItemIdColumn()]
+                    ),
+                    $ratingsRepository->prepareWhereData(
+                        $this->ratingsModel->getProviderNameColumn(),
+                        $savedItem[$savedItemModel->getProviderNameColumn()],
+                    ),
+                    $ratingsRepository->prepareWhereData(
+                        $this->ratingsModel->getCategoryColumn(),
+                        $savedItem[$savedItemModel->getCategoryColumn()]
+                    ),
+                    $ratingsRepository->prepareWhereData(
+                        $this->ratingsModel->getUserIdColumn(),
+                        $user->ID
+                    ),
+                ],
+                Tru_Fetcher_DB_Model_Constants::WHERE_LOGICAL_OPERATOR_OR
+            );
+        }
+        return $this->buildRatings(
+            $this->getRatingsRepository()->findMany()
+        );
+    }
 
-    public function getRatingsData($providerName, $category, $idList, $user_id)
+    public function getRatingsData(\WP_User $user, $providerName, $category, $idList)
     {
         if (!is_array($idList) || count($idList) === 0) {
             return [];
         }
         $ratingsRepository = $this->getRatingsRepository();
-        $getRatings = [];
         foreach ($idList as $id) {
             $ratingsRepository->addWhereGroup(
                 [
@@ -75,16 +105,20 @@ class Tru_Fetcher_Api_Helpers_Ratings {
                     ),
                     $ratingsRepository->prepareWhereData(
                         $this->ratingsModel->getUserIdColumn(),
-                        $user_id
+                        $user->ID
                     ),
                 ],
                 Tru_Fetcher_DB_Model_Constants::WHERE_LOGICAL_OPERATOR_OR
             );
         }
 
-        $findExisting = $this->getRatingsRepository()->findMany();
+        return $this->buildRatings(
+            $this->getRatingsRepository()->findMany()
+        );
+    }
+    public function buildRatings(array $ratings) {
 
-        foreach ($findExisting as $item) {
+        foreach ($ratings as $index => $item) {
             if (!$item) {
                 continue;
             }
@@ -95,10 +129,10 @@ class Tru_Fetcher_Api_Helpers_Ratings {
                 $item['total_users_rated'] = $overallRating["total_users_rated"];
             }
 
-            $getRatings[] = $item;
+            $ratings[$index] = $item;
 
         }
-        return $getRatings;
+        return $ratings;
     }
     public function getOverallRatingForItem(array $data)
     {

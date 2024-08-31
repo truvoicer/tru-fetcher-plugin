@@ -49,7 +49,25 @@ class Tru_Fetcher_Api_Helpers_Saved_Items {
         $this->db = new Tru_Fetcher_DB_Engine();
     }
 
-
+    public function findUserSavedItems(\WP_User $user, ?array $data = []) {
+        $this->savedItemsRepository->addWhere(
+            $this->savedItemsModel->getUserIdColumn(),
+            $user->ID
+        );
+        if (isset($data['provider'])) {
+            $this->savedItemsRepository->addWhere(
+                $this->savedItemsModel->getProviderNameColumn(),
+                $data['provider']
+            );
+        }
+        if (isset($data['category'])) {
+            $this->savedItemsRepository->addWhere(
+                $this->savedItemsModel->getCategoryColumn(),
+                $data['category']
+            );
+        }
+        return $this->savedItemsRepository->findMany();
+    }
     public function getInsertDataFromRequest(\WP_User $user, \WP_REST_Request $request) {
         $data = $request->get_params();
         $insertData = [];
