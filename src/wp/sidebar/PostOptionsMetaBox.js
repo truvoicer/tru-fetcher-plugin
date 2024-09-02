@@ -1,7 +1,7 @@
 import {__} from '@wordpress/i18n';
 import {compose} from '@wordpress/compose';
 import {withSelect, withDispatch, useSelect} from '@wordpress/data';
-import {PluginDocumentSettingPanel} from '@wordpress/edit-post';
+import {PluginDocumentSettingPanel} from '@wordpress/editor';
 import {PanelRow, TextareaControl, ToggleControl, SelectControl, TabPanel} from '@wordpress/components';
 
 const POST_TYPES = ['post'];

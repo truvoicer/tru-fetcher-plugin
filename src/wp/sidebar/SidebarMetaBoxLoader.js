@@ -1,9 +1,5 @@
-import {__} from '@wordpress/i18n';
 import {compose} from '@wordpress/compose';
 import {withSelect, withDispatch} from '@wordpress/data';
-import {PluginDocumentSettingPanel} from '@wordpress/edit-post';
-import {PanelRow, TextareaControl, ToggleControl, SelectControl, TabPanel} from '@wordpress/components';
-import {useState} from '@wordpress/element';
 import PostOptionsMetaBox from "./PostOptionsMetaBox";
 import PageOptionsMetaBox from "./PageOptionsMetaBox";
 import SingleItemOptionsMetaBox from "./SingleItemOptionsMetaBox";
