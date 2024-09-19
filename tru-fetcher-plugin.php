@@ -61,7 +61,7 @@ spl_autoload_register(
             ->setConfig([
                 [
                     'app_name' => 'TruFetcher',
-                    'root_dir' => PARENT_PLUGIN_DIR
+                    'root_dir' => TRU_FETCHER_PLUGIN_DIR
                 ],
             ]),
         "init"
