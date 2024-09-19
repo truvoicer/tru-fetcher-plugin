@@ -60,6 +60,7 @@ spl_autoload_register(
         (new Tru_Fetcher_Auto_Loader())
             ->setConfig([
                 [
+
                     'app_name' => 'TruFetcher',
                     'root_dir' => TRU_FETCHER_PLUGIN_DIR
                 ],
