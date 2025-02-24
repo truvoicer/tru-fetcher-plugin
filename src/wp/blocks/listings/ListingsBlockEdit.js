@@ -14,6 +14,13 @@ import GlobalOptionsTabConfig from "../components/global/tabs/GlobalOptionsTabCo
 import {StateMiddleware} from "../../../library/api/StateMiddleware";
 import ProviderRequestContext, {providerRequestData} from "../components/list/ProviderRequestContext";
 import fetcherApiConfig from "../../../library/api/fetcher-api/fetcherApiConfig";
+import { InspectorControls } from '@wordpress/block-editor';
+import BlockView from '../common/BlockView';
+import { children } from '@wordpress/blocks';
+
+import {findTaxonomyIdIdentifier, findTaxonomySelectOptions} from "../../helpers/wp-helpers";
+import { category } from '@wordpress/icons';
+
 
 const ListingsBlockEdit = (props) => {
     const {
@@ -136,42 +143,79 @@ const ListingsBlockEdit = (props) => {
         return useBlockProps();
     }
 
+    const listingsCategoryId = findTaxonomyIdIdentifier('trf_listings_category');
+    const listingsCategoryies = findTaxonomySelectOptions('trf_listings_category');
+    
+    function buildViewConfig() {
+        let viewConfig = [];
+        let listingsBlockChildren = [];
+        let listingsBlockConfig = {
+            open: true,
+            title: 'Listings Block',
+            children: []
+        };
+        listingsBlockChildren.push({name: 'Id', key: 'listing_block_id'});
+        listingsBlockChildren.push({name: 'Primary listing', key: 'primary_listing'});
+        listingsBlockChildren.push({name: 'Api source', key: 'source'});
+        listingsBlockChildren.push({name: 'Listings Category', key: () => {
+            if (!attributes?.[listingsCategoryId]) {
+                return '';
+            }
+            return listingsCategoryies.find(category => category.value === parseInt(attributes[listingsCategoryId]))?.label || 'Error';
+        }});
+        listingsBlockChildren.push({name: 'Display As', key: 'display_as'});
+        listingsBlockChildren.push({name: 'Template', key: 'template'});
+        
+        if (props.attributes?.source === 'api') {
+            listingsBlockChildren.push({name: 'Api Fetch Type', key: 'api_fetch_type'});
+            listingsBlockChildren.push({name: 'Api Listings Service', key: 'api_listings_service'});
+        }
+        listingsBlockConfig.children = listingsBlockChildren;
+        viewConfig.push(listingsBlockConfig);
+        return viewConfig;
+    }
     return (
         <div {...getContainerProps()}>
-            <ProviderRequestContext.Provider value={providerRequestState}>
-            <Panel>
-                <PanelBody title="Listings Block" initialOpen={true}>
-                    <TabPanel
-                        className="my-tab-panel"
-                        activeClass="active-tab"
-                        onSelect={(tabName) => {
-                            // setTabName(tabName);
-                        }}
-                        tabs={
-                            getTabConfig().map((tab) => {
-                                return {
-                                    name: tab.name,
-                                    title: tab.title,
-                                }
-                            })
-                        }>
-                        {(tab) => {
-                            return (
-                                <>
-                                    {getTabConfig().map((item) => {
-                                        if (item.name === tab.name) {
-                                            return getTabComponent(item);
-                                        }
-                                        return null;
-                                    })}
-                                </>
-                            )
 
-                        }}
-                    </TabPanel>
-                </PanelBody>
-            </Panel>
-            </ProviderRequestContext.Provider>
+            <InspectorControls key="setting">
+                <ProviderRequestContext.Provider value={providerRequestState}>
+                    <Panel>
+                        <PanelBody title="Listings Block" initialOpen={true}>
+                            <TabPanel
+                                className="my-tab-panel"
+                                activeClass="active-tab"
+                                onSelect={(tabName) => {
+                                    // setTabName(tabName);
+                                }}
+                                tabs={
+                                    getTabConfig().map((tab) => {
+                                        return {
+                                            name: tab.name,
+                                            title: tab.title,
+                                        }
+                                    })
+                                }>
+                                {(tab) => {
+                                    return (
+                                        <>
+                                            {getTabConfig().map((item) => {
+                                                if (item.name === tab.name) {
+                                                    return getTabComponent(item);
+                                                }
+                                                return null;
+                                            })}
+                                        </>
+                                    )
+
+                                }}
+                            </TabPanel>
+                        </PanelBody>
+                    </Panel>
+                </ProviderRequestContext.Provider>
+            </InspectorControls>
+            <BlockView
+                {...props}
+                viewConfig={buildViewConfig()} />
         </div>
     );
 };

@@ -1,9 +1,9 @@
+
 .components-tab-panel__tabs {
     display: block;
-    @media screen and (min-width: 298px) {
+}
+@media screen and (min-width: 298px) {
+    .components-tab-panel__tabs {
         display: flex;
     }
-}
-.my-tab-panel {
-    color: #000000;
 }
