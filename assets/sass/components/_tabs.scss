@@ -1,7 +1,11 @@
-.components-tab-panel__tabs {
-    display: block;
-    @media screen and (min-width: 298px) {
-        display: flex;
+.tab-panel{
+    &--collapse {
+        .components-tab-panel__tabs {
+            display: block;
+            @media screen and (min-width: 298px) {
+                display: block;
+            }
+        }
     }
 }
 .my-tab-panel {

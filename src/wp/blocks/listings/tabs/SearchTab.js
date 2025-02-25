@@ -16,35 +16,12 @@ const SearchTab = (props) => {
         className,
     } = props;
 
-    const [dataKeysOptions, setDataKeysOptions] = useState([]);
-
     const providerRequestContext = useContext(ProviderRequestContext);
 
     const stateMiddleware = new StateMiddleware();
     stateMiddleware.setAppState(props?.reducers?.app);
     stateMiddleware.setSessionState(props?.reducers?.session);
 
-    async function dataKeysRequest(selectedService) {
-        if (!isNotEmpty(selectedService)) {
-            return;
-        }
-        const results = await stateMiddleware.fetchRequest({
-            config: fetcherApiConfig,
-            endpoint: `${fetcherApiConfig.endpoints.service}/${selectedService}/response-key/list`,
-            params: {
-                pagination: false,
-            }
-        });
-        if (Array.isArray(results?.data?.data?.service_response_keys)) {
-            setDataKeysOptions(results.data.data.service_response_keys);
-        }
-    }
-
-    useEffect(() => {
-        dataKeysRequest(
-            providerRequestContext.services.find((service) => service?.name === attributes.api_listings_service)?.id
-        );
-    }, [attributes?.api_listings_service]);
 
     return (
         <>
@@ -82,65 +59,6 @@ const SearchTab = (props) => {
                     />
                 )}
             </Grid>
-            {attributes?.source === 'api' && (
-                <>
-                    <Grid colspan={2}>
-                        <SelectControl
-                            label="Sort by"
-                            onChange={(value) => {
-                                setAttributes({sort_by: value});
-                            }}
-                            value={attributes?.sort_by}
-                            options={[
-                                ...[
-                                    {
-                                        disabled: false,
-                                        label: 'Select a key',
-                                        value: ''
-                                    },
-                                ],
-                                ...buildSelectOptions(dataKeysOptions, 'name', 'name')
-                            ]}
-                        />
-                        <SelectControl
-                            label="Sort order"
-                            onChange={(value) => {
-                                setAttributes({sort_order: value});
-                            }}
-                            value={attributes?.sort_order}
-                            options={[
-                                {
-                                    label: 'Descending',
-                                    value: 'desc'
-                                },
-                                {
-                                    label: 'Ascending',
-                                    value: 'asc'
-                                },
-                            ]}
-                        />
-                    </Grid>
-                    <Grid colspan={2}>
-                        <SelectControl
-                            label="Date key"
-                            onChange={(value) => {
-                                setAttributes({date_key: value});
-                            }}
-                            value={attributes?.date_key}
-                            options={[
-                                ...[
-                                    {
-                                        disabled: false,
-                                        label: 'Select a key',
-                                        value: ''
-                                    },
-                                ],
-                                ...buildSelectOptions(dataKeysOptions, 'name', 'name')
-                            ]}
-                        />
-                    </Grid>
-                </>
-            )}
             {attributes?.initial_load === 'search' && (
                 <>
                     <h5>Search Params</h5>

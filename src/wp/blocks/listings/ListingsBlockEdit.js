@@ -3,6 +3,7 @@ import {useState, useEffect} from "@wordpress/element";
 import {TabPanel, Panel, PanelBody, PanelRow} from "@wordpress/components";
 import {InnerBlocks, useBlockProps} from '@wordpress/block-editor';
 
+import {isNotEmpty} from "../../../library/helpers/utils-helpers";
 import GeneralTab from "./tabs/GeneralTab";
 import DisplayTab from "./tabs/DisplayTab";
 import ApiTab from "./tabs/ApiTab";
@@ -16,10 +17,8 @@ import ProviderRequestContext, {providerRequestData} from "../components/list/Pr
 import fetcherApiConfig from "../../../library/api/fetcher-api/fetcherApiConfig";
 import { InspectorControls } from '@wordpress/block-editor';
 import BlockView from '../common/BlockView';
-import { children } from '@wordpress/blocks';
 
 import {findTaxonomyIdIdentifier, findTaxonomySelectOptions} from "../../helpers/wp-helpers";
-import { category } from '@wordpress/icons';
 
 
 const ListingsBlockEdit = (props) => {
@@ -70,12 +69,38 @@ const ListingsBlockEdit = (props) => {
         }
     }
 
+    async function dataKeysRequest(selectedService) {
+        if (!isNotEmpty(selectedService)) {
+            return;
+        }
+        const results = await stateMiddleware.fetchRequest({
+            config: fetcherApiConfig,
+            endpoint: `${fetcherApiConfig.endpoints.service}/${selectedService}/response-key/list`,
+            params: {
+                pagination: false,
+            }
+        });
+        if (Array.isArray(results?.data?.data?.service_response_keys)) {
+            updateProviderRequestData({responseKeys: results.data.data.service_response_keys})
+        }
+    }
+    function onServiceChange(serviceName) {
+        providerListRequest(serviceName);
+        dataKeysRequest(
+            providerRequestState.services.find((service) => service?.name === serviceName)?.id
+        );
+    }
     useEffect(() => {
-        providerListRequest(providerRequestState.selectedService);
+        onServiceChange(providerRequestState.selectedService);
+
     }, [providerRequestState.selectedService]);
 
     useEffect(() => {
-        providerListRequest(attributes?.api_listings_service);
+        onServiceChange(attributes?.api_listings_service);
+    }, [providerRequestState.services]);
+
+    useEffect(() => {
+        onServiceChange(attributes?.api_listings_service);
     }, [attributes?.api_listings_service]);
 
     useEffect(() => {
@@ -182,7 +207,8 @@ const ListingsBlockEdit = (props) => {
                     <Panel>
                         <PanelBody title="Listings Block" initialOpen={true}>
                             <TabPanel
-                                className="my-tab-panel"
+                                orientation="vertical"
+                                className="tab-panel--collapse"
                                 activeClass="active-tab"
                                 onSelect={(tabName) => {
                                     // setTabName(tabName);

@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {TextControl, SelectControl, ToggleControl, RangeControl} from "@wordpress/components";
 import {findSetting} from "../../../helpers/wp-helpers";
 import Grid from "../../../../components/Grid";
+import ProviderRequestContext from '../../components/list/ProviderRequestContext';
+import { buildSelectOptions } from '../../../../library/helpers/form-helpers';
 
 const DisplayTab = (props) => {
     const {
@@ -9,6 +11,8 @@ const DisplayTab = (props) => {
         setAttributes,
         className,
     } = props;
+
+    const providerRequestContext = useContext(ProviderRequestContext);
 
     function getComparisonTemplateOptions(show) {
         if (!show) {
@@ -26,7 +30,7 @@ const DisplayTab = (props) => {
             }
         });
     }
-
+    
     return (
         <div>
             <Grid columns={2}>

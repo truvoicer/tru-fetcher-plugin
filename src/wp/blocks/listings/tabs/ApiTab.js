@@ -1,5 +1,5 @@
 import {useContext, useEffect} from "@wordpress/element";
-import {TabPanel, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import {Panel, PanelBody, SelectControl, ToggleControl, ColorPicker} from "@wordpress/components";
 import {StateMiddleware} from "../../../../library/api/StateMiddleware";
 import ProviderRequestList from "../../components/list/ProviderRequestList";
 import ProviderRequestContext, {providerRequestData} from "../../components/list/ProviderRequestContext";
@@ -18,7 +18,6 @@ const ApiTab = (props) => {
     stateMiddleware.setAppState(props?.reducers?.app);
     stateMiddleware.setSessionState(props?.reducers?.session);
 
-
     useEffect(() => {
         if (!Array.isArray(providerRequestContext.services) || providerRequestContext.services.length === 0) {
             return;
@@ -28,7 +27,7 @@ const ApiTab = (props) => {
         })
     }, [providerRequestContext.services]);
 
-
+    
     return (
         <>
             <SelectControl
@@ -88,6 +87,134 @@ const ApiTab = (props) => {
                     }
                 </>
             }
+
+            <Panel>
+                <PanelBody title="Key Maps" initialOpen={false}>
+                    <SelectControl
+                        label="Sort by"
+                        onChange={(value) => {
+                            setAttributes({sort_by: value});
+                        }}
+                        value={attributes?.sort_by}
+                        options={[
+                            ...[
+                                {
+                                    disabled: false,
+                                    label: 'Select a key',
+                                    value: ''
+                                },
+                            ],
+                            ...buildSelectOptions(
+                                providerRequestContext?.responseKeys,
+                                'name', 
+                                'name'
+                            )
+                        ]}
+                    />
+                    <SelectControl
+                        label="Sort order"
+                        onChange={(value) => {
+                            setAttributes({sort_order: value});
+                        }}
+                        value={attributes?.sort_order}
+                        options={[
+                            {
+                                label: 'Descending',
+                                value: 'desc'
+                            },
+                            {
+                                label: 'Ascending',
+                                value: 'asc'
+                            },
+                        ]}
+                    />
+                    <SelectControl
+                        label="Date key"
+                        onChange={(value) => {
+                            setAttributes({date_key: value});
+                        }}
+                        value={attributes?.date_key}
+                        options={[
+                            ...[
+                                {
+                                    disabled: false,
+                                    label: 'Select a key',
+                                    value: ''
+                                },
+                            ],
+                            ...buildSelectOptions(
+                                providerRequestContext?.responseKeys,
+                                'name', 
+                                'name'
+                            )
+                        ]}
+                    />
+
+                    <SelectControl
+                        label="Thumbnail type"
+                        onChange={(value) => {
+                            setAttributes({thumbnail_type: value});
+                        }}
+                        value={attributes?.thumbnail_type}
+                        options={[
+                            {
+                                disabled: false,
+                                label: 'Select a type',
+                                value: ''
+                            },
+                            {
+                                disabled: false,
+                                label: 'Image',
+                                value: 'image'
+                            },
+                            {
+                                disabled: false,
+                                label: 'Background Color',
+                                value: 'bg'
+                            },
+                            {
+                                disabled: false,
+                                label: 'Data key',
+                                value: 'data_key'
+                            },
+                        ]}
+                    />
+                    {attributes?.thumbnail_type === 'data_key' &&
+                        <SelectControl
+                            label="Thumbnail Key"
+                            onChange={(value) => {
+                                setAttributes({thumbnail_key: value});
+                            }}
+                            value={attributes?.thumbnail_key}
+                            options={[
+                                ...[
+                                    {
+                                        disabled: false,
+                                        label: 'Select a key',
+                                        value: ''
+                                    },
+                                ],
+                                ...buildSelectOptions(
+                                    providerRequestContext?.responseKeys,
+                                    'name', 
+                                    'name'
+                                )
+                            ]}
+                        />
+                    }
+                    {attributes?.thumbnail_type === 'bg' &&
+                        <ColorPicker
+                            color={color}
+                            onChange={color => setAttributes({thumbnail_key: value})}
+                            enableAlpha
+                            defaultValue="#000"
+                        />
+                    }
+                    {attributes?.thumbnail_type === 'image' &&
+                       
+                    }
+                </PanelBody>
+            </Panel>
         </>
     );
 };

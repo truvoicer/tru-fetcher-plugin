@@ -5,6 +5,7 @@ export const providerRequestData = {
     categories: [],
     selectedService: null,
     saveData: [],
+    responseKeys: [],
     update: () => {}
 }
 export default createContext(providerRequestData);
