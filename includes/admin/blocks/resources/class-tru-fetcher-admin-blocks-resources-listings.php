@@ -105,6 +105,16 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'type' => 'string',
             ],
             [
+                'id' => 'thumbnail_width',
+                'type' => 'integer',
+                'default' => 100
+            ],
+            [
+                'id' => 'thumbnail_height',
+                'type' => 'integer',
+                'default' => 100
+            ],
+            [
                 'id' => 'sort_order',
                 'type' => 'string',
             ],
