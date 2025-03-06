@@ -14,3 +14,13 @@
     }
   }
 }
+.trf {
+  &--flex {
+    &--mobile-collapse {
+      display: block;
+    }
+    @media (min-width: 287px) {
+      display: flex;
+    }
+  }
+}

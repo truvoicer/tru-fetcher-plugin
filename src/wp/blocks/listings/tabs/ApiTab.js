@@ -1,10 +1,9 @@
 import {useContext, useEffect} from "@wordpress/element";
-import {Panel, PanelBody, SelectControl, ToggleControl, ColorPicker, RangeControl} from "@wordpress/components";
+import {Panel, PanelBody, SelectControl, ToggleControl} from "@wordpress/components";
 import {StateMiddleware} from "../../../../library/api/StateMiddleware";
 import ProviderRequestList from "../../components/list/ProviderRequestList";
-import ProviderRequestContext, {providerRequestData} from "../../components/list/ProviderRequestContext";
+import ProviderRequestContext from "../../components/list/ProviderRequestContext";
 import {buildSelectOptions} from "../../../../library/helpers/form-helpers";
-import MediaInput from "../../../components/media/MediaInput";
 
 const ApiTab = (props) => {
     const {
@@ -149,98 +148,6 @@ const ApiTab = (props) => {
                                 'name'
                             )
                         ]}
-                    />
-
-                    <SelectControl
-                        label="Thumbnail type"
-                        onChange={(value) => {
-                            setAttributes({thumbnail_type: value});
-                        }}
-                        value={attributes?.thumbnail_type}
-                        options={[
-                            {
-                                disabled: false,
-                                label: 'Select a type',
-                                value: ''
-                            },
-                            {
-                                disabled: false,
-                                label: 'Image',
-                                value: 'image'
-                            },
-                            {
-                                disabled: false,
-                                label: 'Background Color',
-                                value: 'bg'
-                            },
-                            {
-                                disabled: false,
-                                label: 'Data key',
-                                value: 'data_key'
-                            },
-                        ]}
-                    />
-                    {attributes?.thumbnail_type === 'data_key' &&
-                        <SelectControl
-                            label="Thumbnail Key"
-                            onChange={(value) => {
-                                setAttributes({thumbnail_key: value});
-                            }}
-                            value={attributes?.thumbnail_key}
-                            options={[
-                                ...[
-                                    {
-                                        disabled: false,
-                                        label: 'Select a key',
-                                        value: ''
-                                    },
-                                ],
-                                ...buildSelectOptions(
-                                    providerRequestContext?.responseKeys,
-                                    'name', 
-                                    'name'
-                                )
-                            ]}
-                        />
-                    }
-                    {attributes?.thumbnail_type === 'bg' &&
-                        <ColorPicker
-                            color={attributes?.thumbnail_bg}
-                            onChange={color => setAttributes({thumbnail_bg: color})}
-                            enableAlpha
-                            defaultValue="#000"
-                        />
-                    }
-                    {attributes?.thumbnail_type === 'image' &&
-                       <MediaInput
-                            hideDelete={true}
-                            heading={`Thumbnail image`}
-                            addImageText={'Add'}
-                            selectedImageUrl={attributes?.thumbnail_url}
-                            onChange={(value) => {
-                                setAttributes({thumbnail_url: value})
-                            }}
-                            onDelete={(value) => {
-                                setAttributes({thumbnail_url: null})
-                            }}
-                       />
-                    }
-
-                    <RangeControl
-                        label="Thumbnail width"
-                        initialPosition={100}
-                        max={1000}
-                        min={0}
-                        value={attributes?.thumbnail_width}
-                        onChange={(value) => setAttributes({thumbnail_width: value})}
-                    />
-                    <RangeControl
-                        label="Thumbnail height"
-                        initialPosition={100}
-                        max={1000}
-                        min={0}
-                        value={attributes?.thumbnail_height}
-                        onChange={(value) => setAttributes({thumbnail_height: value})}
                     />
                 </PanelBody>
             </Panel>

@@ -190,6 +190,7 @@ const ListingsBlockEdit = (props) => {
         }});
         listingsBlockChildren.push({name: 'Display As', key: 'display_as'});
         listingsBlockChildren.push({name: 'Template', key: 'template'});
+        listingsBlockChildren.push({name: 'Posts Per Page', key: 'posts_per_page'});
         
         if (props.attributes?.source === 'api') {
             listingsBlockChildren.push({name: 'Api Fetch Type', key: 'api_fetch_type'});

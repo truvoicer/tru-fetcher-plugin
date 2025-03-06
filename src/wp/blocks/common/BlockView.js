@@ -32,8 +32,8 @@ const BlockView = (props) => {
                                             return null;
                                         }
                                         return (
-                                            <li key={childItemIndex} style={{display: 'flex'}}>
-                                                <div>
+                                            <li key={childItemIndex} style={{display: 'block', textAlign: 'center', marginTop: 10}}>
+                                                <div style={{fontWeight: 'bold'}}>
                                                     {childItem.name} :
                                                 </div>
                                                 <div style={{marginLeft: 5}}>

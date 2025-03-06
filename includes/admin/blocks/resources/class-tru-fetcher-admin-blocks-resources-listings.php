@@ -91,6 +91,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
             [
                 'id' => 'thumbnail_type',
                 'type' => 'string',
+                'default' => 'disabled'
             ],
             [
                 'id' => 'thumbnail_bg',
@@ -111,6 +112,21 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
             ],
             [
                 'id' => 'thumbnail_height',
+                'type' => 'integer',
+                'default' => 100
+            ],
+            [
+                'id' => 'container_width',
+                'type' => 'string',
+                'default' => 'auto'
+            ],
+            [
+                'id' => 'container_height',
+                'type' => 'string',
+                'default' => 'auto'
+            ],
+            [
+                'id' => 'container_height',
                 'type' => 'integer',
                 'default' => 100
             ],
