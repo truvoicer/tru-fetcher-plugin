@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
-import {TextControl, SelectControl, RangeControl, ColorPicker} from "@wordpress/components";
-import {findSetting} from "../../../helpers/wp-helpers";
+import { TextControl, SelectControl, RangeControl, ColorPicker, TextareaControl } from "@wordpress/components";
+import { findSetting } from "../../../helpers/wp-helpers";
 import Grid from "../../../../components/Grid";
 import ProviderRequestContext from '../../components/list/ProviderRequestContext';
 import { buildSelectOptions } from '../../../../library/helpers/form-helpers';
@@ -31,7 +31,7 @@ const DisplayTab = (props) => {
             }
         });
     }
-    
+
     useEffect(() => {
         if (!Array.isArray(providerRequestContext.services) || providerRequestContext.services.length === 0) {
             return;
@@ -47,12 +47,12 @@ const DisplayTab = (props) => {
                 <TextControl
                     label="Heading"
                     value={attributes?.heading}
-                    onChange={(value) => setAttributes({heading: value})}
+                    onChange={(value) => setAttributes({ heading: value })}
                 />
                 <SelectControl
                     label="Load More Type"
                     onChange={(value) => {
-                        setAttributes({load_more_type: value});
+                        setAttributes({ load_more_type: value });
                     }}
                     value={attributes?.load_more_type}
                     options={[
@@ -76,7 +76,7 @@ const DisplayTab = (props) => {
                 <SelectControl
                     label="Grid Layout"
                     onChange={(value) => {
-                        setAttributes({grid_layout: value});
+                        setAttributes({ grid_layout: value });
                     }}
                     value={attributes?.grid_layout}
                     options={[
@@ -102,7 +102,7 @@ const DisplayTab = (props) => {
                 <SelectControl
                     label="Select Item View Display"
                     onChange={(value) => {
-                        setAttributes({item_view_display: value});
+                        setAttributes({ item_view_display: value });
                     }}
                     value={attributes?.item_view_display}
                     options={[
@@ -129,12 +129,12 @@ const DisplayTab = (props) => {
                     max={100}
                     min={0}
                     value={attributes?.posts_per_page}
-                    onChange={(value) => setAttributes({posts_per_page: value})}
+                    onChange={(value) => setAttributes({ posts_per_page: value })}
                 />
                 <SelectControl
                     label="Display As"
                     onChange={(value) => {
-                        setAttributes({display_as: value});
+                        setAttributes({ display_as: value });
                     }}
                     value={attributes?.display_as}
                     options={[
@@ -174,7 +174,7 @@ const DisplayTab = (props) => {
                 <SelectControl
                     label="Template"
                     onChange={(value) => {
-                        setAttributes({template: value});
+                        setAttributes({ template: value });
                     }}
                     value={attributes?.template}
                     options={[
@@ -194,7 +194,7 @@ const DisplayTab = (props) => {
                 <SelectControl
                     label="Thumbnail type"
                     onChange={(value) => {
-                        setAttributes({thumbnail_type: value});
+                        setAttributes({ thumbnail_type: value });
                     }}
                     value={attributes?.thumbnail_type}
                     options={[
@@ -229,7 +229,7 @@ const DisplayTab = (props) => {
                     <SelectControl
                         label="Thumbnail Key"
                         onChange={(value) => {
-                            setAttributes({thumbnail_key: value});
+                            setAttributes({ thumbnail_key: value });
                         }}
                         value={attributes?.thumbnail_key}
                         options={[
@@ -242,7 +242,7 @@ const DisplayTab = (props) => {
                             ],
                             ...buildSelectOptions(
                                 providerRequestContext?.responseKeys,
-                                'name', 
+                                'name',
                                 'name'
                             )
                         ]}
@@ -251,7 +251,7 @@ const DisplayTab = (props) => {
                 {attributes?.thumbnail_type === 'bg' &&
                     <ColorPicker
                         color={attributes?.thumbnail_bg}
-                        onChange={color => setAttributes({thumbnail_bg: color})}
+                        onChange={color => setAttributes({ thumbnail_bg: color })}
                         enableAlpha
                         defaultValue="#000"
                     />
@@ -263,21 +263,22 @@ const DisplayTab = (props) => {
                         addImageText={'Add'}
                         selectedImageUrl={attributes?.thumbnail_url}
                         onChange={(value) => {
-                            setAttributes({thumbnail_url: value})
+                            setAttributes({ thumbnail_url: value })
                         }}
                         onDelete={(value) => {
-                            setAttributes({thumbnail_url: null})
+                            setAttributes({ thumbnail_url: null })
                         }}
                     />
                 }
-
+            </Grid>
+            <Grid columns={2}>
                 <RangeControl
                     label="Thumbnail width"
                     initialPosition={100}
                     max={1000}
                     min={0}
                     value={attributes?.thumbnail_width}
-                    onChange={(value) => setAttributes({thumbnail_width: value})}
+                    onChange={(value) => setAttributes({ thumbnail_width: value })}
                 />
                 <RangeControl
                     label="Thumbnail height"
@@ -285,7 +286,16 @@ const DisplayTab = (props) => {
                     max={1000}
                     min={0}
                     value={attributes?.thumbnail_height}
-                    onChange={(value) => setAttributes({thumbnail_height: value})}
+                    onChange={(value) => setAttributes({ thumbnail_height: value })}
+                />
+            </Grid>
+            <Grid columns={1}>
+                <TextareaControl
+                    __nextHasNoMarginBottom
+                    help="Enter custom css for the container"
+                    label="Container css"
+                    value={attributes?.container_css}
+                    onChange={(value) => setAttributes({ container_css: value })}
                 />
             </Grid>
         </div>

@@ -202,7 +202,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Form extends Tru_Fetcher_Admin_Blocks_R
         return $buildAttributes;
     }
 
-    public function buildBlockAttributes(array $attributes, ?bool $includeDefaults = true)
+    public function buildBlockAttributes(array $attributes, ?bool $includeDefaults = true, ?string $content = null, $block = null)
     {
         $buildAttributes = parent::buildBlockAttributes($attributes);
         if (!empty($buildAttributes['presets']) && $buildAttributes['presets'] !== 'custom') {

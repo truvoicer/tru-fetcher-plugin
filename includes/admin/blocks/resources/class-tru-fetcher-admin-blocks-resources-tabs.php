@@ -89,7 +89,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Tabs extends Tru_Fetcher_Admin_Blocks_R
         $this->tabPresetsRepository = new Tru_Fetcher_DB_Repository_Tab_Presets();
     }
 
-    public function buildBlockAttributes(array $attributes, ?bool $includeDefaults = true)
+    public function buildBlockAttributes(array $attributes, ?bool $includeDefaults = true, ?string $content = null, $block = null)
     {
         $buildAttributes = parent::buildBlockAttributes($attributes);
 

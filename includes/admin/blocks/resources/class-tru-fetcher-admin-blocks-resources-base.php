@@ -66,10 +66,10 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         ];
     }
 
-    public function renderBlock( $blockAttributes, ?string $content = null ) {
+    public function renderBlock( $blockAttributes, ?string $content = null, $block = null) {
         $config = $this->getConfig();
         $id = $config['id'];
-        $blockAttributes = $this->buildBlockAttributes($blockAttributes);
+        $blockAttributes = $this->buildBlockAttributes($blockAttributes, true, $content, $block);
         $props = [
             'id' => $id,
             'data' => htmlspecialchars(json_encode($blockAttributes)),
@@ -155,7 +155,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
         }
         return $keys;
     }
-    public function buildBlockAttributes(array $attributes, ?bool $includeDefaults = true) {
+    public function buildBlockAttributes(array $attributes, ?bool $includeDefaults = true, ?string $content = null, $block = null) {
         $config = $this->getConfig();
         $configAttributes = $config['attributes'];
         $attributeDefaults = [];

@@ -116,19 +116,9 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'default' => 100
             ],
             [
-                'id' => 'container_width',
+                'id' => 'container_css',
                 'type' => 'string',
-                'default' => 'auto'
-            ],
-            [
-                'id' => 'container_height',
-                'type' => 'string',
-                'default' => 'auto'
-            ],
-            [
-                'id' => 'container_height',
-                'type' => 'integer',
-                'default' => 100
+                'default' => ''
             ],
             [
                 'id' => 'sort_order',
@@ -310,8 +300,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
         $this->config['attributes'] = array_merge($this->config['attributes'], parent::getSidebarConfig());
     }
 
-    public function buildBlockAttributes(array $attributes, ?bool $includeDefaults = true) {
-
+    public function buildBlockAttributes(array $attributes, ?bool $includeDefaults = true, ?string $content = null, $block = null) {
         $attributes = parent::buildBlockAttributes($attributes);
         $attributes['keymap'] = [];
 
