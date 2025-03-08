@@ -41,6 +41,7 @@ use TruFetcher\Includes\Tru_Fetcher_Base;
 class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
 {
 
+    protected string $gutenbergExistingBlocks = 'existing-blocks-manage';
     protected string $gutenbergReactScriptName = 'gutenberg';
     protected string $metaBoxesReactScriptName = 'meta-boxes';
     protected string $adminReactScriptName = 'tru-fetcher-settings';
@@ -61,6 +62,21 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
     public function registerAdminScripts()
     {
         add_action('admin_enqueue_scripts', [$this, "loadAssets"]);
+        add_action('enqueue_block_editor_assets', function() {
+
+            $currentScreen = get_current_screen();
+            switch ($currentScreen->base) {
+                case 'post':
+                case 'widgets':
+                    $path = TRU_FETCHER_PLUGIN_URL . "build/{$this->gutenbergExistingBlocks}.js";
+                    wp_enqueue_script(
+                        "trf-gutenberg-{$this->gutenbergExistingBlocks}", 
+                        $path,
+                        ['wp-edit-post']
+                    );
+                    break;
+            }
+        });
     }
 
     public function addAjaxActions()

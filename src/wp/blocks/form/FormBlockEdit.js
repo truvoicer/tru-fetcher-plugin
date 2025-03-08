@@ -4,6 +4,7 @@ import FormComponent from "../components/form/FormComponent";
 import {useBlockProps, store as blockEditorStore} from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
 import {getChildBlockParams} from "../../helpers/wp-helpers";
+import BlockEditComponent from '../common/BlockEditComponent';
 
 const FormBlockEdit = (props) => {
     const { updateBlockAttributes } = useDispatch( blockEditorStore );
@@ -30,7 +31,10 @@ const FormBlockEdit = (props) => {
         }
     }
     return (
-        <div {...useBlockProps()}>
+        <BlockEditComponent
+            {...props}
+            title='Form Block'
+        >
             <Panel>
                 <PanelBody title="Form Block" initialOpen={true}>
                     <FormComponent
@@ -39,7 +43,7 @@ const FormBlockEdit = (props) => {
                     />
                 </PanelBody>
             </Panel>
-        </div>
+        </BlockEditComponent>
     );
 };
 

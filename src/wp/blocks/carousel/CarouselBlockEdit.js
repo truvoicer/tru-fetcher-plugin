@@ -4,6 +4,7 @@ import Carousel from "../components/carousel/Carousel";
 import {useBlockProps, store as blockEditorStore} from '@wordpress/block-editor';
 import {getChildBlockParams} from "../../helpers/wp-helpers";
 import { useSelect, useDispatch } from '@wordpress/data';
+import BlockEditComponent from '../common/BlockEditComponent';
 
 const CarouselBlockEdit = (props) => {
     const { updateBlockAttributes } = useDispatch( blockEditorStore );
@@ -30,7 +31,10 @@ const CarouselBlockEdit = (props) => {
     }
 
     return (
-        <div {...useBlockProps()}>
+        <BlockEditComponent
+            {...props}
+            key='Carousel Block'
+        >
             <Panel>
                 <PanelBody title="Carousel Block" initialOpen={true}>
                     <Carousel
@@ -39,7 +43,7 @@ const CarouselBlockEdit = (props) => {
                     />
                 </PanelBody>
             </Panel>
-        </div>
+        </BlockEditComponent>
     );
 };
 

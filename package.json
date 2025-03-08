@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "wp-scripts build src/index.js src/tru-fetcher-settings.js src/gutenberg.js src/meta-boxes.js assets/js/tru-fetcher-admin.js assets/sass/tru-fetcher-admin.scss",
-    "start": "wp-scripts start src/index.js src/tru-fetcher-settings.js src/gutenberg.js src/meta-boxes.js assets/js/tru-fetcher-admin.js assets/sass/tru-fetcher-admin.scss",
+    "build": "wp-scripts build src/index.js src/tru-fetcher-settings.js src/gutenberg.js src/meta-boxes.js assets/js/tru-fetcher-admin.js assets/sass/tru-fetcher-admin.scss assets/js/gutenberg/existing-blocks-manage.js",
+    "start": "wp-scripts start src/index.js src/tru-fetcher-settings.js src/gutenberg.js src/meta-boxes.js assets/js/tru-fetcher-admin.js assets/sass/tru-fetcher-admin.scss assets/js/gutenberg/existing-blocks-manage.js",
     "packages-update": "wp-scripts packages-update",
     "check-engines": "wp-scripts check-engines"
   },

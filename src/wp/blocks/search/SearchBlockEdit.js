@@ -2,6 +2,7 @@ import React from 'react';
 import {TabPanel, Panel, PanelBody, PanelRow} from "@wordpress/components";
 import tabConfig from "./tab-config";
 import {InnerBlocks, useBlockProps} from '@wordpress/block-editor';
+import BlockEditComponent from '../common/BlockEditComponent';
 
 const SearchBlockEdit = (props) => {
 
@@ -14,7 +15,10 @@ const SearchBlockEdit = (props) => {
     }
 
     return (
-        <div {...useBlockProps()}>
+        <BlockEditComponent
+            {...props}
+            title='Search Block'
+        >
             <Panel>
                 <PanelBody title="Search Block" initialOpen={true}>
                     <TabPanel
@@ -47,7 +51,7 @@ const SearchBlockEdit = (props) => {
                     </TabPanel>
                 </PanelBody>
             </Panel>
-        </div>
+        </BlockEditComponent>
     );
 };
 

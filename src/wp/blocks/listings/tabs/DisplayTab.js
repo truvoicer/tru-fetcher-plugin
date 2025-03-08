@@ -289,15 +289,6 @@ const DisplayTab = (props) => {
                     onChange={(value) => setAttributes({ thumbnail_height: value })}
                 />
             </Grid>
-            <Grid columns={1}>
-                <TextareaControl
-                    __nextHasNoMarginBottom
-                    help="Enter custom css for the container"
-                    label="Container css"
-                    value={attributes?.container_css}
-                    onChange={(value) => setAttributes({ container_css: value })}
-                />
-            </Grid>
         </div>
     );
 };

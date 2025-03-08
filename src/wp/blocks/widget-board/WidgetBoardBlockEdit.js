@@ -6,6 +6,7 @@ import ContentWidgetsTab from "./tabs/ContentWidgetsTab";
 import Carousel from "../components/carousel/Carousel";
 import SidebarWidgetsTab from "./tabs/SidebarWidgetsTab";
 import GlobalOptionsTabConfig from "../components/global/tabs/GlobalOptionsTabConfig";
+import BlockEditComponent from '../common/BlockEditComponent';
 
 const WidgetBoardBlockEdit = (props) => {
     const {attributes, setAttributes, childConfigs} = props;
@@ -43,7 +44,10 @@ const WidgetBoardBlockEdit = (props) => {
 
 
     return (
-        <div {...useBlockProps()}>
+        <BlockEditComponent
+            {...props}
+            title='Widget Board Block'
+        >
             <Panel>
                 <PanelBody title="Widget Board Block" initialOpen={true}>
                     <TabPanel
@@ -76,7 +80,7 @@ const WidgetBoardBlockEdit = (props) => {
                     </TabPanel>
                 </PanelBody>
             </Panel>
-        </div>
+        </BlockEditComponent>
     );
 };
 

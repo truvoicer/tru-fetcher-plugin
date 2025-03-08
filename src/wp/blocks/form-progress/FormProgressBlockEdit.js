@@ -4,6 +4,7 @@ import FormProgress from "../components/form-progress/FormProgress";
 import {useBlockProps, store as blockEditorStore} from '@wordpress/block-editor';
 import {getChildBlockParams} from "../../helpers/wp-helpers";
 import { useSelect, useDispatch } from '@wordpress/data';
+import BlockEditComponent from '../common/BlockEditComponent';
 
 const FormProgressBlockEdit = (props) => {
 
@@ -31,7 +32,10 @@ const FormProgressBlockEdit = (props) => {
     }
 
     return (
-        <div {...useBlockProps()}>
+        <BlockEditComponent
+            {...props}
+            title='Form Progress Block'
+        >
             <Panel>
                 <PanelBody title="Form Progress Widget Block" initialOpen={true}>
                     <FormProgress
@@ -40,7 +44,7 @@ const FormProgressBlockEdit = (props) => {
                     />
                 </PanelBody>
             </Panel>
-        </div>
+        </BlockEditComponent>
     );
 };
 

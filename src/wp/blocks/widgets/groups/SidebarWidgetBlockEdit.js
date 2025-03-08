@@ -2,6 +2,7 @@ import React from 'react';
 import {store as blockEditorStore, useBlockProps, useInnerBlocksProps} from '@wordpress/block-editor';
 import {getChildBlockById, getChildBlockParams} from "../../../helpers/wp-helpers";
 import {useDispatch, useSelect} from '@wordpress/data';
+import BlockEditComponent from '../../common/BlockEditComponent';
 
 const SidebarWidgetBlockEdit = (props) => {
     const {attributes, setAttributes, clientId, apiConfig} = props;
@@ -40,12 +41,15 @@ const SidebarWidgetBlockEdit = (props) => {
         } );
     }
     return (
-        <div {...useBlockProps()}>
+        <BlockEditComponent
+            {...props}
+            title='Sidebar Widgets'
+        >
             <h3>{'Sidebar Widgets'}</h3>
             <div {...innerBlocksProps}>
                 { children }
             </div>
-        </div>
+        </BlockEditComponent>
     );
 };
 

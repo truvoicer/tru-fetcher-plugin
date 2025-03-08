@@ -19,6 +19,7 @@ import { InspectorControls } from '@wordpress/block-editor';
 import BlockView from '../common/BlockView';
 
 import {findTaxonomyIdIdentifier, findTaxonomySelectOptions} from "../../helpers/wp-helpers";
+import BlockEditComponent from '../common/BlockEditComponent';
 
 
 const ListingsBlockEdit = (props) => {
@@ -202,9 +203,12 @@ const ListingsBlockEdit = (props) => {
         return viewConfig;
     }
     return (
-        <div {...getContainerProps()}>
-
-            <InspectorControls key="setting">
+        <BlockEditComponent
+            {...props}
+            title='Setting'
+            viewConfig={buildViewConfig()}
+            containerProps={() => getContainerProps()}
+        >
                 <ProviderRequestContext.Provider value={providerRequestState}>
                     <Panel>
                         <PanelBody title="Listings Block" initialOpen={true}>
@@ -240,11 +244,7 @@ const ListingsBlockEdit = (props) => {
                         </PanelBody>
                     </Panel>
                 </ProviderRequestContext.Provider>
-            </InspectorControls>
-            <BlockView
-                {...props}
-                viewConfig={buildViewConfig()} />
-        </div>
+        </BlockEditComponent>
     );
 };
 

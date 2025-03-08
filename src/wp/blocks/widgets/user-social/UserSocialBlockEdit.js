@@ -4,6 +4,7 @@ import {useBlockProps, store as blockEditorStore} from '@wordpress/block-editor'
 import { useSelect, useDispatch } from '@wordpress/data';
 import {getChildBlockParams} from "../../../helpers/wp-helpers";
 import UserSocial from "../../components/user-social/UserSocial";
+import BlockEditComponent from '../../common/BlockEditComponent';
 
 const UserSocialBlockEdit = (props) => {
 
@@ -32,7 +33,10 @@ const UserSocialBlockEdit = (props) => {
     }
 
     return (
-        <div {...useBlockProps()}>
+        <BlockEditComponent
+            {...props}
+            title='User Social Widget Block'
+        >
             <Panel>
                 <PanelBody title="User Social Widget Block" initialOpen={true}>
                     <UserSocial
@@ -41,7 +45,7 @@ const UserSocialBlockEdit = (props) => {
                     />
                 </PanelBody>
             </Panel>
-        </div>
+        </BlockEditComponent>
     );
 };
 

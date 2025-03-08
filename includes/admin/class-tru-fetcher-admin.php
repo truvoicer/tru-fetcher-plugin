@@ -54,6 +54,10 @@ class Tru_Fetcher_Admin extends Tru_Fetcher_Base {
     private function loadBlocks() {
         (new Tru_Fetcher_Admin_Blocks())->init();
     }
+    public function initEditFormAdvanced() {
+        echo "Hello";
+    }
+
     public function healthCheck()
     {
 //        $activator = (new Tr_News_App_Activator())->activate();

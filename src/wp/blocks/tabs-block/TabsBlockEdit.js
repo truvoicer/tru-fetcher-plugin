@@ -1,6 +1,7 @@
 import React from 'react';
 import {useBlockProps} from '@wordpress/block-editor';
 import Tabs from "../components/tabs/Tabs";
+import BlockEditComponent from '../common/BlockEditComponent';
 
 const TabsBlockEdit = (props) => {
     const {attributes, setAttributes} = props;
@@ -13,12 +14,15 @@ const TabsBlockEdit = (props) => {
     }
 
     return (
-        <div {...useBlockProps()}>
+        <BlockEditComponent
+            {...props}
+            title='Tabs Block'
+        >
               <Tabs
                 data={attributes}
                 onChange={formChangeHandler}
             />
-        </div>
+        </BlockEditComponent>
     );
 };
 

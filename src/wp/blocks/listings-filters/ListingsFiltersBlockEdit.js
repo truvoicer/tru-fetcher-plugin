@@ -2,6 +2,7 @@ import React from 'react';
 import {TabPanel, Panel, PanelBody, PanelRow} from "@wordpress/components";
 import tabConfig from "./tab-config";
 import {useBlockProps} from '@wordpress/block-editor';
+import BlockEditComponent from '../common/BlockEditComponent';
 
 const ListingsFiltersBlockEdit = (props) => {
 
@@ -14,7 +15,10 @@ const ListingsFiltersBlockEdit = (props) => {
     }
 
     return (
-        <div {...useBlockProps()}>
+        <BlockEditComponent
+            {...props}
+            title='Listings Filters Block'
+        >
             <Panel>
                 <PanelBody title="Listings Filters Block" initialOpen={true}>
                     <TabPanel
@@ -47,7 +51,7 @@ const ListingsFiltersBlockEdit = (props) => {
                     </TabPanel>
                 </PanelBody>
             </Panel>
-        </div>
+        </BlockEditComponent>
     );
 };
 
