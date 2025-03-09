@@ -36,40 +36,39 @@ class Tru_Fetcher_Menu {
 		$this->listingsClass = new Tru_Fetcher_Listings();
 	}
 
-	public function getMenu(int|string|\WP_Term $menu, ?array $blocks = []) {
-		$getMenu = wp_get_nav_menu_items($menu);
-
-		if ( ! $getMenu ) {
-			return null;
-		}
-
+	private function buildMenuItems(array $menuItems, array $allMenuItems, ?array $blocks = []) {
 		$menuArray = [];
-		foreach ( $getMenu as $item ) {
-		    $menuItems = [];
-		    $menuItem = null;
-			if ( (int) $item->menu_item_parent === 0 ) {
-				$menuItem = $this->getPostFromMenuItem($item, $blocks);
-			}
+		foreach ( $menuItems as $key => $item ) {
 			$subItems = [];
-			foreach ( $getMenu as $subItem ) {
-				if ( (int) $subItem->menu_item_parent == (int) $item->ID ) {
-					$subItems[] = $this->getPostFromMenuItem($subItem, $blocks);
+			foreach ( $allMenuItems as $subKey => $subItem ) {
+				if ( 
+					(int) $subItem->menu_item_parent === (int) $item->ID 
+				) {
+					$subItems[] = $subItem;
 				}
 			}
-
-            if ($menuItem !== null) {
-                $menuItems["menu_item"] = $menuItem;
-            }
-
-            if (count($subItems) > 0) {
-                $menuItems["menu_sub_items"] = $subItems;
-            }
-            if (count($menuItems) > 0) {
-                array_push($menuArray, $menuItems);
-            }
+			$menuArray[$key] = [];
+			$menuArray[$key]['menu_item'] = $this->getPostFromMenuItem($item, $blocks);
+            if (!count($subItems)) {
+				continue;
+			}
+            $menuArray[$key]["menu_sub_items"] = $this->buildMenuItems($subItems, $allMenuItems, $blocks);
 		}
-
 		return $menuArray;
+	}
+	public function getMenu(int|string|\WP_Term $menu, ?array $blocks = []) {
+		$getMenu = wp_get_nav_menu_items($menu);
+		if ( ! is_array($getMenu) ) {
+			return null;
+		}
+		$parentArray = [];
+		foreach ( $getMenu as $item ) {
+			if ( (int) $item->menu_item_parent !== 0 ) {
+				continue;
+			}
+			$parentArray[] = $item;
+		}
+		return $this->buildMenuItems($parentArray, $getMenu, $blocks);
 	}
 
 	public function getPostFromMenuItem(\WP_Post $menuItem, ?array $blocks = []) {

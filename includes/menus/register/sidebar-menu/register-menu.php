@@ -1,10 +1,10 @@
 <?php
 function TruFetcherRegisterNavMenus() {
 	register_nav_menus(
-		array(
-			'sidebar-menu' => __( 'Sidebar Menu' ),
-			'extra-menu' => __( 'Extra Menu' )
-		)
+		[
+			'nav-menu' => __( 'Extra Menu' ),
+			'mobile-menu' => __( 'Sidebar Menu' ),
+		]
 	);
 }
 add_action( 'admin_init', "TruFetcherRegisterNavMenus" );

@@ -133,6 +133,26 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'type' => 'string',
             ],
             [
+                'id' => 'url_key',
+                'type' => 'string',
+                'default' => 'url',
+            ],
+            [
+                'id' => 'title_key',
+                'type' => 'string',
+                'default' => 'title',
+            ],
+            [
+                'id' => 'excerpt_key',
+                'type' => 'string',
+                'default' => 'excerpt',
+            ],
+            [
+                'id' => 'description_key',
+                'type' => 'string',
+                'default' => 'description',
+            ],
+            [
                 'id' => 'select_providers',
                 'type' => 'boolean',
                 'default' => false,
@@ -166,6 +186,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Listings extends Tru_Fetcher_Admin_Bloc
                 'id' => 'item_view_display',
                 'type' => 'string',
                 'default' => 'page',
+            ],
+            [
+                'id' => 'link_type',
+                'type' => 'string',
+                'default' => 'direct',
             ],
             [
                 'id' => 'load_more_type',

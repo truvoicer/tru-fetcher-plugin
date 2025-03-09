@@ -20,6 +20,7 @@ import BlockView from '../common/BlockView';
 
 import {findTaxonomyIdIdentifier, findTaxonomySelectOptions} from "../../helpers/wp-helpers";
 import BlockEditComponent from '../common/BlockEditComponent';
+import KeyMapSelector from '../common/KeyMapSelector';
 
 
 const ListingsBlockEdit = (props) => {
@@ -141,10 +142,23 @@ const ListingsBlockEdit = (props) => {
             component: SidebarTab
         });
         if (props.attributes?.source === 'api') {
+            KeyMapSelector.defaultProps = {
+                config: [
+                    {label: 'Sort By', key: 'sort_by'},
+                    {label: 'Sort Order', key: 'sort_order'},
+                    {label: 'Date Key', key: 'date_key'},
+                    {label: 'URL Key', key: 'url_key'},
+                    {label: 'Title Key', key: 'title_key'},
+                    {label: 'Excerpt Key', key: 'excerpt_key'},
+                    {label: 'Description Key', key: 'description_key'},
+                    {label: 'Thumbnail Key', key: 'thumbnail_key'},
+                ],
+                open: true
+            };
             tabConfig.push({
-                name: 'api_settings',
-                title: 'Api Settings',
-                component: ApiTab
+                name: 'key_map',
+                title: 'Key Map',
+                component: KeyMapSelector
             });
         }
         tabConfig.push({

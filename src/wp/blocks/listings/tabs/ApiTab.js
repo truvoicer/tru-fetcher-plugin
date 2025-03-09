@@ -4,6 +4,7 @@ import {StateMiddleware} from "../../../../library/api/StateMiddleware";
 import ProviderRequestList from "../../components/list/ProviderRequestList";
 import ProviderRequestContext from "../../components/list/ProviderRequestContext";
 import {buildSelectOptions} from "../../../../library/helpers/form-helpers";
+import KeyMapSelector from "../../common/KeyMapSelector";
 
 const ApiTab = (props) => {
     const {
@@ -87,70 +88,6 @@ const ApiTab = (props) => {
                     }
                 </>
             }
-
-            <Panel>
-                <PanelBody title="Key Maps" initialOpen={false}>
-                    <SelectControl
-                        label="Sort by"
-                        onChange={(value) => {
-                            setAttributes({sort_by: value});
-                        }}
-                        value={attributes?.sort_by}
-                        options={[
-                            ...[
-                                {
-                                    disabled: false,
-                                    label: 'Select a key',
-                                    value: ''
-                                },
-                            ],
-                            ...buildSelectOptions(
-                                providerRequestContext?.responseKeys,
-                                'name', 
-                                'name'
-                            )
-                        ]}
-                    />
-                    <SelectControl
-                        label="Sort order"
-                        onChange={(value) => {
-                            setAttributes({sort_order: value});
-                        }}
-                        value={attributes?.sort_order}
-                        options={[
-                            {
-                                label: 'Descending',
-                                value: 'desc'
-                            },
-                            {
-                                label: 'Ascending',
-                                value: 'asc'
-                            },
-                        ]}
-                    />
-                    <SelectControl
-                        label="Date key"
-                        onChange={(value) => {
-                            setAttributes({date_key: value});
-                        }}
-                        value={attributes?.date_key}
-                        options={[
-                            ...[
-                                {
-                                    disabled: false,
-                                    label: 'Select a key',
-                                    value: ''
-                                },
-                            ],
-                            ...buildSelectOptions(
-                                providerRequestContext?.responseKeys,
-                                'name', 
-                                'name'
-                            )
-                        ]}
-                    />
-                </PanelBody>
-            </Panel>
         </>
     );
 };

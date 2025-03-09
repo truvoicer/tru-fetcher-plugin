@@ -74,32 +74,6 @@ const DisplayTab = (props) => {
             </Grid>
             <Grid columns={2}>
                 <SelectControl
-                    label="Grid Layout"
-                    onChange={(value) => {
-                        setAttributes({ grid_layout: value });
-                    }}
-                    value={attributes?.grid_layout}
-                    options={[
-                        {
-                            disabled: true,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                        {
-                            label: 'List',
-                            value: 'list'
-                        },
-                        {
-                            label: 'Compact',
-                            value: 'compact'
-                        },
-                        {
-                            label: 'Detailed',
-                            value: 'detailed'
-                        },
-                    ]}
-                />
-                <SelectControl
                     label="Select Item View Display"
                     onChange={(value) => {
                         setAttributes({ item_view_display: value });
@@ -118,6 +92,32 @@ const DisplayTab = (props) => {
                         {
                             label: 'Page',
                             value: 'page'
+                        },
+                        {
+                            label: 'Direct',
+                            value: 'direct'
+                        },
+                    ]}
+                />
+                <SelectControl
+                    label="Link Type"
+                    onChange={(value) => {
+                        setAttributes({ link_type: value });
+                    }}
+                    value={attributes?.link_type}
+                    options={[
+                        {
+                            disabled: true,
+                            label: 'Select an Option',
+                            value: ''
+                        },
+                        {
+                            label: 'Direct',
+                            value: 'direct'
+                        },
+                        {
+                            label: 'View',
+                            value: 'view'
                         },
                     ]}
                 />
@@ -189,6 +189,32 @@ const DisplayTab = (props) => {
                         ...getComparisonTemplateOptions(attributes?.display_as === 'comparisons')
                     ]}
                 />
+                <SelectControl
+                    label="Grid Layout"
+                    onChange={(value) => {
+                        setAttributes({ grid_layout: value });
+                    }}
+                    value={attributes?.grid_layout}
+                    options={[
+                        {
+                            disabled: true,
+                            label: 'Select an Option',
+                            value: ''
+                        },
+                        {
+                            label: 'List',
+                            value: 'list'
+                        },
+                        {
+                            label: 'Compact',
+                            value: 'compact'
+                        },
+                        {
+                            label: 'Detailed',
+                            value: 'detailed'
+                        },
+                    ]}
+                />
             </Grid>
             <Grid columns={2}>
                 <SelectControl
@@ -225,29 +251,6 @@ const DisplayTab = (props) => {
                         },
                     ]}
                 />
-                {attributes?.thumbnail_type === 'data_key' &&
-                    <SelectControl
-                        label="Thumbnail Key"
-                        onChange={(value) => {
-                            setAttributes({ thumbnail_key: value });
-                        }}
-                        value={attributes?.thumbnail_key}
-                        options={[
-                            ...[
-                                {
-                                    disabled: false,
-                                    label: 'Select a key',
-                                    value: ''
-                                },
-                            ],
-                            ...buildSelectOptions(
-                                providerRequestContext?.responseKeys,
-                                'name',
-                                'name'
-                            )
-                        ]}
-                    />
-                }
                 {attributes?.thumbnail_type === 'bg' &&
                     <ColorPicker
                         color={attributes?.thumbnail_bg}
