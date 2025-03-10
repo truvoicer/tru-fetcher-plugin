@@ -13,7 +13,7 @@ const TemplatesTab = (props) => {
     } = props;
 
     const providerRequestContext = useContext(ProviderRequestContext);
-
+    console.log(props)
     useEffect(() => {
         if (!Array.isArray(providerRequestContext.services) || providerRequestContext.services.length === 0) {
             return;
@@ -41,10 +41,7 @@ const TemplatesTab = (props) => {
                     }}
                     value={attributes?.template}
                     options={[
-                        ...GutenbergBase.getSelectOptions('template', props),
-                        ...getSettingListOptions(
-                            'custom_templates'
-                        )
+                        ...GutenbergBase.getSelectOptions('template', props)
                     ]}
                 />
             </Grid>
@@ -56,11 +53,7 @@ const TemplatesTab = (props) => {
                     }}
                     value={attributes?.style}
                     options={[
-                        ...GutenbergBase.getSelectOptions('style', props),
-                        ...getSettingListOptions(
-                            'comparison_styles', 
-                            attributes?.template === 'comparisons'
-                        )
+                        ...GutenbergBase.getSelectOptions('style', props)
                     ]}
                 />
             </Grid>

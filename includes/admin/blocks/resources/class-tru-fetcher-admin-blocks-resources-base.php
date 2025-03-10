@@ -340,13 +340,28 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
             $attribute['default'] = [];
             unset($attribute['class']);
         }
-
         return $attribute;
     }
 
     public function buildClassAttributes(array $attributes)
     {
         foreach ($attributes as $index => $attribute) {
+
+                if (!empty($attribute['form_control'])) {
+                switch ($attribute['form_control']) {
+                    case 'select':
+                        if (empty($attribute['options'])) {
+                            break;
+                        }
+                        if ($attribute['options'] instanceof \Closure) {
+                            $attribute['options'] = $attribute['options']();
+                        }
+                        if (!is_array($attribute['options'])) {
+                            break;
+                        }
+                        break;
+                }
+            }
             $classAttribute = $this->buildClassAttribute($attribute);
             if (!$classAttribute) {
                 continue;

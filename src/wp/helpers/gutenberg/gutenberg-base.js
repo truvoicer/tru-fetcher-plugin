@@ -19,9 +19,13 @@ export class GutenbergBase {
         if (!Array.isArray(props?.child?.attributes)) {
             return options;
         }
+        const findAttribute = props.child.attributes.find(attribute => attribute.id === id);
+        if (!Array.isArray(findAttribute?.options)) {
+            return options;
+        }
         return [
             ...options,
-            ...props.child.attributes.find(attribute => attribute.id === id)?.options || []
+            ...findAttribute.options
         ];
     }
 }

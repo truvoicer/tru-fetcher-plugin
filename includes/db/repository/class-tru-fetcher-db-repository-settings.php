@@ -60,6 +60,16 @@ class Tru_Fetcher_DB_Repository_Settings extends Tru_Fetcher_DB_Repository_Base 
         }
         return $data;
     }
+
+    private function buildItem(array $data)
+    {
+        if (is_serialized($data[$this->model->getValueColumn()])) {
+            $data[$this->model->getValueColumn()] = unserialize(
+                str_replace('\\', '', $data[$this->model->getValueColumn()])
+            );
+        }
+        return $data;
+    }
     public function findSettingByName(string $settingName)
     {
         $find = $this->db->getSingleResult(
@@ -72,7 +82,7 @@ class Tru_Fetcher_DB_Repository_Settings extends Tru_Fetcher_DB_Repository_Base 
         if (!$find) {
             return false;
         }
-        return $this->model->buildModelData($find);
+        return $this->buildItem($find);
     }
 
     public function findSettingById(int $id)

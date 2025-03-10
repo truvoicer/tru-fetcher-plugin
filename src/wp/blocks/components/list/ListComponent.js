@@ -1,55 +1,40 @@
 import React from 'react';
-import { TextControl, Button, SelectControl, RadioControl } from "@wordpress/components";
+import {TextControl, Button, SelectControl} from "@wordpress/components";
+
+export const FIELD_NAME = 'text';
+export const FIELD_VALUE = 'list';
 
 const ListComponent = ({
     heading, 
     data = [], 
     onChange, 
+    fields = [FIELD_VALUE, FIELD_NAME],
     showSaveButton = false, 
-    associative = true,
     onSave = () => {}
 }) => {
     function addParam() {
         let cloneSearchParam = [...data];
-        cloneSearchParam.push({ name: '', value: '', type: 'text', list_type: 'assoc' });
+        cloneSearchParam.push({name: '', value: ''});
         onChange(cloneSearchParam);
     }
 
-    function updateParam({ index, key, value }) {
+    function updateParam({index, key, value}) {
         let cloneSearchParam = [...data];
         cloneSearchParam[index][key] = value;
         onChange(cloneSearchParam);
     }
 
-    function deleteParam({ index }) {
+    function deleteParam({index}) {
         let cloneSearchParam = [...data];
         cloneSearchParam.splice(index, 1);
         onChange(cloneSearchParam);
     }
 
-    function renderValueControl({ index, param }) {
+    function renderValueControl({param, index}) {
         switch (param?.type) {
             case 'list':
                 return (
-                    <>
-                    <RadioControl
-                        label="List Type"
-                        help="Select the type of list"
-                        selected={param?.list_type || 'assoc'}
-                        options={ [
-                            { label: 'Assoc', value: 'assoc' },
-                            { label: 'Indexed', value: 'indexed' }
-                        ] }
-                        onChange={ ( option ) => {
-                            updateParam({
-                                index,
-                                key: 'list_type',
-                                value: option
-                            })
-                        } }
-                    />
                     <ListComponent
-                        associative={param?.list_type === 'assoc'}
                         heading={'List'}
                         data={Array.isArray(param?.value) ? param.value : []}
                         showSaveButton={true}
@@ -66,16 +51,14 @@ const ListComponent = ({
                                 key: 'value',
                                 value: data
                             })
-                        }}
-                    />
-                    </>
-                );
+                        }}/>
+                    );
             default:
                 return (
                     <TextControl
                         label="Value"
                         placeholder="Value"
-                        value={param.value}
+                        value={param?.value || ''}
                         onChange={(value) => {
                             updateParam({
                                 index,
@@ -88,15 +71,19 @@ const ListComponent = ({
         }
     }
 
-    function renderValue({ param, index }) {
+    function fieldAllowed(field) {
+        return fields.includes(field);
+    }
+
+    function renderValue({param, index}) {
         return (
-            <div>
+            <>
                 <SelectControl
                     label="Type"
-                    value={param.type || 'text'}
+                    value={param?.type || 'text'}
                     options={[
-                        { label: 'Text', value: 'text' },
-                        { label: 'List', value: 'list' }
+                        {label: 'Text', value: 'text'},
+                        {label: 'List', value: 'list'},
                     ]}
                     onChange={(value) => {
                         updateParam({
@@ -104,10 +91,11 @@ const ListComponent = ({
                             key: 'type',
                             value: value
                         })
-                    }} />
-                {renderValueControl({ param, index })}
-            </div>
-        )
+                    }}
+                />
+                {renderValueControl({param, index})}
+            </>
+        );
     }
 
     return (
@@ -115,8 +103,8 @@ const ListComponent = ({
             {heading && <h5>{heading}</h5>}
             {data.map((param, index) => {
                 return (
-                    <div style={{ display: 'flex' }}>
-                        {associative && (
+                    <div style={{display: 'flex'}}>
+                        {fieldAllowed(FIELD_NAME) &&
                             <TextControl
                                 label="Name"
                                 placeholder="Name"
@@ -129,13 +117,13 @@ const ListComponent = ({
                                     })
                                 }}
                             />
-                        )}
-                        {renderValue({ param, index })}
+                        }
+                        {fieldAllowed(FIELD_VALUE) && renderValue({param, index})}
                         <Button
                             variant="primary"
                             onClick={(e) => {
                                 e.preventDefault()
-                                deleteParam({ index })
+                                deleteParam({index})
                             }}
                         >
                             Delete
@@ -143,7 +131,7 @@ const ListComponent = ({
                     </div>
                 );
             })}
-            <div style={{ display: 'flex' }}>
+            <div style={{display: 'flex'}}>
                 <Button
                     variant="primary"
                     onClick={(e) => {
@@ -154,14 +142,14 @@ const ListComponent = ({
                     Add New
                 </Button>
                 {showSaveButton &&
-                    <Button
-                        variant="primary"
-                        onClick={(e) => {
-                            e.preventDefault()
-                            onSave(data);
-                        }}>
-                        Save
-                    </Button>
+                <Button
+                    variant="primary"
+                    onClick={(e) => {
+                        e.preventDefault()
+                        onSave(data);
+                    }}>
+                    Save
+                </Button>
                 }
             </div>
         </div>

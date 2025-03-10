@@ -2,6 +2,7 @@ import React from 'react';
 
 const contextData = {
     settings: [],
+    refresh: () => {},
     updateSettings: () => {},
     addSetting: () => {},
     removeSingleSetting: () => {},

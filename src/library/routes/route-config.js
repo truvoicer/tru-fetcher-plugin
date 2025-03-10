@@ -5,6 +5,7 @@ import TabPresets from "../../settings/pages/presets/TabPresets";
 import Presets from "../../settings/pages/presets/Presets";
 import Keymaps from "../../settings/pages/keymaps/KeyMaps";
 import Listings from "../../settings/pages/Listings";
+import Templates from "../../settings/pages/Templates";
 
 export default [
     {
@@ -55,5 +56,12 @@ export default [
         key: 'key-maps',
         label: 'Keymaps',
         component: Keymaps,
+    },
+    {
+        home: false,
+        path: "/templates",
+        key: 'templates',
+        label: 'Templates',
+        component: Templates,
     },
 ];

@@ -1,28 +1,20 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import SettingsContext from "../contexts/SettingsContext";
-import {Button, Form, Input, Table, notification} from 'antd';
-import {Modal} from '@wordpress/components'
-import config from "../../library/api/wp/config";
-import {isObject} from "../../library/helpers/utils-helpers";
-import {getBlockAttributesById} from "../../wp/helpers/wp-helpers";
-import ListingsBlockEdit from "../../wp/blocks/listings/ListingsBlockEdit";
-import {APP_STATE} from "../../library/redux/constants/app-constants";
-import {SESSION_STATE} from "../../library/redux/constants/session-constants";
-import {connect} from "react-redux";
-import {StateMiddleware} from "../../library/api/StateMiddleware";
+import { Button, Table, notification, Form, Input } from 'antd';
+import { Modal } from '@wordpress/components'
+import { findSetting, getSettingListOptions } from '../../wp/helpers/wp-helpers';
+import ListComponent, { FIELD_NAME } from '../../wp/blocks/components/list/ListComponent';
 
 const Templates = () => {
     const [api, contextHolder] = notification.useNotification();
-    const [isStylesModalOpen, setIsStylesModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalComponent, setModalComponent] = useState(null);
+    const [modalTitle, setModalTitle] = useState('');
     const [currentRecord, setCurrentRecord] = useState(null);
     const [listings, setListings] = useState([]);
     const [attributes, setAttributes] = useState({});
 
     const settingsContext = useContext(SettingsContext);
-
-    const stateMiddleware = new StateMiddleware();
-    stateMiddleware.setAppState(app);
-    stateMiddleware.setSessionState(session);
 
     const openNotificationWithIcon = (type, title, message) => {
         api[type]({
@@ -31,103 +23,42 @@ const Templates = () => {
         });
     };
 
-    const blockAttributes = getBlockAttributesById('tabs_block');
-    const tabChangeHandler = ({key, value, record}) => {
-        if (!record?.id) {
+    // openNotificationWithIcon('error', 'Error', 'Failed to update listing');
+    // openNotificationWithIcon('success', 'Success', 'Listing updated successfully');
+
+
+    function fetchTemplates() {
+        if (!Array.isArray(settingsContext?.settings)) {
+            return [];
+        }
+        return settingsContext.settings.find(setting => setting.name === 'custom_templates');
+    }
+
+    const templateSetting = fetchTemplates();
+
+    const customTemplates = Array.isArray(templateSetting?.value) ? templateSetting.value : [];
+
+    function addTemplate(data) {
+        let cloneTemplates = [...customTemplates];
+        cloneTemplates.push(data);
+        updateTemplate(cloneTemplates);
+    }
+
+
+    function updateTemplate(data) {
+        if (!templateSetting) {
+            settingsContext.createSingleSetting({
+                name: 'custom_templates',
+                value: data
+            });
             return;
         }
-        setCurrentRecord((prevState) => {
-            let newState = {...prevState};
-            let cloneConfigData = {...newState['config_data']};
-            newState['config_data'] = {
-                ...{...blockAttributes, ...cloneConfigData},
-                [key]: value
-            };
-            return newState;
+        settingsContext.updateSingleSetting({
+            id: templateSetting.id,
+            value: data
         });
     }
 
-    function buildDefaultTabData() {
-        const defaultTabData = {
-            presets: 'custom',
-        };
-        if (isObject(blockAttributes)) {
-            return {...blockAttributes, ...defaultTabData};
-        }
-        return false;
-    }
-
-    function buildTabData(data) {
-        const defaultTabData = buildDefaultTabData();
-        if (!defaultTabData) {
-            return false;
-        }
-
-        if (!isObject(data?.config_data)) {
-            return defaultTabData
-        }
-
-        return {...defaultTabData, ...data.config_data};
-    }
-
-    async function fetchListings() {
-        const results = await stateMiddleware.fetchRequest({
-            config: config,
-            endpoint: config.endpoints.listings,
-            params: {
-                build_config_data: true
-            }
-        });
-        const listings = results?.data?.listings;
-        if (Array.isArray(listings)) {
-            setListings(listings);
-        }
-    }
-
-    async function createListingRequest(data) {
-        const results = await stateMiddleware.sendRequest({
-            config: config,
-            method: 'post',
-            endpoint: `${config.endpoints.listings}/create`,
-            data
-        });
-        const listings = results?.data?.listings;
-        if (results?.data?.status !== 'success') {
-            openNotificationWithIcon('error', 'Error', 'Failed to create listing');
-            return;
-        }
-        openNotificationWithIcon('success', 'Success', 'Listing created successfully');
-        if (Array.isArray(listings)) {
-            setListings(listings);
-        }
-    }
-
-    async function updateListingRequest(data) {
-        if (!data?.id) {
-            console.error('Id not set in data')
-            return;
-        }
-        const id = data.id;
-        const results = await stateMiddleware.sendRequest({
-            config: config,
-            method: 'post',
-            endpoint: `${config.endpoints.listings}/${id}/update`,
-            data
-        });
-        const listings = results?.data?.listings;
-        if (results?.data?.status !== 'success') {
-            openNotificationWithIcon('error', 'Error', 'Failed to update listing');
-            return;
-        }
-        openNotificationWithIcon('success', 'Success', 'Listing updated successfully');
-        if (Array.isArray(listings)) {
-            setListings(listings);
-        }
-    }
-
-    useEffect(() => {
-        fetchListings();
-    }, []);
 
     const columns = [
         {
@@ -137,12 +68,6 @@ const Templates = () => {
             render: (text) => <a>{text}</a>,
         },
         {
-            title: 'Label',
-            dataIndex: 'label',
-            key: 'label',
-            render: (label) => label,
-        },
-        {
             title: 'Styles',
             key: 'styles',
             render: (_, record, index) => {
@@ -150,17 +75,51 @@ const Templates = () => {
                     <>
                         <Button
                             onClick={() => {
-                                setCurrentRecord(record);
-                                setIsStylesModalOpen(true);
+                                setCurrentRecord({ index, record });
+                                setModalTitle('Edit Styles');
+                                setModalComponent('styles')
+                                setIsModalOpen(true);
                             }}
                             type="primary"
-                            style={{marginBottom: 16}}>
-                            Edit
+                            style={{ marginBottom: 16 }}>
+                            Edit Style
                         </Button>
                     </>
                 )
             },
         },
+        {
+            title: 'Actions',
+            key: 'actions',
+            render: (_, record, index) => {
+                return (
+                    <>
+                        <Button
+                            onClick={() => {
+                                setCurrentRecord({ index, record });
+                                setModalTitle('Edit Template');
+                                setModalComponent('edit-template')
+                                setIsModalOpen(true);
+                            }}
+                            type="primary"
+                            style={{ marginBottom: 16 }}>
+                            Edit Template
+                        </Button>
+                        <Button
+                            style={{ marginLeft: 16 }}
+                            onClick={() => {
+                                let cloneTemplates = [...customTemplates];
+                                cloneTemplates.splice(index, 1);
+                                updateTemplate(cloneTemplates);
+                            }}
+                            type="primary">
+                            Delete
+                        </Button>
+                    </>
+                )
+            },
+        }
+
     ];
 
     return (
@@ -168,42 +127,82 @@ const Templates = () => {
             {contextHolder}
             <Button
                 onClick={() => {
-                    setIsAddModalOpen(true);
+                    setModalTitle('Add Template');
+                    setModalComponent('add-template')
+                    setIsModalOpen(true);
                 }}
                 type="primary"
-                style={{marginBottom: 16}}>
+                style={{ marginBottom: 16 }}>
                 Add Template
             </Button>
-            <Table columns={columns} dataSource={listings}/>
-            {isStylesModalOpen &&
-            <Modal title={'Edit Tab Preset'}
-                   onOk={() => {
-                       if (!currentRecord?.id) {
-                           console.error('Id not set in currentRecord')
-                           return;
-                       }
-                       updateListingRequest(currentRecord);
-                   }}
-                   headerActions={
-                       <div>
-                           <Button variant="secondary"
-                                   onClick={() => {
-                                       if (!currentRecord?.id) {
-                                           console.error('Id not set in currentRecord')
-                                           return;
-                                       }
-                                       updateListingRequest(currentRecord);
-                                   }}>
-                               Save
-                           </Button>
-                       </div>
-                   }
-                   onRequestClose={() => {
-                       setCurrentRecord(null);
-                       setIsStylesModalOpen(false);
-                   }}>
+            <Table columns={columns} dataSource={customTemplates} />
+            {isModalOpen &&
+                <Modal title={modalTitle || ''}
+                    onOk={() => {
+                        setCurrentRecord(null);
+                    }}
+                    onRequestClose={() => {
+                        setCurrentRecord(null);
+                        setIsModalOpen(false);
+                    }}>
+                    {modalComponent === 'styles' &&
+                        <ListComponent
+                            fields={[FIELD_NAME]}
+                            heading={'Styles'}
+                            data={currentRecord?.record?.styles || []}
+                            showSaveButton={true}
+                            onSave={(data) => {
+                                let clone = { ...currentRecord };
+                                clone.record.styles = data;
+                                setCurrentRecord(clone);
 
-            </Modal>
+                                let cloneTemplates = [...customTemplates];
+                                cloneTemplates[currentRecord.index] = clone.record;
+                                updateTemplate(cloneTemplates);
+                            }}
+                            onChange={(data) => {
+                                let clone = { ...currentRecord };
+                                clone.record.styles = data;
+                                setCurrentRecord(clone);
+                                let cloneTemplates = [...customTemplates];
+                                cloneTemplates[currentRecord.index] = clone.record;
+                                updateTemplate(cloneTemplates);
+                            }} />
+                    }
+                    {(modalComponent === 'add-template' || modalComponent === 'edit-template') &&
+                        <Form
+                            name="basic"
+                            style={{ maxWidth: 600 }}
+                            initialValues={{name: (modalComponent === 'edit-template')? currentRecord?.record?.name || '' : ''}}
+                            onFinish={(values) => {
+                                if (modalComponent === 'edit-template') {
+                                    let cloneTemplates = [...customTemplates];
+                                    cloneTemplates[currentRecord.index] = { ...currentRecord.record, ...values };
+                                    updateTemplate(cloneTemplates);
+                                    return;
+                                }
+                                addTemplate(values);
+                            }}
+                            onFinishFailed={errorInfo => {
+                                console.error(errorInfo);
+                            }}
+                            autoComplete="off"
+                        >
+                            <Form.Item
+                                label="Name"
+                                name="name"
+                                rules={[{ required: true, message: 'Please input name!' }]}
+                            >
+                                <Input />
+                            </Form.Item>
+                            <Form.Item>
+                                <Button type="primary" htmlType="submit">
+                                    Submit
+                                </Button>
+                            </Form.Item>
+                        </Form>
+                    }
+                </Modal>
             }
         </>
     );
