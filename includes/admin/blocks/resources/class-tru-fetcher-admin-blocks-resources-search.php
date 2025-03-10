@@ -49,6 +49,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Search extends Tru_Fetcher_Admin_Blocks
                 'id' => Tru_Fetcher_Post_Types_Trf_Filter_List::ID_IDENTIFIER . '__search__categories',
                 'type' => 'string',
                 'default' => '',
+                'form_control' => 'select',
             ],
             [
                 'id' => 'search__categories_placeholder',
@@ -74,6 +75,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Search extends Tru_Fetcher_Admin_Blocks
                 'id' => Tru_Fetcher_Post_Types_Trf_Filter_List::ID_IDENTIFIER . '__search__featured_categories',
                 'type' => 'string',
                 'default' => '',
+                'form_control' => 'select',
             ],
             [
                 'id' => 'listing_relation',

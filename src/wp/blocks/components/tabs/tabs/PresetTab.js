@@ -1,5 +1,6 @@
 import React from 'react';
 import {TabPanel, Panel, RangeControl, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import { GutenbergBase } from '../../../../helpers/gutenberg/gutenberg-base';
 
 const PresetTab = (props) => {
     const {
@@ -33,10 +34,7 @@ const PresetTab = (props) => {
                     }}
                     value={data?.presets}
                     options={[
-                        {
-                            label: 'Custom',
-                            value: 'custom'
-                        },
+                        ...GutenbergBase.getSelectOptions('presets', props),
                         ...getPresets()
                     ]}
                 />

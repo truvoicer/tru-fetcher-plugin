@@ -60,10 +60,12 @@ const EditableCell = ({
         }
     }
 
-    const save = async () => {
+    const save = async (preventToggleEdit = false) => {
         try {
             const values = await form.validateFields();
-            toggleEdit();
+            if (!preventToggleEdit) {
+                toggleEdit();
+            }
             handleSave({row: {...record, ...values}, col});
 
         } catch (errInfo) {
@@ -116,7 +118,7 @@ const EditableCell = ({
                             }}
                             onChange={(data) => {
                                 form.setFieldValue(col.dataIndex, data);
-                                save();
+                                save(true);
                             }}/>
                     </Form.Item>
                 );
@@ -191,12 +193,22 @@ const EditableCell = ({
     }
     let childNode = children;
 
+    function componentIsArray(val) {
+        return (Array.isArray(val) && val.length === 2 && Array.isArray(val[1]));
+    }
     function getDisplay(data) {
         let Component = data;
         let styles = {paddingRight: 24, height: 20};
         switch (record?.type) {
+            case 'textarea':
+            case 'text':
+            case 'url':
+            case 'checkbox':
+            case 'select':
+            case 'color_picker':
+                break;
             case 'list':
-                if (Array.isArray(Component) && Component.length === 2 && Array.isArray(Component[1])) {
+                if (componentIsArray(Component)) {
                     Component[1] = Component[1].map((item, index) => {
                         return `[${item?.name}: ${item?.value}]`;
                     }).join(' | ');
@@ -211,7 +223,9 @@ const EditableCell = ({
                     <img src={record?.[col.dataIndex]} style={{width: 80, height: 80}}/>
                 );
                 break;
-
+            default:
+                Component = null;
+                break;
         }
         return (
             <div className="editable-cell-value-wrap" style={styles} onClick={toggleEdit}>
@@ -231,17 +245,21 @@ const EditableCell = ({
             >
                 {getFormComponent(col)}
                 <a
-                    style={{alignSelf: 'flex-end'}}
+                    style={{
+                        alignSelf: 'flex-end', 
+                        marginLeft: 8, 
+                        fontSize: 11
+                    }}
                     onClick={(e) => {
-                    e.preventDefault();
-                    setEditing(false);
-                }} style={{marginLeft: 8, fontSize: 11}}>
+                        e.preventDefault();
+                        setEditing(false);
+                    }}
+                >
                     Cancel
                 </a>
             </div>
         ) : getDisplay(children);
     }
-
     return <td {...restProps}>{childNode}</td>;
 };
 

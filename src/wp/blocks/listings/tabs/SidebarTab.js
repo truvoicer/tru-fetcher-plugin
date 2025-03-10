@@ -2,6 +2,7 @@ import React from 'react';
 import {TextControl, SelectControl, ToggleControl} from "@wordpress/components";
 import Filters from "../../components/filters/Filters";
 import Grid from "../../../../components/Grid";
+import { GutenbergBase } from '../../../helpers/gutenberg/gutenberg-base';
 
 const SidebarTab = (props) => {
         const {
@@ -60,16 +61,7 @@ const SidebarTab = (props) => {
                                     setAttributes({filters_position: value});
                                 }}
                                 value={attributes?.filters_position}
-                                options={[
-                                    {
-                                        label: 'Left',
-                                        value: 'left'
-                                    },
-                                    {
-                                        label: 'Right',
-                                        value: 'right'
-                                    },
-                                ]}
+                                options={GutenbergBase.getSelectOptions('filters_position', props)}
                             />
                         </Grid>
                         <Grid columns={1}>

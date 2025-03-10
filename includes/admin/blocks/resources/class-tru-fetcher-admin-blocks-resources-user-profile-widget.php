@@ -49,7 +49,12 @@ class Tru_Fetcher_Admin_Blocks_Resources_User_Profile_Widget extends Tru_Fetcher
             [
                 'id' => 'view',
                 'type' => 'text',
-                'default' => 'display'
+                'default' => 'display',
+                'form_control' => 'select',
+                'options' => [
+                    ['label' => 'Display', 'value' => 'display'],
+                    ['label' => 'Edit', 'value' => 'edit'],
+                ],
             ],
         ]
     ];

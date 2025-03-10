@@ -1,5 +1,6 @@
 import React from 'react';
 import {TabPanel, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import { GutenbergBase } from '../../../helpers/gutenberg/gutenberg-base';
 
 const GeneralTab = (props) => {
     const {
@@ -17,12 +18,7 @@ const GeneralTab = (props) => {
                     setAttributes({optin_type: value});
                 }}
                 value={attributes?.optin_type || 'form'}
-                options={[
-                    {
-                        label: 'Form',
-                        value: 'form'
-                    },
-                ]}
+                options={GutenbergBase.getSelectOptions('optin_type', props)}
             />
             <ToggleControl
                 label="Show Carousel?"

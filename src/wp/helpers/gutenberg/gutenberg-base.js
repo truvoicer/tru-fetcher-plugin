@@ -9,4 +9,19 @@ export class GutenbergBase {
         }
         return findBlock;
     }
+    static getSelectOptions(id, props) {
+        let options = [
+            {
+                label: 'Please Select',
+                value: ''
+            }
+        ]
+        if (!Array.isArray(props?.child?.attributes)) {
+            return options;
+        }
+        return [
+            ...options,
+            ...props.child.attributes.find(attribute => attribute.id === id)?.options || []
+        ];
+    }
 }

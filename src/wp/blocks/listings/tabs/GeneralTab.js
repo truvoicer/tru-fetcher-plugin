@@ -6,6 +6,7 @@ import {useBlockProps, store as blockEditorStore} from '@wordpress/block-editor'
 import {isNotEmpty} from "../../../../library/helpers/utils-helpers";
 import {GutenbergBlockIdHelpers} from "../../../helpers/gutenberg/gutenberg-block-id-helpers";
 import Grid from "../../../../components/Grid";
+import { GutenbergBase } from '../../../helpers/gutenberg/gutenberg-base';
 
 
 const GeneralTab = (props) => {
@@ -42,25 +43,7 @@ const GeneralTab = (props) => {
                         setAttributes({source: value});
                     }}
                     value={attributes?.source}
-                    options={[
-                        {
-                            disabled: true,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                        {
-                            label: 'Api',
-                            value: 'api'
-                        },
-                        {
-                            label: 'Wordpress',
-                            value: 'wordpress'
-                        },
-                        {
-                            label: 'Saved Items',
-                            value: 'saved_items'
-                        },
-                    ]}
+                    options={GutenbergBase.getSelectOptions('source', props)}
                 />
                 <TextControl
                     label="Listings Block Id"

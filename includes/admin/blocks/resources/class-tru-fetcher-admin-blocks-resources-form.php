@@ -49,15 +49,38 @@ class Tru_Fetcher_Admin_Blocks_Resources_Form extends Tru_Fetcher_Admin_Blocks_R
                 'id' => 'presets',
                 'type' => 'string',
                 'default' => 'custom',
+                'form_control' => 'select',
             ],
             [
                 'id' => 'form_type',
                 'type' => 'string',
                 'default' => 'single',
+                'form_control' => 'select',
+                'options' => [
+                    [
+                        'label' => 'Single',
+                        'value' => 'single'
+                    ],
+                    [
+                        'label' => 'List',
+                        'value' => 'list'
+                    ],
+                ]
             ],
             [
                 'id' => 'method',
                 'type' => 'string',
+                'form_control' => 'select',
+                'options' => [
+                    [
+                        'label' => 'POST',
+                        'value' => 'post'
+                    ],
+                    [
+                        'label' => 'GET',
+                        'value' => 'get'
+                    ],
+                ]
             ],
             [
                 'id' => 'submit_button_label',
@@ -85,10 +108,44 @@ class Tru_Fetcher_Admin_Blocks_Resources_Form extends Tru_Fetcher_Admin_Blocks_R
                 'id' => 'endpoint',
                 'type' => 'string',
                 'default' => 'custom',
+                'form_control' => 'select',
+                'options' => [
+                    [
+                        'label' => 'Email',
+                        'value' => 'email'
+                    ],
+                    [
+                        'label' => 'User Meta',
+                        'value' => 'user_meta'
+                    ],
+                    [
+                        'label' => 'Account Details',
+                        'value' => 'account_details'
+                    ],
+                    [
+                        'label' => 'External Provider',
+                        'value' => 'external_provider'
+                    ],
+                    [
+                        'label' => 'Custom',
+                        'value' => 'custom'
+                    ],
+                ]
             ],
             [
                 'id' => 'endpoint_type',
                 'type' => 'string',
+                'form_control' => 'select',
+                'options' => [
+                    [
+                        'label' => 'Public',
+                        'value' => 'public'
+                    ],
+                    [
+                        'label' => 'Protected',
+                        'value' => 'protected'
+                    ],
+                ]
             ],
             [
                 'id' => 'fetch_user_data',
@@ -124,6 +181,17 @@ class Tru_Fetcher_Admin_Blocks_Resources_Form extends Tru_Fetcher_Admin_Blocks_R
                 'id' => 'layout_style',
                 'type' => 'string',
                 'default' => 'full_width',
+                'form_control' => 'select',
+                'options' => [
+                    [
+                        'label' => 'Full Width',
+                        'value' => 'full_width'
+                    ],
+                    [
+                        'label' => 'Constrained',
+                        'value' => 'constrained'
+                    ],
+                ]
             ],
             [
                 'id' => 'classes',
@@ -138,6 +206,21 @@ class Tru_Fetcher_Admin_Blocks_Resources_Form extends Tru_Fetcher_Admin_Blocks_R
                 'id' => 'align',
                 'type' => 'string',
                 'default' => 'left',
+                'form_control' => 'select',
+                'options' => [
+                    [
+                        'label' => 'Left',
+                        'value' => 'left'
+                    ],
+                    [
+                        'label' => 'Center',
+                        'value' => 'center'
+                    ],
+                    [
+                        'label' => 'Right',
+                        'value' => 'right'
+                    ],
+                ]
             ],
             [
                 'id' => 'form_rows',

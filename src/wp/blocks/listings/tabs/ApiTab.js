@@ -5,6 +5,7 @@ import ProviderRequestList from "../../components/list/ProviderRequestList";
 import ProviderRequestContext from "../../components/list/ProviderRequestContext";
 import {buildSelectOptions} from "../../../../library/helpers/form-helpers";
 import KeyMapSelector from "../../common/KeyMapSelector";
+import { GutenbergBase } from "../../../helpers/gutenberg/gutenberg-base";
 
 const ApiTab = (props) => {
     const {
@@ -37,16 +38,7 @@ const ApiTab = (props) => {
                     setAttributes({api_fetch_type: value});
                 }}
                 value={attributes?.api_fetch_type}
-                options={[
-                    {
-                        label: 'Database',
-                        value: 'database'
-                    },
-                    {
-                        label: 'API Direct',
-                        value: 'api_direct'
-                    },
-                ]}
+                options={GutenbergBase.getSelectOptions('api_fetch_type', props)}
             />
             <SelectControl
                 label="Api Listings Service"

@@ -1,6 +1,7 @@
 import React from 'react';
 import {TextControl, SelectControl} from "@wordpress/components";
 import Grid from "../../../../../components/Grid";
+import { GutenbergBase } from '../../../../helpers/gutenberg/gutenberg-base';
 
 const FormLayoutTab = (props) => {
     const {
@@ -19,21 +20,7 @@ const FormLayoutTab = (props) => {
                         }
                     }}
                     value={data?.layout_style}
-                    options={[
-                        {
-                            disabled: true,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                        {
-                            label: 'Full Width',
-                            value: 'full_width'
-                        },
-                        {
-                            label: 'Contained',
-                            value: 'contained'
-                        },
-                    ]}
+                    options={GutenbergBase.getSelectOptions('layout_style', props)}
                 />
                 <SelectControl
                     label="Align"
@@ -43,25 +30,7 @@ const FormLayoutTab = (props) => {
                         }
                     }}
                     value={data?.align}
-                    options={[
-                        {
-                            disabled: true,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                        {
-                            label: 'Left',
-                            value: 'left'
-                        },
-                        {
-                            label: 'Right',
-                            value: 'right'
-                        },
-                        {
-                            label: 'Center',
-                            value: 'center'
-                        },
-                    ]}
+                    options={GutenbergBase.getSelectOptions('align', props)}
                 />
             </Grid>
             <Grid columns={2}>

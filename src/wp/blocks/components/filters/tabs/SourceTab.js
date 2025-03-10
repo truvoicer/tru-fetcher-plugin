@@ -2,6 +2,7 @@ import React from 'react';
 import {TabPanel, Panel, Button, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
 import Carousel from "../../carousel/Carousel";
 import {findPostTypeIdIdentifier, findPostTypeSelectOptions} from "../../../../helpers/wp-helpers";
+import { GutenbergBase } from '../../../../helpers/gutenberg/gutenberg-base';
 
 const SourceTab = (props) => {
 
@@ -19,25 +20,7 @@ const SourceTab = (props) => {
                     onChange({key: 'source', value: value});
                 }}
                 value={data?.source}
-                options={[
-                    {
-                        disabled: true,
-                        label: 'Select an Option',
-                        value: ''
-                    },
-                    {
-                        label: 'Wordpress',
-                        value: 'wordpress'
-                    },
-                    {
-                        label: 'Api',
-                        value: 'api'
-                    },
-                    {
-                        label: 'Providers',
-                        value: 'providers'
-                    },
-                ]}
+                options={GutenbergBase.getSelectOptions('source', props)}
             />
             {data?.source === 'api' &&
                 <TextControl

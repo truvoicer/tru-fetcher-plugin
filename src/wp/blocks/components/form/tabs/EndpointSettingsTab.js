@@ -1,6 +1,7 @@
 import React from 'react';
 import {TextControl, SelectControl, ToggleControl} from "@wordpress/components";
 import Grid from "../../../../../components/Grid";
+import { GutenbergBase } from '../../../../helpers/gutenberg/gutenberg-base';
 
 const EndpointSettingsTab = (props) => {
     const {
@@ -19,33 +20,7 @@ const EndpointSettingsTab = (props) => {
                         }
                     }}
                     value={data?.endpoint}
-                    options={[
-                        {
-                            disabled: true,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                        {
-                            label: 'Email',
-                            value: 'email'
-                        },
-                        {
-                            label: 'User Meta',
-                            value: 'user_meta'
-                        },
-                        {
-                            label: 'Account Details',
-                            value: 'account_details'
-                        },
-                        {
-                            label: 'External provider',
-                            value: 'external_provider'
-                        },
-                        {
-                            label: 'Custom',
-                            value: 'custom'
-                        },
-                    ]}
+                    options={GutenbergBase.getSelectOptions('endpoint', props)}
                 />
                 <SelectControl
                     label="Endpoint Type"
@@ -55,20 +30,7 @@ const EndpointSettingsTab = (props) => {
                         }
                     }}
                     value={data?.endpoint_type}
-                    options={[
-                        {
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                        {
-                            label: 'Public',
-                            value: 'public'
-                        },
-                        {
-                            label: 'Protected',
-                            value: 'protected'
-                        },
-                    ]}
+                    options={GutenbergBase.getSelectOptions('endpoint_type', props)}
                 />
             </Grid>
             <Grid columns={2}>

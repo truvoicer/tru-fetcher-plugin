@@ -1,10 +1,9 @@
 import React, { useContext, useEffect } from 'react';
-import { TextControl, SelectControl, RangeControl, ColorPicker, TextareaControl } from "@wordpress/components";
-import { findSetting } from "../../../helpers/wp-helpers";
+import { TextControl, SelectControl, RangeControl, ColorPicker } from "@wordpress/components";
 import Grid from "../../../../components/Grid";
 import ProviderRequestContext from '../../components/list/ProviderRequestContext';
-import { buildSelectOptions } from '../../../../library/helpers/form-helpers';
 import MediaInput from '../../../components/media/MediaInput';
+import { GutenbergBase } from '../../../helpers/gutenberg/gutenberg-base';
 
 const DisplayTab = (props) => {
     const {
@@ -14,24 +13,7 @@ const DisplayTab = (props) => {
     } = props;
 
     const providerRequestContext = useContext(ProviderRequestContext);
-
-    function getComparisonTemplateOptions(show) {
-        if (!show) {
-            return [];
-        }
-        const comparisonTemplates = findSetting('comparison_templates')?.value;
-        if (!Array.isArray(comparisonTemplates)) {
-            return [];
-        }
-
-        return comparisonTemplates.map((template) => {
-            return {
-                label: template.name,
-                value: template.value
-            }
-        });
-    }
-
+    console.log(props)
     useEffect(() => {
         if (!Array.isArray(providerRequestContext.services) || providerRequestContext.services.length === 0) {
             return;
@@ -55,21 +37,7 @@ const DisplayTab = (props) => {
                         setAttributes({ load_more_type: value });
                     }}
                     value={attributes?.load_more_type}
-                    options={[
-                        {
-                            disabled: true,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                        {
-                            label: 'Pagination',
-                            value: 'pagination'
-                        },
-                        {
-                            label: 'Infinite Scroll',
-                            value: 'infinite_scroll'
-                        },
-                    ]}
+                    options={GutenbergBase.getSelectOptions('load_more_type', props)}
                 />
             </Grid>
             <Grid columns={2}>
@@ -79,25 +47,7 @@ const DisplayTab = (props) => {
                         setAttributes({ item_view_display: value });
                     }}
                     value={attributes?.item_view_display}
-                    options={[
-                        {
-                            disabled: true,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                        {
-                            label: 'Modal',
-                            value: 'modal'
-                        },
-                        {
-                            label: 'Page',
-                            value: 'page'
-                        },
-                        {
-                            label: 'Direct',
-                            value: 'direct'
-                        },
-                    ]}
+                    options={GutenbergBase.getSelectOptions('item_view_display', props)}
                 />
                 <SelectControl
                     label="Link Type"
@@ -105,21 +55,7 @@ const DisplayTab = (props) => {
                         setAttributes({ link_type: value });
                     }}
                     value={attributes?.link_type}
-                    options={[
-                        {
-                            disabled: true,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                        {
-                            label: 'Direct',
-                            value: 'direct'
-                        },
-                        {
-                            label: 'View',
-                            value: 'view'
-                        },
-                    ]}
+                    options={GutenbergBase.getSelectOptions('link_type', props)}
                 />
             </Grid>
             <Grid columns={2}>
@@ -132,88 +68,12 @@ const DisplayTab = (props) => {
                     onChange={(value) => setAttributes({ posts_per_page: value })}
                 />
                 <SelectControl
-                    label="Display As"
-                    onChange={(value) => {
-                        setAttributes({ display_as: value });
-                    }}
-                    value={attributes?.display_as}
-                    options={[
-                        {
-                            disabled: true,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                        {
-                            label: 'List',
-                            value: 'list'
-                        },
-                        {
-                            label: 'Posts List',
-                            value: 'post_list'
-                        },
-                        {
-                            label: 'Comparisons',
-                            value: 'comparisons'
-                        },
-                        {
-                            label: 'Tiles',
-                            value: 'tiles'
-                        },
-                        {
-                            label: 'Sidebar Posts',
-                            value: 'sidebar_posts'
-                        },
-                        {
-                            label: 'Sidebar List',
-                            value: 'sidebar_list'
-                        },
-                    ]}
-                />
-            </Grid>
-            <Grid columns={2}>
-                <SelectControl
-                    label="Template"
-                    onChange={(value) => {
-                        setAttributes({ template: value });
-                    }}
-                    value={attributes?.template}
-                    options={[
-                        {
-                            label: 'Select template',
-                            value: ''
-                        },
-                        {
-                            label: 'Default',
-                            value: 'default'
-                        },
-                        ...getComparisonTemplateOptions(attributes?.display_as === 'comparisons')
-                    ]}
-                />
-                <SelectControl
                     label="Grid Layout"
                     onChange={(value) => {
                         setAttributes({ grid_layout: value });
                     }}
                     value={attributes?.grid_layout}
-                    options={[
-                        {
-                            disabled: true,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                        {
-                            label: 'List',
-                            value: 'list'
-                        },
-                        {
-                            label: 'Compact',
-                            value: 'compact'
-                        },
-                        {
-                            label: 'Detailed',
-                            value: 'detailed'
-                        },
-                    ]}
+                    options={GutenbergBase.getSelectOptions('grid_layout', props)}
                 />
             </Grid>
             <Grid columns={2}>
@@ -223,33 +83,7 @@ const DisplayTab = (props) => {
                         setAttributes({ thumbnail_type: value });
                     }}
                     value={attributes?.thumbnail_type}
-                    options={[
-                        {
-                            disabled: false,
-                            label: 'Select a type',
-                            value: ''
-                        },
-                        {
-                            disabled: false,
-                            label: 'Image',
-                            value: 'image'
-                        },
-                        {
-                            disabled: false,
-                            label: 'Background Color',
-                            value: 'bg'
-                        },
-                        {
-                            disabled: false,
-                            label: 'Data key',
-                            value: 'data_key'
-                        },
-                        {
-                            disabled: false,
-                            label: 'Disabled',
-                            value: 'disabled'
-                        },
-                    ]}
+                    options={GutenbergBase.getSelectOptions('thumbnail_type', props)}
                 />
                 {attributes?.thumbnail_type === 'bg' &&
                     <ColorPicker

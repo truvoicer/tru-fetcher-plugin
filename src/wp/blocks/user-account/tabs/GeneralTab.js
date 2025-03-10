@@ -1,5 +1,6 @@
 import React from 'react';
 import {TabPanel, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import { GutenbergBase } from '../../../helpers/gutenberg/gutenberg-base';
 
 const GeneralTab = (props) => {
     const {
@@ -17,33 +18,7 @@ const GeneralTab = (props) => {
                     setAttributes({component: value});
                 }}
                 value={attributes?.component}
-                options={[
-                    {
-                        disabled: true,
-                        label: 'Select an Option',
-                        value: ''
-                    },
-                    {
-                        label: 'Dashboard',
-                        value: 'dashboard'
-                    },
-                    {
-                        label: 'User Profile',
-                        value: 'user_profile'
-                    },
-                    {
-                        label: 'Account Details',
-                        value: 'account_details'
-                    },
-                    {
-                        label: 'Saved Items',
-                        value: 'saved_items'
-                    },
-                    {
-                        label: 'Messages',
-                        value: 'messages'
-                    },
-                ]}
+                options={GutenbergBase.getSelectOptions('component', props)}
             />
             <TextControl
                 label="Tab Label"
@@ -67,21 +42,7 @@ const GeneralTab = (props) => {
                     setAttributes({tabs_orientation: value});
                 }}
                 value={attributes?.tabs_orientation}
-                options={[
-                    {
-                        disabled: true,
-                        label: 'Select an Option',
-                        value: ''
-                    },
-                    {
-                        label: 'Vertical',
-                        value: 'vertical'
-                    },
-                    {
-                        label: 'Horizontal',
-                        value: 'horizontal'
-                    },
-                ]}
+                options={GutenbergBase.getSelectOptions('tabs_orientation', props)}
             />
         </div>
     );

@@ -200,8 +200,13 @@ const GeneralSettings = () => {
                     type: 'text'
                 },
                 {
-                    name: 'comparison_templates',
-                    label: 'Comparison Templates',
+                    name: 'comparison_styles',
+                    label: 'Comparison Styles',
+                    type: 'list'
+                },
+                {
+                    name: 'custom_templates',
+                    label: 'Custom Templates',
                     type: 'list'
                 },
             ]
@@ -246,10 +251,9 @@ const GeneralSettings = () => {
             columns={columns}
             dataSource={getSettings()}
             onDelete={({newData, key}) => {
-                console.log({newData, key})
+                
             }}
             onSave={({row, col}) => {
-                console.log({row, col})
                 if (col?.dataIndex !== 'value') {
                     return;
                 }

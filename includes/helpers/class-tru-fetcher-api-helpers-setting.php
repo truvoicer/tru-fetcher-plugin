@@ -73,7 +73,12 @@ class Tru_Fetcher_Api_Helpers_Setting
     public function getSettingsByNames(?array $names = [])
     {
         foreach ($names as $key) {
-            $this->settingsRepository->addWhere($this->settingsModel->getNameColumn(), $key);
+            $this->settingsRepository->addWhere(
+                $this->settingsModel->getNameColumn(), 
+                $key,
+                '=',
+                'OR'
+            );
         }
         return $this->settingsRepository->findMany();
     }

@@ -5,7 +5,6 @@ const { Title } = Typography;
 
 const EditableRow = ({record, rowIndex, groups, ...otherProps}) => {
     const [form] = Form.useForm();
-    // console.log({record, rowIndex, groups})
     return (
         <Form form={form} component={false}>
             <EditableContext.Provider value={form}>

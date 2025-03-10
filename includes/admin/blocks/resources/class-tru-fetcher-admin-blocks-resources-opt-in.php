@@ -47,6 +47,13 @@ class Tru_Fetcher_Admin_Blocks_Resources_Opt_In extends Tru_Fetcher_Admin_Blocks
                 'id' => 'optin_type',
                 'type' => 'string',
                 'default' => 'form',
+                'form_control' => 'select',
+                'options' => [
+                    [
+                        'label' => 'Form',
+                        'value' => 'form',
+                    ],
+                ],
             ],
             [
                 'id' => 'show_carousel',

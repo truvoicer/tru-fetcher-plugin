@@ -48,16 +48,50 @@ class Tru_Fetcher_Admin_Blocks_Resources_Tabs extends Tru_Fetcher_Admin_Blocks_R
                 'id' => 'presets',
                 'type' => 'string',
                 'default' => 'custom',
+                'form_control' => 'select',
+                'options' => [
+                    [
+                        'label' => 'Custom',
+                        'value' => 'custom',
+                    ],
+                    //...
+                ]
             ],
             [
                 'id' => 'tabs_block_type',
                 'type' => 'string',
                 'default' => 'carousel',
+                'form_control' => 'select',
+                'options' => [
+                    [
+                        'label' => 'Carousel',
+                        'value' => 'carousel',
+                    ],
+                    [
+                        'label' => 'Video',
+                        'value' => 'video',
+                    ],
+                    [
+                        'label' => 'Custom',
+                        'value' => 'custom',
+                    ],
+                ]
             ],
             [
                 'id' => 'tabs_orientation',
                 'type' => 'string',
                 'default' => 'vertical',
+                'form_control' => 'select',
+                'options' => [
+                    [
+                        'label' => 'Vertical',
+                        'value' => 'vertical',
+                    ],
+                    [
+                        'label' => 'Horizontal',
+                        'value' => 'horizontal',
+                    ],
+                ]
             ],
             [
                 'id' => 'heading',

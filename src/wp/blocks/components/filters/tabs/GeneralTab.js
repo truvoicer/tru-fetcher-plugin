@@ -2,6 +2,7 @@ import React from 'react';
 import {TabPanel, Panel, Button, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
 import Carousel from "../../carousel/Carousel";
 import {findPostTypeIdIdentifier, findPostTypeSelectOptions} from "../../../../helpers/wp-helpers";
+import { GutenbergBase } from '../../../../helpers/gutenberg/gutenberg-base';
 
 const GeneralTab = (props) => {
 
@@ -19,25 +20,7 @@ const GeneralTab = (props) => {
                     onChange({key: 'type', value: value});
                 }}
                 value={data?.type}
-                options={[
-                    {
-                        disabled: true,
-                        label: 'Select an Option',
-                        value: ''
-                    },
-                    {
-                        label: 'Date',
-                        value: 'date'
-                    },
-                    {
-                        label: 'Text',
-                        value: 'text'
-                    },
-                    {
-                        label: 'List',
-                        value: 'list'
-                    },
-                ]}
+                options={GutenbergBase.getSelectOptions('type', props)}
             />
             <TextControl
                 label="Name"

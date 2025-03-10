@@ -154,3 +154,21 @@ export function findSetting(key) {
     }
     return settings.find((setting) => setting?.name === key);
 }
+
+
+export function getSettingListOptions(key, show = true) {
+    if (!key || !show) {
+        return [];
+    }
+    const findList = findSetting(key)?.value;
+    if (!Array.isArray(findList)) {
+        return [];
+    }
+
+    return findList.map((template) => {
+        return {
+            label: template?.name || 'name_error',
+            value: template?.value || 'value_error'
+        }
+    });
+}

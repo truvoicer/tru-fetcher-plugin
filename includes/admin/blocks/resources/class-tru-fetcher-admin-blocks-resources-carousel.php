@@ -48,11 +48,39 @@ class Tru_Fetcher_Admin_Blocks_Resources_Carousel extends Tru_Fetcher_Admin_Bloc
                 'id' => 'carousel_content',
                 'type' => 'string',
                 'default' => 'items',
+                'form_control' => 'select',
+                'options' => [
+                    [
+                        'label' => 'Select an Option',
+                        'value' => ''
+                    ],
+                    [
+                        'label' => 'Full Width Testimonials',
+                        'value' => 'full_width_testimonials'
+                    ],
+                    [
+                        'label' => 'Speech Bubble Testimonials',
+                        'value' => 'speech_bubble_testimonials'
+                    ],
+                    [
+                        'label' => 'Cards',
+                        'value' => 'cards'
+                    ],
+                    [
+                        'label' => 'Custom Items',
+                        'value' => 'custom_items'
+                    ],
+                    [
+                        'label' => 'Api Request',
+                        'value' => 'api_request'
+                    ],
+                ]
             ],
             [
                 'id' => Tru_Fetcher_Post_Types_Trf_Item_List::ID_IDENTIFIER,
                 'type' => 'string',
                 'default' => '',
+                'form_control' => 'select',
             ],
             [
                 'id' => 'carousel_heading',

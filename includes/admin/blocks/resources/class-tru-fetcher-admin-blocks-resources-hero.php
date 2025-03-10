@@ -49,6 +49,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Hero extends Tru_Fetcher_Admin_Blocks_R
                 'id' => 'hero_type',
                 'type' => 'string',
                 'default' => 'full_hero',
+                'form_control' => 'select',
+                'options' => [
+                    ['value' => 'full_hero', 'label' => 'Full Hero'],
+                    ['value' => 'breadcrumb_hero', 'label' => 'Breadcrumb Hero'],
+                ],
             ],
             [
                 'id' => 'hero_title',

@@ -8,6 +8,7 @@ import {StateMiddleware} from "../../../../library/api/StateMiddleware";
 import {buildSelectOptions} from "../../../../library/helpers/form-helpers";
 import ProviderRequestContext from "../../components/list/ProviderRequestContext";
 import Grid from "../../../../components/Grid";
+import { GutenbergBase } from '../../../helpers/gutenberg/gutenberg-base';
 
 const SearchTab = (props) => {
     const {
@@ -32,21 +33,7 @@ const SearchTab = (props) => {
                         setAttributes({initial_load: value});
                     }}
                     value={attributes?.initial_load}
-                    options={[
-                        {
-                            disabled: true,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                        {
-                            label: 'Search',
-                            value: 'search'
-                        },
-                        {
-                            label: 'Api Request',
-                            value: 'api_request'
-                        },
-                    ]}
+                    options={GutenbergBase.getSelectOptions('initial_load', props)}
                 />
                 {attributes?.initial_load === 'search' && (
                     <TextControl

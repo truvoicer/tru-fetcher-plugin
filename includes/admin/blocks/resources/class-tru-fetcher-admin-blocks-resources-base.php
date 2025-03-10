@@ -33,6 +33,21 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
             'id' => 'sidebar_layout_position',
             'type' => 'string',
             'default' => 'default',
+            'form_control' => 'select',
+            'options' => [
+                [
+                    'label' => 'Default',
+                    'value' => 'default'
+                ],
+                [
+                    'label' => 'Outside Sidebar Top',
+                    'value' => 'outside_top'
+                ],
+                [
+                    'label' => 'Outside Sidebar Bottom',
+                    'value' => 'outside_bottom'
+                ],
+            ],
         ],
         [
             'id' => 'block_width',
@@ -43,6 +58,17 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
             'id' => 'access_control',
             'type' => 'string',
             'default' => 'public',
+            'form_control' => 'select',
+            'options' => [
+                [
+                    'label' => 'Public',
+                    'value' => 'public'
+                ],
+                [
+                    'label' => 'Protected',
+                    'value' => 'protected'
+                ],
+            ],
         ],
         [
             'id' => 'title',

@@ -42,6 +42,14 @@ class Tru_Fetcher_Admin_Blocks_Resources_User_Account extends Tru_Fetcher_Admin_
                 'id' => 'component',
                 'type' => 'string',
                 'default' => 'dashboard',
+                'form_control' => 'select',
+                'options' => [
+                    ['label' => 'Dashboard', 'value' => 'dashboard'],
+                    ['label' => 'User Profile', 'value' => 'user_profile'],
+                    ['label' => 'Account Details', 'value' => 'account_details'],
+                    ['label' => 'Saved Items', 'value' => 'saved_items'],
+                    ['label' => 'Messages', 'value' => 'messages'],
+                ],
             ],
             [
                 'id' => 'tab_label',
@@ -55,6 +63,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_User_Account extends Tru_Fetcher_Admin_
                 'id' => 'tabs_orientation',
                 'type' => 'string',
                 'default' => 'vertical',
+                'form_control' => 'select',
+                'options' => [
+                    ['label' => 'Vertical', 'value' => 'vertical'],
+                    ['label' => 'Horizontal', 'value' => 'horizontal'],
+                ],
             ],
         ]
     ];

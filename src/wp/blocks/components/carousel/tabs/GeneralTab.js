@@ -43,32 +43,7 @@ const GeneralTab = (props) => {
                     onChange({key: 'carousel_content', value});
                 }}
                 value={data?.carousel_content}
-                options={[
-                    {
-                        label: 'Select an Option',
-                        value: ''
-                    },
-                    {
-                        label: 'Full Width Testimonials',
-                        value: 'full_width_testimonials'
-                    },
-                    {
-                        label: 'Speech Bubble Testimonials',
-                        value: 'speech_bubble_testimonials'
-                    },
-                    {
-                        label: 'Cards',
-                        value: 'cards'
-                    },
-                    {
-                        label: 'Custom Items',
-                        value: 'custom_items'
-                    },
-                    {
-                        label: 'Api Request',
-                        value: 'api_request'
-                    },
-                ]}
+                options={GutenbergBase.getSelectOptions('carousel_content', props)}
             />
             {[
                 'full_width_testimonials',

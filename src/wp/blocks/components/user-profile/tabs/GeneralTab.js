@@ -1,5 +1,6 @@
 import React from 'react';
 import {TabPanel, Panel, Button, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import { GutenbergBase } from '../../../../helpers/gutenberg/gutenberg-base';
 
 const GeneralTab = (props) => {
 
@@ -24,16 +25,7 @@ const GeneralTab = (props) => {
                     onChange({key: 'view', value: value});
                 }}
                 value={data?.view}
-                options={[
-                    {
-                        label: 'Display',
-                        value: 'display'
-                    },
-                    {
-                        label: 'Edit',
-                        value: 'edit'
-                    },
-                ]}
+                options={GutenbergBase.getSelectOptions('view', props)}
             />
         </div>
     );

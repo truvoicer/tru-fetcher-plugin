@@ -1,6 +1,7 @@
 import React from 'react';
 import {TextControl, SelectControl} from "@wordpress/components";
 import Grid from "../../../../../components/Grid";
+import { GutenbergBase } from '../../../../helpers/gutenberg/gutenberg-base';
 
 const FormSettingsTab = (props) => {
     const {
@@ -20,21 +21,7 @@ const FormSettingsTab = (props) => {
                         }
                     }}
                     value={data?.form_type}
-                    options={[
-                        {
-                            disabled: true,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                        {
-                            label: 'Single',
-                            value: 'single'
-                        },
-                        {
-                            label: 'List',
-                            value: 'list'
-                        },
-                    ]}
+                    options={GutenbergBase.getSelectOptions('form_type', props)}
                 />
                 <SelectControl
                     label="Method"
@@ -44,21 +31,7 @@ const FormSettingsTab = (props) => {
                         }
                     }}
                     value={data?.method}
-                    options={[
-                        {
-                            disabled: true,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                        {
-                            label: 'GET',
-                            value: 'get'
-                        },
-                        {
-                            label: 'POST',
-                            value: 'post'
-                        },
-                    ]}
+                    options={GutenbergBase.getSelectOptions('method', props)}
                 />
             </Grid>
             <Grid columns={2}>

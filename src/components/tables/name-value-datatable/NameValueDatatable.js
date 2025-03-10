@@ -80,11 +80,6 @@ const NameValueDatatable = ({
                     name: groupNameData?.name,
                     value: '',
                 }
-                // if (typeof groupNameData?.render === 'function') {
-                //     delete defaultData.value;
-                //     defaultData.render = groupNameData.render;
-                // }
-                // console.log({defaultData})
                 const find = cloneDataSource.find((item) => item?.name === groupNameData?.name) || {};
 
                 return {...defaultData, ...find};
@@ -97,6 +92,9 @@ const NameValueDatatable = ({
         })
         let otherData = [];
         cloneDataSource.forEach((item) => {
+            if (!item?.type) {
+                return;
+            }
             const defaultData = {
                 type: item?.type,
                 name: item?.name,

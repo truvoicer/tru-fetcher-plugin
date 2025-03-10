@@ -6,6 +6,7 @@ import {
 } from "../../../helpers/wp-helpers";
 import {useSelect} from "@wordpress/data";
 import Grid from "../../../../components/Grid";
+import { GutenbergBase } from '../../../helpers/gutenberg/gutenberg-base';
 
 const WordpressDataTab = (props) => {
     const {
@@ -34,23 +35,7 @@ const WordpressDataTab = (props) => {
                         setAttributes({wordpress_data_source: value});
                     }}
                     value={attributes?.wordpress_data_source}
-                    options={[
-                        {
-                            disabled: false,
-                            label: 'Select an Option',
-                            value: ''
-                        },
-                        {
-                            disabled: false,
-                            label: 'Item List',
-                            value: 'item_list'
-                        },
-                        {
-                            disabled: false,
-                            label: 'Posts',
-                            value: 'posts'
-                        },
-                    ]}
+                    options={GutenbergBase.getSelectOptions('wordpress_data_source', props)}
                 />
             </Grid>
             {attributes?.wordpress_data_source === 'posts' &&

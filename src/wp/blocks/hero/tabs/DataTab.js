@@ -1,5 +1,6 @@
 import React from 'react';
 import {TabPanel, Panel, PanelBody, TextControl, SelectControl, ToggleControl} from "@wordpress/components";
+import { GutenbergBase } from '../../../helpers/gutenberg/gutenberg-base';
 
 const DataTab = (props) => {
     const {
@@ -17,21 +18,7 @@ const DataTab = (props) => {
                     setAttributes({hero_type: value});
                 }}
                 value={attributes?.hero_type}
-                options={[
-                    {
-                        disabled: true,
-                        label: 'Select an Option',
-                        value: ''
-                    },
-                    {
-                        label: 'Full Hero',
-                        value: 'full_hero'
-                    },
-                    {
-                        label: 'Breadcrumb Hero',
-                        value: 'breadcrumb_hero'
-                    },
-                ]}
+                options={GutenbergBase.getSelectOptions('hero_type', props)}
             />
             <TextControl
                 label="Hero Title"

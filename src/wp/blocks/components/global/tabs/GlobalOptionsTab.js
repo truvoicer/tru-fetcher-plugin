@@ -1,6 +1,7 @@
 import React from 'react';
 import {SelectControl, TextControl} from "@wordpress/components";
 import Grid from "../../../../../components/Grid";
+import { GutenbergBase } from '../../../../helpers/gutenberg/gutenberg-base';
 
 const GlobalOptionsTab = (props) => {
     const {
@@ -10,7 +11,7 @@ const GlobalOptionsTab = (props) => {
         apiConfig,
         wpMediaFrame,
     } = props;
-
+    
     return (
         <>
             <Grid columns={2}>
@@ -28,16 +29,7 @@ const GlobalOptionsTab = (props) => {
                         setAttributes({access_control: value});
                     }}
                     value={attributes?.access_control}
-                    options={[
-                        {
-                            label: 'Public',
-                            value: 'public'
-                        },
-                        {
-                            label: 'Protected',
-                            value: 'protected'
-                        },
-                    ]}
+                    options={GutenbergBase.getSelectOptions('access_control', props)}
                 />
             </Grid>
             <Grid columns={2}>
@@ -47,20 +39,7 @@ const GlobalOptionsTab = (props) => {
                         setAttributes({sidebar_layout_position: value});
                     }}
                     value={attributes?.sidebar_layout_position}
-                    options={[
-                        {
-                            label: 'Default',
-                            value: 'default'
-                        },
-                        {
-                            label: 'Outside Sidebar Top',
-                            value: 'outside_top'
-                        },
-                        {
-                            label: 'Outside Sidebar Bottom',
-                            value: 'outside_bottom'
-                        },
-                    ]}
+                    options={GutenbergBase.getSelectOptions('sidebar_layout_position', props)}
                 />
                 <SelectControl
                     label="Block style"

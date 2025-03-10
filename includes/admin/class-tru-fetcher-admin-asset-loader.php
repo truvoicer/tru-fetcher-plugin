@@ -62,7 +62,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
     public function registerAdminScripts()
     {
         add_action('admin_enqueue_scripts', [$this, "loadAssets"]);
-        add_action('enqueue_block_editor_assets', function() {
+        add_action('enqueue_block_editor_assets', function () {
 
             $currentScreen = get_current_screen();
             switch ($currentScreen->base) {
@@ -70,7 +70,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
                 case 'widgets':
                     $path = TRU_FETCHER_PLUGIN_URL . "build/{$this->gutenbergExistingBlocks}.js";
                     wp_enqueue_script(
-                        "trf-gutenberg-{$this->gutenbergExistingBlocks}", 
+                        "trf-gutenberg-{$this->gutenbergExistingBlocks}",
                         $path,
                         ['wp-edit-post']
                     );
@@ -143,7 +143,7 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
                         'wp-components',
                         'wp-compose',
                         'wp-data',
-//                        'wp-edit-post',
+                        //                        'wp-edit-post',
                         'wp-element',
                         'wp-i18n',
                         'wp-plugins',
@@ -298,7 +298,11 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
     public function buildSettingsLocalizedScriptData(): array
     {
         return [
-            'settings' => (new Tru_Fetcher_Api_Helpers_Setting())->getSettingsByNames(['comparison_templates']),
+            'settings' => (new Tru_Fetcher_Api_Helpers_Setting())->getSettingsByNames([
+                'comparison_templates',
+                'comparison_styles',
+                'custom_templates'
+            ]),
         ];
     }
 
@@ -443,5 +447,4 @@ class Tru_Fetcher_Admin_Asset_loader extends Tru_Fetcher_Base
         </style>
     ';
     }
-
 }
