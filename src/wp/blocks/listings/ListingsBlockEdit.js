@@ -1,7 +1,7 @@
 import React from 'react';
 import {useState, useEffect} from "@wordpress/element";
 import {TabPanel, Panel, PanelBody, PanelRow} from "@wordpress/components";
-import {InnerBlocks, useBlockProps} from '@wordpress/block-editor';
+import {useBlockProps} from '@wordpress/block-editor';
 
 import {isNotEmpty} from "../../../library/helpers/utils-helpers";
 import GeneralTab from "./tabs/GeneralTab";
@@ -15,12 +15,9 @@ import GlobalOptionsTabConfig from "../components/global/tabs/GlobalOptionsTabCo
 import {StateMiddleware} from "../../../library/api/StateMiddleware";
 import ProviderRequestContext, {providerRequestData} from "../components/list/ProviderRequestContext";
 import fetcherApiConfig from "../../../library/api/fetcher-api/fetcherApiConfig";
-import { InspectorControls } from '@wordpress/block-editor';
-import BlockView from '../common/BlockView';
 
 import {findTaxonomyIdIdentifier, findTaxonomySelectOptions} from "../../helpers/wp-helpers";
 import BlockEditComponent from '../common/BlockEditComponent';
-import KeyMapSelector from '../common/KeyMapSelector';
 import TemplatesTab from './tabs/TemplatesTab';
 import KeyMapTab from './tabs/KeyMapTab';
 
@@ -149,6 +146,11 @@ const ListingsBlockEdit = (props) => {
             component: SidebarTab
         });
         if (props.attributes?.source === 'api') {
+            tabConfig.push({
+                name: 'api',
+                title: 'Api',
+                component: ApiTab
+            });
             tabConfig.push({
                 name: 'key_map',
                 title: 'Key Map',

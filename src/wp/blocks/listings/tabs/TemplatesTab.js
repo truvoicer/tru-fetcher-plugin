@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from 'react';
 import { SelectControl } from "@wordpress/components";
-import { findSetting, getSettingListOptions } from "../../../helpers/wp-helpers";
 import Grid from "../../../../components/Grid";
 import ProviderRequestContext from '../../components/list/ProviderRequestContext';
 import { GutenbergBase } from '../../../helpers/gutenberg/gutenberg-base';
@@ -13,7 +12,7 @@ const TemplatesTab = (props) => {
     } = props;
 
     const providerRequestContext = useContext(ProviderRequestContext);
-    console.log(props)
+    
     useEffect(() => {
         if (!Array.isArray(providerRequestContext.services) || providerRequestContext.services.length === 0) {
             return;

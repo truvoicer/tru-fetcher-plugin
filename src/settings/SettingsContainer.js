@@ -76,6 +76,9 @@ const SettingsContainer = ({children, app, session}) => {
                 return cloneSettingsContext;
             });
         },
+        refresh: () => {
+            fetchSettings();
+        },
         addSetting: (setting) => {
             saveSetting(setting);
             // setSettingsContextData((prevState) => {

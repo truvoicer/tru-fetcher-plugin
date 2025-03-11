@@ -346,7 +346,6 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
     public function buildClassAttributes(array $attributes)
     {
         foreach ($attributes as $index => $attribute) {
-
                 if (!empty($attribute['form_control'])) {
                 switch ($attribute['form_control']) {
                     case 'select':
@@ -364,6 +363,7 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
             }
             $classAttribute = $this->buildClassAttribute($attribute);
             if (!$classAttribute) {
+                $attributes[$index] = $attribute;
                 continue;
             }
             $attributes[$index] = $classAttribute;
