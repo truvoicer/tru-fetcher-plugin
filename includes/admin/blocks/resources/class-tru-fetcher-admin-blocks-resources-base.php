@@ -80,6 +80,16 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
             'type' => 'string',
             'default' => null,
         ],
+        [
+            'id' => 'overflow_classes',
+            'type' => 'string',
+            'default' => 'overflow-scroll overflow-y-scroll',
+        ],
+        [
+            'id' => 'overflow_styles',
+            'type' => 'string',
+            'default' => 'overflow-y overflow',
+        ],
     ];
 
     public static function getSidebarConfig() {

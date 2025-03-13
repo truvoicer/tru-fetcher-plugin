@@ -2,7 +2,6 @@ import React, { useContext, useEffect } from 'react';
 import { TextControl, SelectControl, RangeControl, ColorPicker } from "@wordpress/components";
 import Grid from "../../../../components/Grid";
 import ProviderRequestContext from '../../components/list/ProviderRequestContext';
-import MediaInput from '../../../components/media/MediaInput';
 import { GutenbergBase } from '../../../helpers/gutenberg/gutenberg-base';
 
 const DisplayTab = (props) => {
@@ -26,11 +25,6 @@ const DisplayTab = (props) => {
     return (
         <div>
             <Grid columns={2}>
-                <TextControl
-                    label="Heading"
-                    value={attributes?.heading}
-                    onChange={(value) => setAttributes({ heading: value })}
-                />
                 <SelectControl
                     label="Load More Type"
                     onChange={(value) => {
@@ -38,6 +32,15 @@ const DisplayTab = (props) => {
                     }}
                     value={attributes?.load_more_type}
                     options={GutenbergBase.getSelectOptions('load_more_type', props)}
+                />
+
+                <RangeControl
+                    label="Posts Per Page"
+                    initialPosition={50}
+                    max={100}
+                    min={0}
+                    value={attributes?.posts_per_page}
+                    onChange={(value) => setAttributes({ posts_per_page: value })}
                 />
             </Grid>
             <Grid columns={2}>
@@ -59,14 +62,6 @@ const DisplayTab = (props) => {
                 />
             </Grid>
             <Grid columns={2}>
-                <RangeControl
-                    label="Posts Per Page"
-                    initialPosition={50}
-                    max={100}
-                    min={0}
-                    value={attributes?.posts_per_page}
-                    onChange={(value) => setAttributes({ posts_per_page: value })}
-                />
                 <SelectControl
                     label="Grid Layout"
                     onChange={(value) => {

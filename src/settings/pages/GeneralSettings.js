@@ -200,13 +200,8 @@ const GeneralSettings = () => {
                     type: 'text'
                 },
                 {
-                    name: 'comparison_styles',
-                    label: 'Comparison Styles',
-                    type: 'list'
-                },
-                {
-                    name: 'custom_templates',
-                    label: 'Custom Templates',
+                    name: 'overflow_classes',
+                    label: 'Overflow Classes',
                     type: 'list'
                 },
             ]

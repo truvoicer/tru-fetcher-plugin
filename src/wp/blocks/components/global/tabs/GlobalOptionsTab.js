@@ -55,6 +55,25 @@ const GlobalOptionsTab = (props) => {
                     }).reverse()}
                 />
             </Grid>
+
+            <Grid columns={2}>
+                <TextControl
+                    label="Overflow Classes"
+                    placeholder="Overflow Classes"
+                    value={ attributes?.overflow_classes }
+                    onChange={ ( value ) => {
+                        setAttributes({overflow_classes: value});
+                    } }
+                />
+                <TextControl
+                    label="Overflow Styles"
+                    placeholder="Overflow Styles"
+                    value={ attributes?.overflow_styles }
+                    onChange={ ( value ) => {
+                        setAttributes({overflow_styles: value});
+                    } }
+                />
+            </Grid>
         </>
     );
 };
