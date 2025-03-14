@@ -80,6 +80,10 @@ const FormComponent = ({data, onChange, showPresets = true, reducers = null}) =>
                         value={data?.presets}
                         options={[
                             {
+                                label: 'Please select',
+                                value: ''
+                            },
+                            {
                                 label: 'Custom',
                                 value: 'custom'
                             },

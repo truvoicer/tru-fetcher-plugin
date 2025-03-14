@@ -67,6 +67,7 @@ const PageOptionsMetaBox = ({config, postType, sidebars, metaFields, setMetaFiel
                         {value: 'login', label: 'Login Page'},
                         {value: 'register', label: 'Register Page'},
                         {value: 'logout', label: 'Logout Page'},
+                        {value: 'account', label: 'Account Page'},
                     ]}
                     onChange={(value) => setMetaFields({trf_gut_pmf_page_options_page_type: value})}
                     __nextHasNoMarginBottom

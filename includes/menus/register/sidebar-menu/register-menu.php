@@ -4,6 +4,7 @@ function TruFetcherRegisterNavMenus() {
 		[
 			'nav-menu' => __( 'Extra Menu' ),
 			'mobile-menu' => __( 'Sidebar Menu' ),
+			'auth-menu' => __( 'Auth Menu' ),
 		]
 	);
 }

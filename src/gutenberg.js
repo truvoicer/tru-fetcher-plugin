@@ -39,6 +39,8 @@ import PlaceholdersButton from "./wp/editors/buttons/PlaceholdersButton";
 import ListingsFiltersBlockEdit from "./wp/blocks/listings-filters/ListingsFiltersBlockEdit";
 import SocialBlockEdit from "./wp/blocks/social/SocialBlockEdit";
 import SavedItemsBlockEdit from "./wp/blocks/saved-items/SavedItemsBlockEdit";
+import LoginBlockEdit from './wp/blocks/login/LoginBlockEdit';
+import RegisterBlockEdit from './wp/blocks/register/RegisterBlockEdit';
 
 if (tru_fetcher_react?.currentScreen?.base !== 'widgets') {
     registerPlugin( 'trf-metadata-plugin', {
@@ -201,6 +203,12 @@ if (
                 break;
             case "saved_items_block":
                 blockComponent = SavedItemsBlockEdit;
+                break;
+            case "login_block":
+                blockComponent = LoginBlockEdit;
+                break;
+            case "register_block":
+                blockComponent = RegisterBlockEdit;
                 break;
             default:
                 return;
