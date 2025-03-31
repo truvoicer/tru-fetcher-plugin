@@ -56,6 +56,7 @@ const GeneralTab = (props) => {
             {attributes?.form_type === 'custom' && (
                 <Grid columns={1}>
                     <FormComponent
+                        {...props}
                         data={(hasParents && parentAttributes) ? parentAttributes : cloneFormDataAtts}
                         onChange={formChangeHandler}
                     />

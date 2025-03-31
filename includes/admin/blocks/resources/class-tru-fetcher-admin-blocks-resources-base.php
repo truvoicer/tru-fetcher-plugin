@@ -154,25 +154,39 @@ class Tru_Fetcher_Admin_Blocks_Resources_Base
                 return $defaultValue;
         }
     }
-    protected function mergeConfigs(array $blockResources)
+    protected function mergeConfigs(array $blockResources, ?bool $nestAttributes = true)
     {
         foreach ($blockResources as $blockResource) {
             $blockResourceInstance = new $blockResource();
-            foreach ($blockResourceInstance->getConfig()['post_types'] as $postType) {
+            $config = $blockResourceInstance->getConfig();
+            if (!is_array($config)) {
+                continue;
+            }
+            foreach ($config['post_types'] as $postType) {
                 if (!in_array($postType['name'], array_column($this->config['post_types'], 'name'))) {
                     $this->config['post_types'][] = $postType;
                 }
             }
-            foreach ($blockResourceInstance->getConfig()['taxonomies'] as $taxonomy) {
+            foreach ($config['taxonomies'] as $taxonomy) {
                 if (!in_array($taxonomy['name'], array_column($this->config['taxonomies'], 'name'))) {
                     $this->config['taxonomies'][] = $taxonomy;
                 }
             }
-            $this->config['attributes'][] = [
-                'id' => $blockResourceInstance::BLOCK_ID,
-                'type' => 'object',
-                'default' => null,
-            ];
+            if ($nestAttributes) {
+                $this->config['attributes'][] = [
+                    'id' => $blockResourceInstance::BLOCK_ID,
+                    'type' => 'object',
+                    'default' => null,
+                ];
+                continue;
+            }
+            
+            if (!is_array($blockResourceInstance->getConfig()['attributes'])) {
+                continue;
+            }
+            foreach ($blockResourceInstance->getConfig()['attributes'] as $attribute) {
+                $this->config['attributes'][] = $attribute;
+            }
         }
     }
 

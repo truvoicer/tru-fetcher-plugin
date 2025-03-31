@@ -9,7 +9,6 @@ const FormSettingsTab = (props) => {
         onChange
     } = props;
 
-
     return (
         <div>
             <Grid columns={2}>

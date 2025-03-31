@@ -103,4 +103,11 @@ class Tru_Fetcher_Admin_Blocks_Resources_Register extends Tru_Fetcher_Admin_Bloc
             ],
         ]
     ];
+
+    public function __construct()
+    {
+        $this->mergeConfigs([
+            Tru_Fetcher_Admin_Blocks_Resources_Form::class,
+        ], false);
+    }
 }

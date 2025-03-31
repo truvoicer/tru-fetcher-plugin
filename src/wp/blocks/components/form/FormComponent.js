@@ -8,15 +8,17 @@ import ExternalProvidersTab from "./tabs/ExternalProvidersTab";
 import GlobalOptionsTabConfig from "../global/tabs/GlobalOptionsTabConfig";
 import Grid from "../../../../components/Grid";
 
-const FormComponent = ({data, onChange, showPresets = true, reducers = null}) => {
+const FormComponent = (props) => {
+    const {data, onChange, showPresets = true, reducers = null} = props;
+    
     function getTabComponent(tab) {
         if (!tab?.component) {
             return null;
         }
         let TabComponent = tab.component;
-        return <TabComponent {...{data, onChange, showPresets, reducers}} />;
+        return <TabComponent {...props} />;
     }
-
+    
     function getTabs() {
         let tabs = [];
         tabs.push({
