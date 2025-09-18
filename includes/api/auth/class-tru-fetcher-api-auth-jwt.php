@@ -3,8 +3,6 @@
 namespace TruFetcher\Includes\Api\Auth;
 
 use Carbon\Carbon;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 use TruFetcher\Includes\Tru_Fetcher_Base;
 
 class Tru_Fetcher_Api_Auth_Jwt extends Tru_Fetcher_Base
